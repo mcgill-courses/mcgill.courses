@@ -453,16 +453,10 @@ export const CourseReview = ({
                 );
               }
 
-              let truncateAt = 300;
-              const newlineIndex = review.content.indexOf('\n');
-              if (newlineIndex !== -1 && newlineIndex < 300) {
-                truncateAt = newlineIndex;
-              }
-
               return (
                 <>
                   <div className='ml-1 mr-4 mt-2 hyphens-auto whitespace-pre-wrap break-words text-left text-gray-800 dark:text-gray-300'>
-                    {review.content.substring(0, truncateAt) + '...'}
+                    {review.content.substring(0, 300) + '...'}
                   </div>
                   <button
                     className='ml-1 mr-auto pt-1 text-gray-700 underline transition duration-300 ease-in-out hover:text-red-500 dark:text-gray-300 dark:hover:text-red-500'
