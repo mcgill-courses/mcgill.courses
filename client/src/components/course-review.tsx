@@ -440,23 +440,33 @@ export const CourseReview = ({
                 </div>
               </div>
             </div>
-            {review.content.length < 300 || readMore ? (
-              <div className='ml-1 mr-4 mt-2 hyphens-auto break-words text-left text-gray-800 dark:text-gray-300'>
-                {review.content}
-              </div>
-            ) : (
-              <>
-                <div className='ml-1 mr-4 mt-2 hyphens-auto break-words text-left text-gray-800 dark:text-gray-300'>
-                  {review.content.substring(0, 300) + '...'}
-                </div>
-                <button
-                  className='ml-1 mr-auto pt-1 text-gray-700 underline transition duration-300 ease-in-out hover:text-red-500 dark:text-gray-300 dark:hover:text-red-500'
-                  onClick={() => setReadMore(true)}
-                >
-                  Show more
-                </button>
-              </>
-            )}
+            {(() => {
+              const newlineCount = (review.content.match(/\n/g) || []).length;
+              const visualLength = review.content.length + newlineCount * 50;
+              const shouldTruncate = visualLength >= 300 && !readMore;
+
+              if (!shouldTruncate) {
+                return (
+                  <div className='ml-1 mr-4 mt-2 hyphens-auto whitespace-pre-wrap break-words text-left text-gray-800 dark:text-gray-300'>
+                    {review.content}
+                  </div>
+                );
+              }
+
+              return (
+                <>
+                  <div className='ml-1 mr-4 mt-2 hyphens-auto whitespace-pre-wrap break-words text-left text-gray-800 dark:text-gray-300'>
+                    {review.content.substring(0, 300) + '...'}
+                  </div>
+                  <button
+                    className='ml-1 mr-auto pt-1 text-gray-700 underline transition duration-300 ease-in-out hover:text-red-500 dark:text-gray-300 dark:hover:text-red-500'
+                    onClick={() => setReadMore(true)}
+                  >
+                    Show more
+                  </button>
+                </>
+              );
+            })()}
           </div>
         </div>
       </div>
