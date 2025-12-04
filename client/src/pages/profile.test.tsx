@@ -118,6 +118,16 @@ describe('Profile page', () => {
     courseReviewMock.mockClear();
     getReviewsMock.mockReset();
     getSubscriptionsMock.mockReset();
+
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn(() => null),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+      },
+      writable: true,
+    });
   });
 
   it('renders user reviews with scroll attachments', async () => {
