@@ -50,7 +50,7 @@ class App:
     '-o',
     '--output-path',
     help='The path to the file to write the data to.',
-    default=os.path.join('client', 'src', 'assets', 'courseAveragesData.json'),
+    default=os.path.join('..', '..', 'client', 'src', 'assets', 'course-averages-data.json'),
   )
 
   def run(self) -> None:
