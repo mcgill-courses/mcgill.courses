@@ -66,8 +66,8 @@ impl PullRequest<'_> {
       .chat()
       .create(
         CreateChatCompletionRequestArgs::default()
-          .max_tokens(512u16)
-          .model("gpt-3.5-turbo")
+          .max_output_tokens(512u16)
+          .model("gpt-5-nano")
           .messages([ChatCompletionRequestSystemMessageArgs::default()
             .content(prompt)
             .build()?
@@ -139,7 +139,7 @@ struct Arguments {
   regenerate_all: bool,
   #[clap(long, default_value = "mcgill.courses")]
   repo: String,
-  #[clap(long, default_value = "terror")]
+  #[clap(long, default_value = "mcgill-courses")]
   user: String,
 }
 

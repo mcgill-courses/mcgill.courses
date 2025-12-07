@@ -16,7 +16,7 @@ cargo run --manifest-path tools/changelog-generator/Cargo.toml \
 ```
 
 n.b. The tool assumes you have a `OPENAI_API_KEY` set in the environment, as it
-uses the `gpt-3.5-turbo` model to generate changelogs.
+uses the `gpt-5.1-nano` model to generate changelogs.
 
 For full usage information, see the output below:
 
