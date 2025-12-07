@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1.0.99"
-async-openai = "0.21.0"
+async-openai = "0.31.1"
 chrono = "0.4.42"
 clap = { version = "4.5.47", features = ["derive"] }
 dotenv = "0.15.0"
