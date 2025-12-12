@@ -278,7 +278,7 @@ const BlockLocation = ({ location }: { location: string }) => {
         <Tooltip text={buildingCodes[code as keyof typeof buildingCodes]}>
           <p
             className={twMerge(
-              'leading-0 inline-block text-xs xs:text-sm xs:leading-7 md:text-base lg:text-sm xl:text-base',
+              'inline-block text-xs leading-7 xs:text-sm sm:text-base lg:text-sm xl:text-base',
               coordinates !== null && 'cursor-pointer'
             )}
           >
