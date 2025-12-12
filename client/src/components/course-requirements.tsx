@@ -105,7 +105,7 @@ export const CourseRequirements = ({
         onClick={handleGraphToggle}
       >
         <ToggleButtonIcon
-          size={28}
+          size={20}
           className='stroke-gray-700 dark:stroke-gray-400'
         />
       </button>
