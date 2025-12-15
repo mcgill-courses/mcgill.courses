@@ -1,4 +1,580 @@
 {
+  "June 2025": [
+    {
+      "number": 671,
+      "summary": "Added a feature to include the `VITE_GOOGLE_API_KEY` in the client production build, enhancing security and performance.",
+      "url": "https://github.com/terror/mcgill.courses/pull/671",
+      "mergedAt": "2025-06-21T04:22:41Z"
+    },
+    {
+      "number": 670,
+      "summary": "Added a feature to display a location modal when clicking on a building in the course schedule. This enhancement allows users to view detailed information about the building directly from the schedule page, improving accessibility and convenience during course planning.",
+      "url": "https://github.com/terror/mcgill.courses/pull/670",
+      "mergedAt": "2025-06-20T16:42:24Z"
+    },
+    {
+      "number": 669,
+      "summary": "Added new entries to the changelog to document recent updates and changes made to the project.",
+      "url": "https://github.com/terror/mcgill.courses/pull/669",
+      "mergedAt": "2025-06-02T15:28:13Z"
+    }
+  ],
+  "February 2025": [
+    {
+      "number": 633,
+      "summary": "Added tests to ensure that the request retry feature works properly, improving the reliability of the system.",
+      "url": "https://github.com/terror/mcgill.courses/pull/633",
+      "mergedAt": "2025-02-02T00:23:01Z"
+    },
+    {
+      "number": 632,
+      "summary": "Implemented exponential backoff with jitter when retrying requests to improve the reliability and performance of the system.",
+      "url": "https://github.com/terror/mcgill.courses/pull/632",
+      "mergedAt": "2025-02-01T22:49:20Z"
+    }
+  ],
+  "March 2023": [
+    {
+      "number": 77,
+      "summary": "Added a few tests to ensure the proper functioning of the course and review routes. These additions aimed to enhance the reliability and accuracy of the application by covering critical functionality with testing.",
+      "url": "https://github.com/terror/mcgill.courses/pull/77",
+      "mergedAt": "2023-03-31T02:37:06Z"
+    },
+    {
+      "number": 76,
+      "summary": "Fixed an issue where special characters in the query string were causing errors. Updated the code to properly handle and parse special characters, ensuring smooth functionality for all queries.",
+      "url": "https://github.com/terror/mcgill.courses/pull/76",
+      "mergedAt": "2023-03-29T22:25:53Z"
+    },
+    {
+      "number": 64,
+      "summary": "Added new routes for course reviews to allow users to leave feedback and ratings for courses. This change enhances the user experience by providing a platform for sharing opinions and helping others make informed decisions about courses.",
+      "url": "https://github.com/terror/mcgill.courses/pull/64",
+      "mergedAt": "2023-03-28T23:22:05Z"
+    },
+    {
+      "number": 72,
+      "summary": "Fixed tslint command by updating configuration to adhere to the latest linting rules. The changes ensure that the codebase follows consistent coding standards and best practices for improved code quality.",
+      "url": "https://github.com/terror/mcgill.courses/pull/72",
+      "mergedAt": "2023-03-28T02:35:22Z"
+    },
+    {
+      "number": 71,
+      "summary": "Added tslint to the project to improve code quality by enforcing coding standards and catching potential bugs early on.",
+      "url": "https://github.com/terror/mcgill.courses/pull/71",
+      "mergedAt": "2023-03-26T19:56:06Z"
+    },
+    {
+      "number": 68,
+      "summary": "Added a profile dropdown component to enhance user navigation and provide quick access to account settings. This improvement allows users to easily switch between profiles and manage their preferences without disrupting the browsing experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/68",
+      "mergedAt": "2023-03-26T18:56:32Z"
+    },
+    {
+      "number": 62,
+      "summary": "Added an explore page with incremental fetch feature for endless scrolling.",
+      "url": "https://github.com/terror/mcgill.courses/pull/62",
+      "mergedAt": "2023-03-26T13:41:29Z"
+    },
+    {
+      "number": 63,
+      "summary": "Updated the project to use React Router links instead of anchor tags for improved navigation and better handling of client-side routing. This change ensures a more seamless user experience when navigating between pages within the application.",
+      "url": "https://github.com/terror/mcgill.courses/pull/63",
+      "mergedAt": "2023-03-25T20:30:44Z"
+    },
+    {
+      "number": 61,
+      "summary": "Updated the README to include a mention of the client/.env.example file for easy reference by users. This change will help users locate and use the example environment file during setup and configuration.",
+      "url": "https://github.com/terror/mcgill.courses/pull/61",
+      "mergedAt": "2023-03-25T19:48:57Z"
+    },
+    {
+      "number": 58,
+      "summary": "The index page was finalized with the following changes:\n- The magnifying glass icon was made slightly smaller.\n- A parser was added to handle `&amp;` in course titles.\n- Links were added to each search result suggestion in the format of `/cource/${result._id}`.\n- The nav bar buttons were removed from the template and a button for the About page was added.\n- The search results' array size was capped at 6 to prevent screen overflow.",
+      "url": "https://github.com/terror/mcgill.courses/pull/58",
+      "mergedAt": "2023-03-25T19:46:26Z"
+    },
+    {
+      "number": 59,
+      "summary": "Integrated a TypeScript formatting check into the actions workflow script. This change ensures that all TypeScript files adhere to the specified format guidelines, maintaining consistency across the codebase.",
+      "url": "https://github.com/terror/mcgill.courses/pull/59",
+      "mergedAt": "2023-03-25T19:21:48Z"
+    },
+    {
+      "number": 55,
+      "summary": "Improved the styling of the course search dropdown by updating the font size, spacing, and alignment for better readability and user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/55",
+      "mergedAt": "2023-03-25T16:38:16Z"
+    },
+    {
+      "number": 51,
+      "summary": "Refactored the home page by breaking it down into smaller, reusable components for improved code organization and maintainability. This change makes it easier to manage and update different sections of the home page separately.",
+      "url": "https://github.com/terror/mcgill.courses/pull/51",
+      "mergedAt": "2023-03-25T15:35:41Z"
+    },
+    {
+      "number": 50,
+      "summary": "Removed the loading div that appeared during authentication to improve user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/50",
+      "mergedAt": "2023-03-24T02:59:00Z"
+    },
+    {
+      "number": 49,
+      "summary": "Added a request client to the state to improve data fetching efficiency and organization.",
+      "url": "https://github.com/terror/mcgill.courses/pull/49",
+      "mergedAt": "2023-03-24T02:54:19Z"
+    },
+    {
+      "number": 47,
+      "summary": "Added a note about using environment variables to the readme file. This change helps users understand how to set and use environment variables in the project.",
+      "url": "https://github.com/terror/mcgill.courses/pull/47",
+      "mergedAt": "2023-03-23T23:57:44Z"
+    },
+    {
+      "number": 46,
+      "summary": "Added logic to conditionally render the login button in the sidepane based on user authentication status. This change improves the user experience by only showing the button when necessary, reducing clutter on the interface.",
+      "url": "https://github.com/terror/mcgill.courses/pull/46",
+      "mergedAt": "2023-03-23T23:48:48Z"
+    },
+    {
+      "number": 45,
+      "summary": "Refactored authentication routes to improve code readability and organization. Split large functions into smaller, modular pieces for easier maintenance. Added comments for better documentation and clarity in the codebase. Cleaned up redundant code and optimized route handling for smoother user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/45",
+      "mergedAt": "2023-03-23T23:36:40Z"
+    },
+    {
+      "number": 44,
+      "summary": "Corrected multiple typos in the Rust source code files to improve readability and maintain coding standards.",
+      "url": "https://github.com/terror/mcgill.courses/pull/44",
+      "mergedAt": "2023-03-23T19:05:27Z"
+    },
+    {
+      "number": 25,
+      "summary": "Added support for Microsoft OAuth authentication in the login system, allowing users to log in using their Microsoft accounts. This change enhances user experience by providing an additional secure and convenient login option.",
+      "url": "https://github.com/terror/mcgill.courses/pull/25",
+      "mergedAt": "2023-03-23T18:49:10Z"
+    },
+    {
+      "number": 42,
+      "summary": "Implemented a MongoDB full-text search index for course identifiers. This enhancement enables more efficient and accurate search functionality when looking up courses based on their identifiers.",
+      "url": "https://github.com/terror/mcgill.courses/pull/42",
+      "mergedAt": "2023-03-22T17:44:47Z"
+    },
+    {
+      "number": 39,
+      "summary": "Added a new route to find courses easily on the website. This change enhances the user experience by allowing quicker access to specific course information.",
+      "url": "https://github.com/terror/mcgill.courses/pull/39",
+      "mergedAt": "2023-03-22T17:24:19Z"
+    },
+    {
+      "number": 38,
+      "summary": "Separated routes into individual modules to improve code organization and maintainability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/38",
+      "mergedAt": "2023-03-22T05:28:56Z"
+    },
+    {
+      "number": 34,
+      "summary": "Added a new option to the loader to support the McGill term. This change allows users to specify the term when loading data, enhancing the loader's functionality and flexibility.",
+      "url": "https://github.com/terror/mcgill.courses/pull/34",
+      "mergedAt": "2023-03-21T21:55:20Z"
+    },
+    {
+      "number": 33,
+      "summary": "Added a test case for combining vector elements in the testing suite. This change ensures that the vec combine function is properly tested for accuracy and reliability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/33",
+      "mergedAt": "2023-03-21T21:52:18Z"
+    },
+    {
+      "number": 32,
+      "summary": "Implemented support for full-text search in MongoDB, allowing users to search for text across multiple fields in a collection. This enhancement enables more efficient and comprehensive search capabilities within the database.",
+      "url": "https://github.com/terror/mcgill.courses/pull/32",
+      "mergedAt": "2023-03-21T21:17:06Z"
+    },
+    {
+      "number": 31,
+      "summary": "Added a new helper function for easier testing of extractors. This function simplifies the process of testing data extraction functionality in the project.",
+      "url": "https://github.com/terror/mcgill.courses/pull/31",
+      "mergedAt": "2023-03-21T02:40:19Z"
+    },
+    {
+      "number": 29,
+      "summary": "Renamed the extract recipe in the justfile to improve clarity and consistency.",
+      "url": "https://github.com/terror/mcgill.courses/pull/29",
+      "mergedAt": "2023-03-21T00:31:54Z"
+    },
+    {
+      "number": 28,
+      "summary": "Changed the serialization of courses to use camel case instead of snake case. This makes the data structure more consistent and easy to work with across the application.",
+      "url": "https://github.com/terror/mcgill.courses/pull/28",
+      "mergedAt": "2023-03-21T00:29:01Z"
+    },
+    {
+      "number": 27,
+      "summary": "Added functionality to parse course restrictions from the input data, allowing for more accurate filtering and sorting of courses based on various criteria. This enhancement improves the overall user experience by providing more specific and relevant search results.",
+      "url": "https://github.com/terror/mcgill.courses/pull/27",
+      "mergedAt": "2023-03-21T00:26:13Z"
+    },
+    {
+      "number": 26,
+      "summary": "Simplified the extract instructors function for better readability and comprehension. Made changes to streamline the code structure and make it more user-friendly.",
+      "url": "https://github.com/terror/mcgill.courses/pull/26",
+      "mergedAt": "2023-03-21T00:02:17Z"
+    },
+    {
+      "number": 22,
+      "summary": "Added functionality to include the year in the instructor term field for improved clarity and organization.",
+      "url": "https://github.com/terror/mcgill.courses/pull/22",
+      "mergedAt": "2023-03-19T20:45:14Z"
+    },
+    {
+      "number": 21,
+      "summary": "Added a new route to fetch all courses from the database using a GET request.",
+      "url": "https://github.com/terror/mcgill.courses/pull/21",
+      "mergedAt": "2023-03-19T19:48:23Z"
+    },
+    {
+      "number": 17,
+      "summary": "Switched the backend to use MongoDB instead of the previous database system. Improved testing coverage by adding more database tests and ensuring they run successfully in the CI pipeline.",
+      "url": "https://github.com/terror/mcgill.courses/pull/17",
+      "mergedAt": "2023-03-19T18:59:14Z"
+    },
+    {
+      "number": 15,
+      "summary": "Improved the formatting and readability of the JSON output for course information. Added indentation and line breaks to make the data more organized and user-friendly.",
+      "url": "https://github.com/terror/mcgill.courses/pull/15",
+      "mergedAt": "2023-03-18T17:25:06Z"
+    },
+    {
+      "number": 13,
+      "summary": "Added an example for extracting course data to the readme file. This change aims to help users understand how to extract information from the provided courses in a clear and efficient manner.",
+      "url": "https://github.com/terror/mcgill.courses/pull/13",
+      "mergedAt": "2023-03-18T17:18:01Z"
+    },
+    {
+      "number": 12,
+      "summary": "Fixed an issue where unnecessary terms were being passed into the vsb client, streamlining the process and improving efficiency.",
+      "url": "https://github.com/terror/mcgill.courses/pull/12",
+      "mergedAt": "2023-03-18T17:10:43Z"
+    },
+    {
+      "number": 10,
+      "summary": "Formatted the workflow file to improve readability and consistency.Resolved indentation issues and aligned code blocks for better organization.",
+      "url": "https://github.com/terror/mcgill.courses/pull/10",
+      "mergedAt": "2023-03-17T23:29:50Z"
+    },
+    {
+      "number": 9,
+      "summary": "Implemented a continuous integration workflow for the backend codebase. This change ensures that code changes are automatically tested and validated before merging, improving code quality and reliability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/9",
+      "mergedAt": "2023-03-17T23:08:54Z"
+    },
+    {
+      "number": 8,
+      "summary": "Moved mocks from the main crate to the extractor crate for better code organization and maintainability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/8",
+      "mergedAt": "2023-03-17T22:46:21Z"
+    },
+    {
+      "number": 7,
+      "summary": "Updated the names of mocks to be more descriptive and less ambiguous. This change helps improve code readability and maintainability by clearly indicating the purpose of each mock in the project.",
+      "url": "https://github.com/terror/mcgill.courses/pull/7",
+      "mergedAt": "2023-03-17T22:42:27Z"
+    },
+    {
+      "number": 6,
+      "summary": "Refactored the extraction code by implementing extension traits for improved organization and readability. This change streamlines the codebase and enhances maintainability for future development tasks.",
+      "url": "https://github.com/terror/mcgill.courses/pull/6",
+      "mergedAt": "2023-03-17T22:35:08Z"
+    },
+    {
+      "number": 5,
+      "summary": "Moved model structs to the root of the crate for better organization and accessibility.",
+      "url": "https://github.com/terror/mcgill.courses/pull/5",
+      "mergedAt": "2023-03-16T19:24:25Z"
+    },
+    {
+      "number": 4,
+      "summary": "Updated the code-statistics feature to exclude mock files, improving the accuracy of the generated metrics.",
+      "url": "https://github.com/terror/mcgill.courses/pull/4",
+      "mergedAt": "2023-03-16T19:15:36Z"
+    },
+    {
+      "number": 1,
+      "summary": "Added support for scraping course scheduling information by updating the schema to include details such as course title, credits, instructors, department, and more. Also, separated out html parsing and models into individual crates.",
+      "url": "https://github.com/terror/mcgill.courses/pull/1",
+      "mergedAt": "2023-03-16T19:11:21Z"
+    }
+  ],
+  "January 2025": [
+    {
+      "number": 631,
+      "summary": "Updated the web scraping script to re-scrape course data for the academic year 2024-2025. This change ensures that the latest and most accurate information is available for users.",
+      "url": "https://github.com/terror/mcgill.courses/pull/631",
+      "mergedAt": "2025-01-27T05:11:24Z"
+    },
+    {
+      "number": 626,
+      "summary": "Updated the schedule display to automatically select the current term, eliminating the need to manually choose it. This change simplifies the process for users, ensuring they view information for the ongoing term by default.",
+      "url": "https://github.com/terror/mcgill.courses/pull/626",
+      "mergedAt": "2025-01-11T18:03:23Z"
+    },
+    {
+      "number": 624,
+      "summary": "Updated the functionality to verify the presence of search results before processing the enter keydown event, preventing navigation to non-existent pages from the search bar.",
+      "url": "https://github.com/terror/mcgill.courses/pull/624",
+      "mergedAt": "2025-01-09T03:57:09Z"
+    },
+    {
+      "number": 623,
+      "summary": "Added functionality to use LinkedIn profiles to display team members' pictures on the about page, improving the visual appeal and credibility of the team section.",
+      "url": "https://github.com/terror/mcgill.courses/pull/623",
+      "mergedAt": "2025-01-05T00:09:06Z"
+    }
+  ],
+  "September 2025": [
+    {
+      "number": 718,
+      "summary": "Added clear and detailed documentation for search-related endpoints in the codebase. The documentation provides information on how to use these endpoints effectively for searching within the application.",
+      "url": "https://github.com/terror/mcgill.courses/pull/718",
+      "mergedAt": "2025-09-30T05:49:56Z"
+    },
+    {
+      "number": 717,
+      "summary": "Updated the course code regex pattern in the requirements component to include support for course codes with or without spaces between the department code and course number.",
+      "url": "https://github.com/terror/mcgill.courses/pull/717",
+      "mergedAt": "2025-09-30T05:34:07Z"
+    },
+    {
+      "number": 716,
+      "summary": "Added support for the `Requirements` type in Typeshare, allowing users to define and utilize this type in their TypeScript projects.",
+      "url": "https://github.com/terror/mcgill.courses/pull/716",
+      "mergedAt": "2025-09-30T05:27:07Z"
+    },
+    {
+      "number": 715,
+      "summary": "Converted all client asset file names and references to kebab case to ensure consistency and improve readability throughout the project.",
+      "url": "https://github.com/terror/mcgill.courses/pull/715",
+      "mergedAt": "2025-09-30T04:55:11Z"
+    },
+    {
+      "number": 714,
+      "summary": "Added documentation for notification related endpoints to improve user understanding of how to interact with the notification features of the application.",
+      "url": "https://github.com/terror/mcgill.courses/pull/714",
+      "mergedAt": "2025-09-30T04:40:17Z"
+    },
+    {
+      "number": 713,
+      "summary": "Added documentation for new review-related endpoints, providing clear instructions on how to use them effectively.",
+      "url": "https://github.com/terror/mcgill.courses/pull/713",
+      "mergedAt": "2025-09-30T04:31:20Z"
+    },
+    {
+      "number": 712,
+      "summary": "Removed unnecessary full path qualifiers from the datetime module, making the code cleaner and easier to read for developers.",
+      "url": "https://github.com/terror/mcgill.courses/pull/712",
+      "mergedAt": "2025-09-30T03:59:31Z"
+    },
+    {
+      "number": 711,
+      "summary": "Updated the readme to remove the manual replica set initialization step, making it more user-friendly and streamlined for users setting up the application.",
+      "url": "https://github.com/terror/mcgill.courses/pull/711",
+      "mergedAt": "2025-09-28T20:24:38Z"
+    },
+    {
+      "number": 710,
+      "summary": "Added the correct server path information to the API documentation to ensure accurate guidance for users.",
+      "url": "https://github.com/terror/mcgill.courses/pull/710",
+      "mergedAt": "2025-09-26T04:58:48Z"
+    },
+    {
+      "number": 709,
+      "summary": "Added parameter information to the course route documentation, providing users with a clearer understanding of how to interact with the API.",
+      "url": "https://github.com/terror/mcgill.courses/pull/709",
+      "mergedAt": "2025-09-26T04:52:12Z"
+    },
+    {
+      "number": 708,
+      "summary": "Added a new endpoint to serve public API documentation to users.",
+      "url": "https://github.com/terror/mcgill.courses/pull/708",
+      "mergedAt": "2025-09-26T04:35:06Z"
+    },
+    {
+      "number": 705,
+      "summary": "Added new entries to the changelog to document recent updates and changes made to the project.",
+      "url": "https://github.com/terror/mcgill.courses/pull/705",
+      "mergedAt": "2025-09-26T02:58:50Z"
+    },
+    {
+      "number": 706,
+      "summary": "Implemented the use of `SocketAddr` for spawning the server, improving network connectivity and flexibility.",
+      "url": "https://github.com/terror/mcgill.courses/pull/706",
+      "mergedAt": "2025-09-26T02:13:39Z"
+    },
+    {
+      "number": 704,
+      "summary": "Updated the `axum` dependency to version 0.8.4, introducing improvements and bug fixes to enhance the overall performance and stability of the project.",
+      "url": "https://github.com/terror/mcgill.courses/pull/704",
+      "mergedAt": "2025-09-26T01:46:27Z"
+    },
+    {
+      "number": 703,
+      "summary": "Removed the dependency on `axum-server` to simplify the project structure and decrease overall package clutter.",
+      "url": "https://github.com/terror/mcgill.courses/pull/703",
+      "mergedAt": "2025-09-26T01:22:55Z"
+    },
+    {
+      "number": 702,
+      "summary": "Added the client to the code coverage report, ensuring that all parts of the project are accounted for in the testing analysis.",
+      "url": "https://github.com/terror/mcgill.courses/pull/702",
+      "mergedAt": "2025-09-26T01:00:42Z"
+    },
+    {
+      "number": 700,
+      "summary": "Bumped the version of the Rust docker image to 1.90 for improved compatibility and performance.",
+      "url": "https://github.com/terror/mcgill.courses/pull/700",
+      "mergedAt": "2025-09-25T03:26:21Z"
+    },
+    {
+      "number": 699,
+      "summary": "Updated the Rust version to 2024 across all crates to leverage new features and improvements.",
+      "url": "https://github.com/terror/mcgill.courses/pull/699",
+      "mergedAt": "2025-09-25T00:10:58Z"
+    },
+    {
+      "number": 698,
+      "summary": "Updated Flexsearch index to use `tokenize: 'tolerant'` instead of `tokenize: 'forward'` to avoid weird search results, especially for cases like searching for MATH 222.",
+      "url": "https://github.com/terror/mcgill.courses/pull/698",
+      "mergedAt": "2025-09-24T20:27:29Z"
+    },
+    {
+      "number": 696,
+      "summary": "Fixed the error causing duplicate nodes when a course is both a prerequisite and corequisite. This change ensures that the course graph functions correctly, even in unusual cases like this one from McGill University.",
+      "url": "https://github.com/terror/mcgill.courses/pull/696",
+      "mergedAt": "2025-09-24T19:59:28Z"
+    },
+    {
+      "number": 694,
+      "summary": "Corrected a typo in the subscription API function for improved accuracy and clarity.",
+      "url": "https://github.com/terror/mcgill.courses/pull/694",
+      "mergedAt": "2025-09-24T04:45:33Z"
+    },
+    {
+      "number": 692,
+      "summary": "Simplified the process of setting up replica sets to improve efficiency and ease of use.",
+      "url": "https://github.com/terror/mcgill.courses/pull/692",
+      "mergedAt": "2025-09-23T21:12:41Z"
+    },
+    {
+      "number": 625,
+      "summary": "Added support for replacing all site icons with the Lucide icon set, improving overall visual consistency and design aesthetics.",
+      "url": "https://github.com/terror/mcgill.courses/pull/625",
+      "mergedAt": "2025-09-23T20:30:08Z"
+    },
+    {
+      "number": 628,
+      "summary": "Replaced the react-feather icon library with lucide for improved performance and more customization options.",
+      "url": "https://github.com/terror/mcgill.courses/pull/628",
+      "mergedAt": "2025-09-23T19:43:36Z"
+    },
+    {
+      "number": 691,
+      "summary": "Replaced the testing framework `jest` with `vitest` for improved testing capabilities.",
+      "url": "https://github.com/terror/mcgill.courses/pull/691",
+      "mergedAt": "2025-09-23T19:21:07Z"
+    },
+    {
+      "number": 690,
+      "summary": "Updated the team profile images in the app by switching from using LinkedIn URLs to local assets.",
+      "url": "https://github.com/terror/mcgill.courses/pull/690",
+      "mergedAt": "2025-09-23T18:37:09Z"
+    },
+    {
+      "number": 689,
+      "summary": "Removed the dependency on `anyhow` from the library crates. This change simplifies error handling and reduces the overall size of the codebase.",
+      "url": "https://github.com/terror/mcgill.courses/pull/689",
+      "mergedAt": "2025-09-23T15:27:52Z"
+    },
+    {
+      "number": 688,
+      "summary": "Updated the client-side hooks to follow the kebab-case naming convention for better consistency and readability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/688",
+      "mergedAt": "2025-09-22T22:39:58Z"
+    },
+    {
+      "number": 687,
+      "summary": "Renamed the file `repo.ts` to `api.ts` and updated all references throughout the project.",
+      "url": "https://github.com/terror/mcgill.courses/pull/687",
+      "mergedAt": "2025-09-22T22:25:59Z"
+    },
+    {
+      "number": 686,
+      "summary": "Changed the naming convention from camelCase to kebab-case for consistency in the client code.",
+      "url": "https://github.com/terror/mcgill.courses/pull/686",
+      "mergedAt": "2025-09-22T21:30:37Z"
+    },
+    {
+      "number": 683,
+      "summary": "Implemented structured tracing in the application code to improve visibility into performance and debugging in production environments. This change allows for better tracking of requests and responses, making it easier to identify and troubleshoot issues in the system.",
+      "url": "https://github.com/terror/mcgill.courses/pull/683",
+      "mergedAt": "2025-09-22T18:34:44Z"
+    },
+    {
+      "number": 682,
+      "summary": "Replaced all instances of `log` with `tracing` throughout the codebase to improve consistency and clarity.",
+      "url": "https://github.com/terror/mcgill.courses/pull/682",
+      "mergedAt": "2025-09-22T18:14:59Z"
+    },
+    {
+      "number": 681,
+      "summary": "Added support for the `Interaction` type in Typeshare to enhance type checking and accuracy of interaction-related code.",
+      "url": "https://github.com/terror/mcgill.courses/pull/681",
+      "mergedAt": "2025-09-22T17:48:32Z"
+    },
+    {
+      "number": 680,
+      "summary": "Added support for the `Notification` type in Typeshare, enabling users to easily share and collaborate on code related to notifications.",
+      "url": "https://github.com/terror/mcgill.courses/pull/680",
+      "mergedAt": "2025-09-22T17:33:25Z"
+    },
+    {
+      "number": 675,
+      "summary": "Added support for the `Review` type in typeshare, allowing users to define and work with this type in their projects seamlessly.",
+      "url": "https://github.com/terror/mcgill.courses/pull/675",
+      "mergedAt": "2025-09-18T00:10:37Z"
+    },
+    {
+      "number": 674,
+      "summary": "Updated dependencies to ensure the project has the latest features and security enhancements.",
+      "url": "https://github.com/terror/mcgill.courses/pull/674",
+      "mergedAt": "2025-09-13T17:47:23Z"
+    }
+  ],
+  "January 2024": [
+    {
+      "number": 486,
+      "summary": "Adjusted the position of the notification pane to be more towards the right side on the screen. This change provides a better user experience by improving visibility and accessibility of notifications.",
+      "url": "https://github.com/terror/mcgill.courses/pull/486",
+      "mergedAt": "2024-01-02T04:48:33Z"
+    },
+    {
+      "number": 487,
+      "summary": "Updated the display image in the readme file to reflect the latest design changes.",
+      "url": "https://github.com/terror/mcgill.courses/pull/487",
+      "mergedAt": "2024-01-02T04:39:10Z"
+    },
+    {
+      "number": 482,
+      "summary": "Improved the mobile display by adjusting various styling elements:\n- Fixed inconsistent margins on the explore page\n- Resolved overflow issues with long schedule rows\n- Prevented users from scrolling the page when the sidenav is open",
+      "url": "https://github.com/terror/mcgill.courses/pull/482",
+      "mergedAt": "2024-01-02T04:38:02Z"
+    },
+    {
+      "number": 483,
+      "summary": "Improved the application by adding functionality to serve the Microsoft Identity Association file, which enhances the integration and authentication process for users.",
+      "url": "https://github.com/terror/mcgill.courses/pull/483",
+      "mergedAt": "2024-01-02T03:41:26Z"
+    }
+  ],
   "December 2023": [
     {
       "number": 481,
@@ -91,6 +667,368 @@
       "mergedAt": "2023-12-10T01:29:04Z"
     }
   ],
+  "December 2024": [
+    {
+      "number": 618,
+      "summary": "Consolidated various TypeScript declaration files in the client directory to improve organization and simplify maintenance.",
+      "url": "https://github.com/terror/mcgill.courses/pull/618",
+      "mergedAt": "2024-12-22T20:05:12Z"
+    },
+    {
+      "number": 617,
+      "summary": "Added support for client-side unit testing by integrating Jest and React Testing Library to ensure code quality and reliability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/617",
+      "mergedAt": "2024-12-22T19:45:19Z"
+    },
+    {
+      "number": 612,
+      "summary": "Updated the course average data by incorporating additional grades. Special thanks to @atlasgong for their contribution.",
+      "url": "https://github.com/terror/mcgill.courses/pull/612",
+      "mergedAt": "2024-12-21T01:24:29Z"
+    },
+    {
+      "number": 615,
+      "summary": "Improved the way we calculate time since events by providing more specific and user-friendly time descriptions. Now phrases like \"just now,\" \"1 minute ago,\" \"1 hour ago,\" etc. are used based on the time elapsed since an event.",
+      "url": "https://github.com/terror/mcgill.courses/pull/615",
+      "mergedAt": "2024-12-20T16:35:16Z"
+    },
+    {
+      "number": 613,
+      "summary": "Removed the display of empty course CRNs to improve the user experience and prevent confusion for students.",
+      "url": "https://github.com/terror/mcgill.courses/pull/613",
+      "mergedAt": "2024-12-20T15:55:37Z"
+    },
+    {
+      "number": 610,
+      "summary": "Updated search data parsing to include all historical school years, resolving an issue where only a single year of data was being indexed. As a result, the search functionality now includes information from previous school years. The file size has increased to approximately 20mb due to this change.",
+      "url": "https://github.com/terror/mcgill.courses/pull/610",
+      "mergedAt": "2024-12-20T15:42:19Z"
+    },
+    {
+      "number": 605,
+      "summary": "Added functionality to update the course average data for S2024.",
+      "url": "https://github.com/terror/mcgill.courses/pull/605",
+      "mergedAt": "2024-12-20T04:36:39Z"
+    },
+    {
+      "number": 609,
+      "summary": "Adjusted the background in dark mode for the notification dropdown to enhance the contrast with reviews.",
+      "url": "https://github.com/terror/mcgill.courses/pull/609",
+      "mergedAt": "2024-12-19T16:21:56Z"
+    },
+    {
+      "number": 608,
+      "summary": "Re-scraped course data for the academic year 2024-2025 to ensure accuracy and completeness.",
+      "url": "https://github.com/terror/mcgill.courses/pull/608",
+      "mergedAt": "2024-12-19T04:15:20Z"
+    },
+    {
+      "number": 606,
+      "summary": "Added functionality to differentiate scraped reviews by appending a unique identifier to each review.",
+      "url": "https://github.com/terror/mcgill.courses/pull/606",
+      "mergedAt": "2024-12-18T18:34:13Z"
+    }
+  ],
+  "November 2023": [
+    {
+      "number": 465,
+      "summary": "Adjusted the explore filter text color to be more consistent with other page elements.",
+      "url": "https://github.com/terror/mcgill.courses/pull/465",
+      "mergedAt": "2023-11-29T17:14:03Z"
+    },
+    {
+      "number": 463,
+      "summary": "Added a new schedule display feature with improved visuals, making it easier to view and manage course schedules.",
+      "url": "https://github.com/terror/mcgill.courses/pull/463",
+      "mergedAt": "2023-11-28T05:36:14Z"
+    },
+    {
+      "number": 461,
+      "summary": "Added a dialog prompt to confirm subscription deletion. This change ensures users have a chance to confirm their action before permanently removing a subscription. This enhancement aims to prevent accidental deletion of important subscription data and improve user experience by adding an extra layer of protection.",
+      "url": "https://github.com/terror/mcgill.courses/pull/461",
+      "mergedAt": "2023-11-17T20:03:12Z"
+    },
+    {
+      "number": 460,
+      "summary": "Updated the code to use the complete database URL stored in the environment variables, ensuring a seamless connection to the database without any manual configurations needed.",
+      "url": "https://github.com/terror/mcgill.courses/pull/460",
+      "mergedAt": "2023-11-14T00:19:51Z"
+    },
+    {
+      "number": 450,
+      "summary": "Improved the review interaction filter by adding additional criteria for sorting and filtering review comments. This change enhances the overall user experience by providing more specific and relevant results when reviewing comments.",
+      "url": "https://github.com/terror/mcgill.courses/pull/450",
+      "mergedAt": "2023-11-13T04:07:06Z"
+    },
+    {
+      "number": 453,
+      "summary": "Improved user experience by adding additional filters to the explore page, allowing users to easily search for specific items based on various criteria such as price, category, and popularity.",
+      "url": "https://github.com/terror/mcgill.courses/pull/453",
+      "mergedAt": "2023-11-13T03:19:44Z"
+    },
+    {
+      "number": 457,
+      "summary": "Reduced the application's bundle size significantly by optimizing code and removing unused dependencies.",
+      "url": "https://github.com/terror/mcgill.courses/pull/457",
+      "mergedAt": "2023-11-13T03:14:43Z"
+    },
+    {
+      "number": 454,
+      "summary": "Improved course search performance by implementing FlexSearch directly on the frontend, eliminating the need for backend requests. This change significantly speeds up the search process for users.",
+      "url": "https://github.com/terror/mcgill.courses/pull/454",
+      "mergedAt": "2023-11-13T01:04:40Z"
+    },
+    {
+      "number": 452,
+      "summary": "Limited the word count on course descriptions displayed on the explore page to 400 characters for better readability and consistency.",
+      "url": "https://github.com/terror/mcgill.courses/pull/452",
+      "mergedAt": "2023-11-09T04:09:17Z"
+    }
+  ],
+  "October 2025": [
+    {
+      "number": 763,
+      "summary": "The file named `constants.ts` was renamed to `env.ts` to better reflect its purpose. This change helped improve clarity and organization within the project.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/763",
+      "mergedAt": "2025-10-26T23:21:39Z"
+    },
+    {
+      "number": 762,
+      "summary": "Added support for the `ChangelogItem` type in Typeshare, making it easier to include changelog information in generated code. This update ensures better integration and consistency when working with changelogs.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/762",
+      "mergedAt": "2025-10-26T00:01:12Z"
+    },
+    {
+      "number": 761,
+      "summary": "Added support for the `GetInteractionKindPayload` type in Typeshare, allowing users to efficiently interact with this specific payload type.",
+      "url": "https://github.com/terror/mcgill.courses/pull/761",
+      "mergedAt": "2025-10-25T22:24:44Z"
+    },
+    {
+      "number": 760,
+      "summary": "Added support for the `GetInstructorPayload` type in the Typeshare feature, allowing users to easily share and access instructor information. This enhancement improves the functionality of the Typeshare feature by expanding the data types that can be utilized.",
+      "url": "https://github.com/terror/mcgill.courses/pull/760",
+      "mergedAt": "2025-10-25T22:14:31Z"
+    },
+    {
+      "number": 759,
+      "summary": "Added a test suite to ensure the functionality and reliability of the `Multiselect` component. The tests cover various scenarios to guarantee the component works as expected in different situations.",
+      "url": "https://github.com/terror/mcgill.courses/pull/759",
+      "mergedAt": "2025-10-25T20:50:04Z"
+    },
+    {
+      "number": 758,
+      "summary": "Added a test suite to ensure the accuracy and reliability of the `Histogram` component. This change enhances the overall quality and performance of the component by detecting and preventing potential bugs or issues.",
+      "url": "https://github.com/terror/mcgill.courses/pull/758",
+      "mergedAt": "2025-10-25T01:55:58Z"
+    },
+    {
+      "number": 757,
+      "summary": "Added a test suite for the `Autocomplete` component to ensure its functionality and reliability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/757",
+      "mergedAt": "2025-10-25T01:31:33Z"
+    },
+    {
+      "number": 756,
+      "summary": "Fixed the issue where the course graph would re-render unnecessarily when toggling dark mode, improving user experience and performance.",
+      "url": "https://github.com/terror/mcgill.courses/pull/756",
+      "mergedAt": "2025-10-25T01:01:48Z"
+    },
+    {
+      "number": 755,
+      "summary": "Replaced the usage of `dom-utils` with React components to improve code organization and increase maintainability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/755",
+      "mergedAt": "2025-10-20T23:26:29Z"
+    },
+    {
+      "number": 754,
+      "summary": "Added a new feature called tanstack query for client-side requests, expanding functionality for improved user experience with client-side interactions.",
+      "url": "https://github.com/terror/mcgill.courses/pull/754",
+      "mergedAt": "2025-10-20T23:11:46Z"
+    },
+    {
+      "number": 753,
+      "summary": "Transformed the `transformText` function in the requirements into a reusable component for easier implementation and maintenance. This change simplifies the codebase and promotes code reusability for future development tasks.",
+      "url": "https://github.com/terror/mcgill.courses/pull/753",
+      "mergedAt": "2025-10-20T22:57:44Z"
+    },
+    {
+      "number": 752,
+      "summary": "Removed the `requirements` prop from the `CourseRequirements` component as it was determined to be unnecessary for the functionality of the component. This change simplifies the codebase and reduces unnecessary props being passed around.",
+      "url": "https://github.com/terror/mcgill.courses/pull/752",
+      "mergedAt": "2025-10-20T22:32:20Z"
+    },
+    {
+      "number": 751,
+      "summary": "Refactored the shared router wrapper for client-side tests, streamlining and improving the testing process. Made the code more efficient and organized by removing redundant and unnecessary components. Made changes to enhance readability and maintainability of the codebase.",
+      "url": "https://github.com/terror/mcgill.courses/pull/751",
+      "mergedAt": "2025-10-20T22:25:25Z"
+    },
+    {
+      "number": 750,
+      "summary": "Added a test suite to validate course requirements to ensure accurate and consistent evaluation. This ensures that all course prerequisites are met before enrollment is allowed.",
+      "url": "https://github.com/terror/mcgill.courses/pull/750",
+      "mergedAt": "2025-10-20T22:19:10Z"
+    },
+    {
+      "number": 749,
+      "summary": "Moved the `stripColonPrefix` function from its original location to the `utils.ts` file for better organization and code structure.",
+      "url": "https://github.com/terror/mcgill.courses/pull/749",
+      "mergedAt": "2025-10-20T22:09:24Z"
+    },
+    {
+      "number": 747,
+      "summary": "Updated the coverage badge URL in the README file to ensure that it directs users to the correct location for viewing code coverage.",
+      "url": "https://github.com/terror/mcgill.courses/pull/747",
+      "mergedAt": "2025-10-19T18:12:50Z"
+    },
+    {
+      "number": 746,
+      "summary": "Updated the pointer for the CI badge in the readme file to ensure the badge displays the correct status.",
+      "url": "https://github.com/terror/mcgill.courses/pull/746",
+      "mergedAt": "2025-10-19T17:48:59Z"
+    },
+    {
+      "number": 745,
+      "summary": "Fixed the layout issues with schedules and final exam UI on different screen sizes. Made adjustments to ensure a consistent and user-friendly experience across all devices.",
+      "url": "https://github.com/terror/mcgill.courses/pull/745",
+      "mergedAt": "2025-10-19T17:32:55Z"
+    },
+    {
+      "number": 744,
+      "summary": "Added a new feature that allows users to download a calendar file for each schedule row. This feature provides users with the ability to easily save and organize their schedules offline.",
+      "url": "https://github.com/terror/mcgill.courses/pull/744",
+      "mergedAt": "2025-10-19T07:44:31Z"
+    },
+    {
+      "number": 743,
+      "summary": "Added a downloadable calendar button to the final exam rows, allowing users to easily add exam dates to their personal calendars.",
+      "url": "https://github.com/terror/mcgill.courses/pull/743",
+      "mergedAt": "2025-10-19T06:41:47Z"
+    },
+    {
+      "number": 741,
+      "summary": "Added badges to the readme file to display important project information, such as build status and code coverage. The badges provide a quick and visual way for users to see the current status of the project at a glance.",
+      "url": "https://github.com/terror/mcgill.courses/pull/741",
+      "mergedAt": "2025-10-19T05:33:00Z"
+    },
+    {
+      "number": 740,
+      "summary": "Removed the course ID and timestamp parameters from review URLs to improve privacy and security. Users can now share review links without exposing sensitive information.",
+      "url": "https://github.com/terror/mcgill.courses/pull/740",
+      "mergedAt": "2025-10-19T05:07:14Z"
+    },
+    {
+      "number": 737,
+      "summary": "Fixed an issue where the course title formatting was being lost when displayed after the course code. Added logic to preserve the formatting of the course title even when it follows the course code, ensuring a consistent and polished user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/737",
+      "mergedAt": "2025-10-19T04:49:34Z"
+    },
+    {
+      "number": 739,
+      "summary": "Added functionality to parse and display final exam schedules on the course page, allowing students to easily access and view their exam dates and times.",
+      "url": "https://github.com/terror/mcgill.courses/pull/739",
+      "mergedAt": "2025-10-19T03:38:33Z"
+    },
+    {
+      "number": 736,
+      "summary": "Updated the code to strip the subject and code sections from the search data JSON file. This change helps improve search accuracy and relevance by removing unnecessary information.",
+      "url": "https://github.com/terror/mcgill.courses/pull/736",
+      "mergedAt": "2025-10-18T02:42:26Z"
+    },
+    {
+      "number": 735,
+      "summary": "Aligned the styling of the review scroll button with the copy button for a consistent look and feel. Made the necessary adjustments to ensure visual cohesion throughout the user interface.",
+      "url": "https://github.com/terror/mcgill.courses/pull/735",
+      "mergedAt": "2025-10-18T02:18:53Z"
+    },
+    {
+      "number": 734,
+      "summary": "Reduced the size of the project dependencies by switching from importing the entire lodash library to importing only the needed methods. This change helped optimize the bundle size and improve the overall performance of the application.",
+      "url": "https://github.com/terror/mcgill.courses/pull/734",
+      "mergedAt": "2025-10-18T01:37:14Z"
+    },
+    {
+      "number": 733,
+      "summary": "Added a custom course ranking logic to improve search results in the application. This change helps users find relevant courses more easily based on their preferences and needs.",
+      "url": "https://github.com/terror/mcgill.courses/pull/733",
+      "mergedAt": "2025-10-18T01:18:37Z"
+    },
+    {
+      "number": 731,
+      "summary": "Added a copy button to reviews on the course page, allowing users to easily share feedback with others.",
+      "url": "https://github.com/terror/mcgill.courses/pull/731",
+      "mergedAt": "2025-10-12T02:32:48Z"
+    },
+    {
+      "number": 730,
+      "summary": "Set a unique key for each review item on the reviews page to improve performance and prevent rendering issues.",
+      "url": "https://github.com/terror/mcgill.courses/pull/730",
+      "mergedAt": "2025-10-12T01:57:04Z"
+    },
+    {
+      "number": 729,
+      "summary": "Added a scroll button to the reviews page, allowing users to easily navigate through long lists of reviews without manual scrolling. This improvement enhances the user experience and simplifies the process of reviewing multiple entries on the platform.",
+      "url": "https://github.com/terror/mcgill.courses/pull/729",
+      "mergedAt": "2025-10-12T01:28:44Z"
+    },
+    {
+      "number": 728,
+      "summary": "Added feature to allow users to scroll to specific course reviews by clicking on a link or button. This enhancement provides a more convenient way for users to access and read reviews for a particular course.",
+      "url": "https://github.com/terror/mcgill.courses/pull/728",
+      "mergedAt": "2025-10-10T16:23:33Z"
+    },
+    {
+      "number": 727,
+      "summary": "Added support for the `GetUserInteractionForCoursePayload` type in the typeshare. This change enables users to easily access and utilize this specific type within their project.",
+      "url": "https://github.com/terror/mcgill.courses/pull/727",
+      "mergedAt": "2025-10-09T22:36:17Z"
+    },
+    {
+      "number": 726,
+      "summary": "Added documentation for authentication related endpoints to provide clear instructions and information for users on how to use these endpoints securely.",
+      "url": "https://github.com/terror/mcgill.courses/pull/726",
+      "mergedAt": "2025-10-09T22:20:39Z"
+    },
+    {
+      "number": 725,
+      "summary": "Added documentation for interactions related endpoints to provide users with clear instructions on how to interact with the application's features effectively. The documentation includes examples and explanations to help users understand the functionality of each endpoint and how to utilize them properly. This update aims to improve user experience and ensure that users can easily navigate and utilize the application's features without encountering any confusion.",
+      "url": "https://github.com/terror/mcgill.courses/pull/725",
+      "mergedAt": "2025-10-09T22:13:51Z"
+    },
+    {
+      "number": 724,
+      "summary": "Added documentation for user-related endpoints to provide clear instructions on how to interact with these features in the application. This update aims to improve user experience by helping users understand how to utilize the various functionalities available to them.",
+      "url": "https://github.com/terror/mcgill.courses/pull/724",
+      "mergedAt": "2025-10-09T22:09:08Z"
+    },
+    {
+      "number": 723,
+      "summary": "Added documentation for instructor-related endpoints to provide clear guidance on how instructors can interact with the system. Expanded on the functionality and usage of each endpoint, making it easier for instructors to navigate and utilize the system effectively.",
+      "url": "https://github.com/terror/mcgill.courses/pull/723",
+      "mergedAt": "2025-10-09T21:55:32Z"
+    },
+    {
+      "number": 722,
+      "summary": "Added documentation for subscription related endpoints, detailing their functionality, parameters, and response formats. This update enhances the clarity and completeness of the API documentation for developers integrating subscription features into their applications.",
+      "url": "https://github.com/terror/mcgill.courses/pull/722",
+      "mergedAt": "2025-10-09T21:46:36Z"
+    },
+    {
+      "number": 721,
+      "summary": "Implemented a feature that disables body scrolling to prevent overflowing content on the page. This change ensures a better user experience by keeping the content within the visible area without causing any layout issues.",
+      "url": "https://github.com/terror/mcgill.courses/pull/721",
+      "mergedAt": "2025-10-04T01:38:13Z"
+    }
+  ],
+  "February 2024": [
+    {
+      "number": 488,
+      "summary": "Improved efficiency by batching all review interactions from a single course into one request. This change replaces the previous method of sending multiple queries for each review card on a page. Now, a single request is made at the course level, streamlining the process. Each review's interactions are now retrieved from a new endpoint specific to a course, enhancing performance and user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/488",
+      "mergedAt": "2024-02-05T04:27:12Z"
+    }
+  ],
   "July 2024": [
     {
       "number": 596,
@@ -111,110 +1049,320 @@
       "mergedAt": "2024-07-10T02:51:07Z"
     }
   ],
-  "October 2024": [
+  "April 2025": [
     {
-      "number": 604,
-      "summary": "Simplified the about page content and added subtle animations to improve the page's design and user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/604",
-      "mergedAt": "2024-10-16T23:52:40Z"
+      "number": 627,
+      "summary": "Fixed occasional perma loading on explore page that occurred when quickly scrolling down after clicking on a course. The issue was due to a race condition between two network requests which resulted in 'courses' being set to 'undefined'. The fix involved falling back to the batch's courses instead of using the null chaining operator. Testing with network throttling confirmed the issue is resolved.",
+      "url": "https://github.com/terror/mcgill.courses/pull/627",
+      "mergedAt": "2025-04-05T19:42:28Z"
+    },
+    {
+      "number": 643,
+      "summary": "Fixed lint issues in the codebase. Made necessary code adjustments to ensure compliance with linting rules.",
+      "url": "https://github.com/terror/mcgill.courses/pull/643",
+      "mergedAt": "2025-04-05T19:36:59Z"
     }
   ],
-  "August 2023": [
+  "August 2025": [
     {
-      "number": 373,
-      "summary": "Fixed a bug that caused the page to crash when duplicate nodes were present.",
-      "url": "https://github.com/terror/mcgill.courses/pull/373",
-      "mergedAt": "2023-08-19T04:07:26Z"
+      "number": 673,
+      "summary": "Updated profile image URLs on the about page to ensure they are displaying correctly.",
+      "url": "https://github.com/terror/mcgill.courses/pull/673",
+      "mergedAt": "2025-08-07T05:41:04Z"
     },
     {
-      "number": 372,
-      "summary": "Improved the performance of the course graph component by implementing memoization techniques. This change reduces unnecessary re-renders and optimizes the rendering process for a smoother user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/372",
-      "mergedAt": "2023-08-19T03:05:11Z"
+      "number": 672,
+      "summary": "Added functionality to re-scrape course data for the years 2025-2026 to ensure the latest information is available.",
+      "url": "https://github.com/terror/mcgill.courses/pull/672",
+      "mergedAt": "2025-08-07T05:30:04Z"
+    }
+  ],
+  "June 2023": [
+    {
+      "number": 328,
+      "summary": "Updated dependencies to ensure the app runs smoothly and securely with the latest versions of third-party libraries.",
+      "url": "https://github.com/terror/mcgill.courses/pull/328",
+      "mergedAt": "2023-06-25T02:04:09Z"
     },
     {
-      "number": 364,
-      "summary": "Added a header to the profile page to improve its appearance.",
-      "url": "https://github.com/terror/mcgill.courses/pull/364",
-      "mergedAt": "2023-08-14T02:16:31Z"
+      "number": 327,
+      "summary": "Decreased the size of the index header text to improve readability on small screens.",
+      "url": "https://github.com/terror/mcgill.courses/pull/327",
+      "mergedAt": "2023-06-23T03:02:27Z"
     },
     {
-      "number": 363,
-      "summary": "Corrected inconsistent vertical spacing between terms displayed on course cards to ensure a uniform and visually appealing layout across the platform.",
-      "url": "https://github.com/terror/mcgill.courses/pull/363",
-      "mergedAt": "2023-08-13T17:43:01Z"
+      "number": 325,
+      "summary": "Removed the ability for users to interact with reviews that have been deleted. This change ensures a more accurate representation of the review process and prevents any confusion or errors that may arise from interacting with removed reviews.",
+      "url": "https://github.com/terror/mcgill.courses/pull/325",
+      "mergedAt": "2023-06-23T00:20:53Z"
     },
     {
-      "number": 362,
-      "summary": "Capitalized and punctuated the course restrictions text to improve readability and conformity with standard formatting.",
-      "url": "https://github.com/terror/mcgill.courses/pull/362",
-      "mergedAt": "2023-08-13T17:28:53Z"
+      "number": 321,
+      "summary": "Filtered out the reviews array after a deletion to ensure accurate data display. Made changes to prevent deleted reviews from being shown in the user interface.",
+      "url": "https://github.com/terror/mcgill.courses/pull/321",
+      "mergedAt": "2023-06-22T23:48:57Z"
     },
     {
-      "number": 361,
-      "summary": "Set the default log level to `info` when the `RUST_LOG` environment variable is not defined. This change ensures that the application provides sufficient logging information without the need for users to manually set the log level.",
-      "url": "https://github.com/terror/mcgill.courses/pull/361",
-      "mergedAt": "2023-08-11T00:00:52Z"
+      "number": 320,
+      "summary": "Added a layout to the course page spinner, providing a more visually appealing loading experience for users.",
+      "url": "https://github.com/terror/mcgill.courses/pull/320",
+      "mergedAt": "2023-06-22T23:45:44Z"
     },
     {
-      "number": 360,
-      "summary": "Added installation of the `ca-certificates` package in the Dockerfile to ensure secure communication between the container and external servers. This update enhances the security of the application by including the necessary certification authorities.",
-      "url": "https://github.com/terror/mcgill.courses/pull/360",
-      "mergedAt": "2023-08-10T23:33:37Z"
+      "number": 318,
+      "summary": "Added a loading indicator to the instructor page for better user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/318",
+      "mergedAt": "2023-06-22T23:13:12Z"
     },
     {
-      "number": 359,
-      "summary": "Integrated the rustls library with the rusoto crate for secure communication with AWS services. This change improves the security and performance of network requests by leveraging rustls' capabilities within the rusoto framework.",
-      "url": "https://github.com/terror/mcgill.courses/pull/359",
-      "mergedAt": "2023-08-10T23:10:41Z"
+      "number": 313,
+      "summary": "Added a reset button to the review filter box, allowing users to easily clear all filters applied to the reviews. This new feature enhances user experience by providing a convenient way to start fresh when searching for specific reviews.",
+      "url": "https://github.com/terror/mcgill.courses/pull/313",
+      "mergedAt": "2023-06-22T00:26:19Z"
     },
     {
-      "number": 357,
-      "summary": "Added building code for the shorthand `ARMST` to improve efficiency and accuracy in processing requests. This change ensures that requests using the shorthand `ARMST` can now be interpreted correctly and executed seamlessly.",
-      "url": "https://github.com/terror/mcgill.courses/pull/357",
-      "mergedAt": "2023-08-10T03:13:39Z"
+      "number": 311,
+      "summary": "Ensured all course pages followed a uniform layout by standardizing fonts, colors, and spacing. This update improves user experience and enhances the overall visual consistency of the course platform.",
+      "url": "https://github.com/terror/mcgill.courses/pull/311",
+      "mergedAt": "2023-06-22T00:08:56Z"
     },
     {
-      "number": 356,
-      "summary": "Updated the source hash check to only be computed during initialization, resulting in improved performance and efficiency.",
-      "url": "https://github.com/terror/mcgill.courses/pull/356",
-      "mergedAt": "2023-08-10T03:07:43Z"
+      "number": 309,
+      "summary": "Removed horizontal rules that were under the header text for a cleaner and more streamlined layout.",
+      "url": "https://github.com/terror/mcgill.courses/pull/309",
+      "mergedAt": "2023-06-21T23:52:51Z"
     },
     {
-      "number": 355,
-      "summary": "Added functionality to store a source hash in S3 (production environment only) to prevent unnecessary data seeding if the hash remains unchanged during deployments.",
-      "url": "https://github.com/terror/mcgill.courses/pull/355",
-      "mergedAt": "2023-08-10T02:55:28Z"
+      "number": 305,
+      "summary": "Added a \"Prior Art\" section to the readme file. This section highlights existing work that inspired the project and provides context for its development.",
+      "url": "https://github.com/terror/mcgill.courses/pull/305",
+      "mergedAt": "2023-06-21T04:52:41Z"
     },
     {
-      "number": 353,
-      "summary": "Updated the code to re-initialize the database only when the source hash has changed, reducing unnecessary resets and improving efficiency.",
-      "url": "https://github.com/terror/mcgill.courses/pull/353",
-      "mergedAt": "2023-08-06T17:26:21Z"
+      "number": 300,
+      "summary": "Removed the rmp-scraper tool from version control, as it is no longer necessary for project development.",
+      "url": "https://github.com/terror/mcgill.courses/pull/300",
+      "mergedAt": "2023-06-21T04:07:44Z"
     },
     {
-      "number": 352,
-      "summary": "Parsed the HTML document from the requirement text following the specified prefix. This change ensures that the correct information is extracted and utilized effectively.",
-      "url": "https://github.com/terror/mcgill.courses/pull/352",
-      "mergedAt": "2023-08-06T15:47:52Z"
+      "number": 299,
+      "summary": "Implemented the functionality to request an access token with transport layer security in API calls. The changes ensure that all sensitive data is transmitted securely to and from the server, enhancing the overall security of the system.",
+      "url": "https://github.com/terror/mcgill.courses/pull/299",
+      "mergedAt": "2023-06-21T03:25:14Z"
     },
     {
-      "number": 351,
-      "summary": "Removed extension traits in the extractor to simplify the codebase and improve maintainability. This change streamlines the extractor functionality by eliminating unnecessary abstraction layers.",
-      "url": "https://github.com/terror/mcgill.courses/pull/351",
-      "mergedAt": "2023-08-06T15:39:57Z"
+      "number": 298,
+      "summary": "Implemented automated deployment setup using CI/CD pipelines. Integrated continuous integration and continuous deployment processes to streamline the deployment workflow and ensure rapid and secure releases.",
+      "url": "https://github.com/terror/mcgill.courses/pull/298",
+      "mergedAt": "2023-06-21T00:24:04Z"
     },
     {
-      "number": 350,
-      "summary": "Added verification for the Azure platform. This change ensures that the necessary checks and tests are in place to validate the compatibility and functionality of the software with Azure services.",
-      "url": "https://github.com/terror/mcgill.courses/pull/350",
-      "mergedAt": "2023-08-05T03:07:37Z"
+      "number": 249,
+      "summary": "Added functionality to sort course reviews by orders, filter reviews by specific instructors, and also filter reviews by ratings. Various miscellaneous improvements were made as well.",
+      "url": "https://github.com/terror/mcgill.courses/pull/249",
+      "mergedAt": "2023-06-19T02:57:10Z"
     },
     {
-      "number": 343,
-      "summary": "Updated the code to parse course requirements with LLM, allowing for more accurate and detailed information to be extracted from the data.",
-      "url": "https://github.com/terror/mcgill.courses/pull/343",
-      "mergedAt": "2023-08-05T03:05:45Z"
+      "number": 293,
+      "summary": "Switched the project to use typescript-eslint for improved linting and error checking. Made necessary configuration changes to ensure consistent code quality and adherence to TypeScript best practices.",
+      "url": "https://github.com/terror/mcgill.courses/pull/293",
+      "mergedAt": "2023-06-19T02:04:18Z"
+    },
+    {
+      "number": 292,
+      "summary": "Fixed an issue where dialogs would stutter when closing them. Made adjustments to improve dialog closing animation smoothness.",
+      "url": "https://github.com/terror/mcgill.courses/pull/292",
+      "mergedAt": "2023-06-19T00:11:26Z"
+    },
+    {
+      "number": 290,
+      "summary": "Fixed an issue where invisible text was displayed in the schedule.",
+      "url": "https://github.com/terror/mcgill.courses/pull/290",
+      "mergedAt": "2023-06-18T21:47:43Z"
+    },
+    {
+      "number": 288,
+      "summary": "Added lint-staged configuration to enforce code formatting and style checks before committing changes. This ensures that code quality is maintained and consistent across the project.",
+      "url": "https://github.com/terror/mcgill.courses/pull/288",
+      "mergedAt": "2023-06-18T03:52:03Z"
+    },
+    {
+      "number": 287,
+      "summary": "Ran a code formatting tool before each commit to ensure consistent coding style throughout the project. This change helps maintain clean and readable code in the repository.",
+      "url": "https://github.com/terror/mcgill.courses/pull/287",
+      "mergedAt": "2023-06-18T03:19:42Z"
+    },
+    {
+      "number": 285,
+      "summary": "Updated the validation logic to account for scenarios where there is a catch-all instructor in reviews. This ensures that all instructors are correctly validated, improving the accuracy of the review process.",
+      "url": "https://github.com/terror/mcgill.courses/pull/285",
+      "mergedAt": "2023-06-18T01:46:34Z"
+    },
+    {
+      "number": 283,
+      "summary": "Added a prompt for non-logged-in users when attempting to like a review. This improvement ensures that users who are not logged in are notified and prompted to log in before liking a review on the platform.",
+      "url": "https://github.com/terror/mcgill.courses/pull/283",
+      "mergedAt": "2023-06-17T15:40:05Z"
+    },
+    {
+      "number": 281,
+      "summary": "Added a server test to review interactions. This change ensures that the review process is thoroughly tested and functioning correctly on the server side.",
+      "url": "https://github.com/terror/mcgill.courses/pull/281",
+      "mergedAt": "2023-06-17T01:39:41Z"
+    },
+    {
+      "number": 278,
+      "summary": "Added backend code coverage to improve tracking and visibility of test coverage for the project. Additionally, a code coverage report is now generated and can be viewed to assess testing effectiveness.",
+      "url": "https://github.com/terror/mcgill.courses/pull/278",
+      "mergedAt": "2023-06-16T04:44:13Z"
+    },
+    {
+      "number": 277,
+      "summary": "Implemented the ability for users to like and dislike reviews on the platform. This feature allows users to express their opinions on the reviews they come across, providing valuable feedback to the community.",
+      "url": "https://github.com/terror/mcgill.courses/pull/277",
+      "mergedAt": "2023-06-16T04:31:42Z"
+    },
+    {
+      "number": 276,
+      "summary": "Refactored the code to separate database initialization logic from other components for better organization and clarity in the codebase.",
+      "url": "https://github.com/terror/mcgill.courses/pull/276",
+      "mergedAt": "2023-06-12T20:35:23Z"
+    },
+    {
+      "number": 271,
+      "summary": "Updated the system to match external professor names with those in the e-calendar, ensuring accurate scheduling for all faculty members.",
+      "url": "https://github.com/terror/mcgill.courses/pull/271",
+      "mergedAt": "2023-06-12T15:11:32Z"
+    },
+    {
+      "number": 273,
+      "summary": "Removed borders from the cards on the explore page to provide a cleaner and more visually appealing layout.",
+      "url": "https://github.com/terror/mcgill.courses/pull/273",
+      "mergedAt": "2023-06-12T04:06:53Z"
+    },
+    {
+      "number": 274,
+      "summary": "Simplified the database seeding process for easier management and maintenance. Removed redundant steps and optimized the workflow for faster and more efficient data population.",
+      "url": "https://github.com/terror/mcgill.courses/pull/274",
+      "mergedAt": "2023-06-12T03:56:47Z"
+    },
+    {
+      "number": 265,
+      "summary": "Added validation to ensure that only instructors can add or edit reviews on the backend. This change prevents unauthorized users from manipulating review data.",
+      "url": "https://github.com/terror/mcgill.courses/pull/265",
+      "mergedAt": "2023-06-12T00:27:59Z"
+    },
+    {
+      "number": 270,
+      "summary": "Added a sidebar overlay feature for easier navigation on the website. Users can now access the sidebar menu with a click, improving the overall browsing experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/270",
+      "mergedAt": "2023-06-11T21:35:49Z"
+    },
+    {
+      "number": 261,
+      "summary": "Fixed the issue where no terms were displayed on course cards in the explore page when not currently offered. Added a fix to show the terms even if not currently available. Made formatting changes to improve readability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/261",
+      "mergedAt": "2023-06-10T19:12:03Z"
+    },
+    {
+      "number": 258,
+      "summary": "Implemented the ability to seed the database using multiple threads, providing an option for faster data population during setup. This enhancement improves efficiency in setting up databases with large amounts of initial data.",
+      "url": "https://github.com/terror/mcgill.courses/pull/258",
+      "mergedAt": "2023-06-10T05:57:38Z"
+    },
+    {
+      "number": 257,
+      "summary": "Added a difficulty pie chart feature to the project. The chart displays the difficulty level of courses. Additionally, the feature is fully responsive, ensuring a seamless viewing experience across different devices.",
+      "url": "https://github.com/terror/mcgill.courses/pull/257",
+      "mergedAt": "2023-06-10T05:19:31Z"
+    },
+    {
+      "number": 259,
+      "summary": "- Checked if the instructor is included in the review instructors array for enabling review permissions.",
+      "url": "https://github.com/terror/mcgill.courses/pull/259",
+      "mergedAt": "2023-06-05T00:39:09Z"
+    },
+    {
+      "number": 256,
+      "summary": "Updated the client-side code to disallow unused variables, improving code quality and reducing potential errors.",
+      "url": "https://github.com/terror/mcgill.courses/pull/256",
+      "mergedAt": "2023-06-04T04:59:24Z"
+    },
+    {
+      "number": 254,
+      "summary": "Updated the review form to allow for multiple instructors to be assigned to a review. This change enables better collaboration and feedback from multiple instructors on student work.",
+      "url": "https://github.com/terror/mcgill.courses/pull/254",
+      "mergedAt": "2023-06-04T04:33:06Z"
+    }
+  ],
+  "August 2024": [
+    {
+      "number": 598,
+      "summary": "Improved the hover styling on the profile dropdown menu for a more visually appealing user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/598",
+      "mergedAt": "2024-08-28T18:02:12Z"
+    }
+  ],
+  "October 2023": [
+    {
+      "number": 449,
+      "summary": "Removed outdated rating display components that were no longer being used in the application. This cleanup improves code readability and reduces unnecessary clutter in the codebase.",
+      "url": "https://github.com/terror/mcgill.courses/pull/449",
+      "mergedAt": "2023-10-23T21:29:44Z"
+    },
+    {
+      "number": 448,
+      "summary": "Fixed issue where the histogram was not displaying correctly on specific screen sizes, as it was overlapping the background.",
+      "url": "https://github.com/terror/mcgill.courses/pull/448",
+      "mergedAt": "2023-10-17T02:48:22Z"
+    },
+    {
+      "number": 447,
+      "summary": "Simplified the process of merging courses in the loader. Made adjustments to streamline and improve the course merging functionality.",
+      "url": "https://github.com/terror/mcgill.courses/pull/447",
+      "mergedAt": "2023-10-16T19:25:50Z"
+    },
+    {
+      "number": 446,
+      "summary": "Ignored extractor test samples when generating the code report to ensure accuracy in the report.",
+      "url": "https://github.com/terror/mcgill.courses/pull/446",
+      "mergedAt": "2023-10-16T05:20:40Z"
+    },
+    {
+      "number": 440,
+      "summary": "Implemented functionality to add instructors to the search feature, allowing users to search for instructors using full-text search capabilities. This change enhances the user experience by providing a more comprehensive search option within the platform.",
+      "url": "https://github.com/terror/mcgill.courses/pull/440",
+      "mergedAt": "2023-10-16T05:13:16Z"
+    },
+    {
+      "number": 445,
+      "summary": "Added type-only import to ensure TypeScript fully erases it at runtime.",
+      "url": "https://github.com/terror/mcgill.courses/pull/445",
+      "mergedAt": "2023-10-16T05:03:10Z"
+    },
+    {
+      "number": 444,
+      "summary": "Added a basic error boundary to address potential issues in the application. This change helps improve user experience by handling errors more gracefully.",
+      "url": "https://github.com/terror/mcgill.courses/pull/444",
+      "mergedAt": "2023-10-16T04:59:22Z"
+    },
+    {
+      "number": 443,
+      "summary": "Fixed the position of the reset button, which was previously incorrectly set to absolute positioning, causing it to overlap with other elements on the page. Now, the reset button aligns properly within the layout of the webpage.",
+      "url": "https://github.com/terror/mcgill.courses/pull/443",
+      "mergedAt": "2023-10-11T02:47:17Z"
+    },
+    {
+      "number": 439,
+      "summary": "Sorted the reviews on the instructor page by date to display the most recent ones first, providing users with easier access to the latest feedback.",
+      "url": "https://github.com/terror/mcgill.courses/pull/439",
+      "mergedAt": "2023-10-07T04:16:48Z"
+    },
+    {
+      "number": 421,
+      "summary": "Added the capability for users to perform full-text searches on the explore page. This enhancement makes it easier for users to find specific content quickly and efficiently within the platform.",
+      "url": "https://github.com/terror/mcgill.courses/pull/421",
+      "mergedAt": "2023-10-02T17:27:15Z"
     }
   ],
   "June 2024": [
@@ -273,18 +1421,188 @@
       "mergedAt": "2024-06-03T14:57:28Z"
     }
   ],
-  "August 2025": [
+  "March 2025": [
     {
-      "number": 673,
-      "summary": "Updated profile image URLs on the about page to ensure they are displaying correctly.",
-      "url": "https://github.com/terror/mcgill.courses/pull/673",
-      "mergedAt": "2025-08-07T05:41:04Z"
+      "number": 640,
+      "summary": "Documented and migrated Python-based tools to utilize the `uv` library for improved performance and compatibility.",
+      "url": "https://github.com/terror/mcgill.courses/pull/640",
+      "mergedAt": "2025-03-30T00:57:42Z"
     },
     {
-      "number": 672,
-      "summary": "Added functionality to re-scrape course data for the years 2025-2026 to ensure the latest information is available.",
-      "url": "https://github.com/terror/mcgill.courses/pull/672",
-      "mergedAt": "2025-08-07T05:30:04Z"
+      "number": 638,
+      "summary": "Added a new tools section to the readme file to provide users with a comprehensive list of resources and utilities. This enhancement aims to improve the user experience by offering easy access to helpful tools and references.",
+      "url": "https://github.com/terror/mcgill.courses/pull/638",
+      "mergedAt": "2025-03-17T15:42:27Z"
+    },
+    {
+      "number": 636,
+      "summary": "Added a new logo favicon and updated logos on the website. Credited the logo design on the About page and fixed issues with LinkedIn images.",
+      "url": "https://github.com/terror/mcgill.courses/pull/636",
+      "mergedAt": "2025-03-16T01:41:59Z"
+    }
+  ],
+  "April 2023": [
+    {
+      "number": 130,
+      "summary": "Added functionality to parse schedule data, allowing users to input their schedule information in a standardized format. This change streamlines the process of importing and organizing schedule data within the system.",
+      "url": "https://github.com/terror/mcgill.courses/pull/130",
+      "mergedAt": "2023-04-30T19:21:00Z"
+    },
+    {
+      "number": 131,
+      "summary": "Implemented the conversion of the review add/edit functionality to dialog boxes. This change improves the user experience by allowing for a smoother and more convenient process when adding or editing reviews on the platform.",
+      "url": "https://github.com/terror/mcgill.courses/pull/131",
+      "mergedAt": "2023-04-28T22:16:30Z"
+    },
+    {
+      "number": 129,
+      "summary": "Corrected the broken image link in the readme file, ensuring that users can view the image without any issues. Made a minor adjustment to improve the overall readability and aesthetics of the documentation.",
+      "url": "https://github.com/terror/mcgill.courses/pull/129",
+      "mergedAt": "2023-04-28T20:59:45Z"
+    },
+    {
+      "number": 128,
+      "summary": "Implemented new search algorithm to enhance search functionality, resulting in faster and more accurate search results.",
+      "url": "https://github.com/terror/mcgill.courses/pull/128",
+      "mergedAt": "2023-04-28T20:32:31Z"
+    },
+    {
+      "number": 127,
+      "summary": "Implemented a dark mode feature to provide users with an alternative color scheme for improved visibility in low-light environments. This change allows users to switch between light and dark themes easily within the application settings.",
+      "url": "https://github.com/terror/mcgill.courses/pull/127",
+      "mergedAt": "2023-04-28T19:47:27Z"
+    },
+    {
+      "number": 126,
+      "summary": "Implemented a feature that restricts authentication to only allow users with McGill email addresses. This change ensures that only individuals affiliated with McGill University can access the platform, enhancing security and user privacy.",
+      "url": "https://github.com/terror/mcgill.courses/pull/126",
+      "mergedAt": "2023-04-26T19:50:01Z"
+    },
+    {
+      "number": 124,
+      "summary": "Implemented the use of BSON formatted timestamps across the application for improved data consistency and compatibility with MongoDB databases.",
+      "url": "https://github.com/terror/mcgill.courses/pull/124",
+      "mergedAt": "2023-04-18T02:02:22Z"
+    },
+    {
+      "number": 122,
+      "summary": "Fixed the formatting of Tailwind classes in the documentation by applying changes based on the provided link.",
+      "url": "https://github.com/terror/mcgill.courses/pull/122",
+      "mergedAt": "2023-04-17T18:34:38Z"
+    },
+    {
+      "number": 121,
+      "summary": "Added functionality to underline search results that match the query in the search feature for better visibility and ease of use.",
+      "url": "https://github.com/terror/mcgill.courses/pull/121",
+      "mergedAt": "2023-04-10T02:35:49Z"
+    },
+    {
+      "number": 114,
+      "summary": "Added new icons to enhance the user interface and provide more visual options for users to choose from.",
+      "url": "https://github.com/terror/mcgill.courses/pull/114",
+      "mergedAt": "2023-04-09T22:24:02Z"
+    },
+    {
+      "number": 113,
+      "summary": "Updated the functionality to redirect users to the edit page if a review already exists when they try to leave a review on the client side. This change helps streamline the user experience and prevents potential confusion or errors.",
+      "url": "https://github.com/terror/mcgill.courses/pull/113",
+      "mergedAt": "2023-04-09T22:19:59Z"
+    },
+    {
+      "number": 110,
+      "summary": "Added a blank target attribute to course URLs to ensure links open in a new tab for a better user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/110",
+      "mergedAt": "2023-04-09T02:53:56Z"
+    },
+    {
+      "number": 101,
+      "summary": "Added an alert notification box for displaying errors on the client-side. Replaced console.err instances with the new alert box for improved error handling. Prototype created and code formatted for better readability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/101",
+      "mergedAt": "2023-04-09T00:01:38Z"
+    },
+    {
+      "number": 73,
+      "summary": "Added functionality to display reviews on the course page, enhancing the user experience by providing valuable feedback.",
+      "url": "https://github.com/terror/mcgill.courses/pull/73",
+      "mergedAt": "2023-04-08T23:47:47Z"
+    },
+    {
+      "number": 103,
+      "summary": "Added a basic prototype of an about page to serve as a temporary placeholder until final content is ready for deployment.",
+      "url": "https://github.com/terror/mcgill.courses/pull/103",
+      "mergedAt": "2023-04-08T20:59:39Z"
+    },
+    {
+      "number": 102,
+      "summary": "Updated the logic to ensure that courses with the same ID in the database are properly updated instead of duplicated. This change prevents data inconsistencies and improves the accuracy of the database records.",
+      "url": "https://github.com/terror/mcgill.courses/pull/102",
+      "mergedAt": "2023-04-05T04:30:20Z"
+    },
+    {
+      "number": 100,
+      "summary": "Improved layout and design elements on course pages for better user experience. Fixed broken links and updated content for accuracy. Refactored code to enhance performance and maintainability.",
+      "url": "https://github.com/terror/mcgill.courses/pull/100",
+      "mergedAt": "2023-04-04T20:09:52Z"
+    },
+    {
+      "number": 99,
+      "summary": "Added a search bar to the navigation bar for non-home pages. Also, repositioned the navigation buttons to the right side of the navigation bar for improved layout and user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/99",
+      "mergedAt": "2023-04-04T13:13:18Z"
+    },
+    {
+      "number": 95,
+      "summary": "Fixed a bug that was causing duplicate courses to be loaded after the extraction process.",
+      "url": "https://github.com/terror/mcgill.courses/pull/95",
+      "mergedAt": "2023-04-02T20:04:19Z"
+    },
+    {
+      "number": 94,
+      "summary": "Added functionality to extract courses that are not offered in the current semester, allowing users to easily identify and remove them from the course list.",
+      "url": "https://github.com/terror/mcgill.courses/pull/94",
+      "mergedAt": "2023-04-02T20:03:33Z"
+    },
+    {
+      "number": 93,
+      "summary": "Updated the course page by merging in new content and updates to improve the overall user experience. Added new course materials, fixed formatting issues, and updated information to ensure accuracy and relevance.",
+      "url": "https://github.com/terror/mcgill.courses/pull/93",
+      "mergedAt": "2023-04-02T17:02:50Z"
+    },
+    {
+      "number": 92,
+      "summary": "Added a new feature to enhance the search functionality. Users can now search for cooler items with improved accuracy and speed.",
+      "url": "https://github.com/terror/mcgill.courses/pull/92",
+      "mergedAt": "2023-04-02T02:15:11Z"
+    },
+    {
+      "number": 91,
+      "summary": "Added a review form to collect feedback from users on the website. Users can now rate their experience and leave comments, helping us improve our services.",
+      "url": "https://github.com/terror/mcgill.courses/pull/91",
+      "mergedAt": "2023-04-02T01:22:36Z"
+    },
+    {
+      "number": 86,
+      "summary": "Extended the review model by adding a new property called `instructor` to store the name of the instructor associated with the review.",
+      "url": "https://github.com/terror/mcgill.courses/pull/86",
+      "mergedAt": "2023-04-02T01:21:34Z"
+    },
+    {
+      "number": 84,
+      "summary": "Adjusted the name of the test function for clarity and accuracy.",
+      "url": "https://github.com/terror/mcgill.courses/pull/84",
+      "mergedAt": "2023-04-01T19:22:33Z"
+    },
+    {
+      "number": 83,
+      "summary": "Removed the ring from the profile icon and adjusted the hover color to match the search bar for a more consistent styling.",
+      "url": "https://github.com/terror/mcgill.courses/pull/83",
+      "mergedAt": "2023-04-01T19:20:54Z"
+    },
+    {
+      "number": 82,
+      "summary": "Added arrow-key navigation functionality for the search bar results, allowing users to navigate through each search result. The \"explore all courses\" rectangle is excluded from the navigation at this time.",
+      "url": "https://github.com/terror/mcgill.courses/pull/82",
+      "mergedAt": "2023-04-01T19:11:04Z"
     }
   ],
   "September 2023": [
@@ -517,6 +1835,162 @@
       "mergedAt": "2023-09-04T02:30:42Z"
     }
   ],
+  "August 2023": [
+    {
+      "number": 373,
+      "summary": "Fixed a bug that caused the page to crash when duplicate nodes were present.",
+      "url": "https://github.com/terror/mcgill.courses/pull/373",
+      "mergedAt": "2023-08-19T04:07:26Z"
+    },
+    {
+      "number": 372,
+      "summary": "Improved the performance of the course graph component by implementing memoization techniques. This change reduces unnecessary re-renders and optimizes the rendering process for a smoother user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/372",
+      "mergedAt": "2023-08-19T03:05:11Z"
+    },
+    {
+      "number": 364,
+      "summary": "Added a header to the profile page to improve its appearance.",
+      "url": "https://github.com/terror/mcgill.courses/pull/364",
+      "mergedAt": "2023-08-14T02:16:31Z"
+    },
+    {
+      "number": 363,
+      "summary": "Corrected inconsistent vertical spacing between terms displayed on course cards to ensure a uniform and visually appealing layout across the platform.",
+      "url": "https://github.com/terror/mcgill.courses/pull/363",
+      "mergedAt": "2023-08-13T17:43:01Z"
+    },
+    {
+      "number": 362,
+      "summary": "Capitalized and punctuated the course restrictions text to improve readability and conformity with standard formatting.",
+      "url": "https://github.com/terror/mcgill.courses/pull/362",
+      "mergedAt": "2023-08-13T17:28:53Z"
+    },
+    {
+      "number": 361,
+      "summary": "Set the default log level to `info` when the `RUST_LOG` environment variable is not defined. This change ensures that the application provides sufficient logging information without the need for users to manually set the log level.",
+      "url": "https://github.com/terror/mcgill.courses/pull/361",
+      "mergedAt": "2023-08-11T00:00:52Z"
+    },
+    {
+      "number": 360,
+      "summary": "Added installation of the `ca-certificates` package in the Dockerfile to ensure secure communication between the container and external servers. This update enhances the security of the application by including the necessary certification authorities.",
+      "url": "https://github.com/terror/mcgill.courses/pull/360",
+      "mergedAt": "2023-08-10T23:33:37Z"
+    },
+    {
+      "number": 359,
+      "summary": "Integrated the rustls library with the rusoto crate for secure communication with AWS services. This change improves the security and performance of network requests by leveraging rustls' capabilities within the rusoto framework.",
+      "url": "https://github.com/terror/mcgill.courses/pull/359",
+      "mergedAt": "2023-08-10T23:10:41Z"
+    },
+    {
+      "number": 357,
+      "summary": "Added building code for the shorthand `ARMST` to improve efficiency and accuracy in processing requests. This change ensures that requests using the shorthand `ARMST` can now be interpreted correctly and executed seamlessly.",
+      "url": "https://github.com/terror/mcgill.courses/pull/357",
+      "mergedAt": "2023-08-10T03:13:39Z"
+    },
+    {
+      "number": 356,
+      "summary": "Updated the source hash check to only be computed during initialization, resulting in improved performance and efficiency.",
+      "url": "https://github.com/terror/mcgill.courses/pull/356",
+      "mergedAt": "2023-08-10T03:07:43Z"
+    },
+    {
+      "number": 355,
+      "summary": "Added functionality to store a source hash in S3 (production environment only) to prevent unnecessary data seeding if the hash remains unchanged during deployments.",
+      "url": "https://github.com/terror/mcgill.courses/pull/355",
+      "mergedAt": "2023-08-10T02:55:28Z"
+    },
+    {
+      "number": 353,
+      "summary": "Updated the code to re-initialize the database only when the source hash has changed, reducing unnecessary resets and improving efficiency.",
+      "url": "https://github.com/terror/mcgill.courses/pull/353",
+      "mergedAt": "2023-08-06T17:26:21Z"
+    },
+    {
+      "number": 352,
+      "summary": "Parsed the HTML document from the requirement text following the specified prefix. This change ensures that the correct information is extracted and utilized effectively.",
+      "url": "https://github.com/terror/mcgill.courses/pull/352",
+      "mergedAt": "2023-08-06T15:47:52Z"
+    },
+    {
+      "number": 351,
+      "summary": "Removed extension traits in the extractor to simplify the codebase and improve maintainability. This change streamlines the extractor functionality by eliminating unnecessary abstraction layers.",
+      "url": "https://github.com/terror/mcgill.courses/pull/351",
+      "mergedAt": "2023-08-06T15:39:57Z"
+    },
+    {
+      "number": 350,
+      "summary": "Added verification for the Azure platform. This change ensures that the necessary checks and tests are in place to validate the compatibility and functionality of the software with Azure services.",
+      "url": "https://github.com/terror/mcgill.courses/pull/350",
+      "mergedAt": "2023-08-05T03:07:37Z"
+    },
+    {
+      "number": 343,
+      "summary": "Updated the code to parse course requirements with LLM, allowing for more accurate and detailed information to be extracted from the data.",
+      "url": "https://github.com/terror/mcgill.courses/pull/343",
+      "mergedAt": "2023-08-05T03:05:45Z"
+    }
+  ],
+  "December 2025": [
+    {
+      "number": 773,
+      "summary": "Corrected the text alignment to ensure it was evenly positioned with the schedule location. This update improved the visual consistency and appearance of the layout, making the information easier to read and understand.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/773",
+      "mergedAt": "2025-12-12T20:15:20Z"
+    },
+    {
+      "number": 772,
+      "summary": "The size of the toggle button for the course graph was decreased to improve the overall user interface. This change made the button more visually consistent and less obtrusive, enhancing the user's browsing experience.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/772",
+      "mergedAt": "2025-12-12T20:03:04Z"
+    },
+    {
+      "number": 770,
+      "summary": "Updated the course averaging process to provide more accurate and reliable results. Adjusted the calculations to better reflect student performance across different assessments. Improved the way overall grades are displayed for clearer understanding.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/770",
+      "mergedAt": "2025-12-06T22:11:45Z"
+    },
+    {
+      "number": 769,
+      "summary": "Added support for displaying newlines clearly in reviews, making the reviews easier to read and understand.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/769",
+      "mergedAt": "2025-12-02T22:05:59Z"
+    },
+    {
+      "number": 767,
+      "summary": "Added a mock version of local storage for profile page tests to improve testing reliability. Fixed issues caused by real local storage data affecting test results. Updated tests to use the mock storage, making them more consistent and easier to run.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/767",
+      "mergedAt": "2025-12-02T21:48:55Z"
+    }
+  ],
+  "March 2024": [
+    {
+      "number": 497,
+      "summary": "Fixed the issue where the reset button was not properly resetting the sort order in the table view. Now, clicking the reset button will correctly revert the table back to the default sorting.",
+      "url": "https://github.com/terror/mcgill.courses/pull/497",
+      "mergedAt": "2024-03-16T04:09:37Z"
+    },
+    {
+      "number": 494,
+      "summary": "Added functionality to remember the selected pane on the user profile page, so users can easily navigate back to their preferred view without resetting it each time they visit the page.",
+      "url": "https://github.com/terror/mcgill.courses/pull/494",
+      "mergedAt": "2024-03-11T01:38:25Z"
+    },
+    {
+      "number": 493,
+      "summary": "Removed horizontal margins from the explore and profile pages to improve the overall layout and design of the website. This change helped to create a more visually appealing and user-friendly experience for visitors.",
+      "url": "https://github.com/terror/mcgill.courses/pull/493",
+      "mergedAt": "2024-03-11T01:19:23Z"
+    },
+    {
+      "number": 467,
+      "summary": "Implemented rate limiting to prevent excessive requests and ensure a fair usage of resources. This change helps to protect the server from potential abuse and improve overall system performance.",
+      "url": "https://github.com/terror/mcgill.courses/pull/467",
+      "mergedAt": "2024-03-08T17:11:27Z"
+    }
+  ],
   "May 2024": [
     {
       "number": 576,
@@ -643,286 +2117,6 @@
       "summary": "Added functionality to scrape summer 2024 course schedules from university website. This change allows users to access and download course information for the upcoming summer semester.",
       "url": "https://github.com/terror/mcgill.courses/pull/546",
       "mergedAt": "2024-05-03T16:29:54Z"
-    }
-  ],
-  "September 2025": [
-    {
-      "number": 718,
-      "summary": "Added clear and detailed documentation for search-related endpoints in the codebase. The documentation provides information on how to use these endpoints effectively for searching within the application.",
-      "url": "https://github.com/terror/mcgill.courses/pull/718",
-      "mergedAt": "2025-09-30T05:49:56Z"
-    },
-    {
-      "number": 717,
-      "summary": "Updated the course code regex pattern in the requirements component to include support for course codes with or without spaces between the department code and course number.",
-      "url": "https://github.com/terror/mcgill.courses/pull/717",
-      "mergedAt": "2025-09-30T05:34:07Z"
-    },
-    {
-      "number": 716,
-      "summary": "Added support for the `Requirements` type in Typeshare, allowing users to define and utilize this type in their TypeScript projects.",
-      "url": "https://github.com/terror/mcgill.courses/pull/716",
-      "mergedAt": "2025-09-30T05:27:07Z"
-    },
-    {
-      "number": 715,
-      "summary": "Converted all client asset file names and references to kebab case to ensure consistency and improve readability throughout the project.",
-      "url": "https://github.com/terror/mcgill.courses/pull/715",
-      "mergedAt": "2025-09-30T04:55:11Z"
-    },
-    {
-      "number": 714,
-      "summary": "Added documentation for notification related endpoints to improve user understanding of how to interact with the notification features of the application.",
-      "url": "https://github.com/terror/mcgill.courses/pull/714",
-      "mergedAt": "2025-09-30T04:40:17Z"
-    },
-    {
-      "number": 713,
-      "summary": "Added documentation for new review-related endpoints, providing clear instructions on how to use them effectively.",
-      "url": "https://github.com/terror/mcgill.courses/pull/713",
-      "mergedAt": "2025-09-30T04:31:20Z"
-    },
-    {
-      "number": 712,
-      "summary": "Removed unnecessary full path qualifiers from the datetime module, making the code cleaner and easier to read for developers.",
-      "url": "https://github.com/terror/mcgill.courses/pull/712",
-      "mergedAt": "2025-09-30T03:59:31Z"
-    },
-    {
-      "number": 711,
-      "summary": "Updated the readme to remove the manual replica set initialization step, making it more user-friendly and streamlined for users setting up the application.",
-      "url": "https://github.com/terror/mcgill.courses/pull/711",
-      "mergedAt": "2025-09-28T20:24:38Z"
-    },
-    {
-      "number": 710,
-      "summary": "Added the correct server path information to the API documentation to ensure accurate guidance for users.",
-      "url": "https://github.com/terror/mcgill.courses/pull/710",
-      "mergedAt": "2025-09-26T04:58:48Z"
-    },
-    {
-      "number": 709,
-      "summary": "Added parameter information to the course route documentation, providing users with a clearer understanding of how to interact with the API.",
-      "url": "https://github.com/terror/mcgill.courses/pull/709",
-      "mergedAt": "2025-09-26T04:52:12Z"
-    },
-    {
-      "number": 708,
-      "summary": "Added a new endpoint to serve public API documentation to users.",
-      "url": "https://github.com/terror/mcgill.courses/pull/708",
-      "mergedAt": "2025-09-26T04:35:06Z"
-    },
-    {
-      "number": 705,
-      "summary": "Added new entries to the changelog to document recent updates and changes made to the project.",
-      "url": "https://github.com/terror/mcgill.courses/pull/705",
-      "mergedAt": "2025-09-26T02:58:50Z"
-    },
-    {
-      "number": 706,
-      "summary": "Implemented the use of `SocketAddr` for spawning the server, improving network connectivity and flexibility.",
-      "url": "https://github.com/terror/mcgill.courses/pull/706",
-      "mergedAt": "2025-09-26T02:13:39Z"
-    },
-    {
-      "number": 704,
-      "summary": "Updated the `axum` dependency to version 0.8.4, introducing improvements and bug fixes to enhance the overall performance and stability of the project.",
-      "url": "https://github.com/terror/mcgill.courses/pull/704",
-      "mergedAt": "2025-09-26T01:46:27Z"
-    },
-    {
-      "number": 703,
-      "summary": "Removed the dependency on `axum-server` to simplify the project structure and decrease overall package clutter.",
-      "url": "https://github.com/terror/mcgill.courses/pull/703",
-      "mergedAt": "2025-09-26T01:22:55Z"
-    },
-    {
-      "number": 702,
-      "summary": "Added the client to the code coverage report, ensuring that all parts of the project are accounted for in the testing analysis.",
-      "url": "https://github.com/terror/mcgill.courses/pull/702",
-      "mergedAt": "2025-09-26T01:00:42Z"
-    },
-    {
-      "number": 700,
-      "summary": "Bumped the version of the Rust docker image to 1.90 for improved compatibility and performance.",
-      "url": "https://github.com/terror/mcgill.courses/pull/700",
-      "mergedAt": "2025-09-25T03:26:21Z"
-    },
-    {
-      "number": 699,
-      "summary": "Updated the Rust version to 2024 across all crates to leverage new features and improvements.",
-      "url": "https://github.com/terror/mcgill.courses/pull/699",
-      "mergedAt": "2025-09-25T00:10:58Z"
-    },
-    {
-      "number": 698,
-      "summary": "Updated Flexsearch index to use `tokenize: 'tolerant'` instead of `tokenize: 'forward'` to avoid weird search results, especially for cases like searching for MATH 222.",
-      "url": "https://github.com/terror/mcgill.courses/pull/698",
-      "mergedAt": "2025-09-24T20:27:29Z"
-    },
-    {
-      "number": 696,
-      "summary": "Fixed the error causing duplicate nodes when a course is both a prerequisite and corequisite. This change ensures that the course graph functions correctly, even in unusual cases like this one from McGill University.",
-      "url": "https://github.com/terror/mcgill.courses/pull/696",
-      "mergedAt": "2025-09-24T19:59:28Z"
-    },
-    {
-      "number": 694,
-      "summary": "Corrected a typo in the subscription API function for improved accuracy and clarity.",
-      "url": "https://github.com/terror/mcgill.courses/pull/694",
-      "mergedAt": "2025-09-24T04:45:33Z"
-    },
-    {
-      "number": 692,
-      "summary": "Simplified the process of setting up replica sets to improve efficiency and ease of use.",
-      "url": "https://github.com/terror/mcgill.courses/pull/692",
-      "mergedAt": "2025-09-23T21:12:41Z"
-    },
-    {
-      "number": 625,
-      "summary": "Added support for replacing all site icons with the Lucide icon set, improving overall visual consistency and design aesthetics.",
-      "url": "https://github.com/terror/mcgill.courses/pull/625",
-      "mergedAt": "2025-09-23T20:30:08Z"
-    },
-    {
-      "number": 628,
-      "summary": "Replaced the react-feather icon library with lucide for improved performance and more customization options.",
-      "url": "https://github.com/terror/mcgill.courses/pull/628",
-      "mergedAt": "2025-09-23T19:43:36Z"
-    },
-    {
-      "number": 691,
-      "summary": "Replaced the testing framework `jest` with `vitest` for improved testing capabilities.",
-      "url": "https://github.com/terror/mcgill.courses/pull/691",
-      "mergedAt": "2025-09-23T19:21:07Z"
-    },
-    {
-      "number": 690,
-      "summary": "Updated the team profile images in the app by switching from using LinkedIn URLs to local assets.",
-      "url": "https://github.com/terror/mcgill.courses/pull/690",
-      "mergedAt": "2025-09-23T18:37:09Z"
-    },
-    {
-      "number": 689,
-      "summary": "Removed the dependency on `anyhow` from the library crates. This change simplifies error handling and reduces the overall size of the codebase.",
-      "url": "https://github.com/terror/mcgill.courses/pull/689",
-      "mergedAt": "2025-09-23T15:27:52Z"
-    },
-    {
-      "number": 688,
-      "summary": "Updated the client-side hooks to follow the kebab-case naming convention for better consistency and readability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/688",
-      "mergedAt": "2025-09-22T22:39:58Z"
-    },
-    {
-      "number": 687,
-      "summary": "Renamed the file `repo.ts` to `api.ts` and updated all references throughout the project.",
-      "url": "https://github.com/terror/mcgill.courses/pull/687",
-      "mergedAt": "2025-09-22T22:25:59Z"
-    },
-    {
-      "number": 686,
-      "summary": "Changed the naming convention from camelCase to kebab-case for consistency in the client code.",
-      "url": "https://github.com/terror/mcgill.courses/pull/686",
-      "mergedAt": "2025-09-22T21:30:37Z"
-    },
-    {
-      "number": 683,
-      "summary": "Implemented structured tracing in the application code to improve visibility into performance and debugging in production environments. This change allows for better tracking of requests and responses, making it easier to identify and troubleshoot issues in the system.",
-      "url": "https://github.com/terror/mcgill.courses/pull/683",
-      "mergedAt": "2025-09-22T18:34:44Z"
-    },
-    {
-      "number": 682,
-      "summary": "Replaced all instances of `log` with `tracing` throughout the codebase to improve consistency and clarity.",
-      "url": "https://github.com/terror/mcgill.courses/pull/682",
-      "mergedAt": "2025-09-22T18:14:59Z"
-    },
-    {
-      "number": 681,
-      "summary": "Added support for the `Interaction` type in Typeshare to enhance type checking and accuracy of interaction-related code.",
-      "url": "https://github.com/terror/mcgill.courses/pull/681",
-      "mergedAt": "2025-09-22T17:48:32Z"
-    },
-    {
-      "number": 680,
-      "summary": "Added support for the `Notification` type in Typeshare, enabling users to easily share and collaborate on code related to notifications.",
-      "url": "https://github.com/terror/mcgill.courses/pull/680",
-      "mergedAt": "2025-09-22T17:33:25Z"
-    },
-    {
-      "number": 675,
-      "summary": "Added support for the `Review` type in typeshare, allowing users to define and work with this type in their projects seamlessly.",
-      "url": "https://github.com/terror/mcgill.courses/pull/675",
-      "mergedAt": "2025-09-18T00:10:37Z"
-    },
-    {
-      "number": 674,
-      "summary": "Updated dependencies to ensure the project has the latest features and security enhancements.",
-      "url": "https://github.com/terror/mcgill.courses/pull/674",
-      "mergedAt": "2025-09-13T17:47:23Z"
-    }
-  ],
-  "December 2024": [
-    {
-      "number": 618,
-      "summary": "Consolidated various TypeScript declaration files in the client directory to improve organization and simplify maintenance.",
-      "url": "https://github.com/terror/mcgill.courses/pull/618",
-      "mergedAt": "2024-12-22T20:05:12Z"
-    },
-    {
-      "number": 617,
-      "summary": "Added support for client-side unit testing by integrating Jest and React Testing Library to ensure code quality and reliability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/617",
-      "mergedAt": "2024-12-22T19:45:19Z"
-    },
-    {
-      "number": 612,
-      "summary": "Updated the course average data by incorporating additional grades. Special thanks to @atlasgong for their contribution.",
-      "url": "https://github.com/terror/mcgill.courses/pull/612",
-      "mergedAt": "2024-12-21T01:24:29Z"
-    },
-    {
-      "number": 615,
-      "summary": "Improved the way we calculate time since events by providing more specific and user-friendly time descriptions. Now phrases like \"just now,\" \"1 minute ago,\" \"1 hour ago,\" etc. are used based on the time elapsed since an event.",
-      "url": "https://github.com/terror/mcgill.courses/pull/615",
-      "mergedAt": "2024-12-20T16:35:16Z"
-    },
-    {
-      "number": 613,
-      "summary": "Removed the display of empty course CRNs to improve the user experience and prevent confusion for students.",
-      "url": "https://github.com/terror/mcgill.courses/pull/613",
-      "mergedAt": "2024-12-20T15:55:37Z"
-    },
-    {
-      "number": 610,
-      "summary": "Updated search data parsing to include all historical school years, resolving an issue where only a single year of data was being indexed. As a result, the search functionality now includes information from previous school years. The file size has increased to approximately 20mb due to this change.",
-      "url": "https://github.com/terror/mcgill.courses/pull/610",
-      "mergedAt": "2024-12-20T15:42:19Z"
-    },
-    {
-      "number": 605,
-      "summary": "Added functionality to update the course average data for S2024.",
-      "url": "https://github.com/terror/mcgill.courses/pull/605",
-      "mergedAt": "2024-12-20T04:36:39Z"
-    },
-    {
-      "number": 609,
-      "summary": "Adjusted the background in dark mode for the notification dropdown to enhance the contrast with reviews.",
-      "url": "https://github.com/terror/mcgill.courses/pull/609",
-      "mergedAt": "2024-12-19T16:21:56Z"
-    },
-    {
-      "number": 608,
-      "summary": "Re-scraped course data for the academic year 2024-2025 to ensure accuracy and completeness.",
-      "url": "https://github.com/terror/mcgill.courses/pull/608",
-      "mergedAt": "2024-12-19T04:15:20Z"
-    },
-    {
-      "number": 606,
-      "summary": "Added functionality to differentiate scraped reviews by appending a unique identifier to each review.",
-      "url": "https://github.com/terror/mcgill.courses/pull/606",
-      "mergedAt": "2024-12-18T18:34:13Z"
     }
   ],
   "May 2023": [
@@ -1323,910 +2517,20 @@
       "mergedAt": "2023-05-01T02:59:38Z"
     }
   ],
-  "March 2024": [
+  "November 2025": [
     {
-      "number": 497,
-      "summary": "Fixed the issue where the reset button was not properly resetting the sort order in the table view. Now, clicking the reset button will correctly revert the table back to the default sorting.",
-      "url": "https://github.com/terror/mcgill.courses/pull/497",
-      "mergedAt": "2024-03-16T04:09:37Z"
-    },
-    {
-      "number": 494,
-      "url": "https://github.com/terror/mcgill.courses/pull/494",
-      "mergedAt": "2024-03-11T01:38:25Z",
-      "summary": "Added functionality to remember the selected pane on the user profile page, so users can easily navigate back to their preferred view without resetting it each time they visit the page."
-    },
-    {
-      "number": 493,
-      "summary": "Removed horizontal margins from the explore and profile pages to improve the overall layout and design of the website. This change helped to create a more visually appealing and user-friendly experience for visitors.",
-      "url": "https://github.com/terror/mcgill.courses/pull/493",
-      "mergedAt": "2024-03-11T01:19:23Z"
-    },
-    {
-      "number": 467,
-      "summary": "Implemented rate limiting to prevent excessive requests and ensure a fair usage of resources. This change helps to protect the server from potential abuse and improve overall system performance.",
-      "url": "https://github.com/terror/mcgill.courses/pull/467",
-      "mergedAt": "2024-03-08T17:11:27Z"
+      "number": 764,
+      "summary": "Re-parsed the fall 2025 final exam schedules to ensure all timing details are correctly displayed and up to date. This update fixed previous parsing errors that caused incorrect schedule listings. The changes improved the accuracy and reliability of the exam schedule information for students and staff.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/764",
+      "mergedAt": "2025-11-14T17:36:41Z"
     }
   ],
-  "June 2025": [
-    {
-      "number": 671,
-      "summary": "Added a feature to include the `VITE_GOOGLE_API_KEY` in the client production build, enhancing security and performance.",
-      "url": "https://github.com/terror/mcgill.courses/pull/671",
-      "mergedAt": "2025-06-21T04:22:41Z"
-    },
-    {
-      "number": 670,
-      "summary": "Added a feature to display a location modal when clicking on a building in the course schedule. This enhancement allows users to view detailed information about the building directly from the schedule page, improving accessibility and convenience during course planning.",
-      "url": "https://github.com/terror/mcgill.courses/pull/670",
-      "mergedAt": "2025-06-20T16:42:24Z"
-    },
-    {
-      "number": 669,
-      "summary": "Added new entries to the changelog to document recent updates and changes made to the project.",
-      "url": "https://github.com/terror/mcgill.courses/pull/669",
-      "mergedAt": "2025-06-02T15:28:13Z"
-    }
-  ],
-  "November 2023": [
-    {
-      "number": 465,
-      "summary": "Adjusted the explore filter text color to be more consistent with other page elements.",
-      "url": "https://github.com/terror/mcgill.courses/pull/465",
-      "mergedAt": "2023-11-29T17:14:03Z"
-    },
-    {
-      "number": 463,
-      "summary": "Added a new schedule display feature with improved visuals, making it easier to view and manage course schedules.",
-      "url": "https://github.com/terror/mcgill.courses/pull/463",
-      "mergedAt": "2023-11-28T05:36:14Z"
-    },
-    {
-      "number": 461,
-      "summary": "Added a dialog prompt to confirm subscription deletion. This change ensures users have a chance to confirm their action before permanently removing a subscription. This enhancement aims to prevent accidental deletion of important subscription data and improve user experience by adding an extra layer of protection.",
-      "url": "https://github.com/terror/mcgill.courses/pull/461",
-      "mergedAt": "2023-11-17T20:03:12Z"
-    },
-    {
-      "number": 460,
-      "summary": "Updated the code to use the complete database URL stored in the environment variables, ensuring a seamless connection to the database without any manual configurations needed.",
-      "url": "https://github.com/terror/mcgill.courses/pull/460",
-      "mergedAt": "2023-11-14T00:19:51Z"
-    },
-    {
-      "number": 450,
-      "summary": "Improved the review interaction filter by adding additional criteria for sorting and filtering review comments. This change enhances the overall user experience by providing more specific and relevant results when reviewing comments.",
-      "url": "https://github.com/terror/mcgill.courses/pull/450",
-      "mergedAt": "2023-11-13T04:07:06Z"
-    },
-    {
-      "number": 453,
-      "summary": "Improved user experience by adding additional filters to the explore page, allowing users to easily search for specific items based on various criteria such as price, category, and popularity.",
-      "url": "https://github.com/terror/mcgill.courses/pull/453",
-      "mergedAt": "2023-11-13T03:19:44Z"
-    },
-    {
-      "number": 457,
-      "summary": "Reduced the application's bundle size significantly by optimizing code and removing unused dependencies.",
-      "url": "https://github.com/terror/mcgill.courses/pull/457",
-      "mergedAt": "2023-11-13T03:14:43Z"
-    },
-    {
-      "number": 454,
-      "summary": "Improved course search performance by implementing FlexSearch directly on the frontend, eliminating the need for backend requests. This change significantly speeds up the search process for users.",
-      "url": "https://github.com/terror/mcgill.courses/pull/454",
-      "mergedAt": "2023-11-13T01:04:40Z"
-    },
-    {
-      "number": 452,
-      "summary": "Limited the word count on course descriptions displayed on the explore page to 400 characters for better readability and consistency.",
-      "url": "https://github.com/terror/mcgill.courses/pull/452",
-      "mergedAt": "2023-11-09T04:09:17Z"
-    }
-  ],
-  "February 2025": [
-    {
-      "number": 633,
-      "summary": "Added tests to ensure that the request retry feature works properly, improving the reliability of the system.",
-      "url": "https://github.com/terror/mcgill.courses/pull/633",
-      "mergedAt": "2025-02-02T00:23:01Z"
-    },
-    {
-      "number": 632,
-      "summary": "Implemented exponential backoff with jitter when retrying requests to improve the reliability and performance of the system.",
-      "url": "https://github.com/terror/mcgill.courses/pull/632",
-      "mergedAt": "2025-02-01T22:49:20Z"
-    }
-  ],
-  "August 2024": [
-    {
-      "number": 598,
-      "summary": "Improved the hover styling on the profile dropdown menu for a more visually appealing user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/598",
-      "mergedAt": "2024-08-28T18:02:12Z"
-    }
-  ],
-  "June 2023": [
-    {
-      "number": 328,
-      "summary": "Updated dependencies to ensure the app runs smoothly and securely with the latest versions of third-party libraries.",
-      "url": "https://github.com/terror/mcgill.courses/pull/328",
-      "mergedAt": "2023-06-25T02:04:09Z"
-    },
-    {
-      "number": 327,
-      "summary": "Decreased the size of the index header text to improve readability on small screens.",
-      "url": "https://github.com/terror/mcgill.courses/pull/327",
-      "mergedAt": "2023-06-23T03:02:27Z"
-    },
-    {
-      "number": 325,
-      "summary": "Removed the ability for users to interact with reviews that have been deleted. This change ensures a more accurate representation of the review process and prevents any confusion or errors that may arise from interacting with removed reviews.",
-      "url": "https://github.com/terror/mcgill.courses/pull/325",
-      "mergedAt": "2023-06-23T00:20:53Z"
-    },
-    {
-      "number": 321,
-      "summary": "Filtered out the reviews array after a deletion to ensure accurate data display. Made changes to prevent deleted reviews from being shown in the user interface.",
-      "url": "https://github.com/terror/mcgill.courses/pull/321",
-      "mergedAt": "2023-06-22T23:48:57Z"
-    },
-    {
-      "number": 320,
-      "summary": "Added a layout to the course page spinner, providing a more visually appealing loading experience for users.",
-      "url": "https://github.com/terror/mcgill.courses/pull/320",
-      "mergedAt": "2023-06-22T23:45:44Z"
-    },
-    {
-      "number": 318,
-      "summary": "Added a loading indicator to the instructor page for better user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/318",
-      "mergedAt": "2023-06-22T23:13:12Z"
-    },
-    {
-      "number": 313,
-      "summary": "Added a reset button to the review filter box, allowing users to easily clear all filters applied to the reviews. This new feature enhances user experience by providing a convenient way to start fresh when searching for specific reviews.",
-      "url": "https://github.com/terror/mcgill.courses/pull/313",
-      "mergedAt": "2023-06-22T00:26:19Z"
-    },
-    {
-      "number": 311,
-      "summary": "Ensured all course pages followed a uniform layout by standardizing fonts, colors, and spacing. This update improves user experience and enhances the overall visual consistency of the course platform.",
-      "url": "https://github.com/terror/mcgill.courses/pull/311",
-      "mergedAt": "2023-06-22T00:08:56Z"
-    },
-    {
-      "number": 309,
-      "summary": "Removed horizontal rules that were under the header text for a cleaner and more streamlined layout.",
-      "url": "https://github.com/terror/mcgill.courses/pull/309",
-      "mergedAt": "2023-06-21T23:52:51Z"
-    },
-    {
-      "number": 305,
-      "summary": "Added a \"Prior Art\" section to the readme file. This section highlights existing work that inspired the project and provides context for its development.",
-      "url": "https://github.com/terror/mcgill.courses/pull/305",
-      "mergedAt": "2023-06-21T04:52:41Z"
-    },
-    {
-      "number": 300,
-      "summary": "Removed the rmp-scraper tool from version control, as it is no longer necessary for project development.",
-      "url": "https://github.com/terror/mcgill.courses/pull/300",
-      "mergedAt": "2023-06-21T04:07:44Z"
-    },
-    {
-      "number": 299,
-      "summary": "Implemented the functionality to request an access token with transport layer security in API calls. The changes ensure that all sensitive data is transmitted securely to and from the server, enhancing the overall security of the system.",
-      "url": "https://github.com/terror/mcgill.courses/pull/299",
-      "mergedAt": "2023-06-21T03:25:14Z"
-    },
-    {
-      "number": 298,
-      "summary": "Implemented automated deployment setup using CI/CD pipelines. Integrated continuous integration and continuous deployment processes to streamline the deployment workflow and ensure rapid and secure releases.",
-      "url": "https://github.com/terror/mcgill.courses/pull/298",
-      "mergedAt": "2023-06-21T00:24:04Z"
-    },
-    {
-      "number": 249,
-      "summary": "Added functionality to sort course reviews by orders, filter reviews by specific instructors, and also filter reviews by ratings. Various miscellaneous improvements were made as well.",
-      "url": "https://github.com/terror/mcgill.courses/pull/249",
-      "mergedAt": "2023-06-19T02:57:10Z"
-    },
-    {
-      "number": 293,
-      "summary": "Switched the project to use typescript-eslint for improved linting and error checking. Made necessary configuration changes to ensure consistent code quality and adherence to TypeScript best practices.",
-      "url": "https://github.com/terror/mcgill.courses/pull/293",
-      "mergedAt": "2023-06-19T02:04:18Z"
-    },
-    {
-      "number": 292,
-      "summary": "Fixed an issue where dialogs would stutter when closing them. Made adjustments to improve dialog closing animation smoothness.",
-      "url": "https://github.com/terror/mcgill.courses/pull/292",
-      "mergedAt": "2023-06-19T00:11:26Z"
-    },
-    {
-      "number": 290,
-      "summary": "Fixed an issue where invisible text was displayed in the schedule.",
-      "url": "https://github.com/terror/mcgill.courses/pull/290",
-      "mergedAt": "2023-06-18T21:47:43Z"
-    },
-    {
-      "number": 288,
-      "summary": "Added lint-staged configuration to enforce code formatting and style checks before committing changes. This ensures that code quality is maintained and consistent across the project.",
-      "url": "https://github.com/terror/mcgill.courses/pull/288",
-      "mergedAt": "2023-06-18T03:52:03Z"
-    },
-    {
-      "number": 287,
-      "summary": "Ran a code formatting tool before each commit to ensure consistent coding style throughout the project. This change helps maintain clean and readable code in the repository.",
-      "url": "https://github.com/terror/mcgill.courses/pull/287",
-      "mergedAt": "2023-06-18T03:19:42Z"
-    },
-    {
-      "number": 285,
-      "summary": "Updated the validation logic to account for scenarios where there is a catch-all instructor in reviews. This ensures that all instructors are correctly validated, improving the accuracy of the review process.",
-      "url": "https://github.com/terror/mcgill.courses/pull/285",
-      "mergedAt": "2023-06-18T01:46:34Z"
-    },
-    {
-      "number": 283,
-      "summary": "Added a prompt for non-logged-in users when attempting to like a review. This improvement ensures that users who are not logged in are notified and prompted to log in before liking a review on the platform.",
-      "url": "https://github.com/terror/mcgill.courses/pull/283",
-      "mergedAt": "2023-06-17T15:40:05Z"
-    },
-    {
-      "number": 281,
-      "summary": "Added a server test to review interactions. This change ensures that the review process is thoroughly tested and functioning correctly on the server side.",
-      "url": "https://github.com/terror/mcgill.courses/pull/281",
-      "mergedAt": "2023-06-17T01:39:41Z"
-    },
-    {
-      "number": 278,
-      "summary": "Added backend code coverage to improve tracking and visibility of test coverage for the project. Additionally, a code coverage report is now generated and can be viewed to assess testing effectiveness.",
-      "url": "https://github.com/terror/mcgill.courses/pull/278",
-      "mergedAt": "2023-06-16T04:44:13Z"
-    },
-    {
-      "number": 277,
-      "summary": "Implemented the ability for users to like and dislike reviews on the platform. This feature allows users to express their opinions on the reviews they come across, providing valuable feedback to the community.",
-      "url": "https://github.com/terror/mcgill.courses/pull/277",
-      "mergedAt": "2023-06-16T04:31:42Z"
-    },
-    {
-      "number": 276,
-      "summary": "Refactored the code to separate database initialization logic from other components for better organization and clarity in the codebase.",
-      "url": "https://github.com/terror/mcgill.courses/pull/276",
-      "mergedAt": "2023-06-12T20:35:23Z"
-    },
-    {
-      "number": 271,
-      "summary": "Updated the system to match external professor names with those in the e-calendar, ensuring accurate scheduling for all faculty members.",
-      "url": "https://github.com/terror/mcgill.courses/pull/271",
-      "mergedAt": "2023-06-12T15:11:32Z"
-    },
-    {
-      "number": 273,
-      "summary": "Removed borders from the cards on the explore page to provide a cleaner and more visually appealing layout.",
-      "url": "https://github.com/terror/mcgill.courses/pull/273",
-      "mergedAt": "2023-06-12T04:06:53Z"
-    },
-    {
-      "number": 274,
-      "summary": "Simplified the database seeding process for easier management and maintenance. Removed redundant steps and optimized the workflow for faster and more efficient data population.",
-      "url": "https://github.com/terror/mcgill.courses/pull/274",
-      "mergedAt": "2023-06-12T03:56:47Z"
-    },
-    {
-      "number": 265,
-      "summary": "Added validation to ensure that only instructors can add or edit reviews on the backend. This change prevents unauthorized users from manipulating review data.",
-      "url": "https://github.com/terror/mcgill.courses/pull/265",
-      "mergedAt": "2023-06-12T00:27:59Z"
-    },
-    {
-      "number": 270,
-      "summary": "Added a sidebar overlay feature for easier navigation on the website. Users can now access the sidebar menu with a click, improving the overall browsing experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/270",
-      "mergedAt": "2023-06-11T21:35:49Z"
-    },
-    {
-      "number": 261,
-      "summary": "Fixed the issue where no terms were displayed on course cards in the explore page when not currently offered. Added a fix to show the terms even if not currently available. Made formatting changes to improve readability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/261",
-      "mergedAt": "2023-06-10T19:12:03Z"
-    },
-    {
-      "number": 258,
-      "summary": "Implemented the ability to seed the database using multiple threads, providing an option for faster data population during setup. This enhancement improves efficiency in setting up databases with large amounts of initial data.",
-      "url": "https://github.com/terror/mcgill.courses/pull/258",
-      "mergedAt": "2023-06-10T05:57:38Z"
-    },
-    {
-      "number": 257,
-      "summary": "Added a difficulty pie chart feature to the project. The chart displays the difficulty level of courses. Additionally, the feature is fully responsive, ensuring a seamless viewing experience across different devices.",
-      "url": "https://github.com/terror/mcgill.courses/pull/257",
-      "mergedAt": "2023-06-10T05:19:31Z"
-    },
-    {
-      "number": 259,
-      "summary": "- Checked if the instructor is included in the review instructors array for enabling review permissions.",
-      "url": "https://github.com/terror/mcgill.courses/pull/259",
-      "mergedAt": "2023-06-05T00:39:09Z"
-    },
-    {
-      "number": 256,
-      "summary": "Updated the client-side code to disallow unused variables, improving code quality and reducing potential errors.",
-      "url": "https://github.com/terror/mcgill.courses/pull/256",
-      "mergedAt": "2023-06-04T04:59:24Z"
-    },
-    {
-      "number": 254,
-      "summary": "Updated the review form to allow for multiple instructors to be assigned to a review. This change enables better collaboration and feedback from multiple instructors on student work.",
-      "url": "https://github.com/terror/mcgill.courses/pull/254",
-      "mergedAt": "2023-06-04T04:33:06Z"
-    }
-  ],
-  "July 2023": [
-    {
-      "number": 344,
-      "summary": "Added a hovering effect for classroom numbers in the schedule display. When hovering over the numbers, the fullname of the building is now displayed for better clarity and navigation.",
-      "url": "https://github.com/terror/mcgill.courses/pull/344",
-      "mergedAt": "2023-07-26T23:18:37Z"
-    },
-    {
-      "number": 348,
-      "summary": "Fixed the failing MongoDB installation in the CI by updating the installation process and dependencies to ensure smooth and successful deployment.",
-      "url": "https://github.com/terror/mcgill.courses/pull/348",
-      "mergedAt": "2023-07-22T19:03:06Z"
-    },
-    {
-      "number": 345,
-      "summary": "Fixed an issue where the open-schedule button was overflowing on smaller screens by adjusting the styling to ensure it displays correctly.",
-      "url": "https://github.com/terror/mcgill.courses/pull/345",
-      "mergedAt": "2023-07-17T02:41:12Z"
-    },
-    {
-      "number": 337,
-      "summary": "Consolidated individual course requests to streamline and simplify the process. This change improves efficiency by allowing users to submit multiple course requests in a single submission rather than separately.",
-      "url": "https://github.com/terror/mcgill.courses/pull/337",
-      "mergedAt": "2023-07-16T03:33:06Z"
-    },
-    {
-      "number": 341,
-      "summary": "Added a screenshot of the course page to the readme file, providing a visual representation of the course content. This change aims to enhance the user experience by offering a preview of the course layout and design.",
-      "url": "https://github.com/terror/mcgill.courses/pull/341",
-      "mergedAt": "2023-07-15T23:39:35Z"
-    },
-    {
-      "number": 340,
-      "summary": "Blended the search results with the search bar to improve user experience. This change allows for a seamless integration of search suggestions with the search input field, making it easier for users to find relevant information quickly.",
-      "url": "https://github.com/terror/mcgill.courses/pull/340",
-      "mergedAt": "2023-07-12T23:46:28Z"
-    },
-    {
-      "number": 296,
-      "summary": "Updated the frontend code by replacing utility classes, adjusting widths and margins, improving component structure, and fixing various styling issues across multiple files. Specific changes include renaming props, improving code cleanliness, simplifying expressions, optimizing transitions, and enhancing usability through visual adjustments. Some components were refactored to use reusable elements, simplify logic, or improve performance. Additionally, unnecessary code was removed, and dependencies were updated to enhance the overall user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/296",
-      "mergedAt": "2023-07-12T03:26:06Z"
-    },
-    {
-      "number": 336,
-      "summary": "Fixed a bug where the review form would unintentionally close upon clicking on it.",
-      "url": "https://github.com/terror/mcgill.courses/pull/336",
-      "mergedAt": "2023-07-03T17:11:25Z"
-    },
-    {
-      "number": 335,
-      "summary": "Updated the example for the load command in the README to provide clearer instructions on how to use the feature effectively.",
-      "url": "https://github.com/terror/mcgill.courses/pull/335",
-      "mergedAt": "2023-07-02T00:51:22Z"
-    },
-    {
-      "number": 330,
-      "summary": "Added a course graph feature to visualize course dependencies and relationships. The graph helps users plan their coursework effectively by visually displaying prerequisites and corequisites for each course.",
-      "url": "https://github.com/terror/mcgill.courses/pull/330",
-      "mergedAt": "2023-07-02T00:41:36Z"
-    },
-    {
-      "number": 317,
-      "summary": "Added icons to the term filter buttons in the explore feature for better visual representation and user experience. The icons provide users with a quick visual cue to understand the purpose of each filter option, making it easier to navigate through the explore section.",
-      "url": "https://github.com/terror/mcgill.courses/pull/317",
-      "mergedAt": "2023-07-01T15:43:14Z"
-    }
-  ],
-  "April 2023": [
-    {
-      "number": 130,
-      "summary": "Added functionality to parse schedule data, allowing users to input their schedule information in a standardized format. This change streamlines the process of importing and organizing schedule data within the system.",
-      "url": "https://github.com/terror/mcgill.courses/pull/130",
-      "mergedAt": "2023-04-30T19:21:00Z"
-    },
-    {
-      "number": 131,
-      "summary": "Implemented the conversion of the review add/edit functionality to dialog boxes. This change improves the user experience by allowing for a smoother and more convenient process when adding or editing reviews on the platform.",
-      "url": "https://github.com/terror/mcgill.courses/pull/131",
-      "mergedAt": "2023-04-28T22:16:30Z"
-    },
-    {
-      "number": 129,
-      "summary": "Corrected the broken image link in the readme file, ensuring that users can view the image without any issues. Made a minor adjustment to improve the overall readability and aesthetics of the documentation.",
-      "url": "https://github.com/terror/mcgill.courses/pull/129",
-      "mergedAt": "2023-04-28T20:59:45Z"
-    },
-    {
-      "number": 128,
-      "summary": "Implemented new search algorithm to enhance search functionality, resulting in faster and more accurate search results.",
-      "url": "https://github.com/terror/mcgill.courses/pull/128",
-      "mergedAt": "2023-04-28T20:32:31Z"
-    },
-    {
-      "number": 127,
-      "summary": "Implemented a dark mode feature to provide users with an alternative color scheme for improved visibility in low-light environments. This change allows users to switch between light and dark themes easily within the application settings.",
-      "url": "https://github.com/terror/mcgill.courses/pull/127",
-      "mergedAt": "2023-04-28T19:47:27Z"
-    },
-    {
-      "number": 126,
-      "summary": "Implemented a feature that restricts authentication to only allow users with McGill email addresses. This change ensures that only individuals affiliated with McGill University can access the platform, enhancing security and user privacy.",
-      "url": "https://github.com/terror/mcgill.courses/pull/126",
-      "mergedAt": "2023-04-26T19:50:01Z"
-    },
-    {
-      "number": 124,
-      "summary": "Implemented the use of BSON formatted timestamps across the application for improved data consistency and compatibility with MongoDB databases.",
-      "url": "https://github.com/terror/mcgill.courses/pull/124",
-      "mergedAt": "2023-04-18T02:02:22Z"
-    },
-    {
-      "number": 122,
-      "summary": "Fixed the formatting of Tailwind classes in the documentation by applying changes based on the provided link.",
-      "url": "https://github.com/terror/mcgill.courses/pull/122",
-      "mergedAt": "2023-04-17T18:34:38Z"
-    },
-    {
-      "number": 121,
-      "summary": "Added functionality to underline search results that match the query in the search feature for better visibility and ease of use.",
-      "url": "https://github.com/terror/mcgill.courses/pull/121",
-      "mergedAt": "2023-04-10T02:35:49Z"
-    },
-    {
-      "number": 114,
-      "summary": "Added new icons to enhance the user interface and provide more visual options for users to choose from.",
-      "url": "https://github.com/terror/mcgill.courses/pull/114",
-      "mergedAt": "2023-04-09T22:24:02Z"
-    },
-    {
-      "number": 113,
-      "summary": "Updated the functionality to redirect users to the edit page if a review already exists when they try to leave a review on the client side. This change helps streamline the user experience and prevents potential confusion or errors.",
-      "url": "https://github.com/terror/mcgill.courses/pull/113",
-      "mergedAt": "2023-04-09T22:19:59Z"
-    },
-    {
-      "number": 110,
-      "summary": "Added a blank target attribute to course URLs to ensure links open in a new tab for a better user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/110",
-      "mergedAt": "2023-04-09T02:53:56Z"
-    },
-    {
-      "number": 101,
-      "summary": "Added an alert notification box for displaying errors on the client-side. Replaced console.err instances with the new alert box for improved error handling. Prototype created and code formatted for better readability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/101",
-      "mergedAt": "2023-04-09T00:01:38Z"
-    },
-    {
-      "number": 73,
-      "summary": "Added functionality to display reviews on the course page, enhancing the user experience by providing valuable feedback.",
-      "url": "https://github.com/terror/mcgill.courses/pull/73",
-      "mergedAt": "2023-04-08T23:47:47Z"
-    },
-    {
-      "number": 103,
-      "summary": "Added a basic prototype of an about page to serve as a temporary placeholder until final content is ready for deployment.",
-      "url": "https://github.com/terror/mcgill.courses/pull/103",
-      "mergedAt": "2023-04-08T20:59:39Z"
-    },
-    {
-      "number": 102,
-      "summary": "Updated the logic to ensure that courses with the same ID in the database are properly updated instead of duplicated. This change prevents data inconsistencies and improves the accuracy of the database records.",
-      "url": "https://github.com/terror/mcgill.courses/pull/102",
-      "mergedAt": "2023-04-05T04:30:20Z"
-    },
-    {
-      "number": 100,
-      "summary": "Improved layout and design elements on course pages for better user experience. Fixed broken links and updated content for accuracy. Refactored code to enhance performance and maintainability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/100",
-      "mergedAt": "2023-04-04T20:09:52Z"
-    },
-    {
-      "number": 99,
-      "summary": "Added a search bar to the navigation bar for non-home pages. Also, repositioned the navigation buttons to the right side of the navigation bar for improved layout and user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/99",
-      "mergedAt": "2023-04-04T13:13:18Z"
-    },
-    {
-      "number": 95,
-      "summary": "Fixed a bug that was causing duplicate courses to be loaded after the extraction process.",
-      "url": "https://github.com/terror/mcgill.courses/pull/95",
-      "mergedAt": "2023-04-02T20:04:19Z"
-    },
-    {
-      "number": 94,
-      "summary": "Added functionality to extract courses that are not offered in the current semester, allowing users to easily identify and remove them from the course list.",
-      "url": "https://github.com/terror/mcgill.courses/pull/94",
-      "mergedAt": "2023-04-02T20:03:33Z"
-    },
-    {
-      "number": 93,
-      "summary": "Updated the course page by merging in new content and updates to improve the overall user experience. Added new course materials, fixed formatting issues, and updated information to ensure accuracy and relevance.",
-      "url": "https://github.com/terror/mcgill.courses/pull/93",
-      "mergedAt": "2023-04-02T17:02:50Z"
-    },
-    {
-      "number": 92,
-      "summary": "Added a new feature to enhance the search functionality. Users can now search for cooler items with improved accuracy and speed.",
-      "url": "https://github.com/terror/mcgill.courses/pull/92",
-      "mergedAt": "2023-04-02T02:15:11Z"
-    },
-    {
-      "number": 91,
-      "summary": "Added a review form to collect feedback from users on the website. Users can now rate their experience and leave comments, helping us improve our services.",
-      "url": "https://github.com/terror/mcgill.courses/pull/91",
-      "mergedAt": "2023-04-02T01:22:36Z"
-    },
-    {
-      "number": 86,
-      "summary": "Extended the review model by adding a new property called `instructor` to store the name of the instructor associated with the review.",
-      "url": "https://github.com/terror/mcgill.courses/pull/86",
-      "mergedAt": "2023-04-02T01:21:34Z"
-    },
-    {
-      "number": 84,
-      "summary": "Adjusted the name of the test function for clarity and accuracy.",
-      "url": "https://github.com/terror/mcgill.courses/pull/84",
-      "mergedAt": "2023-04-01T19:22:33Z"
-    },
-    {
-      "number": 83,
-      "summary": "Removed the ring from the profile icon and adjusted the hover color to match the search bar for a more consistent styling.",
-      "url": "https://github.com/terror/mcgill.courses/pull/83",
-      "mergedAt": "2023-04-01T19:20:54Z"
-    },
-    {
-      "number": 82,
-      "summary": "Added arrow-key navigation functionality for the search bar results, allowing users to navigate through each search result. The \"explore all courses\" rectangle is excluded from the navigation at this time.",
-      "url": "https://github.com/terror/mcgill.courses/pull/82",
-      "mergedAt": "2023-04-01T19:11:04Z"
-    }
-  ],
-  "January 2025": [
-    {
-      "number": 631,
-      "summary": "Updated the web scraping script to re-scrape course data for the academic year 2024-2025. This change ensures that the latest and most accurate information is available for users.",
-      "url": "https://github.com/terror/mcgill.courses/pull/631",
-      "mergedAt": "2025-01-27T05:11:24Z"
-    },
-    {
-      "number": 626,
-      "summary": "Updated the schedule display to automatically select the current term, eliminating the need to manually choose it. This change simplifies the process for users, ensuring they view information for the ongoing term by default.",
-      "url": "https://github.com/terror/mcgill.courses/pull/626",
-      "mergedAt": "2025-01-11T18:03:23Z"
-    },
-    {
-      "number": 624,
-      "summary": "Updated the functionality to verify the presence of search results before processing the enter keydown event, preventing navigation to non-existent pages from the search bar.",
-      "url": "https://github.com/terror/mcgill.courses/pull/624",
-      "mergedAt": "2025-01-09T03:57:09Z"
-    },
-    {
-      "number": 623,
-      "summary": "Added functionality to use LinkedIn profiles to display team members' pictures on the about page, improving the visual appeal and credibility of the team section.",
-      "url": "https://github.com/terror/mcgill.courses/pull/623",
-      "mergedAt": "2025-01-05T00:09:06Z"
-    }
-  ],
-  "March 2023": [
-    {
-      "number": 77,
-      "summary": "Added a few tests to ensure the proper functioning of the course and review routes. These additions aimed to enhance the reliability and accuracy of the application by covering critical functionality with testing.",
-      "url": "https://github.com/terror/mcgill.courses/pull/77",
-      "mergedAt": "2023-03-31T02:37:06Z"
-    },
-    {
-      "number": 76,
-      "summary": "Fixed an issue where special characters in the query string were causing errors. Updated the code to properly handle and parse special characters, ensuring smooth functionality for all queries.",
-      "url": "https://github.com/terror/mcgill.courses/pull/76",
-      "mergedAt": "2023-03-29T22:25:53Z"
-    },
-    {
-      "number": 64,
-      "summary": "Added new routes for course reviews to allow users to leave feedback and ratings for courses. This change enhances the user experience by providing a platform for sharing opinions and helping others make informed decisions about courses.",
-      "url": "https://github.com/terror/mcgill.courses/pull/64",
-      "mergedAt": "2023-03-28T23:22:05Z"
-    },
-    {
-      "number": 72,
-      "summary": "Fixed tslint command by updating configuration to adhere to the latest linting rules. The changes ensure that the codebase follows consistent coding standards and best practices for improved code quality.",
-      "url": "https://github.com/terror/mcgill.courses/pull/72",
-      "mergedAt": "2023-03-28T02:35:22Z"
-    },
-    {
-      "number": 71,
-      "summary": "Added tslint to the project to improve code quality by enforcing coding standards and catching potential bugs early on.",
-      "url": "https://github.com/terror/mcgill.courses/pull/71",
-      "mergedAt": "2023-03-26T19:56:06Z"
-    },
-    {
-      "number": 68,
-      "summary": "Added a profile dropdown component to enhance user navigation and provide quick access to account settings. This improvement allows users to easily switch between profiles and manage their preferences without disrupting the browsing experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/68",
-      "mergedAt": "2023-03-26T18:56:32Z"
-    },
-    {
-      "number": 62,
-      "summary": "Added an explore page with incremental fetch feature for endless scrolling.",
-      "url": "https://github.com/terror/mcgill.courses/pull/62",
-      "mergedAt": "2023-03-26T13:41:29Z"
-    },
-    {
-      "number": 63,
-      "summary": "Updated the project to use React Router links instead of anchor tags for improved navigation and better handling of client-side routing. This change ensures a more seamless user experience when navigating between pages within the application.",
-      "url": "https://github.com/terror/mcgill.courses/pull/63",
-      "mergedAt": "2023-03-25T20:30:44Z"
-    },
-    {
-      "number": 61,
-      "summary": "Updated the README to include a mention of the client/.env.example file for easy reference by users. This change will help users locate and use the example environment file during setup and configuration.",
-      "url": "https://github.com/terror/mcgill.courses/pull/61",
-      "mergedAt": "2023-03-25T19:48:57Z"
-    },
-    {
-      "number": 58,
-      "summary": "The index page was finalized with the following changes:\n- The magnifying glass icon was made slightly smaller.\n- A parser was added to handle `&amp;` in course titles.\n- Links were added to each search result suggestion in the format of `/cource/${result._id}`.\n- The nav bar buttons were removed from the template and a button for the About page was added.\n- The search results' array size was capped at 6 to prevent screen overflow.",
-      "url": "https://github.com/terror/mcgill.courses/pull/58",
-      "mergedAt": "2023-03-25T19:46:26Z"
-    },
-    {
-      "number": 59,
-      "summary": "Integrated a TypeScript formatting check into the actions workflow script. This change ensures that all TypeScript files adhere to the specified format guidelines, maintaining consistency across the codebase.",
-      "url": "https://github.com/terror/mcgill.courses/pull/59",
-      "mergedAt": "2023-03-25T19:21:48Z"
-    },
-    {
-      "number": 55,
-      "summary": "Improved the styling of the course search dropdown by updating the font size, spacing, and alignment for better readability and user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/55",
-      "mergedAt": "2023-03-25T16:38:16Z"
-    },
-    {
-      "number": 51,
-      "summary": "Refactored the home page by breaking it down into smaller, reusable components for improved code organization and maintainability. This change makes it easier to manage and update different sections of the home page separately.",
-      "url": "https://github.com/terror/mcgill.courses/pull/51",
-      "mergedAt": "2023-03-25T15:35:41Z"
-    },
-    {
-      "number": 50,
-      "summary": "Removed the loading div that appeared during authentication to improve user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/50",
-      "mergedAt": "2023-03-24T02:59:00Z"
-    },
-    {
-      "number": 49,
-      "summary": "Added a request client to the state to improve data fetching efficiency and organization.",
-      "url": "https://github.com/terror/mcgill.courses/pull/49",
-      "mergedAt": "2023-03-24T02:54:19Z"
-    },
-    {
-      "number": 47,
-      "summary": "Added a note about using environment variables to the readme file. This change helps users understand how to set and use environment variables in the project.",
-      "url": "https://github.com/terror/mcgill.courses/pull/47",
-      "mergedAt": "2023-03-23T23:57:44Z"
-    },
-    {
-      "number": 46,
-      "summary": "Added logic to conditionally render the login button in the sidepane based on user authentication status. This change improves the user experience by only showing the button when necessary, reducing clutter on the interface.",
-      "url": "https://github.com/terror/mcgill.courses/pull/46",
-      "mergedAt": "2023-03-23T23:48:48Z"
-    },
-    {
-      "number": 45,
-      "summary": "Refactored authentication routes to improve code readability and organization. Split large functions into smaller, modular pieces for easier maintenance. Added comments for better documentation and clarity in the codebase. Cleaned up redundant code and optimized route handling for smoother user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/45",
-      "mergedAt": "2023-03-23T23:36:40Z"
-    },
-    {
-      "number": 44,
-      "summary": "Corrected multiple typos in the Rust source code files to improve readability and maintain coding standards.",
-      "url": "https://github.com/terror/mcgill.courses/pull/44",
-      "mergedAt": "2023-03-23T19:05:27Z"
-    },
-    {
-      "number": 25,
-      "summary": "Added support for Microsoft OAuth authentication in the login system, allowing users to log in using their Microsoft accounts. This change enhances user experience by providing an additional secure and convenient login option.",
-      "url": "https://github.com/terror/mcgill.courses/pull/25",
-      "mergedAt": "2023-03-23T18:49:10Z"
-    },
-    {
-      "number": 42,
-      "summary": "Implemented a MongoDB full-text search index for course identifiers. This enhancement enables more efficient and accurate search functionality when looking up courses based on their identifiers.",
-      "url": "https://github.com/terror/mcgill.courses/pull/42",
-      "mergedAt": "2023-03-22T17:44:47Z"
-    },
-    {
-      "number": 39,
-      "summary": "Added a new route to find courses easily on the website. This change enhances the user experience by allowing quicker access to specific course information.",
-      "url": "https://github.com/terror/mcgill.courses/pull/39",
-      "mergedAt": "2023-03-22T17:24:19Z"
-    },
-    {
-      "number": 38,
-      "summary": "Separated routes into individual modules to improve code organization and maintainability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/38",
-      "mergedAt": "2023-03-22T05:28:56Z"
-    },
-    {
-      "number": 34,
-      "summary": "Added a new option to the loader to support the McGill term. This change allows users to specify the term when loading data, enhancing the loader's functionality and flexibility.",
-      "url": "https://github.com/terror/mcgill.courses/pull/34",
-      "mergedAt": "2023-03-21T21:55:20Z"
-    },
-    {
-      "number": 33,
-      "summary": "Added a test case for combining vector elements in the testing suite. This change ensures that the vec combine function is properly tested for accuracy and reliability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/33",
-      "mergedAt": "2023-03-21T21:52:18Z"
-    },
-    {
-      "number": 32,
-      "summary": "Implemented support for full-text search in MongoDB, allowing users to search for text across multiple fields in a collection. This enhancement enables more efficient and comprehensive search capabilities within the database.",
-      "url": "https://github.com/terror/mcgill.courses/pull/32",
-      "mergedAt": "2023-03-21T21:17:06Z"
-    },
-    {
-      "number": 31,
-      "summary": "Added a new helper function for easier testing of extractors. This function simplifies the process of testing data extraction functionality in the project.",
-      "url": "https://github.com/terror/mcgill.courses/pull/31",
-      "mergedAt": "2023-03-21T02:40:19Z"
-    },
-    {
-      "number": 29,
-      "summary": "Renamed the extract recipe in the justfile to improve clarity and consistency.",
-      "url": "https://github.com/terror/mcgill.courses/pull/29",
-      "mergedAt": "2023-03-21T00:31:54Z"
-    },
-    {
-      "number": 28,
-      "summary": "Changed the serialization of courses to use camel case instead of snake case. This makes the data structure more consistent and easy to work with across the application.",
-      "url": "https://github.com/terror/mcgill.courses/pull/28",
-      "mergedAt": "2023-03-21T00:29:01Z"
-    },
-    {
-      "number": 27,
-      "summary": "Added functionality to parse course restrictions from the input data, allowing for more accurate filtering and sorting of courses based on various criteria. This enhancement improves the overall user experience by providing more specific and relevant search results.",
-      "url": "https://github.com/terror/mcgill.courses/pull/27",
-      "mergedAt": "2023-03-21T00:26:13Z"
-    },
-    {
-      "number": 26,
-      "summary": "Simplified the extract instructors function for better readability and comprehension. Made changes to streamline the code structure and make it more user-friendly.",
-      "url": "https://github.com/terror/mcgill.courses/pull/26",
-      "mergedAt": "2023-03-21T00:02:17Z"
-    },
-    {
-      "number": 22,
-      "summary": "Added functionality to include the year in the instructor term field for improved clarity and organization.",
-      "url": "https://github.com/terror/mcgill.courses/pull/22",
-      "mergedAt": "2023-03-19T20:45:14Z"
-    },
-    {
-      "number": 21,
-      "summary": "Added a new route to fetch all courses from the database using a GET request.",
-      "url": "https://github.com/terror/mcgill.courses/pull/21",
-      "mergedAt": "2023-03-19T19:48:23Z"
-    },
-    {
-      "number": 17,
-      "summary": "Switched the backend to use MongoDB instead of the previous database system. Improved testing coverage by adding more database tests and ensuring they run successfully in the CI pipeline.",
-      "url": "https://github.com/terror/mcgill.courses/pull/17",
-      "mergedAt": "2023-03-19T18:59:14Z"
-    },
-    {
-      "number": 15,
-      "summary": "Improved the formatting and readability of the JSON output for course information. Added indentation and line breaks to make the data more organized and user-friendly.",
-      "url": "https://github.com/terror/mcgill.courses/pull/15",
-      "mergedAt": "2023-03-18T17:25:06Z"
-    },
-    {
-      "number": 13,
-      "summary": "Added an example for extracting course data to the readme file. This change aims to help users understand how to extract information from the provided courses in a clear and efficient manner.",
-      "url": "https://github.com/terror/mcgill.courses/pull/13",
-      "mergedAt": "2023-03-18T17:18:01Z"
-    },
-    {
-      "number": 12,
-      "summary": "Fixed an issue where unnecessary terms were being passed into the vsb client, streamlining the process and improving efficiency.",
-      "url": "https://github.com/terror/mcgill.courses/pull/12",
-      "mergedAt": "2023-03-18T17:10:43Z"
-    },
-    {
-      "number": 10,
-      "summary": "Formatted the workflow file to improve readability and consistency.Resolved indentation issues and aligned code blocks for better organization.",
-      "url": "https://github.com/terror/mcgill.courses/pull/10",
-      "mergedAt": "2023-03-17T23:29:50Z"
-    },
-    {
-      "number": 9,
-      "summary": "Implemented a continuous integration workflow for the backend codebase. This change ensures that code changes are automatically tested and validated before merging, improving code quality and reliability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/9",
-      "mergedAt": "2023-03-17T23:08:54Z"
-    },
-    {
-      "number": 8,
-      "summary": "Moved mocks from the main crate to the extractor crate for better code organization and maintainability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/8",
-      "mergedAt": "2023-03-17T22:46:21Z"
-    },
-    {
-      "number": 7,
-      "summary": "Updated the names of mocks to be more descriptive and less ambiguous. This change helps improve code readability and maintainability by clearly indicating the purpose of each mock in the project.",
-      "url": "https://github.com/terror/mcgill.courses/pull/7",
-      "mergedAt": "2023-03-17T22:42:27Z"
-    },
-    {
-      "number": 6,
-      "summary": "Refactored the extraction code by implementing extension traits for improved organization and readability. This change streamlines the codebase and enhances maintainability for future development tasks.",
-      "url": "https://github.com/terror/mcgill.courses/pull/6",
-      "mergedAt": "2023-03-17T22:35:08Z"
-    },
-    {
-      "number": 5,
-      "summary": "Moved model structs to the root of the crate for better organization and accessibility.",
-      "url": "https://github.com/terror/mcgill.courses/pull/5",
-      "mergedAt": "2023-03-16T19:24:25Z"
-    },
-    {
-      "number": 4,
-      "summary": "Updated the code-statistics feature to exclude mock files, improving the accuracy of the generated metrics.",
-      "url": "https://github.com/terror/mcgill.courses/pull/4",
-      "mergedAt": "2023-03-16T19:15:36Z"
-    },
-    {
-      "number": 1,
-      "summary": "Added support for scraping course scheduling information by updating the schema to include details such as course title, credits, instructors, department, and more. Also, separated out html parsing and models into individual crates.",
-      "url": "https://github.com/terror/mcgill.courses/pull/1",
-      "mergedAt": "2023-03-16T19:11:21Z"
-    }
-  ],
-  "January 2024": [
-    {
-      "number": 486,
-      "summary": "Adjusted the position of the notification pane to be more towards the right side on the screen. This change provides a better user experience by improving visibility and accessibility of notifications.",
-      "url": "https://github.com/terror/mcgill.courses/pull/486",
-      "mergedAt": "2024-01-02T04:48:33Z"
-    },
-    {
-      "number": 487,
-      "summary": "Updated the display image in the readme file to reflect the latest design changes.",
-      "url": "https://github.com/terror/mcgill.courses/pull/487",
-      "mergedAt": "2024-01-02T04:39:10Z"
-    },
-    {
-      "number": 482,
-      "summary": "Improved the mobile display by adjusting various styling elements:\n- Fixed inconsistent margins on the explore page\n- Resolved overflow issues with long schedule rows\n- Prevented users from scrolling the page when the sidenav is open",
-      "url": "https://github.com/terror/mcgill.courses/pull/482",
-      "mergedAt": "2024-01-02T04:38:02Z"
-    },
-    {
-      "number": 483,
-      "summary": "Improved the application by adding functionality to serve the Microsoft Identity Association file, which enhances the integration and authentication process for users.",
-      "url": "https://github.com/terror/mcgill.courses/pull/483",
-      "mergedAt": "2024-01-02T03:41:26Z"
-    }
-  ],
-  "February 2024": [
-    {
-      "number": 488,
-      "summary": "Improved efficiency by batching all review interactions from a single course into one request. This change replaces the previous method of sending multiple queries for each review card on a page. Now, a single request is made at the course level, streamlining the process. Each review's interactions are now retrieved from a new endpoint specific to a course, enhancing performance and user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/488",
-      "mergedAt": "2024-02-05T04:27:12Z"
+  "October 2024": [
+    {
+      "number": 604,
+      "summary": "Simplified the about page content and added subtle animations to improve the page's design and user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/604",
+      "mergedAt": "2024-10-16T23:52:40Z"
     }
   ],
   "April 2024": [
@@ -2399,264 +2703,6 @@
       "mergedAt": "2024-04-03T14:48:29Z"
     }
   ],
-  "March 2025": [
-    {
-      "number": 640,
-      "summary": "Documented and migrated Python-based tools to utilize the `uv` library for improved performance and compatibility.",
-      "url": "https://github.com/terror/mcgill.courses/pull/640",
-      "mergedAt": "2025-03-30T00:57:42Z"
-    },
-    {
-      "number": 638,
-      "summary": "Added a new tools section to the readme file to provide users with a comprehensive list of resources and utilities. This enhancement aims to improve the user experience by offering easy access to helpful tools and references.",
-      "url": "https://github.com/terror/mcgill.courses/pull/638",
-      "mergedAt": "2025-03-17T15:42:27Z"
-    },
-    {
-      "number": 636,
-      "summary": "Added a new logo favicon and updated logos on the website. Credited the logo design on the About page and fixed issues with LinkedIn images.",
-      "url": "https://github.com/terror/mcgill.courses/pull/636",
-      "mergedAt": "2025-03-16T01:41:59Z"
-    }
-  ],
-  "October 2025": [
-    {
-      "number": 761,
-      "summary": "Added support for the `GetInteractionKindPayload` type in Typeshare, allowing users to efficiently interact with this specific payload type.",
-      "url": "https://github.com/terror/mcgill.courses/pull/761",
-      "mergedAt": "2025-10-25T22:24:44Z"
-    },
-    {
-      "number": 760,
-      "summary": "Added support for the `GetInstructorPayload` type in the Typeshare feature, allowing users to easily share and access instructor information. This enhancement improves the functionality of the Typeshare feature by expanding the data types that can be utilized.",
-      "url": "https://github.com/terror/mcgill.courses/pull/760",
-      "mergedAt": "2025-10-25T22:14:31Z"
-    },
-    {
-      "number": 759,
-      "summary": "Added a test suite to ensure the functionality and reliability of the `Multiselect` component. The tests cover various scenarios to guarantee the component works as expected in different situations.",
-      "url": "https://github.com/terror/mcgill.courses/pull/759",
-      "mergedAt": "2025-10-25T20:50:04Z"
-    },
-    {
-      "number": 758,
-      "summary": "Added a test suite to ensure the accuracy and reliability of the `Histogram` component. This change enhances the overall quality and performance of the component by detecting and preventing potential bugs or issues.",
-      "url": "https://github.com/terror/mcgill.courses/pull/758",
-      "mergedAt": "2025-10-25T01:55:58Z"
-    },
-    {
-      "number": 757,
-      "summary": "Added a test suite for the `Autocomplete` component to ensure its functionality and reliability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/757",
-      "mergedAt": "2025-10-25T01:31:33Z"
-    },
-    {
-      "number": 756,
-      "summary": "Fixed the issue where the course graph would re-render unnecessarily when toggling dark mode, improving user experience and performance.",
-      "url": "https://github.com/terror/mcgill.courses/pull/756",
-      "mergedAt": "2025-10-25T01:01:48Z"
-    },
-    {
-      "number": 755,
-      "summary": "Replaced the usage of `dom-utils` with React components to improve code organization and increase maintainability.",
-      "url": "https://github.com/terror/mcgill.courses/pull/755",
-      "mergedAt": "2025-10-20T23:26:29Z"
-    },
-    {
-      "number": 754,
-      "summary": "Added a new feature called tanstack query for client-side requests, expanding functionality for improved user experience with client-side interactions.",
-      "url": "https://github.com/terror/mcgill.courses/pull/754",
-      "mergedAt": "2025-10-20T23:11:46Z"
-    },
-    {
-      "number": 753,
-      "summary": "Transformed the `transformText` function in the requirements into a reusable component for easier implementation and maintenance. This change simplifies the codebase and promotes code reusability for future development tasks.",
-      "url": "https://github.com/terror/mcgill.courses/pull/753",
-      "mergedAt": "2025-10-20T22:57:44Z"
-    },
-    {
-      "number": 752,
-      "summary": "Removed the `requirements` prop from the `CourseRequirements` component as it was determined to be unnecessary for the functionality of the component. This change simplifies the codebase and reduces unnecessary props being passed around.",
-      "url": "https://github.com/terror/mcgill.courses/pull/752",
-      "mergedAt": "2025-10-20T22:32:20Z"
-    },
-    {
-      "number": 751,
-      "summary": "Refactored the shared router wrapper for client-side tests, streamlining and improving the testing process. Made the code more efficient and organized by removing redundant and unnecessary components. Made changes to enhance readability and maintainability of the codebase.",
-      "url": "https://github.com/terror/mcgill.courses/pull/751",
-      "mergedAt": "2025-10-20T22:25:25Z"
-    },
-    {
-      "number": 750,
-      "summary": "Added a test suite to validate course requirements to ensure accurate and consistent evaluation. This ensures that all course prerequisites are met before enrollment is allowed.",
-      "url": "https://github.com/terror/mcgill.courses/pull/750",
-      "mergedAt": "2025-10-20T22:19:10Z"
-    },
-    {
-      "number": 749,
-      "summary": "Moved the `stripColonPrefix` function from its original location to the `utils.ts` file for better organization and code structure.",
-      "url": "https://github.com/terror/mcgill.courses/pull/749",
-      "mergedAt": "2025-10-20T22:09:24Z"
-    },
-    {
-      "number": 747,
-      "summary": "Updated the coverage badge URL in the README file to ensure that it directs users to the correct location for viewing code coverage.",
-      "url": "https://github.com/terror/mcgill.courses/pull/747",
-      "mergedAt": "2025-10-19T18:12:50Z"
-    },
-    {
-      "number": 746,
-      "summary": "Updated the pointer for the CI badge in the readme file to ensure the badge displays the correct status.",
-      "url": "https://github.com/terror/mcgill.courses/pull/746",
-      "mergedAt": "2025-10-19T17:48:59Z"
-    },
-    {
-      "number": 745,
-      "summary": "Fixed the layout issues with schedules and final exam UI on different screen sizes. Made adjustments to ensure a consistent and user-friendly experience across all devices.",
-      "url": "https://github.com/terror/mcgill.courses/pull/745",
-      "mergedAt": "2025-10-19T17:32:55Z"
-    },
-    {
-      "number": 744,
-      "summary": "Added a new feature that allows users to download a calendar file for each schedule row. This feature provides users with the ability to easily save and organize their schedules offline.",
-      "url": "https://github.com/terror/mcgill.courses/pull/744",
-      "mergedAt": "2025-10-19T07:44:31Z"
-    },
-    {
-      "number": 743,
-      "summary": "Added a downloadable calendar button to the final exam rows, allowing users to easily add exam dates to their personal calendars.",
-      "url": "https://github.com/terror/mcgill.courses/pull/743",
-      "mergedAt": "2025-10-19T06:41:47Z"
-    },
-    {
-      "number": 741,
-      "summary": "Added badges to the readme file to display important project information, such as build status and code coverage. The badges provide a quick and visual way for users to see the current status of the project at a glance.",
-      "url": "https://github.com/terror/mcgill.courses/pull/741",
-      "mergedAt": "2025-10-19T05:33:00Z"
-    },
-    {
-      "number": 740,
-      "summary": "Removed the course ID and timestamp parameters from review URLs to improve privacy and security. Users can now share review links without exposing sensitive information.",
-      "url": "https://github.com/terror/mcgill.courses/pull/740",
-      "mergedAt": "2025-10-19T05:07:14Z"
-    },
-    {
-      "number": 737,
-      "summary": "Fixed an issue where the course title formatting was being lost when displayed after the course code. Added logic to preserve the formatting of the course title even when it follows the course code, ensuring a consistent and polished user experience.",
-      "url": "https://github.com/terror/mcgill.courses/pull/737",
-      "mergedAt": "2025-10-19T04:49:34Z"
-    },
-    {
-      "number": 739,
-      "summary": "Added functionality to parse and display final exam schedules on the course page, allowing students to easily access and view their exam dates and times.",
-      "url": "https://github.com/terror/mcgill.courses/pull/739",
-      "mergedAt": "2025-10-19T03:38:33Z"
-    },
-    {
-      "number": 736,
-      "summary": "Updated the code to strip the subject and code sections from the search data JSON file. This change helps improve search accuracy and relevance by removing unnecessary information.",
-      "url": "https://github.com/terror/mcgill.courses/pull/736",
-      "mergedAt": "2025-10-18T02:42:26Z"
-    },
-    {
-      "number": 735,
-      "summary": "Aligned the styling of the review scroll button with the copy button for a consistent look and feel. Made the necessary adjustments to ensure visual cohesion throughout the user interface.",
-      "url": "https://github.com/terror/mcgill.courses/pull/735",
-      "mergedAt": "2025-10-18T02:18:53Z"
-    },
-    {
-      "number": 734,
-      "summary": "Reduced the size of the project dependencies by switching from importing the entire lodash library to importing only the needed methods. This change helped optimize the bundle size and improve the overall performance of the application.",
-      "url": "https://github.com/terror/mcgill.courses/pull/734",
-      "mergedAt": "2025-10-18T01:37:14Z"
-    },
-    {
-      "number": 733,
-      "summary": "Added a custom course ranking logic to improve search results in the application. This change helps users find relevant courses more easily based on their preferences and needs.",
-      "url": "https://github.com/terror/mcgill.courses/pull/733",
-      "mergedAt": "2025-10-18T01:18:37Z"
-    },
-    {
-      "number": 731,
-      "summary": "Added a copy button to reviews on the course page, allowing users to easily share feedback with others.",
-      "url": "https://github.com/terror/mcgill.courses/pull/731",
-      "mergedAt": "2025-10-12T02:32:48Z"
-    },
-    {
-      "number": 730,
-      "summary": "Set a unique key for each review item on the reviews page to improve performance and prevent rendering issues.",
-      "url": "https://github.com/terror/mcgill.courses/pull/730",
-      "mergedAt": "2025-10-12T01:57:04Z"
-    },
-    {
-      "number": 729,
-      "summary": "Added a scroll button to the reviews page, allowing users to easily navigate through long lists of reviews without manual scrolling. This improvement enhances the user experience and simplifies the process of reviewing multiple entries on the platform.",
-      "url": "https://github.com/terror/mcgill.courses/pull/729",
-      "mergedAt": "2025-10-12T01:28:44Z"
-    },
-    {
-      "number": 728,
-      "summary": "Added feature to allow users to scroll to specific course reviews by clicking on a link or button. This enhancement provides a more convenient way for users to access and read reviews for a particular course.",
-      "url": "https://github.com/terror/mcgill.courses/pull/728",
-      "mergedAt": "2025-10-10T16:23:33Z"
-    },
-    {
-      "number": 727,
-      "summary": "Added support for the `GetUserInteractionForCoursePayload` type in the typeshare. This change enables users to easily access and utilize this specific type within their project.",
-      "url": "https://github.com/terror/mcgill.courses/pull/727",
-      "mergedAt": "2025-10-09T22:36:17Z"
-    },
-    {
-      "number": 726,
-      "summary": "Added documentation for authentication related endpoints to provide clear instructions and information for users on how to use these endpoints securely.",
-      "url": "https://github.com/terror/mcgill.courses/pull/726",
-      "mergedAt": "2025-10-09T22:20:39Z"
-    },
-    {
-      "number": 725,
-      "summary": "Added documentation for interactions related endpoints to provide users with clear instructions on how to interact with the application's features effectively. The documentation includes examples and explanations to help users understand the functionality of each endpoint and how to utilize them properly. This update aims to improve user experience and ensure that users can easily navigate and utilize the application's features without encountering any confusion.",
-      "url": "https://github.com/terror/mcgill.courses/pull/725",
-      "mergedAt": "2025-10-09T22:13:51Z"
-    },
-    {
-      "number": 724,
-      "summary": "Added documentation for user-related endpoints to provide clear instructions on how to interact with these features in the application. This update aims to improve user experience by helping users understand how to utilize the various functionalities available to them.",
-      "url": "https://github.com/terror/mcgill.courses/pull/724",
-      "mergedAt": "2025-10-09T22:09:08Z"
-    },
-    {
-      "number": 723,
-      "summary": "Added documentation for instructor-related endpoints to provide clear guidance on how instructors can interact with the system. Expanded on the functionality and usage of each endpoint, making it easier for instructors to navigate and utilize the system effectively.",
-      "url": "https://github.com/terror/mcgill.courses/pull/723",
-      "mergedAt": "2025-10-09T21:55:32Z"
-    },
-    {
-      "number": 722,
-      "summary": "Added documentation for subscription related endpoints, detailing their functionality, parameters, and response formats. This update enhances the clarity and completeness of the API documentation for developers integrating subscription features into their applications.",
-      "url": "https://github.com/terror/mcgill.courses/pull/722",
-      "mergedAt": "2025-10-09T21:46:36Z"
-    },
-    {
-      "number": 721,
-      "summary": "Implemented a feature that disables body scrolling to prevent overflowing content on the page. This change ensures a better user experience by keeping the content within the visible area without causing any layout issues.",
-      "url": "https://github.com/terror/mcgill.courses/pull/721",
-      "mergedAt": "2025-10-04T01:38:13Z"
-    }
-  ],
-  "April 2025": [
-    {
-      "number": 627,
-      "summary": "Fixed occasional perma loading on explore page that occurred when quickly scrolling down after clicking on a course. The issue was due to a race condition between two network requests which resulted in 'courses' being set to 'undefined'. The fix involved falling back to the batch's courses instead of using the null chaining operator. Testing with network throttling confirmed the issue is resolved.",
-      "url": "https://github.com/terror/mcgill.courses/pull/627",
-      "mergedAt": "2025-04-05T19:42:28Z"
-    },
-    {
-      "number": 643,
-      "summary": "Fixed lint issues in the codebase. Made necessary code adjustments to ensure compliance with linting rules.",
-      "url": "https://github.com/terror/mcgill.courses/pull/643",
-      "mergedAt": "2025-04-05T19:36:59Z"
-    }
-  ],
   "May 2025": [
     {
       "number": 668,
@@ -2791,66 +2837,72 @@
       "mergedAt": "2025-05-03T05:55:26Z"
     }
   ],
-  "October 2023": [
+  "July 2023": [
     {
-      "number": 449,
-      "summary": "Removed outdated rating display components that were no longer being used in the application. This cleanup improves code readability and reduces unnecessary clutter in the codebase.",
-      "url": "https://github.com/terror/mcgill.courses/pull/449",
-      "mergedAt": "2023-10-23T21:29:44Z"
+      "number": 344,
+      "summary": "Added a hovering effect for classroom numbers in the schedule display. When hovering over the numbers, the fullname of the building is now displayed for better clarity and navigation.",
+      "url": "https://github.com/terror/mcgill.courses/pull/344",
+      "mergedAt": "2023-07-26T23:18:37Z"
     },
     {
-      "number": 448,
-      "summary": "Fixed issue where the histogram was not displaying correctly on specific screen sizes, as it was overlapping the background.",
-      "url": "https://github.com/terror/mcgill.courses/pull/448",
-      "mergedAt": "2023-10-17T02:48:22Z"
+      "number": 348,
+      "summary": "Fixed the failing MongoDB installation in the CI by updating the installation process and dependencies to ensure smooth and successful deployment.",
+      "url": "https://github.com/terror/mcgill.courses/pull/348",
+      "mergedAt": "2023-07-22T19:03:06Z"
     },
     {
-      "number": 447,
-      "summary": "Simplified the process of merging courses in the loader. Made adjustments to streamline and improve the course merging functionality.",
-      "url": "https://github.com/terror/mcgill.courses/pull/447",
-      "mergedAt": "2023-10-16T19:25:50Z"
+      "number": 345,
+      "summary": "Fixed an issue where the open-schedule button was overflowing on smaller screens by adjusting the styling to ensure it displays correctly.",
+      "url": "https://github.com/terror/mcgill.courses/pull/345",
+      "mergedAt": "2023-07-17T02:41:12Z"
     },
     {
-      "number": 446,
-      "summary": "Ignored extractor test samples when generating the code report to ensure accuracy in the report.",
-      "url": "https://github.com/terror/mcgill.courses/pull/446",
-      "mergedAt": "2023-10-16T05:20:40Z"
+      "number": 337,
+      "summary": "Consolidated individual course requests to streamline and simplify the process. This change improves efficiency by allowing users to submit multiple course requests in a single submission rather than separately.",
+      "url": "https://github.com/terror/mcgill.courses/pull/337",
+      "mergedAt": "2023-07-16T03:33:06Z"
     },
     {
-      "number": 440,
-      "summary": "Implemented functionality to add instructors to the search feature, allowing users to search for instructors using full-text search capabilities. This change enhances the user experience by providing a more comprehensive search option within the platform.",
-      "url": "https://github.com/terror/mcgill.courses/pull/440",
-      "mergedAt": "2023-10-16T05:13:16Z"
+      "number": 341,
+      "summary": "Added a screenshot of the course page to the readme file, providing a visual representation of the course content. This change aims to enhance the user experience by offering a preview of the course layout and design.",
+      "url": "https://github.com/terror/mcgill.courses/pull/341",
+      "mergedAt": "2023-07-15T23:39:35Z"
     },
     {
-      "number": 445,
-      "summary": "Added type-only import to ensure TypeScript fully erases it at runtime.",
-      "url": "https://github.com/terror/mcgill.courses/pull/445",
-      "mergedAt": "2023-10-16T05:03:10Z"
+      "number": 340,
+      "summary": "Blended the search results with the search bar to improve user experience. This change allows for a seamless integration of search suggestions with the search input field, making it easier for users to find relevant information quickly.",
+      "url": "https://github.com/terror/mcgill.courses/pull/340",
+      "mergedAt": "2023-07-12T23:46:28Z"
     },
     {
-      "number": 444,
-      "summary": "Added a basic error boundary to address potential issues in the application. This change helps improve user experience by handling errors more gracefully.",
-      "url": "https://github.com/terror/mcgill.courses/pull/444",
-      "mergedAt": "2023-10-16T04:59:22Z"
+      "number": 296,
+      "summary": "Updated the frontend code by replacing utility classes, adjusting widths and margins, improving component structure, and fixing various styling issues across multiple files. Specific changes include renaming props, improving code cleanliness, simplifying expressions, optimizing transitions, and enhancing usability through visual adjustments. Some components were refactored to use reusable elements, simplify logic, or improve performance. Additionally, unnecessary code was removed, and dependencies were updated to enhance the overall user experience.",
+      "url": "https://github.com/terror/mcgill.courses/pull/296",
+      "mergedAt": "2023-07-12T03:26:06Z"
     },
     {
-      "number": 443,
-      "summary": "Fixed the position of the reset button, which was previously incorrectly set to absolute positioning, causing it to overlap with other elements on the page. Now, the reset button aligns properly within the layout of the webpage.",
-      "url": "https://github.com/terror/mcgill.courses/pull/443",
-      "mergedAt": "2023-10-11T02:47:17Z"
+      "number": 336,
+      "summary": "Fixed a bug where the review form would unintentionally close upon clicking on it.",
+      "url": "https://github.com/terror/mcgill.courses/pull/336",
+      "mergedAt": "2023-07-03T17:11:25Z"
     },
     {
-      "number": 439,
-      "summary": "Sorted the reviews on the instructor page by date to display the most recent ones first, providing users with easier access to the latest feedback.",
-      "url": "https://github.com/terror/mcgill.courses/pull/439",
-      "mergedAt": "2023-10-07T04:16:48Z"
+      "number": 335,
+      "summary": "Updated the example for the load command in the README to provide clearer instructions on how to use the feature effectively.",
+      "url": "https://github.com/terror/mcgill.courses/pull/335",
+      "mergedAt": "2023-07-02T00:51:22Z"
     },
     {
-      "number": 421,
-      "summary": "Added the capability for users to perform full-text searches on the explore page. This enhancement makes it easier for users to find specific content quickly and efficiently within the platform.",
-      "url": "https://github.com/terror/mcgill.courses/pull/421",
-      "mergedAt": "2023-10-02T17:27:15Z"
+      "number": 330,
+      "summary": "Added a course graph feature to visualize course dependencies and relationships. The graph helps users plan their coursework effectively by visually displaying prerequisites and corequisites for each course.",
+      "url": "https://github.com/terror/mcgill.courses/pull/330",
+      "mergedAt": "2023-07-02T00:41:36Z"
+    },
+    {
+      "number": 317,
+      "summary": "Added icons to the term filter buttons in the explore feature for better visual representation and user experience. The icons provide users with a quick visual cue to understand the purpose of each filter option, making it easier to navigate through the explore section.",
+      "url": "https://github.com/terror/mcgill.courses/pull/317",
+      "mergedAt": "2023-07-01T15:43:14Z"
     }
   ]
 }
