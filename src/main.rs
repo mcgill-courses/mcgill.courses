@@ -132,6 +132,8 @@ async fn main() {
   }
 
   dotenv().ok();
+  let openai_key =
+    std::env::var("OPENAI_API_KEY").expect("OPENAI_API_KEY not set");
 
   if let Err(error) = Server::parse().run().await {
     eprintln!("error: {error}");
