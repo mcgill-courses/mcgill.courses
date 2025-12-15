@@ -2,7 +2,7 @@ name: Update Changelogs
 
 on:
   schedule:
-    - cron: "0 0 * * 0" # Runs once per week
+    - cron: '0 0 * * 0' # Runs once per week
   workflow_dispatch: {}
 
   # Temporary, for testing
@@ -38,16 +38,16 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-         cargo run --manifest-path  tools/changelog-generator/Cargo.toml -- --output client/src/assets/changelog.json
+          cargo run --manifest-path  tools/changelog-generator/Cargo.toml -- --output client/src/assets/changelog.json
 
       - name: Check if new changelog was added
         id: diff
         run: |
           CHANGELOG_FILE="client/src/assets/changelog.json"
           if git diff --quiet "$CHANGELOG_FILE"; then
-            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           else
-            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Exit if not changed
@@ -68,7 +68,7 @@ jobs:
           git add client/src/assets/changelog.json
           git commit -m "Auto update from cronjob"
           git push origin "$BRANCH"
-          echo "branch=$BRANCH" >> $GITHUB_ENV
+          echo "branch=$BRANCH" >> "$GITHUB_ENV"
 
       - name: Open PR
         if: steps.diff.outputs.changed == 'true'
