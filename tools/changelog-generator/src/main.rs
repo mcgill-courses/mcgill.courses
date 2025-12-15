@@ -1,8 +1,6 @@
 use {
   anyhow::{Error, anyhow},
-  async_openai::types::{
-    ChatCompletionRequestSystemMessageArgs, CreateChatCompletionRequestArgs,
-  },
+  async_openai::types::responses::CreateResponseArgs,
   chrono::{DateTime, Utc},
   clap::Parser,
   dotenv::dotenv,
@@ -62,28 +60,17 @@ impl PullRequest<'_> {
       ));
     }
 
-    let response = client
-      .chat()
-      .create(
-        CreateChatCompletionRequestArgs::default()
-          .max_output_tokens(512u16)
-          .model("gpt-5-nano")
-          .messages([ChatCompletionRequestSystemMessageArgs::default()
-            .content(prompt)
-            .build()?
-            .into()])
-          .build()?,
-      )
-      .await?;
+    let request = CreateResponseArgs::default()
+      .model("gpt-4.1-nano")
+      .input(prompt)
+      .max_output_tokens(512u32)
+      .build()?;
+
+    let response = client.responses().create(request).await?;
 
     let summary = response
-      .choices
-      .first()
-      .ok_or(anyhow!("No choices in response"))?
-      .message
-      .content
-      .as_ref()
-      .ok_or(anyhow!("No content in message"))?
+      .output_text()
+      .ok_or_else(|| anyhow!("No output text in response"))?
       .trim()
       .to_string();
 
