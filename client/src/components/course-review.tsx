@@ -12,7 +12,7 @@ import {
   ThumbsDown,
   ThumbsUp,
 } from 'lucide-react';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
@@ -34,6 +34,22 @@ import { Tooltip } from './tooltip';
 
 // Timestamp of https://github.com/terror/mcgill.courses/pull/500
 const RMP_SCRAPE_EPOCH = new Date(1713472800 * 1000);
+
+const formatReviewContent = (content: string): ReactNode[] => {
+  const parts = content.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+
+  return parts.filter(Boolean).map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return <em key={i}>{part.slice(1, -1)}</em>;
+    }
+
+    return <Fragment key={i}>{part}</Fragment>;
+  });
+};
 
 const LoginPrompt = () => {
   return (
@@ -448,7 +464,7 @@ export const CourseReview = ({
               if (!shouldTruncate) {
                 return (
                   <div className='ml-1 mr-4 mt-2 hyphens-auto whitespace-pre-wrap break-words text-left text-gray-800 dark:text-gray-300'>
-                    {review.content}
+                    {formatReviewContent(review.content)}
                   </div>
                 );
               }
@@ -456,7 +472,9 @@ export const CourseReview = ({
               return (
                 <>
                   <div className='ml-1 mr-4 mt-2 hyphens-auto whitespace-pre-wrap break-words text-left text-gray-800 dark:text-gray-300'>
-                    {review.content.substring(0, 300) + '...'}
+                    {formatReviewContent(
+                      review.content.substring(0, 300) + '...'
+                    )}
                   </div>
                   <button
                     className='ml-1 mr-auto pt-1 text-gray-700 underline transition duration-300 ease-in-out hover:text-red-500 dark:text-gray-300 dark:hover:text-red-500'
