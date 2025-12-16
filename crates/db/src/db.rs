@@ -28,7 +28,7 @@ impl Db {
 
     client
       .database(db_name)
-      .run_command(doc! { "ping": 1 }, None)
+      .run_command(doc! { "ping": 1 })
       .await?;
 
     info!("Connected to MongoDB");
@@ -141,22 +141,28 @@ impl Db {
       }
     }
 
-    Ok(
-      self
-        .database
-        .collection::<Course>(Self::COURSE_COLLECTION)
-        .find(
-          (!document.is_empty()).then_some(document),
-          FindOptions::builder()
-            .sort((!sort_document.is_empty()).then_some(sort_document))
-            .skip(offset)
-            .limit(limit)
-            .build(),
-        )
-        .await?
-        .try_collect::<Vec<Course>>()
-        .await?,
-    )
+    let filter = if document.is_empty() {
+      doc! {}
+    } else {
+      document
+    };
+
+    let collection =
+      self.database.collection::<Course>(Self::COURSE_COLLECTION);
+
+    let mut find = collection.find(filter);
+
+    if !sort_document.is_empty() {
+      find = find.sort(sort_document);
+    }
+    if let Some(offset) = offset {
+      find = find.skip(offset);
+    }
+    if let Some(limit) = limit {
+      find = find.limit(limit);
+    }
+
+    Ok(find.await?.try_collect::<Vec<Course>>().await?)
   }
 
   pub async fn course_count(&self) -> Result<u64> {
@@ -164,7 +170,7 @@ impl Db {
       self
         .database
         .collection::<Course>(Self::COURSE_COLLECTION)
-        .count_documents(None, None)
+        .count_documents(doc! {})
         .await?,
     )
   }
@@ -192,94 +198,70 @@ impl Db {
 
   #[tracing::instrument(name = "db_add_review", skip(self), fields(course_id = %review.course_id, user_id = %review.user_id))]
   pub async fn add_review(&self, review: Review) -> Result<UpdateResult> {
-    let mut session = self.client.start_session(None).await?;
+    let mut session = self.client.start_session().await?;
+    session.start_transaction().await?;
 
-    let interaction_coll =
+    let course_coll =
       self.database.collection::<Course>(Self::COURSE_COLLECTION);
 
     let review_coll =
       self.database.collection::<Review>(Self::REVIEW_COLLECTION);
 
-    async fn transaction(
-      session: &mut ClientSession,
-      course_coll: Collection<Course>,
-      review_coll: Collection<Review>,
-      review: Review,
-    ) -> mongodb::error::Result<UpdateResult> {
-      let res = review_coll
-        .update_one_with_session(
-          doc! {
-            "courseId": &review.course_id,
-            "userId": review.user_id
-          },
-          UpdateModifications::Document(doc! {
-            "$set": {
-              "content": &review.content,
-              "difficulty": review.difficulty,
-              "instructors": &review.instructors,
-              "rating": review.rating,
-              "timestamp": review.timestamp,
-              "likes": 0
-            },
-          }),
-          UpdateOptions::builder().upsert(true).build(),
-          session,
-        )
-        .await?;
-
-      let course = course_coll
-        .find_one(
-          doc! {
-            "_id": &review.course_id,
-          },
-          None,
-        )
-        .await?
-        .ok_or(mongodb::error::Error::custom(Error::CourseNotFound))?;
-
-      let count = course.review_count as f32;
-
-      let avg_rating =
-        (course.avg_rating * count + (review.rating as f32)) / (count + 1.0);
-
-      let avg_difficulty = (course.avg_difficulty * count
-        + (review.difficulty as f32))
-        / (count + 1.0);
-
-      course_coll
-        .update_one(
-          doc! {
-            "_id": &review.course_id
-          },
-          UpdateModifications::Document(doc! {
-            "$inc": { "reviewCount": 1 },
-            "$set": {
-              "avgRating": avg_rating,
-              "avgDifficulty": avg_difficulty,
-            }
-          }),
-          None,
-        )
-        .await?;
-
-      Ok(res)
-    }
-
-    let res = session
-      .with_transaction(
-        (),
-        move |session, _| {
-          transaction(
-            session,
-            interaction_coll.clone(),
-            review_coll.clone(),
-            review.clone(),
-          )
-          .boxed()
+    let res = review_coll
+      .update_one(
+        doc! {
+          "courseId": &review.course_id,
+          "userId": &review.user_id
         },
-        None,
+        doc! {
+          "$set": {
+            "content": &review.content,
+            "difficulty": review.difficulty,
+            "instructors": &review.instructors,
+            "rating": review.rating,
+            "timestamp": review.timestamp,
+            "likes": 0
+          },
+        },
       )
+      .upsert(true)
+      .session(&mut session)
       .await?;
+
+    let course = course_coll
+      .find_one(doc! {
+        "_id": &review.course_id,
+      })
+      .session(&mut session)
+      .await?
+      .ok_or(Error::CourseNotFound)?;
+
+    let count = course.review_count as f32;
+
+    let avg_rating =
+      (course.avg_rating * count + (review.rating as f32)) / (count + 1.0);
+
+    let avg_difficulty = (course.avg_difficulty * count
+      + (review.difficulty as f32))
+      / (count + 1.0);
+
+    course_coll
+      .update_one(
+        doc! {
+          "_id": &review.course_id
+        },
+        doc! {
+          "$inc": { "reviewCount": 1 },
+          "$set": {
+            "avgRating": avg_rating,
+            "avgDifficulty": avg_difficulty,
+          }
+        },
+      )
+      .session(&mut session)
+      .await?;
+
+    session.commit_transaction().await?;
 
     Ok(res)
   }
@@ -289,93 +271,64 @@ impl Db {
     course_id: &str,
     user_id: &str,
   ) -> Result<Review> {
-    let mut session = self.client.start_session(None).await?;
+    let mut session = self.client.start_session().await?;
+    session.start_transaction().await?;
 
-    let interaction_coll =
+    let course_coll =
       self.database.collection::<Course>(Self::COURSE_COLLECTION);
 
     let review_coll =
       self.database.collection::<Review>(Self::REVIEW_COLLECTION);
 
-    async fn transaction(
-      session: &mut ClientSession,
-      course_coll: Collection<Course>,
-      review_coll: Collection<Review>,
-      course_id: String,
-      user_id: String,
-    ) -> mongodb::error::Result<Review> {
-      let review = review_coll
-        .find_one_and_delete_with_session(
-          doc! {
-            "courseId": &course_id,
-            "userId": &user_id
-          },
-          None,
-          session,
-        )
-        .await?
-        .ok_or(mongodb::error::Error::custom(Error::ReviewNotFound))?;
+    let review = review_coll
+      .find_one_and_delete(doc! {
+        "courseId": course_id,
+        "userId": user_id
+      })
+      .session(&mut session)
+      .await?
+      .ok_or(Error::ReviewNotFound)?;
 
-      let course = course_coll
-        .find_one(
-          doc! {
-            "_id": &course_id,
-          },
-          None,
-        )
-        .await?
-        .ok_or(mongodb::error::Error::custom(Error::CourseNotFound))?;
+    let course = course_coll
+      .find_one(doc! {
+        "_id": course_id,
+      })
+      .session(&mut session)
+      .await?
+      .ok_or(Error::CourseNotFound)?;
 
-      let (avg_rating, avg_difficulty) = if course.review_count == 0 {
-        (0.0, 0.0)
-      } else {
-        let count = course.review_count as f32;
+    let (avg_rating, avg_difficulty) = if course.review_count == 0 {
+      (0.0, 0.0)
+    } else {
+      let count = course.review_count as f32;
 
-        let rating =
-          (course.avg_rating * count - (review.rating as f32)) / (count - 1.0);
+      let rating =
+        (course.avg_rating * count - (review.rating as f32)) / (count - 1.0);
 
-        let difficulty = (course.avg_difficulty * count
-          - (review.difficulty as f32))
-          / (count - 1.0);
+      let difficulty = (course.avg_difficulty * count
+        - (review.difficulty as f32))
+        / (count - 1.0);
 
-        (rating, difficulty)
-      };
+      (rating, difficulty)
+    };
 
-      course_coll
-        .update_one(
-          doc! {
-            "_id": &review.course_id
-          },
-          UpdateModifications::Document(doc! {
-            "$inc": { "reviewCount": -1 },
-            "$set": {
-              "avgRating": avg_rating,
-              "avgDifficulty": avg_difficulty,
-            }
-          }),
-          None,
-        )
-        .await?;
-
-      Ok(review)
-    }
-
-    let review = session
-      .with_transaction(
-        (),
-        move |session, _| {
-          transaction(
-            session,
-            interaction_coll.clone(),
-            review_coll.clone(),
-            course_id.to_string(),
-            user_id.to_string(),
-          )
-          .boxed()
+    course_coll
+      .update_one(
+        doc! {
+          "_id": &review.course_id
         },
-        None,
+        doc! {
+          "$inc": { "reviewCount": -1 },
+          "$set": {
+            "avgRating": avg_rating,
+            "avgDifficulty": avg_difficulty,
+          }
+        },
       )
+      .session(&mut session)
       .await?;
+
+    session.commit_transaction().await?;
 
     Ok(review)
   }
@@ -412,13 +365,14 @@ impl Db {
       self
         .database
         .collection::<Review>(Self::REVIEW_COLLECTION)
-        .find_one(doc! { "courseId": course_id, "userId": user_id }, None)
+        .find_one(doc! { "courseId": course_id, "userId": user_id })
         .await?,
     )
   }
 
   pub async fn add_interaction(&self, interaction: Interaction) -> Result {
-    let mut session = self.client.start_session(None).await?;
+    let mut session = self.client.start_session().await?;
+    session.start_transaction().await?;
 
     let interaction_coll = self
       .database
@@ -427,78 +381,55 @@ impl Db {
     let review_coll =
       self.database.collection::<Review>(Self::REVIEW_COLLECTION);
 
-    async fn callback(
-      session: &mut ClientSession,
-      interaction_coll: Collection<Interaction>,
-      review_coll: Collection<Review>,
-      interaction: Interaction,
-    ) -> mongodb::error::Result<()> {
-      let old = interaction_coll
-        .find_one_and_update_with_session(
-          doc! {
-            "courseId": &interaction.course_id,
-            "userId": &interaction.user_id,
-            "referrer": &interaction.referrer,
+    let old = interaction_coll
+      .find_one_and_update(
+        doc! {
+          "courseId": &interaction.course_id,
+          "userId": &interaction.user_id,
+          "referrer": &interaction.referrer,
+        },
+        doc! {
+          "$set": {
+            "kind": Into::<Bson>::into(&interaction.kind)
           },
-          UpdateModifications::Document(doc! {
-            "$set": {
-              "kind": Into::<Bson>::into(&interaction.kind)
-            },
-          }),
-          FindOneAndUpdateOptions::builder().upsert(true).build(),
-          session,
-        )
-        .await?;
+        },
+      )
+      .upsert(true)
+      .session(&mut session)
+      .await?;
 
-      if let Some(old) = old.clone()
-        && old.kind == interaction.kind
-      {
-        return Ok(());
-      }
-
-      let increment_amount = {
-        let amt = match interaction.kind {
-          InteractionKind::Like => 1,
-          InteractionKind::Dislike => -1,
-        };
-
-        if old.is_some() { amt * 2 } else { amt }
-      };
-
-      review_coll
-        .update_one_with_session(
-          doc! {
-            "courseId": interaction.course_id,
-            "userId": interaction.user_id,
-          },
-          doc! {
-            "$inc": {
-              "likes": increment_amount
-            }
-          },
-          None,
-          session,
-        )
-        .await?;
-
-      Ok(())
+    if let Some(ref old) = old
+      && old.kind == interaction.kind
+    {
+      session.commit_transaction().await?;
+      return Ok(());
     }
 
-    session
-      .with_transaction(
-        (),
-        move |session, _| {
-          callback(
-            session,
-            interaction_coll.clone(),
-            review_coll.clone(),
-            interaction.clone(),
-          )
-          .boxed()
+    let increment_amount = {
+      let amt = match interaction.kind {
+        InteractionKind::Like => 1,
+        InteractionKind::Dislike => -1,
+      };
+
+      if old.is_some() { amt * 2 } else { amt }
+    };
+
+    review_coll
+      .update_one(
+        doc! {
+          "courseId": interaction.course_id,
+          "userId": interaction.user_id,
         },
-        None,
+        doc! {
+          "$inc": {
+            "likes": increment_amount
+          }
+        },
       )
+      .session(&mut session)
       .await?;
+
+    session.commit_transaction().await?;
 
     Ok(())
   }
@@ -509,7 +440,8 @@ impl Db {
     user_id: &str,
     referrer: &str,
   ) -> Result {
-    let mut session = self.client.start_session(None).await?;
+    let mut session = self.client.start_session().await?;
+    session.start_transaction().await?;
 
     let interaction_coll = self
       .database
@@ -518,63 +450,30 @@ impl Db {
     let review_coll =
       self.database.collection::<Review>(Self::REVIEW_COLLECTION);
 
-    async fn callback(
-      session: &mut ClientSession,
-      interaction_coll: Collection<Interaction>,
-      review_coll: Collection<Review>,
-      course_id: String,
-      user_id: String,
-      referrer: String,
-    ) -> mongodb::error::Result<()> {
-      let interaction = interaction_coll
-        .find_one_and_delete(
-          doc! {
-            "courseId": &course_id,
-            "userId": &user_id,
-            "referrer": &referrer,
-          },
-          None,
-        )
-        .await?;
+    let interaction = interaction_coll
+      .find_one_and_delete(doc! {
+        "courseId": course_id,
+        "userId": user_id,
+        "referrer": referrer,
+      })
+      .session(&mut session)
+      .await?;
 
-      match interaction {
-        Some(i) => {
-          review_coll.update_one_with_session(
-            doc! {
-              "courseId": &course_id,
-              "userId": &user_id,
-            },
-            doc! {
-              "$inc": {
-                "likes": match i.kind { InteractionKind::Like => -1, InteractionKind::Dislike => 1 }
-              }
-            },
-            None,
-            session
-          ).await?;
-          Ok(())
-        }
-        None => Ok(()),
-      }
+    if let Some(i) = interaction {
+      review_coll
+        .update_one(doc! {
+          "courseId": course_id,
+          "userId": user_id,
+        }, doc! {
+          "$inc": {
+            "likes": match i.kind { InteractionKind::Like => -1, InteractionKind::Dislike => 1 }
+          }
+        })
+        .session(&mut session)
+        .await?;
     }
 
-    session
-      .with_transaction(
-        (),
-        move |session, _| {
-          callback(
-            session,
-            interaction_coll.clone(),
-            review_coll.clone(),
-            course_id.to_string(),
-            user_id.to_string(),
-            referrer.to_string(),
-          )
-          .boxed()
-        },
-        None,
-      )
-      .await?;
+    session.commit_transaction().await?;
 
     Ok(())
   }
@@ -588,13 +487,10 @@ impl Db {
       self
         .database
         .collection::<Interaction>(Self::INTERACTION_COLLECTION)
-        .delete_many(
-          doc! {
-            "courseId": course_id,
-            "userId": user_id,
-          },
-          None,
-        )
+        .delete_many(doc! {
+          "courseId": course_id,
+          "userId": user_id,
+        })
         .await?,
     )
   }
@@ -608,7 +504,7 @@ impl Db {
       self
         .database
         .collection::<Interaction>(Self::INTERACTION_COLLECTION)
-        .find(doc! { "courseId": course_id, "userId": user_id }, None)
+        .find(doc! { "courseId": course_id, "userId": user_id })
         .await?
         .try_collect::<Vec<Interaction>>()
         .await?,
@@ -625,7 +521,7 @@ impl Db {
       self
         .database
         .collection::<Interaction>(Self::INTERACTION_COLLECTION)
-        .find_one(doc! { "courseId": course_id, "userId": user_id, "referrer": referrer }, None)
+        .find_one(doc! { "courseId": course_id, "userId": user_id, "referrer": referrer })
         .await?.map(|i| i.kind)
     )
   }
@@ -639,7 +535,7 @@ impl Db {
       self
         .database
         .collection::<Interaction>(Self::INTERACTION_COLLECTION)
-        .find(doc! { "courseId": course_id, "referrer": referrer }, None)
+        .find(doc! { "courseId": course_id, "referrer": referrer })
         .await?
         .try_collect::<Vec<Interaction>>()
         .await?,
@@ -655,13 +551,10 @@ impl Db {
       self
         .database
         .collection::<Subscription>(Self::SUBSCRIPTION_COLLECTION)
-        .find_one(
-          doc! {
-            "courseId": course_id,
-            "userId": user_id,
-          },
-          None,
-        )
+        .find_one(doc! {
+          "courseId": course_id,
+          "userId": user_id,
+        })
         .await?,
     )
   }
@@ -674,12 +567,9 @@ impl Db {
       self
         .database
         .collection::<Subscription>(Self::SUBSCRIPTION_COLLECTION)
-        .find(
-          doc! {
-            "userId": user_id,
-          },
-          None,
-        )
+        .find(doc! {
+          "userId": user_id,
+        })
         .await?
         .try_collect::<Vec<Subscription>>()
         .await?,
@@ -694,7 +584,7 @@ impl Db {
       self
         .database
         .collection::<Subscription>(Self::SUBSCRIPTION_COLLECTION)
-        .insert_one(subscription, None)
+        .insert_one(subscription)
         .await?,
     )
   }
@@ -707,13 +597,10 @@ impl Db {
       self
         .database
         .collection::<Subscription>(Self::SUBSCRIPTION_COLLECTION)
-        .delete_one(
-          doc! {
-            "courseId": subscription.course_id,
-            "userId": subscription.user_id,
-          },
-          None,
-        )
+        .delete_one(doc! {
+          "courseId": subscription.course_id,
+          "userId": subscription.user_id,
+        })
         .await?,
     )
   }
@@ -726,7 +613,7 @@ impl Db {
       self
         .database
         .collection::<Notification>(Self::NOTIFICATION_COLLECTION)
-        .find(doc! { "userId": user_id }, None)
+        .find(doc! { "userId": user_id })
         .await?
         .try_collect::<Vec<Notification>>()
         .await?,
@@ -739,7 +626,7 @@ impl Db {
     let subscriptions = self
       .database
       .collection::<Subscription>(Self::SUBSCRIPTION_COLLECTION)
-      .find(doc! { "courseId": course_id }, None)
+      .find(doc! { "courseId": course_id })
       .await?
       .try_collect::<Vec<Subscription>>()
       .await?;
@@ -765,7 +652,6 @@ impl Db {
             user_id: subscription.user_id,
           })
           .collect::<Vec<Notification>>(),
-        None,
       )
       .await?;
 
@@ -781,13 +667,10 @@ impl Db {
       self
         .database
         .collection::<Notification>(Self::NOTIFICATION_COLLECTION)
-        .delete_one(
-          doc! {
-            "userId": user_id,
-            "review.courseId": course_id,
-          },
-          None,
-        )
+        .delete_one(doc! {
+          "userId": user_id,
+          "review.courseId": course_id,
+        })
         .await?,
     )
   }
@@ -801,13 +684,10 @@ impl Db {
       self
         .database
         .collection::<Notification>(Self::NOTIFICATION_COLLECTION)
-        .delete_many(
-          doc! {
-            "review.userId": creator_id,
-            "review.courseId": course_id
-          },
-          None,
-        )
+        .delete_many(doc! {
+          "review.userId": creator_id,
+          "review.courseId": course_id
+        })
         .await?,
     )
   }
@@ -821,13 +701,10 @@ impl Db {
       self
         .database
         .collection::<Notification>(Self::NOTIFICATION_COLLECTION)
-        .delete_many(
-          doc! {
-            "userId": user_id,
-            "review.courseId": course_id
-          },
-          None,
-        )
+        .delete_many(doc! {
+          "userId": user_id,
+          "review.courseId": course_id
+        })
         .await?,
     )
   }
@@ -847,13 +724,12 @@ impl Db {
             "review.userId": creator_id,
             "review.courseId": course_id
           },
-          UpdateModifications::Document(doc! {
+          doc! {
             "$set": {
               "review": Into::<Bson>::into(review),
               "seen": false
             }
-          }),
-          None,
+          },
         )
         .await?,
     )
@@ -876,12 +752,11 @@ impl Db {
             "review.courseId": course_id,
             "review.userId": creator_id
           },
-          UpdateModifications::Document(doc! {
+          doc! {
             "$set": {
               "seen": seen
             }
-          }),
-          None,
+          },
         )
         .await?,
     )
@@ -892,7 +767,7 @@ impl Db {
       self
         .database
         .collection::<Review>(Self::REVIEW_COLLECTION)
-        .find(query, None)
+        .find(query)
         .await?
         .try_collect::<Vec<Review>>()
         .await?,
@@ -904,7 +779,7 @@ impl Db {
       self
         .database
         .collection::<Course>(Self::COURSE_COLLECTION)
-        .find_one(query, None)
+        .find_one(query)
         .await?,
     )
   }
@@ -946,14 +821,11 @@ impl Db {
         self
           .database
           .collection::<Course>(Self::COURSE_COLLECTION)
-          .insert_one(
-            Course {
-              id_ngrams: Some(course.id.ngrams()),
-              title_ngrams: Some(course.title.filter_stopwords().ngrams()),
-              ..course
-            },
-            None,
-          )
+          .insert_one(Course {
+            id_ngrams: Some(course.id.ngrams()),
+            title_ngrams: Some(course.title.filter_stopwords().ngrams()),
+            ..course
+          })
           .await?;
       }
     }
@@ -970,7 +842,7 @@ impl Db {
       self
         .database
         .collection::<Course>(Self::COURSE_COLLECTION)
-        .update_one(query, UpdateModifications::Document(update), None)
+        .update_one(query, update)
         .await?,
     )
   }
@@ -982,23 +854,19 @@ impl Db {
     limit: i64,
   ) -> Result<Cursor<T>>
   where
-    T: Serialize + DeserializeOwned,
+    T: Serialize + DeserializeOwned + Send + Sync,
   {
     Ok(
       self
         .database
         .collection::<T>(collection)
-        .find(
-          doc! {
-            "$text": {
-              "$search": query
-            }
-          },
-          FindOptions::builder()
-            .sort(doc! { "score": { "$meta" : "textScore" }})
-            .limit(limit)
-            .build(),
-        )
+        .find(doc! {
+          "$text": {
+            "$search": query
+          }
+        })
+        .sort(doc! { "score": { "$meta" : "textScore" }})
+        .limit(limit)
         .await?,
     )
   }
@@ -1010,7 +878,7 @@ impl Db {
     weights: Document,
   ) -> Result<CreateIndexResult>
   where
-    T: Serialize + DeserializeOwned,
+    T: Serialize + DeserializeOwned + Send + Sync,
   {
     Ok(
       self
@@ -1021,7 +889,6 @@ impl Db {
             .keys(keys)
             .options(IndexOptions::builder().weights(weights).build())
             .build(),
-          None,
         )
         .await?,
     )
@@ -1036,13 +903,10 @@ impl Db {
       self
         .database
         .collection::<Instructor>(Self::INSTRUCTOR_COLLECTION)
-        .insert_one(
-          Instructor {
-            name_ngrams: Some(instructor.name.ngrams()),
-            ..instructor
-          },
-          None,
-        )
+        .insert_one(Instructor {
+          name_ngrams: Some(instructor.name.ngrams()),
+          ..instructor
+        })
         .await?;
     };
 
@@ -1057,7 +921,7 @@ impl Db {
       self
         .database
         .collection::<Instructor>(Self::INSTRUCTOR_COLLECTION)
-        .find_one(query, None)
+        .find_one(query)
         .await?,
     )
   }
@@ -1105,22 +969,28 @@ impl Db {
       }
     }
 
-    Ok(
-      self
-        .database
-        .collection::<Review>(Self::REVIEW_COLLECTION)
-        .find(
-          (!document.is_empty()).then_some(document),
-          FindOptions::builder()
-            .sort((!sort_document.is_empty()).then_some(sort_document))
-            .skip(offset)
-            .limit(limit)
-            .build(),
-        )
-        .await?
-        .try_collect::<Vec<Review>>()
-        .await?,
-    )
+    let filter = if document.is_empty() {
+      doc! {}
+    } else {
+      document
+    };
+
+    let collection =
+      self.database.collection::<Review>(Self::REVIEW_COLLECTION);
+
+    let mut find = collection.find(filter);
+
+    if !sort_document.is_empty() {
+      find = find.sort(sort_document);
+    }
+    if let Some(offset) = offset {
+      find = find.skip(offset);
+    }
+    if let Some(limit) = limit {
+      find = find.limit(limit);
+    }
+
+    Ok(find.await?.try_collect::<Vec<Review>>().await?)
   }
 
   pub async fn unique_user_count(&self) -> Result<u64> {
@@ -1136,7 +1006,6 @@ impl Db {
         doc! {
           "timestamp": { "$gte": rmp_scrape_epoch }
         },
-        None,
       )
       .await?;
 
@@ -1149,7 +1018,7 @@ impl Db {
       self
         .database
         .collection::<Instructor>(Self::INSTRUCTOR_COLLECTION)
-        .find(None, None)
+        .find(doc! {})
         .await?
         .try_collect::<Vec<Instructor>>()
         .await?,
@@ -1162,7 +1031,7 @@ impl Db {
       self
         .database
         .collection::<Subscription>(Self::SUBSCRIPTION_COLLECTION)
-        .find(None, None)
+        .find(doc! {})
         .await?
         .try_collect::<Vec<Subscription>>()
         .await?,
@@ -1175,7 +1044,7 @@ impl Db {
       self
         .database
         .collection::<Notification>(Self::NOTIFICATION_COLLECTION)
-        .find(None, None)
+        .find(doc! {})
         .await?
         .try_collect::<Vec<Notification>>()
         .await?,
