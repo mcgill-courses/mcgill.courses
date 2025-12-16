@@ -20,7 +20,7 @@ utoipa = { version = "5.4.0", features = ["axum_extras"] }
 
 [dependencies]
 anyhow = { workspace = true }
-async-mongodb-session = { version = "3.0.0", default-features = false }
+async-mongodb-session = { version = "3.0.0", default-features = false, features = ["tokio-runtime"] }
 async-session = "3.0.0"
 axum = { version = "0.8.4", features = ["json"] }
 axum-extra = { version = "0.10.1", features = ["cookie", "typed-header"] }
