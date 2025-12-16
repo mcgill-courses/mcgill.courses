@@ -130,6 +130,23 @@ describe('CourseReview', () => {
     expect(screen.getByText(longContent)).toBeInTheDocument();
   });
 
+  it('renders bold and italic formatting in content', () => {
+    renderWithRouter(
+      <CourseReview
+        canModify={false}
+        handleDelete={vi.fn()}
+        openEditReview={vi.fn()}
+        review={{
+          ...baseReview,
+          content: 'A *small* **test** of emphasis.',
+        }}
+      />
+    );
+
+    expect(screen.getByText('small').tagName).toBe('EM');
+    expect(screen.getByText('test').tagName).toBe('STRONG');
+  });
+
   it('renders scroll attachment when requested', () => {
     renderWithRouter(
       <CourseReview
