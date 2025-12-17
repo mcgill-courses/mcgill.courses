@@ -23,7 +23,6 @@ export const Footer = () => {
     const checkScrollability = () => {
       const scrollable = checkPageScrollable();
       setIsScrollable(scrollable);
-      // If page isn't scrollable, always show the footer
       if (!scrollable) {
         setVisible(true);
       }
@@ -33,16 +32,13 @@ export const Footer = () => {
       const currentScrollY = window.scrollY;
       const scrollDelta = currentScrollY - lastScrollY.current;
 
-      // Use a small threshold to prevent flickering on tiny scroll movements
       if (Math.abs(scrollDelta) < 5) return;
 
-      // Show when scrolling down, hide when scrolling up
       setVisible(scrollDelta > 0);
 
       lastScrollY.current = currentScrollY;
     };
 
-    // Check on mount and when window resizes
     checkScrollability();
     window.addEventListener('resize', checkScrollability);
     window.addEventListener('scroll', handleScroll, { passive: true });
