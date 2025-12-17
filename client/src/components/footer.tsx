@@ -1,3 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
+
 import { NavItem } from './nav-item';
 
 export const navigationItems = [
@@ -8,8 +11,52 @@ export const navigationItems = [
 ];
 
 export const Footer = () => {
+  const [visible, setVisible] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const isPageScrollable = () => {
+      return document.documentElement.scrollHeight > window.innerHeight;
+    };
+
+    const checkScrollability = () => {
+      // If page isn't scrollable, always show the footer
+      if (!isPageScrollable()) {
+        setVisible(true);
+      }
+    };
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDelta = currentScrollY - lastScrollY.current;
+
+      // Use a small threshold to prevent flickering on tiny scroll movements
+      if (Math.abs(scrollDelta) < 5) return;
+
+      // Show when scrolling down, hide when scrolling up
+      setVisible(scrollDelta > 0);
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    // Check on mount and when window resizes
+    checkScrollability();
+    window.addEventListener('resize', checkScrollability);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('resize', checkScrollability);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <nav className='flex h-16 w-full flex-row items-center justify-between bg-slate-100 dark:bg-neutral-900'>
+    <nav
+      className={twMerge(
+        'fixed bottom-0 left-0 z-40 hidden h-16 w-full flex-row items-center justify-between bg-slate-100 transition-transform duration-300 ease-in-out dark:bg-neutral-900 lg:flex',
+        visible ? 'translate-y-0' : 'translate-y-full'
+      )}
+    >
       <div className='ml-10 flex flex-row'>
         {navigationItems.map((item, i) => (
           <div key={i} className='mx-3'>

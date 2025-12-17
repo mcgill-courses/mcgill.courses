@@ -22,9 +22,7 @@ export const Layout = ({ children, preventScroll }: LayoutProps) => {
         <Navbar />
         <main className='mx-2 md:mx-16 lg:mx-24 xl:mx-40'>{children}</main>
       </div>
-      <div className='hidden lg:block'>
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 };
