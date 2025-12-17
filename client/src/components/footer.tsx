@@ -12,16 +12,19 @@ export const navigationItems = [
 
 export const Footer = () => {
   const [visible, setVisible] = useState(false);
+  const [isScrollable, setIsScrollable] = useState(true);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
-    const isPageScrollable = () => {
+    const checkPageScrollable = () => {
       return document.documentElement.scrollHeight > window.innerHeight;
     };
 
     const checkScrollability = () => {
+      const scrollable = checkPageScrollable();
+      setIsScrollable(scrollable);
       // If page isn't scrollable, always show the footer
-      if (!isPageScrollable()) {
+      if (!scrollable) {
         setVisible(true);
       }
     };
@@ -53,8 +56,9 @@ export const Footer = () => {
   return (
     <nav
       className={twMerge(
-        'fixed bottom-0 left-0 z-40 hidden h-16 w-full flex-row items-center justify-between bg-slate-100 transition-transform duration-300 ease-in-out dark:bg-neutral-900 lg:flex',
-        visible ? 'translate-y-0' : 'translate-y-full'
+        'fixed bottom-0 left-0 z-40 hidden h-16 w-full flex-row items-center justify-between bg-slate-100 dark:bg-neutral-900 lg:flex',
+        isScrollable && 'transition-transform duration-300 ease-in-out',
+        isScrollable && !visible ? 'translate-y-full' : 'translate-y-0'
       )}
     >
       <div className='ml-10 flex flex-row'>
