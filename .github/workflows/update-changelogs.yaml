@@ -5,8 +5,7 @@ on:
     - cron: '0 0 * * 0' # Runs once per week
   workflow_dispatch: {}
 
-  # Temporary, for testing
-  # TODO: remove after confirming workflow works well
+  # TODO: Temporary, for testing, remove after confirming workflow works well
   push:
     branches:
       - automate-changelog
