@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import type { ReactElement, ReactNode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
-const routerFutureConfig = {
+export const routerFutureConfig = {
   v7_startTransition: true,
   v7_relativeSplatPath: true,
 };

@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { env } from '../lib/env';
+import { routerFutureConfig } from '../testing/router-wrapper';
 import { Navbar } from './navbar';
 
 const getNotificationsMock = vi.hoisted(() => vi.fn());
@@ -117,7 +118,7 @@ describe('Navbar', () => {
 
   const renderNavbar = (initialPath: string) =>
     render(
-      <MemoryRouter initialEntries={[initialPath]}>
+      <MemoryRouter initialEntries={[initialPath]} future={routerFutureConfig}>
         <Navbar />
       </MemoryRouter>
     );

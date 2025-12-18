@@ -16,6 +16,11 @@ import { DarkModeProvider } from './providers/dark-mode-provider';
 import ExploreFilterStateProvider from './providers/explore-filter-state-provider';
 import QueryProvider from './providers/query-provider';
 
+const routerFutureConfig = {
+  v7_startTransition: true,
+  v7_relativeSplatPath: true,
+};
+
 const Root = () => {
   // When an error occurs, we want all of the state in the app
   // to reset to prevent further errors
@@ -28,7 +33,7 @@ const Root = () => {
   return (
     <React.StrictMode>
       <HelmetProvider>
-        <BrowserRouter>
+        <BrowserRouter future={routerFutureConfig}>
           <DarkModeProvider>
             <ErrorBoundary
               FallbackComponent={ErrorPage}
