@@ -159,6 +159,9 @@ jobs:
           brew install ripgrep
           ./bin/forbid
 
+      - name: Unused dependencies
+        uses: bnjbvr/cargo-machete@main
+
       - name: Build
         run: cargo build --workspace --all-features --all-targets
 
