@@ -86,26 +86,6 @@ export interface Notification {
   userId: string;
 }
 
-export type ReqNode =
-  | { type: 'course'; data: string }
-  | {
-      type: 'group';
-      data: {
-        operator: Operator;
-        groups: ReqNode[];
-      };
-    };
-
-export interface Requirements {
-  prerequisitesText?: string;
-  corequisitesText?: string;
-  corequisites: string[];
-  prerequisites: string[];
-  restrictions?: string;
-  logicalPrerequisites?: ReqNode;
-  logicalCorequisites?: ReqNode;
-}
-
 export interface Subscription {
   courseId: string;
   userId: string;
@@ -127,3 +107,13 @@ export enum Operator {
   And = 'AND',
   Or = 'OR',
 }
+
+export type ReqNode =
+  | { type: 'course'; data: string }
+  | {
+      type: 'group';
+      data: {
+        operator: Operator;
+        groups: ReqNode[];
+      };
+    };

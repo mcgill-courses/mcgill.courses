@@ -1,10 +1,5 @@
 import { PropsWithChildren, createContext, useState } from 'react';
 
-export interface Theme {
-  darkMode: boolean;
-  setDarkMode: (darkMode: boolean) => void;
-}
-
 export const DarkModeContext = createContext<
   [boolean, (darkMode: boolean) => void] | undefined
 >(undefined);

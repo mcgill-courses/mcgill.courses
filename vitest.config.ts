@@ -20,9 +20,4 @@ export default defineConfig({
       ],
     },
   },
-  resolve: {
-    alias: {
-      '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
-    },
-  },
 });

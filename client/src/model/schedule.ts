@@ -6,7 +6,7 @@ export type Block = {
   crn: string;
 };
 
-export type TimeBlock = {
+type TimeBlock = {
   day: string;
   t1: string;
   t2: string;

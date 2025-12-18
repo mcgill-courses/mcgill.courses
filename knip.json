@@ -1,0 +1,7 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["client/src/main.tsx", "vitest.setup.ts"],
+  "project": ["client/src/**/*.{ts,tsx}"],
+  "ignore": ["client/dist/**", "tools/**"],
+  "ignoreUnresolved": ["../vitest.setup.ts"]
+}
