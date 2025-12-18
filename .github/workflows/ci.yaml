@@ -13,9 +13,7 @@ defaults:
     shell: bash
 
 jobs:
-  check:
-    name: Check
-
+  check-workflow:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,8 +29,6 @@ jobs:
         run: ${{ steps.actionlint.outputs.executable }} -color
 
   client:
-    name: Client
-
     runs-on: macos-latest
 
     steps:
@@ -69,8 +65,6 @@ jobs:
         run: pnpm run cy:e2e
 
   coverage:
-    name: Coverage
-
     runs-on: macos-latest
 
     env:
@@ -127,8 +121,6 @@ jobs:
           files: coverage/*.lcov
 
   server:
-    name: Server
-
     runs-on: macos-latest
 
     env:
