@@ -151,7 +151,6 @@ impl Default for ReqNode {
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-#[typeshare]
 pub struct Requirements {
   pub prerequisites_text: Option<String>,
   pub corequisites_text: Option<String>,
