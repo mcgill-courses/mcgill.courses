@@ -29,7 +29,7 @@ const Questions = ({ input }: QuestionsProps) => {
         <Disclosure as='div' key={item.title} className='w-full'>
           {({ open }) => (
             <>
-              <Disclosure.Button className='focus-visible:ring-mcgill-red/75 mx-auto flex w-full justify-between rounded-lg bg-gray-200 px-4 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus-visible:ring dark:bg-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-600'>
+              <Disclosure.Button className='mx-auto flex w-full justify-between rounded-lg bg-gray-200 px-4 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus-visible:ring focus-visible:ring-mcgill-red/75 dark:bg-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-600'>
                 <span>{item.title}</span>
                 <motion.div
                   animate={{ rotate: open ? 180 : 0 }}
@@ -111,7 +111,7 @@ const Person = ({
           {links?.map((link: PersonLink, i) => (
             <React.Fragment key={i}>
               <a target='_blank' rel='noopener noreferrer' href={link.url}>
-                <Paragraph className='hover:text-mcgill-red underline transition-colors duration-200'>
+                <Paragraph className='underline transition-colors duration-200 hover:text-mcgill-red'>
                   {link.title}
                 </Paragraph>
               </a>
@@ -142,7 +142,7 @@ const questions = [
         Yes! We encourage you to explore other great student-made tools like{' '}
         <a
           href='https://cloudberry.fyi'
-          className='hover:text-mcgill-red underline'
+          className='underline hover:text-mcgill-red'
           target='_blank'
           rel='noopener noreferrer'
         >
@@ -151,7 +151,7 @@ const questions = [
         and{' '}
         <a
           href='https://demetrios-koziris.github.io/McGillEnhanced/support'
-          className='hover:text-mcgill-red underline'
+          className='underline hover:text-mcgill-red'
           target='_blank'
           rel='noopener noreferrer'
         >
@@ -229,13 +229,13 @@ export const About = () => {
             Welcome to <span className='text-mcgill-red'>mcgill.courses</span>!
           </Title>
           <Paragraph className='leading-loose text-gray-700 dark:text-gray-200'>
-            <Link className='hover:text-mcgill-red underline' to='/'>
+            <Link className='underline hover:text-mcgill-red' to='/'>
               mcgill.courses
             </Link>{' '}
             is a student-driven platform providing transparent and comprehensive
             reviews for courses and instructors at{' '}
             <a
-              className='hover:text-mcgill-red underline'
+              className='underline hover:text-mcgill-red'
               href='https://www.mcgill.ca/'
               target='_blank'
               rel='noopener noreferrer'
@@ -254,12 +254,12 @@ export const About = () => {
         <motion.div variants={fadeInUp}>
           <Title>Our Story</Title>
           <Paragraph>
-            <Link className='hover:text-mcgill-red underline' to='/'>
+            <Link className='underline hover:text-mcgill-red' to='/'>
               mcgill.courses
             </Link>{' '}
             was born in{' '}
             <a
-              className='hover:text-mcgill-red underline'
+              className='underline hover:text-mcgill-red'
               href='https://github.com/terror/mcgill.courses/commit/45268b4e39801a4d9531d7b8ad5654fcca5bb01d'
               target='_blank'
               rel='noopener noreferrer'
@@ -294,7 +294,7 @@ export const About = () => {
         <motion.div variants={fadeInUp}>
           <Paragraph className='mt-8'>
             Curious about our latest updates? Check out our{' '}
-            <Link className='hover:text-mcgill-red underline' to='/changelog'>
+            <Link className='underline hover:text-mcgill-red' to='/changelog'>
               changelog
             </Link>{' '}
             to see what we've been working on!
@@ -384,7 +384,7 @@ export const About = () => {
                 aria-label={label}
               >
                 <Icon
-                  className='hover:text-mcgill-red dark:hover:text-mcgill-red text-gray-500 transition-colors duration-300 dark:text-gray-300'
+                  className='text-gray-500 transition-colors duration-300 hover:text-mcgill-red dark:text-gray-300 dark:hover:text-mcgill-red'
                   size={40}
                 />
               </motion.a>

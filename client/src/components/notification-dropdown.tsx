@@ -149,7 +149,7 @@ export const NotificationDropdown = ({
                                     </Link>
                                   </p>
                                   {!notification.seen && (
-                                    <Circle className='h-2 w-2 fill-red-400 text-red-400' />
+                                    <Circle className='size-2 fill-red-400 text-red-400' />
                                   )}
                                 </div>
                                 <Trash2

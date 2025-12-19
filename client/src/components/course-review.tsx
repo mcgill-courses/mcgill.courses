@@ -322,13 +322,13 @@ export const CourseReview = ({
           className='inline-flex h-6 items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
           aria-label={`Open ${review.courseId} and scroll to this review`}
         >
-          <ArrowUpRight className='h-4 w-4' />
+          <ArrowUpRight className='size-4' />
         </Link>
       </Tooltip>
     ) : attachment === ReviewAttachment.CopyButton ? (
       (() => {
         const icon = (
-          <span className='relative inline-flex h-4 w-4 items-center justify-center'>
+          <span className='relative inline-flex size-4 items-center justify-center'>
             <Copy
               className={twMerge(
                 'absolute h-4 w-4 transition-opacity duration-150 ease-out',
@@ -348,7 +348,7 @@ export const CourseReview = ({
           <button
             type='button'
             onClick={copyReviewLink}
-            className='inline-flex h-6 w-6 items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
+            className='inline-flex size-6 items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
             aria-label={`Copy review link for ${review.courseId}`}
             disabled={copied}
           >
@@ -375,7 +375,7 @@ export const CourseReview = ({
   }, []);
 
   const reviewContext = includeTaughtBy ? (
-    <span className='flex flex-wrap items-center gap-x-1 gap-y-1'>
+    <span className='flex flex-wrap items-center gap-1'>
       <span>Taught by</span>
       {review.instructors.map((instructor, i) => {
         let separator = null;

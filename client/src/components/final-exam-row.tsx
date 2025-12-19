@@ -184,7 +184,7 @@ const renderDetailLine = (
       {parts.map((part, index) => (
         <span key={`${keyPrefix}-${index}`} className='flex items-center'>
           {index > 0 && (
-            <Dot className='h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500' />
+            <Dot className='size-4 shrink-0 text-gray-400 dark:text-gray-500' />
           )}
           <span>{part}</span>
         </span>
