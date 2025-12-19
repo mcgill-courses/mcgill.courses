@@ -6,6 +6,7 @@
   ],
   "ignorePatterns": [
     "client/dist/*",
+    "client/coverage/*",
     "cypress.config.js",
     "cypress/*",
     "vite.config.ts",

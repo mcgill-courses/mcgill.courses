@@ -11,6 +11,11 @@ module.exports = {
       xs: '480px',
       ...defaultTheme.screens,
     },
+    extend: {
+      colors: {
+        'mcgill-red': '#ED1B2F',
+      },
+    },
   },
   darkMode: 'class',
   plugins: [],
