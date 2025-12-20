@@ -11,9 +11,9 @@ import { twMerge } from 'tailwind-merge';
 import * as buildingCodes from '../assets/building-codes.json';
 import * as buildingCoordinates from '../assets/building-coordinates.json';
 import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
+import type { Block, Schedule } from '../lib/types';
 import { getCurrentTerm, sortTerms } from '../lib/utils';
 import type { Course } from '../model/course';
-import type { Block, Schedule } from '../model/schedule';
 import { AddToCalendarButton } from './add-to-calendar-button';
 import { BuildingLocation } from './building-location';
 import { Tooltip } from './tooltip';
@@ -33,7 +33,9 @@ const VSBtimeToDisplay = (time: string) => {
     .padStart(2, '0')}`;
 };
 
-type ScheduleBlock = Omit<Block, 'timeblocks'> & {
+type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
+  location: string;
+  display: string;
   timeblocks: RepeatingBlock[];
 };
 
@@ -231,10 +233,10 @@ const getSections = (
     (scheds) =>
       sortBy(
         uniqBy(
-          scheds.flatMap((s) => s.blocks),
+          scheds.flatMap((s) => s.blocks ?? []),
           (b) => b.display
         ),
-        (b) => b.display.split(' ', 2)[1]
+        (b) => b.display?.split(' ', 2)[1]
       )
   );
 
@@ -243,12 +245,14 @@ const getSections = (
   const termBlockTimes = mapValues(termBlocks, (blocks) =>
     blocks.map((b) => ({
       ...b,
+      location: b.location ?? '',
+      display: b.display ?? '',
       timeblocks: Object.entries(
-        groupBy(b.timeblocks, (tb) => `${tb.t1}-${tb.t2}`)
+        groupBy(b.timeblocks ?? [], (tb) => `${tb.t1}-${tb.t2}`)
       ).map(([time, tbs]) => {
         const [t1, t2] = time.split('-', 2);
         return {
-          days: tbs.map((tb) => tb.day),
+          days: tbs.map((tb) => tb.day).filter((d): d is string => d != null),
           startTime: VSBtimeToDisplay(t1),
           endTime: VSBtimeToDisplay(t2),
         };
@@ -469,8 +473,8 @@ export const SchedulesDisplay = ({
   if (!schedules) return null;
 
   const offeredTerms = sortTerms(
-    uniq(schedules.map((schedule) => schedule.term)).filter((term) =>
-      course.terms.includes(term)
+    uniq(schedules.map((schedule) => schedule.term)).filter(
+      (term): term is string => term != null && course.terms.includes(term)
     )
   );
 
