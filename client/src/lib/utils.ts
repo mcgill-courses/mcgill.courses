@@ -126,8 +126,10 @@ export const sortSchedulesByBlocks = (schedules: Schedule[]): Schedule[] => {
   return schedules.sort((a, b) => {
     const aDisplay = a.blocks?.[0]?.display ?? '';
     const bDisplay = b.blocks?.[0]?.display ?? '';
+
     const aNum = parseInt(aDisplay.split(' ')[1], 10);
     const bNum = parseInt(bDisplay.split(' ')[1], 10);
+
     const aType = aDisplay.split(' ')[0];
     const bType = bDisplay.split(' ')[0];
 
