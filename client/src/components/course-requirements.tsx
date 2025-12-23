@@ -3,8 +3,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
+import type { Course } from '../lib/types';
 import { capitalize, punctuate, stripColonPrefix } from '../lib/utils';
-import type { Course } from '../model/course';
 import { CourseGraph } from './course-graph';
 
 type RequirementTextProps = {

@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-import type { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import type { Schedule } from './types';
 import {
   InvalidDateError,

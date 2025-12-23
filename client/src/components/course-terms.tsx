@@ -5,12 +5,12 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
+import type { Course } from '../lib/types';
 import {
   compareTerms,
   getCurrentTerms,
   groupCurrentCourseTermInstructors,
 } from '../lib/utils';
-import type { Course } from '../model/course';
 import { Highlight } from './highlight';
 import { Tooltip } from './tooltip';
 

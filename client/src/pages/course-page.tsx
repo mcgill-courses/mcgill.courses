@@ -21,8 +21,8 @@ import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
 import type { Review } from '../lib/types';
 import { Interaction } from '../lib/types';
+import type { Course } from '../lib/types';
 import { getCurrentTerms, getReviewAnchorId } from '../lib/utils';
-import type { Course } from '../model/course';
 import { TermAverage } from '../model/term-average';
 import { Loading } from './loading';
 

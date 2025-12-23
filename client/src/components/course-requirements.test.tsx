@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
-import type { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import { renderWithRouter } from '../testing/router-wrapper';
 import { CourseRequirements } from './course-requirements';
 
@@ -27,6 +27,9 @@ const baseCourse: Course = {
   leadingTo: [],
   restrictions: '',
   schedule: [],
+  avgRating: 0,
+  avgDifficulty: 0,
+  reviewCount: 0,
 };
 
 describe('CourseRequirements', () => {

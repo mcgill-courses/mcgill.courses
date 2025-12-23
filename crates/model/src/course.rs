@@ -5,6 +5,7 @@ use super::*;
 )]
 #[derivative(Eq, Hash, PartialEq)]
 #[serde(rename_all = "camelCase")]
+#[typeshare]
 pub struct Course {
   #[serde(rename = "_id")]
   pub id: String,

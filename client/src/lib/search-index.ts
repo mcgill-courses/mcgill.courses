@@ -1,7 +1,7 @@
 import { Index } from 'flexsearch';
 
 import data from '../assets/search-data.json';
-import { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import type { SearchResults } from '../model/search-results';
 
 let coursesIndex: Index | null = null;

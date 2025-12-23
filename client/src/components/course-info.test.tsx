@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { api } from '../lib/api';
 import type { Review, User } from '../lib/types';
-import type { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import { AuthContext } from '../providers/auth-provider';
 import { CourseInfo } from './course-info';
 
@@ -65,6 +65,9 @@ const baseCourse: Course = {
   leadingTo: [],
   restrictions: '',
   schedule: [],
+  avgRating: 0,
+  avgDifficulty: 0,
+  reviewCount: 0,
 };
 
 const defaultReviews: Review[] = [

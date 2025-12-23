@@ -5,8 +5,8 @@ import type { Mock } from 'vitest';
 
 import { api } from '../lib/api';
 import type { Review } from '../lib/types';
+import type { Course } from '../lib/types';
 import { getReviewAnchorId } from '../lib/utils';
-import type { Course } from '../model/course';
 import { CoursePage } from './course-page';
 
 const courseReviewMock = vi.hoisted(() =>
@@ -152,6 +152,9 @@ describe('Course page', () => {
       leadingTo: [],
       restrictions: '',
       schedule: [],
+      avgRating: 0,
+      avgDifficulty: 0,
+      reviewCount: 0,
     };
 
     const reviews: Review[] = Array.from({ length: 9 }, (_, index) => ({
@@ -233,6 +236,9 @@ describe('Course page', () => {
       leadingTo: [],
       restrictions: '',
       schedule: [],
+      avgRating: 0,
+      avgDifficulty: 0,
+      reviewCount: 0,
     };
 
     const review: Review = {
@@ -290,6 +296,9 @@ describe('Course page', () => {
       leadingTo: [],
       restrictions: '',
       schedule: [],
+      avgRating: 0,
+      avgDifficulty: 0,
+      reviewCount: 0,
     };
 
     const review: Review = {

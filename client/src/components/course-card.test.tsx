@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 
 import { CourseCard } from '../components/course-card';
-import type { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import { renderWithRouter } from '../testing/router-wrapper';
 
 describe('CourseCard', () => {
@@ -22,6 +22,9 @@ describe('CourseCard', () => {
     leadingTo: [],
     restrictions: '',
     schedule: [],
+    avgRating: 0,
+    avgDifficulty: 0,
+    reviewCount: 0,
   };
 
   it('renders course code and title', () => {

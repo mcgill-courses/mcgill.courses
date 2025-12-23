@@ -1,4 +1,4 @@
-import { Course } from './course';
+import type { Course } from '../lib/types';
 
 export type GetCoursesPayload = {
   courses: Course[];
