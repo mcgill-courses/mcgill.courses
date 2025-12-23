@@ -8,7 +8,7 @@ let instructorsIndex: Index | null = null;
 
 export type CourseData = Pick<Course, '_id' | 'subject' | 'code' | 'title'>;
 
-export type InstructorName = string;
+type InstructorName = string;
 
 export type SearchResults = {
   query?: string;
