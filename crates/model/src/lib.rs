@@ -24,6 +24,8 @@ use {
 mod course;
 mod course_filter;
 mod course_page;
+mod course_sort;
+mod course_sort_type;
 mod datetime;
 mod initialize_options;
 mod instructor;
@@ -38,8 +40,10 @@ mod subscription;
 
 pub use crate::{
   course::Course,
-  course_filter::{CourseFilter, CourseSort, CourseSortType},
+  course_filter::CourseFilter,
   course_page::CoursePage,
+  course_sort::CourseSort,
+  course_sort_type::CourseSortType,
   datetime::DateTime,
   initialize_options::InitializeOptions,
   instructor::Instructor,
