@@ -12,11 +12,12 @@ pub(crate) struct GetCoursesParams {
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
+#[typeshare]
 pub(crate) struct GetCoursesPayload {
   /// List of courses matching the query.
   pub(crate) courses: Vec<Course>,
   /// Total number of courses available (if requested).
-  pub(crate) course_count: Option<u64>,
+  pub(crate) course_count: Option<u32>,
 }
 
 #[utoipa::path(
@@ -43,7 +44,7 @@ pub(crate) async fn get_courses(
     .await?;
 
   let course_count = if params.with_course_count.unwrap_or(false) {
-    Some(db.course_count().await?)
+    Some(db.course_count().await?.try_into()?)
   } else {
     None
   };

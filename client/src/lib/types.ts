@@ -72,6 +72,13 @@ export interface Course {
   reviewCount: number;
 }
 
+export interface GetCoursesPayload {
+  /** List of courses matching the query. */
+  courses: Course[];
+  /** Total number of courses available (if requested). */
+  courseCount?: number;
+}
+
 export interface Review {
   /** The text content of the review. */
   content: string;
