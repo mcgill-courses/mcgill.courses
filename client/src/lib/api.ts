@@ -7,7 +7,7 @@ import type { GetUserInteractionForCoursePayload } from '../lib/types';
 import type { GetInteractionKindPayload } from '../lib/types';
 import type { GetInstructorPayload } from '../lib/types';
 import type { GetCoursesPayload } from '../lib/types';
-import type { GetCourseWithReviewsPayload } from '../model/get-course-with-reviews-payload';
+import type { GetCourseByIdPayload } from '../lib/types';
 import type { SearchResults } from '../model/search-results';
 
 const prefix = '/api';
@@ -248,10 +248,10 @@ export const api = {
     );
   },
 
-  async getCourseWithReviews(
+  async getCourseById(
     id: string | undefined
-  ): Promise<GetCourseWithReviewsPayload | null> {
-    return client.deserialize<GetCourseWithReviewsPayload | null>(
+  ): Promise<GetCourseByIdPayload | null> {
+    return client.deserialize<GetCourseByIdPayload | null>(
       'GET',
       `/courses/${id}?with_reviews=true`
     );

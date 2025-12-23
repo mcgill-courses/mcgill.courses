@@ -121,7 +121,7 @@ export const CoursePage = () => {
 
     const inner = async () => {
       try {
-        const payload = await api.getCourseWithReviews(id);
+        const payload = await api.getCourseById(id);
 
         if (payload === null) {
           setCourse(null);

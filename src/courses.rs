@@ -66,6 +66,7 @@ pub(crate) struct GetCourseByIdParams {
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
+#[typeshare]
 pub(crate) struct GetCourseByIdPayload {
   /// The course information.
   pub(crate) course: Course,
