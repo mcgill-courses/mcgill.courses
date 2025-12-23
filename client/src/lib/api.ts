@@ -6,8 +6,8 @@ import type { GetReviewsPayload } from '../lib/types';
 import type { GetUserInteractionForCoursePayload } from '../lib/types';
 import type { GetInteractionKindPayload } from '../lib/types';
 import type { GetInstructorPayload } from '../lib/types';
+import type { GetCoursesPayload } from '../lib/types';
 import type { GetCourseWithReviewsPayload } from '../model/get-course-with-reviews-payload';
-import { GetCoursesPayload } from '../model/get-courses-payload';
 import type { SearchResults } from '../model/search-results';
 
 const prefix = '/api';
