@@ -372,12 +372,6 @@ mod tests {
     }
   }
 
-  #[derive(Debug, Deserialize, Serialize)]
-  pub(crate) struct GetCourseWithReviewsPayload {
-    pub(crate) course: Course,
-    pub(crate) reviews: Vec<Review>,
-  }
-
   #[tokio::test]
   async fn courses_route_works() {
     let TestContext { db, app, .. } = TestContext::new().await;
@@ -564,7 +558,7 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let payload = response.convert::<GetCourseWithReviewsPayload>().await;
+    let payload = response.convert::<GetCourseByIdPayload>().await;
 
     assert_eq!(
       payload.course,

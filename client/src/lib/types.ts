@@ -72,13 +72,6 @@ export interface Course {
   reviewCount: number;
 }
 
-export interface GetCoursesPayload {
-  /** List of courses matching the query. */
-  courses: Course[];
-  /** Total number of courses available (if requested). */
-  courseCount?: number;
-}
-
 export interface Review {
   /** The text content of the review. */
   content: string;
@@ -96,6 +89,20 @@ export interface Review {
   timestamp: string;
   /** The user ID of the review author. */
   userId: string;
+}
+
+export interface GetCourseByIdPayload {
+  /** The course information. */
+  course: Course;
+  /** Reviews for the course (sorted by timestamp, newest first). */
+  reviews: Review[];
+}
+
+export interface GetCoursesPayload {
+  /** List of courses matching the query. */
+  courses: Course[];
+  /** Total number of courses available (if requested). */
+  courseCount?: number;
 }
 
 export interface GetInstructorPayload {
