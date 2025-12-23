@@ -23,7 +23,7 @@ const courseReviewMock = vi.hoisted(() =>
 
 vi.mock('../lib/api', () => ({
   api: {
-    getCourseWithReviews: vi.fn(),
+    getCourseById: vi.fn(),
     getUserInteractionsForCourse: vi.fn(),
     deleteReview: vi.fn(),
   },
@@ -88,7 +88,7 @@ vi.mock('react-helmet-async', () => ({
   ),
 }));
 
-const getCourseWithReviewsMock = api.getCourseWithReviews as Mock;
+const getCourseByIdMock = api.getCourseById as Mock;
 const getUserInteractionsForCourseMock =
   api.getUserInteractionsForCourse as Mock;
 
@@ -102,7 +102,7 @@ describe('Course page', () => {
 
   beforeEach(() => {
     scrollIntoViewMock.mockClear();
-    getCourseWithReviewsMock.mockReset();
+    getCourseByIdMock.mockReset();
     getUserInteractionsForCourseMock.mockReset();
     courseReviewMock.mockClear();
 
@@ -170,7 +170,7 @@ describe('Course page', () => {
 
     const targetReview = reviews[8];
 
-    getCourseWithReviewsMock.mockResolvedValue({
+    getCourseByIdMock.mockResolvedValue({
       course,
       reviews,
     });
@@ -196,7 +196,7 @@ describe('Course page', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(api.getCourseWithReviews).toHaveBeenCalled());
+    await waitFor(() => expect(api.getCourseById).toHaveBeenCalled());
 
     await waitFor(() =>
       expect(
@@ -252,7 +252,7 @@ describe('Course page', () => {
       userId: 'user-1',
     };
 
-    getCourseWithReviewsMock.mockResolvedValue({
+    getCourseByIdMock.mockResolvedValue({
       course,
       reviews: [review],
     });
@@ -271,7 +271,7 @@ describe('Course page', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(api.getCourseWithReviews).toHaveBeenCalled());
+    await waitFor(() => expect(api.getCourseById).toHaveBeenCalled());
     await waitFor(() => expect(scrollIntoViewMock).toHaveBeenCalled());
 
     const [[firstCallProps]] = courseReviewMock.mock.calls;
@@ -314,7 +314,7 @@ describe('Course page', () => {
 
     const legacyAnchor = `review-${review.courseId}-${review.userId}-${review.timestamp}`;
 
-    getCourseWithReviewsMock.mockResolvedValue({
+    getCourseByIdMock.mockResolvedValue({
       course,
       reviews: [review],
     });
@@ -333,7 +333,7 @@ describe('Course page', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(api.getCourseWithReviews).toHaveBeenCalled());
+    await waitFor(() => expect(api.getCourseById).toHaveBeenCalled());
     await waitFor(() => expect(scrollIntoViewMock).toHaveBeenCalled());
   });
 });

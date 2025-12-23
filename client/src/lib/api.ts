@@ -248,7 +248,7 @@ export const api = {
     );
   },
 
-  async getCourseWithReviews(
+  async getCourseById(
     id: string | undefined
   ): Promise<GetCourseByIdPayload | null> {
     return client.deserialize<GetCourseByIdPayload | null>(
