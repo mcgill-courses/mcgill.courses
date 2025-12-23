@@ -1,8 +1,7 @@
 import groupBy from 'lodash/groupBy';
 
-import { Instructor, Review } from '../lib/types';
 import { Course } from '../model/course';
-import type { Schedule } from '../model/schedule';
+import { Instructor, Review, Schedule } from './types';
 
 const TERM_ORDER = ['Winter', 'Summer', 'Fall'];
 
@@ -125,10 +124,14 @@ export const sortSchedulesByBlocks = (schedules: Schedule[]): Schedule[] => {
   const order = ['Lec', 'Lab', 'Seminar', 'Tut', 'Conf'];
 
   return schedules.sort((a, b) => {
-    const aNum = parseInt(a.blocks[0].display.split(' ')[1], 10);
-    const bNum = parseInt(b.blocks[0].display.split(' ')[1], 10);
-    const aType = a.blocks[0].display.split(' ')[0];
-    const bType = b.blocks[0].display.split(' ')[0];
+    const aDisplay = a.blocks?.[0]?.display ?? '';
+    const bDisplay = b.blocks?.[0]?.display ?? '';
+
+    const aNum = parseInt(aDisplay.split(' ')[1], 10);
+    const bNum = parseInt(bDisplay.split(' ')[1], 10);
+
+    const aType = aDisplay.split(' ')[0];
+    const bType = bDisplay.split(' ')[0];
 
     return aType === bType
       ? aNum - bNum

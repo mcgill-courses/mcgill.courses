@@ -11,9 +11,9 @@ import { twMerge } from 'tailwind-merge';
 import * as buildingCodes from '../assets/building-codes.json';
 import * as buildingCoordinates from '../assets/building-coordinates.json';
 import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
+import type { Block, Schedule, TimeBlock } from '../lib/types';
 import { getCurrentTerm, sortTerms } from '../lib/utils';
 import type { Course } from '../model/course';
-import type { Block, Schedule } from '../model/schedule';
 import { AddToCalendarButton } from './add-to-calendar-button';
 import { BuildingLocation } from './building-location';
 import { Tooltip } from './tooltip';
@@ -33,7 +33,9 @@ const VSBtimeToDisplay = (time: string) => {
     .padStart(2, '0')}`;
 };
 
-type ScheduleBlock = Omit<Block, 'timeblocks'> & {
+type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
+  location: string;
+  display: string;
   timeblocks: RepeatingBlock[];
 };
 
@@ -45,6 +47,7 @@ type RepeatingBlock = {
 
 const formatDisplayTime = (time: string) => {
   const [hourString, minuteString] = time.split(':');
+
   const hour = parseInt(hourString, 10);
   const minute = parseInt(minuteString, 10);
 
@@ -54,6 +57,7 @@ const formatDisplayTime = (time: string) => {
 
   const period = hour >= 12 ? 'PM' : 'AM';
   const normalizedHour = hour % 12 || 12;
+
   const minutePart =
     minute === 0 ? '' : `:${minute.toString().padStart(2, '0')}`;
 
@@ -92,6 +96,7 @@ const parseTermSeason = (
   term: string
 ): { season: TermSeason; year: number } | null => {
   const match = term.match(/^(Winter|Summer|Fall)\s+(\d{4})$/);
+
   if (!match) return null;
 
   const [, season, year] = match;
@@ -101,7 +106,9 @@ const parseTermSeason = (
 
 const vsbDayToJsDay = (day: string): number | null => {
   const parsed = parseInt(day, 10);
+
   if (Number.isNaN(parsed)) return null;
+
   const jsDay = parsed - 1;
 
   if (jsDay < 0 || jsDay > 6) return null;
@@ -153,7 +160,9 @@ const buildScheduleEvents = (
   term: string
 ): IcsEventOptions[] => {
   const courseUrl = `https://mcgill.courses/${course._id}`;
+
   const summary = `${course._id} ${block.display}`.trim();
+
   const descriptionParts = [
     course.title,
     `Section: ${block.display}`,
@@ -171,6 +180,7 @@ const buildScheduleEvents = (
     const sortedDays = [...tb.days].sort(
       (a, b) => parseInt(a, 10) - parseInt(b, 10)
     );
+
     const firstDay = sortedDays[0];
     const occurrence = getFirstOccurrenceForTermDay(term, firstDay);
 
@@ -188,9 +198,11 @@ const buildScheduleEvents = (
     const byDayCodes = sortedDays
       .map((day) => DAY_CODE_MAP[day])
       .filter((code): code is string => Boolean(code));
+
     const uniqueByDayCodes = Array.from(new Set(byDayCodes)).sort(
       (a, b) => DAY_ORDER.indexOf(a) - DAY_ORDER.indexOf(b)
     );
+
     const occurrencesPerWeek = Math.max(1, uniqueByDayCodes.length);
 
     const rruleParts = [
@@ -198,6 +210,7 @@ const buildScheduleEvents = (
       'INTERVAL=1',
       `COUNT=${DEFAULT_MEETING_COUNT * occurrencesPerWeek}`,
     ];
+
     if (uniqueByDayCodes.length > 0) {
       rruleParts.push(`BYDAY=${uniqueByDayCodes.join(',')}`);
     }
@@ -231,10 +244,10 @@ const getSections = (
     (scheds) =>
       sortBy(
         uniqBy(
-          scheds.flatMap((s) => s.blocks),
+          scheds.flatMap((s) => s.blocks ?? []),
           (b) => b.display
         ),
-        (b) => b.display.split(' ', 2)[1]
+        (b) => b.display?.split(' ', 2)[1]
       )
   );
 
@@ -243,12 +256,15 @@ const getSections = (
   const termBlockTimes = mapValues(termBlocks, (blocks) =>
     blocks.map((b) => ({
       ...b,
+      location: b.location ?? '',
+      display: b.display ?? '',
       timeblocks: Object.entries(
-        groupBy(b.timeblocks, (tb) => `${tb.t1}-${tb.t2}`)
+        groupBy(b.timeblocks ?? [], (tb: TimeBlock) => `${tb.t1}-${tb.t2}`)
       ).map(([time, tbs]) => {
         const [t1, t2] = time.split('-', 2);
+
         return {
-          days: tbs.map((tb) => tb.day),
+          days: tbs.map((tb) => tb.day).filter((d): d is string => d != null),
           startTime: VSBtimeToDisplay(t1),
           endTime: VSBtimeToDisplay(t2),
         };
@@ -466,11 +482,13 @@ export const SchedulesDisplay = ({
 }: SchedulesDisplayProps) => {
   const schedules = course.schedule;
 
-  if (!schedules) return null;
+  if (!schedules) {
+    return null;
+  }
 
   const offeredTerms = sortTerms(
-    uniq(schedules.map((schedule) => schedule.term)).filter((term) =>
-      course.terms.includes(term)
+    uniq(schedules.map((schedule) => schedule.term)).filter(
+      (term): term is string => term != null && course.terms.includes(term)
     )
   );
 

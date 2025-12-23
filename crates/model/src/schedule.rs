@@ -13,6 +13,8 @@ use super::*;
   Serialize,
   ToSchema,
 )]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
 pub struct Block {
   pub campus: Option<String>,
   pub display: Option<String>,
@@ -48,6 +50,8 @@ impl Into<Bson> for Block {
   Serialize,
   ToSchema,
 )]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
 pub struct TimeBlock {
   pub day: Option<String>,
   pub t1: Option<String>,
@@ -77,6 +81,8 @@ impl Into<Bson> for TimeBlock {
   Serialize,
   ToSchema,
 )]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
 pub struct Schedule {
   pub blocks: Option<Vec<Block>>,
   pub term: Option<String>,

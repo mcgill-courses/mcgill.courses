@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 
 import type { Course } from '../model/course';
-import type { Schedule } from '../model/schedule';
+import type { Schedule } from './types';
 import {
   InvalidDateError,
   capitalize,
@@ -273,7 +273,7 @@ describe('sortSchedulesByBlocks', () => {
 
     const sorted = sortSchedulesByBlocks(schedules);
 
-    expect(sorted.map((s) => s.blocks[0].display)).toEqual([
+    expect(sorted.map((s) => s.blocks?.[0]?.display)).toEqual([
       'Lec 1',
       'Lec 2',
       'Lab 1',
@@ -290,7 +290,10 @@ describe('sortSchedulesByBlocks', () => {
 
     const sorted = sortSchedulesByBlocks(schedules);
 
-    expect(sorted.map((s) => s.blocks[0].display)).toEqual(['Lec 1', 'Lec 2']);
+    expect(sorted.map((s) => s.blocks?.[0]?.display)).toEqual([
+      'Lec 1',
+      'Lec 2',
+    ]);
   });
 });
 
