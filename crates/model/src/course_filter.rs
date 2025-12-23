@@ -1,20 +1,5 @@
 use super::*;
 
-#[derive(Debug, Clone, Deserialize, Serialize, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub enum CourseSortType {
-  Difficulty,
-  Rating,
-  ReviewCount,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize, ToSchema)]
-#[serde(rename_all = "camelCase")]
-pub struct CourseSort {
-  pub sort_type: CourseSortType,
-  pub reverse: bool,
-}
-
 #[derive(Debug, Clone, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct CourseFilter {
