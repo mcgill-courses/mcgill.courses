@@ -2,7 +2,6 @@ import { Index } from 'flexsearch';
 
 import data from '../assets/search-data.json';
 import type { Course } from '../lib/types';
-import type { SearchResults } from '../model/search-results';
 
 let coursesIndex: Index | null = null;
 let instructorsIndex: Index | null = null;
@@ -10,6 +9,12 @@ let instructorsIndex: Index | null = null;
 export type CourseData = Pick<Course, '_id' | 'subject' | 'code' | 'title'>;
 
 export type InstructorName = string;
+
+export type SearchResults = {
+  query?: string;
+  courses: CourseData[];
+  instructors: InstructorName[];
+};
 
 export const getSearchIndex = () => {
   const courseData = data.courses;

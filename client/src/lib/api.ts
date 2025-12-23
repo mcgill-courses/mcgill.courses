@@ -8,7 +8,7 @@ import type { GetInteractionKindPayload } from '../lib/types';
 import type { GetInstructorPayload } from '../lib/types';
 import type { GetCoursesPayload } from '../lib/types';
 import type { GetCourseByIdPayload } from '../lib/types';
-import type { SearchResults } from '../model/search-results';
+import type { SearchResults } from './search-index';
 
 const prefix = '/api';
 
