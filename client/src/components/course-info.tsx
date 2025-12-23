@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
 import type { Review, Subscription } from '../lib/types';
-import type { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import { CourseDescription } from './course-description';
 import { CourseInfoStats } from './course-info-stats';
 import { CourseTerms } from './course-terms';

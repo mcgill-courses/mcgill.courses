@@ -3,8 +3,8 @@ import { twMerge } from 'tailwind-merge';
 
 import finalExamsData from '../assets/final-exams.json';
 import { sanitizeForFilename } from '../lib/calendar';
+import type { Course } from '../lib/types';
 import { getCurrentTerm } from '../lib/utils';
-import type { Course } from '../model/course';
 import { AddToCalendarButton } from './add-to-calendar-button';
 
 type RawFinalExam = {

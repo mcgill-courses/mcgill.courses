@@ -4,7 +4,7 @@ import { Flame } from 'lucide-react';
 import { PropsWithChildren } from 'react';
 import * as Yup from 'yup';
 
-import type { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import { BirdIcon } from './bird-icon';
 import { IconRatingInput } from './icon-rating-input';
 import { MultiSelect } from './multi-select';

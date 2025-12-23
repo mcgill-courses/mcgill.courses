@@ -7,8 +7,8 @@ import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
 import { Instructor } from '../lib/types';
+import type { Course } from '../lib/types';
 import { compareTerms } from '../lib/utils';
-import { Course } from '../model/course';
 import { TermAverage } from '../model/term-average';
 
 type InstructorLinkProps = {

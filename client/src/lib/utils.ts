@@ -1,6 +1,6 @@
 import groupBy from 'lodash/groupBy';
 
-import { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import { Instructor, Review, Schedule } from './types';
 
 const TERM_ORDER = ['Winter', 'Summer', 'Fall'];

@@ -29,6 +29,49 @@ export interface Instructor {
   term: string;
 }
 
+export type ReqNode =
+  | { type: 'course'; data: string }
+  | {
+      type: 'group';
+      data: {
+        operator: Operator;
+        groups: ReqNode[];
+      };
+    };
+
+export interface Schedule {
+  blocks?: Block[];
+  term?: string;
+}
+
+export interface Course {
+  _id: string;
+  idNgrams?: string;
+  title: string;
+  titleNgrams?: string;
+  credits: string;
+  subject: string;
+  code: string;
+  url: string;
+  department: string;
+  faculty: string;
+  terms: string[];
+  description: string;
+  instructors: Instructor[];
+  prerequisitesText?: string;
+  corequisitesText?: string;
+  prerequisites: string[];
+  corequisites: string[];
+  leadingTo: string[];
+  logicalPrerequisites?: ReqNode;
+  logicalCorequisites?: ReqNode;
+  restrictions?: string;
+  schedule?: Schedule[];
+  avgRating: number;
+  avgDifficulty: number;
+  reviewCount: number;
+}
+
 export interface Review {
   /** The text content of the review. */
   content: string;
@@ -100,11 +143,6 @@ export interface Notification {
   userId: string;
 }
 
-export interface Schedule {
-  blocks?: Block[];
-  term?: string;
-}
-
 export interface Subscription {
   courseId: string;
   userId: string;
@@ -126,13 +164,3 @@ export enum Operator {
   And = 'AND',
   Or = 'OR',
 }
-
-export type ReqNode =
-  | { type: 'course'; data: string }
-  | {
-      type: 'group';
-      data: {
-        operator: Operator;
-        groups: ReqNode[];
-      };
-    };
