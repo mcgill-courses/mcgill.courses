@@ -3,8 +3,8 @@ import { RefObject, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
+import type { SearchResults } from '../lib/search-index';
 import { courseIdToUrlParam, spliceCourseCode } from '../lib/utils';
-import type { SearchResults } from '../model/search-results';
 import { Highlight } from './highlight';
 import { SearchBar } from './search-bar';
 
