@@ -6,10 +6,15 @@ import { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
-import { Instructor } from '../lib/types';
-import type { Course } from '../lib/types';
+import type { Course, Instructor } from '../lib/types';
 import { compareTerms } from '../lib/utils';
-import { TermAverage } from '../model/term-average';
+
+type Grade = 'A' | 'A-' | 'B+' | 'B' | 'B-' | 'C+' | 'C' | 'C-' | 'D' | 'F';
+
+export type TermAverage = {
+  term: string;
+  average: Grade;
+};
 
 type InstructorLinkProps = {
   instructor: Instructor;
