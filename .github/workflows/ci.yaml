@@ -26,7 +26,7 @@ jobs:
           https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
 
       - name: Check workflow
-        run: ${{ steps.actionlint.outputs.executable }} -color .github/workflows/ci.yaml
+        run: ${{ steps.actionlint.outputs.executable }} -color
 
   client:
     runs-on: macos-latest
