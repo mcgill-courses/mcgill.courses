@@ -4068,7 +4068,7 @@ dependencies = [
  "async-session",
  "axum",
  "axum-extra",
- "base64 0.22.1",
+ "base64 0.21.7",
  "chrono",
  "clap",
  "db",
