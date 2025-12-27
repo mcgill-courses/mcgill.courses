@@ -28,7 +28,7 @@
     "@vis.gl/react-google-maps": "^1.5.5",
     "date-fns": "^2.30.0",
     "flexsearch": "^0.8.212",
-    "formik": "^2.4.6",
+    "formik": "^2.4.9",
     "formik-persist-values": "^1.4.1",
     "framer-motion": "^12.23.12",
     "immer": "^10.1.3",
