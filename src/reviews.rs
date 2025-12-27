@@ -92,6 +92,32 @@ pub(crate) async fn get_reviews(
 
 #[utoipa::path(
   get,
+  path = "/reviews/liked",
+  tag = "reviews",
+  description = "Get reviews liked by the authenticated user.",
+  security(
+    ("microsoftOAuth" = ["User.Read"])
+  ),
+  responses(
+    (status = StatusCode::OK, description = "Reviews liked by the authenticated user.", body = GetReviewsPayload),
+    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
+  )
+)]
+pub(crate) async fn get_liked_reviews(
+  user: User,
+  AppState(db): AppState<Arc<Db>>,
+) -> Result<impl IntoResponse> {
+  Ok((
+    StatusCode::OK,
+    Json(GetReviewsPayload {
+      reviews: db.liked_reviews_for_user(&user.id()).await?,
+      unique_user_count: None,
+    }),
+  ))
+}
+
+#[utoipa::path(
+  get,
   path = "/reviews/{id}",
   description = "Get a specific review by its ID.",
   params(
