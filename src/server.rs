@@ -1175,6 +1175,219 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn can_get_liked_reviews() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let author_cookie =
+      mock_login(session_store.clone(), "author1", "author1@mail.mcgill.ca")
+        .await;
+    let author_two_cookie =
+      mock_login(session_store.clone(), "author2", "author2@mail.mcgill.ca")
+        .await;
+
+    let reviews = vec![
+      (
+        author_cookie,
+        json!({
+          "content": "test",
+          "course_id": "COMP202",
+          "instructors": ["Jonathan Campbell"],
+          "rating": 5,
+          "difficulty": 4
+        }),
+      ),
+      (
+        author_two_cookie,
+        json!({
+          "content": "test2",
+          "course_id": "MATH240",
+          "instructors": ["Adrian Roshan Vetta"],
+          "rating": 4,
+          "difficulty": 3
+        }),
+      ),
+    ];
+
+    for (cookie, review) in reviews {
+      app
+        .call(
+          Request::builder()
+            .method(http::Method::POST)
+            .header("Cookie", cookie)
+            .header("Content-Type", "application/json")
+            .uri("/api/reviews")
+            .body(Body::from(review.to_string()))
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+    }
+
+    let liker_cookie =
+      mock_login(session_store.clone(), "liker", "liker@mail.mcgill.ca").await;
+
+    let like = json!({
+      "kind": "like",
+      "course_id": "COMP202",
+      "user_id": "author1",
+      "referrer": "liker"
+    })
+    .to_string();
+
+    app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", liker_cookie.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/interactions")
+          .body(Body::from(like))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    let dislike = json!({
+      "kind": "dislike",
+      "course_id": "MATH240",
+      "user_id": "author2",
+      "referrer": "liker"
+    })
+    .to_string();
+
+    app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", liker_cookie.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/interactions")
+          .body(Body::from(dislike))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    let other_cookie =
+      mock_login(session_store, "other", "other@mail.mcgill.ca").await;
+    let other_like = json!({
+      "kind": "like",
+      "course_id": "MATH240",
+      "user_id": "author2",
+      "referrer": "other"
+    })
+    .to_string();
+
+    app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", other_cookie)
+          .header("Content-Type", "application/json")
+          .uri("/api/interactions")
+          .body(Body::from(other_like))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", liker_cookie)
+          .uri("/api/reviews/liked")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let payload = response.convert::<GetReviewsPayload>().await;
+
+    assert_eq!(payload.reviews.len(), 1);
+    assert_eq!(payload.reviews[0].course_id, "COMP202");
+    assert_eq!(payload.reviews[0].user_id, "author1");
+  }
+
+  #[tokio::test]
+  async fn returns_empty_liked_reviews() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let author_cookie =
+      mock_login(session_store.clone(), "author1", "author1@mail.mcgill.ca")
+        .await;
+    let review = json!({
+      "content": "test",
+      "course_id": "COMP202",
+      "instructors": ["Jonathan Campbell"],
+      "rating": 5,
+      "difficulty": 4
+    })
+    .to_string();
+
+    app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", author_cookie)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(review))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    let liker_cookie =
+      mock_login(session_store, "liker", "liker@mail.mcgill.ca").await;
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", liker_cookie)
+          .uri("/api/reviews/liked")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let payload = response.convert::<GetReviewsPayload>().await;
+
+    assert_eq!(payload.reviews.len(), 0);
+  }
+
+  #[tokio::test]
   async fn get_invalid_instructor() {
     let TestContext { db, mut app, .. } = TestContext::new().await;
 
