@@ -2210,6 +2210,104 @@ mod tests {
   }
 
   #[tokio::test(flavor = "multi_thread")]
+  async fn liked_reviews_for_user() {
+    let TestContext { db, .. } = TestContext::new().await;
+
+    db.add_course(Course {
+      id: "COMP202".into(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_course(Course {
+      id: "MATH240".into(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_course(Course {
+      id: "PHYS101".into(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let review_one = Review {
+      content: "first".into(),
+      course_id: "COMP202".into(),
+      user_id: "author1".into(),
+      timestamp: DateTime::from_millis(1000),
+      ..Review::default()
+    };
+
+    let review_two = Review {
+      content: "second".into(),
+      course_id: "MATH240".into(),
+      user_id: "author2".into(),
+      timestamp: DateTime::from_millis(2000),
+      ..Review::default()
+    };
+
+    let review_three = Review {
+      content: "third".into(),
+      course_id: "PHYS101".into(),
+      user_id: "author3".into(),
+      timestamp: DateTime::from_millis(3000),
+      ..Review::default()
+    };
+
+    db.add_review(review_one.clone()).await.unwrap();
+    db.add_review(review_two.clone()).await.unwrap();
+    db.add_review(review_three.clone()).await.unwrap();
+
+    db.add_interaction(Interaction {
+      kind: InteractionKind::Like,
+      course_id: review_one.course_id.clone(),
+      user_id: review_one.user_id.clone(),
+      referrer: "viewer".into(),
+    })
+    .await
+    .unwrap();
+
+    db.add_interaction(Interaction {
+      kind: InteractionKind::Dislike,
+      course_id: review_two.course_id.clone(),
+      user_id: review_two.user_id.clone(),
+      referrer: "viewer".into(),
+    })
+    .await
+    .unwrap();
+
+    db.add_interaction(Interaction {
+      kind: InteractionKind::Like,
+      course_id: review_two.course_id.clone(),
+      user_id: review_two.user_id.clone(),
+      referrer: "other".into(),
+    })
+    .await
+    .unwrap();
+
+    db.add_interaction(Interaction {
+      kind: InteractionKind::Like,
+      course_id: review_three.course_id.clone(),
+      user_id: review_three.user_id.clone(),
+      referrer: "viewer".into(),
+    })
+    .await
+    .unwrap();
+
+    let liked_reviews = db.liked_reviews_for_user("viewer").await.unwrap();
+
+    assert_eq!(liked_reviews.len(), 2);
+    assert_eq!(liked_reviews[0].course_id, "PHYS101");
+    assert_eq!(liked_reviews[0].user_id, "author3");
+    assert_eq!(liked_reviews[1].course_id, "COMP202");
+    assert_eq!(liked_reviews[1].user_id, "author1");
+  }
+
+  #[tokio::test(flavor = "multi_thread")]
   async fn subscription_flow() {
     let TestContext { db, .. } = TestContext::new().await;
 
