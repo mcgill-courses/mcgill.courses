@@ -135,6 +135,10 @@ export const api = {
     );
   },
 
+  async getLikedReviews(): Promise<GetReviewsPayload> {
+    return client.deserialize<GetReviewsPayload>('GET', '/reviews/liked');
+  },
+
   async addReview(courseId: string, values: any): Promise<Response> {
     return client.post(`/reviews`, {
       headers: { 'Content-Type': 'application/json' },

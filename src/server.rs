@@ -140,6 +140,7 @@ impl Server {
           .post(reviews::add_review)
           .put(reviews::update_review),
       )
+      .route("/api/reviews/liked", get(reviews::get_liked_reviews))
       .route("/api/reviews/{id}", get(reviews::get_review))
       .route("/api/search", get(search::search))
       .route(

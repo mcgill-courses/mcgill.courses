@@ -1,5 +1,5 @@
 import { Tab } from '@headlessui/react';
-import { Bell, FileText, User } from 'lucide-react';
+import { Bell, FileText, ThumbsUp, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
@@ -25,6 +25,9 @@ export const Profile = () => {
   const [userReviews, setUserReviews] = useState<Review[] | undefined>(
     undefined
   );
+  const [likedReviews, setLikedReviews] = useState<Review[] | undefined>(
+    undefined
+  );
   const [userSubscriptions, setUserSubscriptions] = useState<
     Subscription[] | undefined
   >(undefined);
@@ -47,6 +50,16 @@ export const Profile = () => {
       );
 
     api
+      .getLikedReviews()
+      .then((data) => setLikedReviews(data.reviews))
+      .catch(() => {
+        setLikedReviews([]);
+        toast.error(
+          'An error occurred while fetching your liked reviews, please try again later.'
+        );
+      });
+
+    api
       .getSubscriptions()
       .then((data) => setUserSubscriptions(data))
       .catch(() =>
@@ -59,11 +72,13 @@ export const Profile = () => {
   const removeSubscription = async (courseId: string) => {
     try {
       await api.removeSubscription(courseId);
+
       setUserSubscriptions(
         userSubscriptions?.filter(
           (subscription) => subscription.courseId !== courseId
         )
       );
+
       toast.success(
         `Subscription for course ${spliceCourseCode(
           courseId,
@@ -79,7 +94,12 @@ export const Profile = () => {
 
   if (!userReviews || !userSubscriptions) return <Loading />;
 
-  const tabs = ['Reviews', 'Subscriptions'];
+  const tabs = ['Reviews', 'Likes', 'Subscriptions'];
+
+  const likedReviewCount = likedReviews?.length;
+
+  const likedReviewLabel =
+    likedReviewCount === 1 ? 'liked review' : 'liked reviews';
 
   return (
     <Layout>
@@ -124,6 +144,17 @@ export const Profile = () => {
                   {userSubscriptions?.length}{' '}
                   {'subscription' +
                     (userSubscriptions?.length === 1 ? '' : 's')}
+                </p>
+              </div>
+              <div className='flex items-center gap-x-1'>
+                <ThumbsUp
+                  className='text-neutral-500 dark:text-gray-400'
+                  aria-hidden='true'
+                  size={20}
+                />
+                <p className='text-gray-700 dark:text-gray-300'>
+                  {likedReviewCount === undefined ? '-' : likedReviewCount}{' '}
+                  {likedReviewLabel}
                 </p>
               </div>
             </div>
@@ -189,11 +220,57 @@ export const Profile = () => {
                   <div className='flex w-full items-center justify-center gap-x-2'>
                     <FileText
                       className='stroke-[1.25] text-gray-400 dark:text-gray-600'
-                      size={40}
+                      size={20}
                     />
                     <div className='text-center text-sm text-gray-600 dark:text-gray-500'>
                       No reviews found, if you've taken a course in the past,
                       don't be shy to leave a review!
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Tab.Panel>
+            <Tab.Panel>
+              <div className='m-4 flex flex-col gap-4'>
+                {likedReviews === undefined ? (
+                  <div className='mt-2 text-center'>
+                    <Spinner />
+                  </div>
+                ) : likedReviews.length ? (
+                  likedReviews.map((review, i) => {
+                    return (
+                      <div key={i}>
+                        <div className='flex'>
+                          <Link
+                            to={`/course/${courseIdToUrlParam(
+                              review.courseId
+                            )}`}
+                            className='text-xl font-semibold text-gray-800 hover:underline dark:text-gray-200'
+                          >
+                            {spliceCourseCode(review.courseId, ' ')}
+                          </Link>
+                        </div>
+                        <div className='my-2 rounded-lg border-gray-800 duration-300 ease-in-out'>
+                          <CourseReview
+                            canModify={false}
+                            handleDelete={() => null}
+                            openEditReview={() => null}
+                            review={review}
+                            attachment={ReviewAttachment.ScrollButton}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className='flex w-full items-center justify-center gap-x-2'>
+                    <ThumbsUp
+                      className='stroke-[1.25] text-gray-400 dark:text-gray-600'
+                      size={20}
+                    />
+                    <div className='text-center text-sm text-gray-600 dark:text-gray-500'>
+                      No liked reviews yet, tap the thumbs-up on a review to
+                      save it here!
                     </div>
                   </div>
                 )}
@@ -227,11 +304,11 @@ export const Profile = () => {
                     </div>
                   ))
                 ) : (
-                  <div className='flex w-full items-center justify-center gap-x-1'>
+                  <div className='flex w-full items-center justify-center gap-x-2'>
                     <Bell
                       className='text-gray-400 dark:text-gray-600'
                       aria-hidden='true'
-                      size={32}
+                      size={20}
                     />
                     <div className='text-center text-sm text-gray-600 dark:text-gray-500'>
                       No subscriptions found, click the bell icon on a course to

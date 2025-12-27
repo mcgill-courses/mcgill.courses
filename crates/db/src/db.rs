@@ -542,6 +542,37 @@ impl Db {
     )
   }
 
+  pub async fn liked_reviews_for_user(
+    &self,
+    referrer: &str,
+  ) -> Result<Vec<Review>> {
+    let interactions = self
+      .database
+      .collection::<Interaction>(Self::INTERACTION_COLLECTION)
+      .find(doc! { "referrer": referrer, "kind": InteractionKind::Like })
+      .await?
+      .try_collect::<Vec<Interaction>>()
+      .await?;
+
+    if interactions.is_empty() {
+      return Ok(vec![]);
+    }
+
+    let filters = interactions
+      .iter()
+      .map(|interaction| {
+        doc! { "courseId": &interaction.course_id, "userId": &interaction.user_id }
+      })
+      .collect::<Vec<_>>();
+
+    let collection =
+      self.database.collection::<Review>(Self::REVIEW_COLLECTION);
+    let mut find = collection.find(doc! { "$or": filters });
+    find = find.sort(doc! { "timestamp": -1 });
+
+    Ok(find.await?.try_collect::<Vec<Review>>().await?)
+  }
+
   pub async fn get_subscription(
     &self,
     user_id: &str,
