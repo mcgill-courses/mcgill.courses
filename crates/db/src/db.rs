@@ -567,7 +567,9 @@ impl Db {
 
     let collection =
       self.database.collection::<Review>(Self::REVIEW_COLLECTION);
+
     let mut find = collection.find(doc! { "$or": filters });
+
     find = find.sort(doc! { "timestamp": -1 });
 
     Ok(find.await?.try_collect::<Vec<Review>>().await?)
