@@ -107,13 +107,10 @@ pub(crate) async fn get_liked_reviews(
   user: User,
   AppState(db): AppState<Arc<Db>>,
 ) -> Result<impl IntoResponse> {
-  let user_id = user.id();
-  let reviews = db.liked_reviews_for_user(&user_id).await?;
-
   Ok((
     StatusCode::OK,
     Json(GetReviewsPayload {
-      reviews,
+      reviews: db.liked_reviews_for_user(&user.id()).await?,
       unique_user_count: None,
     }),
   ))
