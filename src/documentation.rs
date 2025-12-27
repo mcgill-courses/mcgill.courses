@@ -55,6 +55,7 @@ impl Modify for MicrosoftOAuthSecurity {
     notifications::update_notification,
     reviews::add_review,
     reviews::delete_review,
+    reviews::get_liked_reviews,
     reviews::get_review,
     reviews::get_reviews,
     reviews::update_review,

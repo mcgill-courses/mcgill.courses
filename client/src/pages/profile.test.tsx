@@ -105,18 +105,21 @@ vi.mock('@headlessui/react', () => ({
 vi.mock('../lib/api', () => ({
   api: {
     getReviews: vi.fn(),
+    getLikedReviews: vi.fn(),
     getSubscriptions: vi.fn(),
     removeSubscription: vi.fn(),
   },
 }));
 
 const getReviewsMock = api.getReviews as Mock;
+const getLikedReviewsMock = api.getLikedReviews as Mock;
 const getSubscriptionsMock = api.getSubscriptions as Mock;
 
 describe('Profile page', () => {
   beforeEach(() => {
     courseReviewMock.mockClear();
     getReviewsMock.mockReset();
+    getLikedReviewsMock.mockReset();
     getSubscriptionsMock.mockReset();
 
     Object.defineProperty(window, 'localStorage', {
@@ -144,6 +147,19 @@ describe('Profile page', () => {
       },
     ];
 
+    const likedReviews: Review[] = [
+      {
+        content: 'Liked review',
+        courseId: 'COMP303',
+        difficulty: 4,
+        instructors: ['Instructor'],
+        likes: 2,
+        rating: 4,
+        timestamp: '1700000001000',
+        userId: 'user-2',
+      },
+    ];
+
     const subscriptions: Subscription[] = [
       {
         courseId: 'COMP202',
@@ -152,6 +168,7 @@ describe('Profile page', () => {
     ];
 
     getReviewsMock.mockResolvedValue({ reviews });
+    getLikedReviewsMock.mockResolvedValue({ reviews: likedReviews });
     getSubscriptionsMock.mockResolvedValue(subscriptions);
 
     render(
@@ -171,7 +188,7 @@ describe('Profile page', () => {
       ([props]) => props.attachment
     );
 
-    expect(attachments.length).toBe(1);
-    expect(attachments[0]).toBe('scrollButton');
+    expect(attachments.length).toBe(2);
+    expect(attachments).toEqual(['scrollButton', 'scrollButton']);
   });
 });
