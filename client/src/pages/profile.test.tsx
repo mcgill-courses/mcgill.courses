@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
@@ -6,6 +7,15 @@ import type { Mock } from 'vitest';
 import { api } from '../lib/api';
 import type { Review, Subscription } from '../lib/types';
 import { Profile } from './profile';
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
 
 const courseReviewMock = vi.hoisted(() =>
   vi.fn((props: any) => (
@@ -171,15 +181,19 @@ describe('Profile page', () => {
     getLikedReviewsMock.mockResolvedValue({ reviews: likedReviews });
     getSubscriptionsMock.mockResolvedValue(subscriptions);
 
+    const queryClient = createTestQueryClient();
+
     render(
-      <MemoryRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
-        <Profile />
-      </MemoryRouter>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+          }}
+        >
+          <Profile />
+        </MemoryRouter>
+      </QueryClientProvider>
     );
 
     await waitFor(() => expect(courseReviewMock).toHaveBeenCalled());
