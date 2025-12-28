@@ -2199,7 +2199,13 @@ mod tests {
           .header("Cookie", a.clone())
           .header("Content-Type", "application/json")
           .uri("/api/notifications")
-          .body(Body::from(json!({"course_id": "MATH240"}).to_string()))
+          .body(Body::from(
+            json!({
+              "course_id": "MATH240",
+              "user_id": "b"
+            })
+            .to_string(),
+          ))
           .unwrap(),
       )
       .await

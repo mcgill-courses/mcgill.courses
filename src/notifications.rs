@@ -62,6 +62,8 @@ pub(crate) async fn update_notification(
 pub(crate) struct DeleteNotificationBody {
   /// Identifier of the course whose notification should be removed.
   pub(crate) course_id: String,
+  /// Identifier of the user who created the notification's review.
+  pub(crate) user_id: String,
 }
 
 #[utoipa::path(
@@ -81,6 +83,7 @@ pub(crate) async fn delete_notification(
   AppState(db): AppState<Arc<Db>>,
   body: Json<DeleteNotificationBody>,
 ) -> Result<impl IntoResponse> {
-  db.delete_notification(&user.id(), &body.course_id).await?;
+  db.delete_notification(&user.id(), &body.course_id, &body.user_id)
+    .await?;
   Ok(StatusCode::OK)
 }
