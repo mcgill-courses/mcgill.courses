@@ -695,6 +695,7 @@ impl Db {
     &self,
     user_id: &str,
     course_id: &str,
+    review_user_id: &str,
   ) -> Result<DeleteResult> {
     Ok(
       self
@@ -703,6 +704,7 @@ impl Db {
         .delete_one(doc! {
           "userId": user_id,
           "review.courseId": course_id,
+          "review.userId": review_user_id,
         })
         .await?,
     )
@@ -2475,7 +2477,7 @@ mod tests {
 
     assert_eq!(db.notifications().await.unwrap().len(), 2);
 
-    db.delete_notification("1", &review.course_id)
+    db.delete_notification("1", &review.course_id, &review.user_id)
       .await
       .unwrap();
 

@@ -238,10 +238,13 @@ export const api = {
     });
   },
 
-  async deleteNotification(courseId: string): Promise<Response> {
+  async deleteNotification(
+    courseId: string,
+    userId: string
+  ): Promise<Response> {
     return client.delete('/notifications', {
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ course_id: courseId }),
+      body: JSON.stringify({ course_id: courseId, user_id: userId }),
     });
   },
 

@@ -2199,7 +2199,13 @@ mod tests {
           .header("Cookie", a.clone())
           .header("Content-Type", "application/json")
           .uri("/api/notifications")
-          .body(Body::from(json!({"course_id": "MATH240"}).to_string()))
+          .body(Body::from(
+            json!({
+              "course_id": "MATH240",
+              "user_id": "b"
+            })
+            .to_string(),
+          ))
           .unwrap(),
       )
       .await
@@ -2222,5 +2228,184 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
     assert_eq!(response.convert::<Vec<Notification>>().await.len(), 0);
+  }
+
+  #[tokio::test]
+  async fn delete_notification_scopes_to_review_user() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let (a, b, c) = (
+      mock_login(session_store.clone(), "a", "a@mail.mcgill.ca").await,
+      mock_login(session_store.clone(), "b", "b@mail.mcgill.ca").await,
+      mock_login(session_store, "c", "c@mail.mcgill.ca").await,
+    );
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", a.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/subscriptions")
+          .body(Body::from(json!({ "course_id": "MATH240" }).to_string()))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    assert!(db.get_subscription("a", "MATH240").await.unwrap().is_some());
+
+    let review_b = json!({
+      "content": "test",
+      "course_id": "MATH240",
+      "instructors": ["Adrian Roshan Vetta"],
+      "rating": 5,
+      "difficulty": 5
+    })
+    .to_string();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", b)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(review_b))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let review_c = json!({
+      "content": "another",
+      "course_id": "MATH240",
+      "instructors": ["Adrian Roshan Vetta"],
+      "rating": 4,
+      "difficulty": 3
+    })
+    .to_string();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", c)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(review_c))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", a.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/notifications")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(response.convert::<Vec<Notification>>().await.len(), 2);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::DELETE)
+          .header("Cookie", a.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/notifications")
+          .body(Body::from(
+            json!({
+              "course_id": "MATH240",
+              "user_id": "missing"
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", a.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/notifications")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(response.convert::<Vec<Notification>>().await.len(), 2);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::DELETE)
+          .header("Cookie", a.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/notifications")
+          .body(Body::from(
+            json!({
+              "course_id": "MATH240",
+              "user_id": "b"
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", a)
+          .header("Content-Type", "application/json")
+          .uri("/api/notifications")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    let notifications = response.convert::<Vec<Notification>>().await;
+    assert_eq!(notifications.len(), 1);
+    assert_eq!(notifications[0].review.user_id, "c");
   }
 }

@@ -76,12 +76,14 @@ export const NotificationDropdown = ({
     }
   };
 
-  const deleteNotification = async (courseId: string) => {
+  const deleteNotification = async (courseId: string, userId: string) => {
     try {
-      await api.deleteNotification(courseId);
+      await api.deleteNotification(courseId, userId);
       setNotifications(
         notifications.filter(
-          (notification) => notification.review.courseId !== courseId
+          (notification) =>
+            notification.review.courseId !== courseId ||
+            notification.review.userId !== userId
         )
       );
       toast.success('Successfully deleted notification.');
@@ -155,7 +157,8 @@ export const NotificationDropdown = ({
                                 <Trash2
                                   onClick={async () =>
                                     await deleteNotification(
-                                      notification.review.courseId
+                                      notification.review.courseId,
+                                      notification.review.userId
                                     )
                                   }
                                   className='ml-auto text-right text-gray-700 underline hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-50'
