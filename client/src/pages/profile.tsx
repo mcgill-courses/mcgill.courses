@@ -31,14 +31,19 @@ export const Profile = () => {
   const [userSubscriptions, setUserSubscriptions] = useState<
     Subscription[] | undefined
   >(undefined);
+
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     const selectedTabIndex = localStorage.getItem('selectedTabIndex');
 
-    if (selectedTabIndex) setSelectedTabIndex(parseInt(selectedTabIndex, 10));
+    if (selectedTabIndex) {
+      setSelectedTabIndex(parseInt(selectedTabIndex, 10));
+    }
 
     api
       .getReviews({ userId: user.id, sorted: true })
@@ -92,7 +97,9 @@ export const Profile = () => {
     }
   };
 
-  if (!userReviews || !userSubscriptions) return <Loading />;
+  if (!userReviews || !userSubscriptions) {
+    return <Loading />;
+  }
 
   const tabs = ['Reviews', 'Likes', 'Subscriptions'];
 
@@ -135,6 +142,17 @@ export const Profile = () => {
                 </p>
               </div>
               <div className='flex items-center gap-x-1'>
+                <ThumbsUp
+                  className='text-neutral-500 dark:text-gray-400'
+                  aria-hidden='true'
+                  size={20}
+                />
+                <p className='text-gray-700 dark:text-gray-300'>
+                  {likedReviewCount === undefined ? '-' : likedReviewCount}{' '}
+                  {likedReviewLabel}
+                </p>
+              </div>
+              <div className='flex items-center gap-x-1'>
                 <Bell
                   className='text-neutral-500 dark:text-gray-400'
                   aria-hidden='true'
@@ -144,17 +162,6 @@ export const Profile = () => {
                   {userSubscriptions?.length}{' '}
                   {'subscription' +
                     (userSubscriptions?.length === 1 ? '' : 's')}
-                </p>
-              </div>
-              <div className='flex items-center gap-x-1'>
-                <ThumbsUp
-                  className='text-neutral-500 dark:text-gray-400'
-                  aria-hidden='true'
-                  size={20}
-                />
-                <p className='text-gray-700 dark:text-gray-300'>
-                  {likedReviewCount === undefined ? '-' : likedReviewCount}{' '}
-                  {likedReviewLabel}
                 </p>
               </div>
             </div>
