@@ -16,8 +16,11 @@ use super::*;
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub struct Instructor {
+  /// Instructor display name.
   pub name: String,
+  /// Search n-grams for the instructor name.
   pub name_ngrams: Option<String>,
+  /// Term identifier for the instructor record.
   pub term: String,
 }
 
