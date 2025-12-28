@@ -1,4 +1,5 @@
 import { Tab } from '@headlessui/react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Bell, FileText, ThumbsUp, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -14,90 +15,82 @@ import { Spinner } from '../components/spinner';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
 import type { Subscription } from '../lib/types';
-import type { Review } from '../lib/types';
 import { courseIdToUrlParam } from '../lib/utils';
 import { spliceCourseCode } from '../lib/utils';
 import { Loading } from './loading';
 
 export const Profile = () => {
   const user = useAuth();
+  const queryClient = useQueryClient();
 
-  const [userReviews, setUserReviews] = useState<Review[] | undefined>(
-    undefined
-  );
-  const [likedReviews, setLikedReviews] = useState<Review[] | undefined>(
-    undefined
-  );
-  const [userSubscriptions, setUserSubscriptions] = useState<
-    Subscription[] | undefined
-  >(undefined);
+  const [selectedTabIndex, setSelectedTabIndex] = useState(() => {
+    const stored = localStorage.getItem('selectedTabIndex');
+    return stored ? parseInt(stored, 10) : 0;
+  });
 
-  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+  const { data: userReviews, isError: isReviewsError } = useQuery({
+    enabled: Boolean(user),
+    queryKey: ['userReviews', user?.id],
+    queryFn: () => api.getReviews({ userId: user!.id, sorted: true }),
+    select: (data) => data.reviews,
+  });
 
-  useEffect(() => {
-    if (!user) {
-      return;
-    }
+  const { data: likedReviews, isError: isLikedReviewsError } = useQuery({
+    enabled: Boolean(user),
+    queryKey: ['likedReviews', user?.id],
+    queryFn: () => api.getLikedReviews(),
+    select: (data) => data.reviews,
+  });
 
-    const selectedTabIndex = localStorage.getItem('selectedTabIndex');
+  const { data: userSubscriptions, isError: isSubscriptionsError } = useQuery({
+    enabled: Boolean(user),
+    queryKey: ['subscriptions', user?.id],
+    queryFn: () => api.getSubscriptions(),
+  });
 
-    if (selectedTabIndex) {
-      setSelectedTabIndex(parseInt(selectedTabIndex, 10));
-    }
-
-    api
-      .getReviews({ userId: user.id, sorted: true })
-      .then((data) => setUserReviews(data.reviews))
-      .catch(() =>
-        toast.error(
-          'An error occurred while fetching your reviews, please try again later.'
-        )
+  const unsubscribeMutation = useMutation({
+    mutationFn: (courseId: string) => api.removeSubscription(courseId),
+    onSuccess: (_, courseId) => {
+      queryClient.setQueryData<Subscription[]>(
+        ['subscriptions', user?.id],
+        (old) => old?.filter((sub) => sub.courseId !== courseId) ?? []
       );
-
-    api
-      .getLikedReviews()
-      .then((data) => setLikedReviews(data.reviews))
-      .catch(() => {
-        setLikedReviews([]);
-        toast.error(
-          'An error occurred while fetching your liked reviews, please try again later.'
-        );
-      });
-
-    api
-      .getSubscriptions()
-      .then((data) => setUserSubscriptions(data))
-      .catch(() =>
-        toast.error(
-          'An error occurred while fetching your subscriptions, please try again later.'
-        )
-      );
-  }, []);
-
-  const removeSubscription = async (courseId: string) => {
-    try {
-      await api.removeSubscription(courseId);
-
-      setUserSubscriptions(
-        userSubscriptions?.filter(
-          (subscription) => subscription.courseId !== courseId
-        )
-      );
-
       toast.success(
-        `Subscription for course ${spliceCourseCode(
-          courseId,
-          ' '
-        )} removed successfully.`
+        `Subscription for course ${spliceCourseCode(courseId, ' ')} removed successfully.`
       );
-    } catch (err) {
+    },
+    onError: () => {
       toast.error(
         'An error occurred while removing your subscription, please try again later.'
       );
-    }
-  };
+    },
+  });
 
-  if (!userReviews || !userSubscriptions) {
+  useEffect(() => {
+    if (isReviewsError) {
+      toast.error(
+        'An error occurred while fetching your reviews, please try again later.'
+      );
+    }
+  }, [isReviewsError]);
+
+  useEffect(() => {
+    if (isLikedReviewsError) {
+      toast.error(
+        'An error occurred while fetching your liked reviews, please try again later.'
+      );
+    }
+  }, [isLikedReviewsError]);
+
+  useEffect(() => {
+    if (isSubscriptionsError) {
+      toast.error(
+        'An error occurred while fetching your subscriptions, please try again later.'
+      );
+    }
+  }, [isSubscriptionsError]);
+
+  if (!userReviews || !likedReviews || !userSubscriptions) {
     return <Loading />;
   }
 
@@ -304,7 +297,7 @@ export const Profile = () => {
                         className='ml-auto'
                         text={`Are you sure you want to delete your subscription for ${subscription.courseId}? `}
                         onConfirm={() =>
-                          removeSubscription(subscription.courseId)
+                          unsubscribeMutation.mutate(subscription.courseId)
                         }
                         size={20}
                       />
