@@ -3,16 +3,24 @@
 */
 
 export interface TimeBlock {
+  /** Day of week for the time block. */
   day?: string;
+  /** Start time value for the block. */
   t1?: string;
+  /** End time value for the block. */
   t2?: string;
 }
 
 export interface Block {
+  /** Campus code or name for the block. */
   campus?: string;
+  /** Display string for the block. */
   display?: string;
+  /** Location string for the block. */
   location?: string;
+  /** Time blocks associated with this block. */
   timeblocks?: TimeBlock[];
+  /** Course reference number for the block. */
   crn?: string;
 }
 
@@ -24,51 +32,85 @@ export interface ChangelogItem {
 }
 
 export interface Instructor {
+  /** Instructor display name. */
   name: string;
+  /** Search n-grams for the instructor name. */
   nameNgrams?: string;
+  /** Term identifier for the instructor record. */
   term: string;
 }
 
 export type ReqNode =
+  /** A single course code requirement. */
   | { type: 'course'; data: string }
+  /** A group of requirement nodes combined by an operator. */
   | {
       type: 'group';
       data: {
+        /** Operator used to combine the child nodes. */
         operator: Operator;
+        /** Child requirement nodes in the group. */
         groups: ReqNode[];
       };
     };
 
 export interface Schedule {
+  /** Schedule blocks for the term. */
   blocks?: Block[];
+  /** Term identifier for the schedule. */
   term?: string;
 }
 
 export interface Course {
+  /** Unique course identifier. */
   _id: string;
+  /** Search n-grams for the course ID. */
   idNgrams?: string;
+  /** Course title. */
   title: string;
+  /** Search n-grams for the course title. */
   titleNgrams?: string;
+  /** Credit value as listed in the catalog. */
   credits: string;
+  /** Subject code (e.g., "COMP"). */
   subject: string;
+  /** Course number (e.g., "202"). */
   code: string;
+  /** Catalog URL for the course. */
   url: string;
+  /** Department offering the course. */
   department: string;
+  /** Faculty offering the course. */
   faculty: string;
+  /** Terms when the course is offered. */
   terms: string[];
+  /** Course description. */
   description: string;
+  /** Instructors associated with the course. */
   instructors: Instructor[];
+  /** Raw prerequisites text from the catalog. */
   prerequisitesText?: string;
+  /** Raw corequisites text from the catalog. */
   corequisitesText?: string;
+  /** List of prerequisite course codes. */
   prerequisites: string[];
+  /** List of corequisite course codes. */
   corequisites: string[];
+  /** Course codes that list this course as a prerequisite. */
   leadingTo: string[];
+  /** Structured prerequisites expression. */
   logicalPrerequisites?: ReqNode;
+  /** Structured corequisites expression. */
   logicalCorequisites?: ReqNode;
+  /** Restriction text from the catalog. */
   restrictions?: string;
+  /** Schedule offerings for the course. */
   schedule?: Schedule[];
+  /** Average rating across reviews. */
   avgRating: number;
+  /** Average difficulty across reviews. */
   avgDifficulty: number;
+  /** Number of reviews for the course. */
   reviewCount: number;
 }
 
@@ -152,13 +194,18 @@ export interface GetUserInteractionForCoursePayload {
 }
 
 export interface Notification {
+  /** Review that triggered the notification. */
   review: Review;
+  /** Whether the notification has been seen. */
   seen: boolean;
+  /** User ID associated with the notification. */
   userId: string;
 }
 
 export interface Subscription {
+  /** Course ID the user is subscribed to. */
   courseId: string;
+  /** User ID that owns the subscription. */
   userId: string;
 }
 
@@ -175,6 +222,8 @@ export interface UserResponse {
 }
 
 export enum Operator {
+  /** All requirements must be satisfied. */
   And = 'AND',
+  /** Any requirement may be satisfied. */
   Or = 'OR',
 }
