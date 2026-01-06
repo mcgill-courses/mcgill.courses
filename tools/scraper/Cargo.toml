@@ -15,7 +15,7 @@ reqwest = { version = "0.12.23", default-features = false, features = [ "blockin
 scraper = "0.25.0"
 serde_json = "1.0.148"
 thirtyfour = "0.36.1"
-tokio = "1.48.0"
+tokio = "1.49.0"
 totp-rs = "5.7.0"
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
