@@ -9,7 +9,7 @@ bson = { version = "2.15.0", features = ["chrono-0_4"] }
 chrono = { workspace = true }
 combine = { path = "../combine" }
 futures = "0.3.31"
-itertools = "0.12.1"
+itertools = "0.14.0"
 lazy_static = "1.5.0"
 model = { path = "../model" }
 mongodb = "3.2.5"
