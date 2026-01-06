@@ -44,7 +44,7 @@
     "react-vis-graph-wrapper": "^0.1.3",
     "sonner": "^2.0.7",
     "tailwind-merge": "^1.14.0",
-    "yup": "^1.7.0"
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
