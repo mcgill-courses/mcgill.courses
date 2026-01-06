@@ -11,20 +11,26 @@ alias t := test
 default:
   just --list
 
+[group: 'check']
 all: build clippy e2e fmt-check forbid lint test
 
+[group: 'dev']
 build *mode='development':
-  cargo build && pnpm run build -- --mode {{mode}}
+  cargo build && pnpm run build -- --mode {{ mode }}
 
+[group: 'container']
 build-container:
   docker build -t mcgill.courses:latest .
 
+[group: 'check']
 clippy:
   ./bin/clippy
 
+[group: 'test']
 coverage:
   ./bin/coverage
 
+[group: 'dev']
 dev: services typeshare
   concurrently \
     --kill-others \
@@ -40,38 +46,47 @@ dev: services typeshare
     'just watch run -- --db-name=mcgill-courses' \
     'pnpm run dev'
 
+[group: 'setup']
 dev-deps:
   cargo install present
   cargo install typeshare-cli
   brew install --cask chromedriver
   curl -LsSf https://astral.sh/uv/install.sh | sh
 
+[group: 'test']
 e2e:
   pnpm run cy:e2e
 
+[group: 'format']
 fmt:
   cargo fmt --all
   pnpm run format
 
+[group: 'check']
 fmt-check:
   cargo fmt --all -- --check
   pnpm run format-check
 
+[group: 'check']
 forbid:
   ./bin/forbid
 
+[group: 'tools']
 generate-changelog *args:
   RUST_LOG=info cargo run --manifest-path tools/changelog-generator/Cargo.toml \
     -- \
     --output client/src/assets/changelog.json \
-    {{args}}
+    {{ args }}
 
+[group: 'setup']
 initialize *args: restart-services
-  cargo run -- --source=seed --initialize --db-name=mcgill-courses {{args}}
+  cargo run -- --source=seed --initialize --db-name=mcgill-courses {{ args }}
 
+[group: 'check']
 lint *args:
-  pnpm run lint {{args}}
+  pnpm run lint {{ args }}
 
+[group: 'tools']
 load *args:
   cargo run --manifest-path tools/scraper/Cargo.toml -- \
     --batch-size=5 \
@@ -79,16 +94,20 @@ load *args:
     --course-delay 1000 \
     {{ args }}
 
+[group: 'tools']
 readme:
   present --in-place README.md
   @prettier --write README.md
 
+[group: 'setup']
 restart-services:
   docker compose down --volumes && just services
 
+[group: 'dev']
 run *args:
-  cargo run -- {{args}}
+  cargo run {{ args }}
 
+[group: 'container']
 run-container: build-container
   docker run -d \
     -e MONGODB_URL=$MONGODB_URL \
@@ -99,17 +118,22 @@ run-container: build-container
     -p 8000:8000 \
     mcgill.courses:latest
 
+[group: 'dev']
 serve:
   cargo run -- --db-name=mcgill-courses
 
+[group: 'setup']
 services:
   docker compose up --no-recreate -d
 
+[group: 'test']
 test *filter:
-  cargo test --all {{filter}}
+  cargo test --all {{ filter }}
 
+[group: 'dev']
 typeshare:
   typeshare -l typescript -o client/src/lib/types.ts .
 
+[group: 'dev']
 watch +COMMAND='test':
-  cargo watch --clear --exec "{{COMMAND}}"
+  cargo watch --clear --exec "{{ COMMAND }}"
