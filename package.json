@@ -21,7 +21,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@fontsource/inter": "^4.5.15",
+    "@fontsource/inter": "^5.2.8",
     "@headlessui/react": "^1.7.19",
     "@heroicons/react": "^2.2.0",
     "@tanstack/react-query": "^5.90.5",
