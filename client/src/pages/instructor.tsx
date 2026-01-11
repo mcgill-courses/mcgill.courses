@@ -11,9 +11,9 @@ import { Layout } from '../components/layout';
 import { ReviewEmptyPrompt } from '../components/review-empty-prompt';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
-import type { Instructor as InstructorType } from '../lib/types';
+import { Course, type Instructor as InstructorType } from '../lib/types';
 import type { Review } from '../lib/types';
-import { courseIdToUrlParam } from '../lib/utils';
+import { courseIdToUrlParam, getCurrentTerm } from '../lib/utils';
 import { Loading } from './loading';
 import { NotFound } from './not-found';
 
@@ -27,6 +27,8 @@ export const Instructor = () => {
     InstructorType | undefined | null
   >(undefined);
 
+  const [courses, setCourses] = useState<Course[]>([]);
+
   const user = useAuth();
 
   useEffect(() => {
@@ -37,6 +39,7 @@ export const Instructor = () => {
       .then((data) => {
         setInstructor(data.instructor);
         setReviews(data.reviews);
+        setCourses(data.courses);
       })
       .catch(() => {
         toast.error('Failed to fetch instructor.');
@@ -51,6 +54,15 @@ export const Instructor = () => {
 
   const reviewCount = reviews.length;
   const reviewLabel = reviewCount === 1 ? 'review' : 'reviews';
+
+  const currentTerm = getCurrentTerm();
+  const decodedName = params.name ? decodeURIComponent(params.name) : '';
+  const currentCourses = (courses || []).filter((course) =>
+    course.instructors.some(
+      (instructor) =>
+        instructor.name === decodedName && instructor.term === currentTerm
+    )
+  );
 
   const updateLikes = (review: Review) => {
     return (likes: number) => {
@@ -113,6 +125,24 @@ export const Instructor = () => {
                 </a>
               </div>
               <div className='mt-4 text-gray-500 dark:text-gray-400'>
+                {currentCourses.length > 0 && (
+                  <Fragment>
+                    <p>Currently teaching:</p>
+                    <div className='mb-4 max-w-sm'>
+                      {currentCourses.map((course, index) => (
+                        <Fragment key={index}>
+                          <Link
+                            to={`/course/${courseIdToUrlParam(course._id)}`}
+                            className='font-medium transition hover:text-red-600'
+                          >
+                            {course._id}
+                          </Link>
+                          {index !== currentCourses.length - 1 ? ', ' : '.'}
+                        </Fragment>
+                      ))}
+                    </div>
+                  </Fragment>
+                )}
                 {uniqueReviews.length ? (
                   <Fragment>
                     <p>Teaches or has taught the following course(s):</p>

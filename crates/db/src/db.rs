@@ -819,6 +819,21 @@ impl Db {
     )
   }
 
+  pub async fn find_courses_by_instructor_name(
+    &self,
+    name: &str,
+  ) -> Result<Vec<Course>> {
+    let cursor = self
+      .database
+      .collection::<Course>(Self::COURSE_COLLECTION)
+      .find(doc! { "instructors.name": name })
+      .await?;
+
+    let courses: Vec<Course> = cursor.try_collect().await?;
+
+    Ok(courses)
+  }
+
   pub(crate) async fn add_course(&self, course: Course) -> Result {
     match self.find_course(doc! { "_id": &course.id }).await? {
       Some(found) => {
@@ -2626,5 +2641,55 @@ mod tests {
     .unwrap();
 
     assert_eq!(db.course_count().await.unwrap(), 1);
+  }
+
+  #[tokio::test(flavor = "multi_thread")]
+  async fn find_courses_by_instructor_name() {
+    let TestContext { db, .. } = TestContext::new().await;
+
+    // Add courses with different instructors
+    db.add_course(Course {
+      id: "COMP250".into(),
+      title: "Fundamentals of SWE".into(),
+      instructors: vec![Instructor {
+        name: "Lili Wei".into(),
+        name_ngrams: None,
+        term: "Fall 2024".into(),
+      }],
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_course(Course {
+      id: "COMP251".into(),
+      title: "Algorithms and Data Structures".into(),
+      instructors: vec![Instructor {
+        name: "Giulia Alberini".into(),
+        name_ngrams: None,
+        term: "Fall 2024".into(),
+      }],
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    // Test finding courses by instructor name
+    let courses = db
+      .find_courses_by_instructor_name("Giulia Alberini")
+      .await
+      .unwrap();
+
+    assert_eq!(courses.len(), 1);
+
+    let course_ids: Vec<String> =
+      courses.iter().map(|c| c.id.clone()).collect();
+    assert!(course_ids.contains(&"COMP251".to_string()));
+
+    let empty_courses = db
+      .find_courses_by_instructor_name("Nonexistent")
+      .await
+      .unwrap();
+    assert_eq!(empty_courses.len(), 0);
   }
 }
