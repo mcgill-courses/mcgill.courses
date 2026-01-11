@@ -287,14 +287,10 @@ export const api = {
   },
 
   async getInstructor(name: string): Promise<GetInstructorPayload> {
-    const endpoint = `/instructors/${decodeURIComponent(name)}`;
-
-    const result = await client.deserialize<GetInstructorPayload>(
+    return client.deserialize<GetInstructorPayload>(
       'GET',
-      endpoint
+      `/instructors/${decodeURIComponent(name)}`
     );
-
-    return result;
   },
 
   async getUser(): Promise<UserResponse> {

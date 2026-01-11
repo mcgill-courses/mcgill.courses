@@ -1,4 +1,3 @@
-import uniqBy from 'lodash/uniqBy';
 import { ExternalLink } from 'lucide-react';
 import { Fragment, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -49,19 +48,22 @@ export const Instructor = () => {
   if (instructor === undefined) return <Loading />;
   if (instructor === null) return <NotFound />;
 
-  const userReview = reviews.find((r) => r.userId === user?.id),
-    uniqueReviews = uniqBy(reviews, (r) => r.courseId);
+  const userReview = reviews.find((r) => r.userId === user?.id);
 
   const reviewCount = reviews.length;
   const reviewLabel = reviewCount === 1 ? 'review' : 'reviews';
 
   const currentTerm = getCurrentTerm();
   const decodedName = params.name ? decodeURIComponent(params.name) : '';
-  const currentCourses = (courses || []).filter((course) =>
-    course.instructors.some(
-      (instructor) =>
-        instructor.name === decodedName && instructor.term === currentTerm
-    )
+
+  // Get all courses the instructor has taught
+  const uniqueCourses = (courses || []).filter((course) =>
+    course.instructors.some((instructor) => instructor.name === decodedName)
+  );
+
+  // Then filter by currentTerm for currentCourses
+  const currentCourses = (uniqueCourses || []).filter((course) =>
+    course.instructors.some((instructor) => instructor.term === currentTerm)
   );
 
   const updateLikes = (review: Review) => {
@@ -143,30 +145,25 @@ export const Instructor = () => {
                     </div>
                   </Fragment>
                 )}
-                {uniqueReviews.length ? (
+                {uniqueCourses.length ? (
                   <Fragment>
                     <p>Teaches or has taught the following course(s):</p>
                     <div className='max-w-sm'>
-                      {uniqueReviews.map((review, index) => (
+                      {uniqueCourses.map((course, index) => (
                         <Fragment key={index}>
                           <Link
-                            to={`/course/${courseIdToUrlParam(
-                              review.courseId
-                            )}`}
+                            to={`/course/${courseIdToUrlParam(course._id)}`}
                             className='font-medium transition hover:text-red-600'
                           >
-                            {review.courseId}
+                            {course._id}
                           </Link>
-                          {index !== uniqueReviews.length - 1 ? ', ' : '.'}
+                          {index !== uniqueCourses.length - 1 ? ', ' : '.'}
                         </Fragment>
                       ))}
                     </div>
                   </Fragment>
                 ) : (
-                  <p>
-                    This professor hasn't taught any courses that have been
-                    reviewed yet.
-                  </p>
+                  <p>This professor hasn't taught any courses yet</p>
                 )}
               </div>
               {reviewCount !== 0 && (
