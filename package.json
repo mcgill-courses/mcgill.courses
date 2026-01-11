@@ -31,7 +31,7 @@
     "formik": "^2.4.9",
     "formik-persist-values": "^1.4.1",
     "framer-motion": "^12.23.12",
-    "immer": "^10.1.3",
+    "immer": "^11.1.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.562.0",
     "react": "^18.3.1",
