@@ -21,7 +21,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@fontsource/inter": "^4.5.15",
+    "@fontsource/inter": "^5.2.8",
     "@headlessui/react": "^1.7.19",
     "@heroicons/react": "^2.2.0",
     "@tanstack/react-query": "^5.90.5",
@@ -31,7 +31,7 @@
     "formik": "^2.4.9",
     "formik-persist-values": "^1.4.1",
     "framer-motion": "^12.23.12",
-    "immer": "^10.1.3",
+    "immer": "^11.1.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.562.0",
     "react": "^18.3.1",
@@ -63,7 +63,7 @@
     "cypress": "^12.17.4",
     "eslint": "^8.57.1",
     "eslint-plugin-tailwindcss": "^3.18.2",
-    "husky": "^8.0.3",
+    "husky": "^9.1.7",
     "jsdom": "^27.4.0",
     "knip": "^5.78.0",
     "lint-staged": "^16.2.7",

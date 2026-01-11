@@ -7,7 +7,7 @@ publish = false
 [dependencies]
 anyhow = { workspace = true }
 chrono = { workspace = true }
-clap = { version = "4.5.49", features = ["derive"] }
+clap = { version = "4.5.54", features = ["derive"] }
 lopdf = "0.38.0"
 rayon = "1.11.0"
 regex = "1.12.2"
