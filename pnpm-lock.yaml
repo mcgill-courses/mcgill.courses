@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@fontsource/inter':
-        specifier: ^4.5.15
-        version: 4.5.15
+        specifier: ^5.2.8
+        version: 5.2.8
       '@headlessui/react':
         specifier: ^1.7.19
         version: 1.7.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -690,8 +690,8 @@ packages:
       '@exodus/crypto':
         optional: true
 
-  '@fontsource/inter@4.5.15':
-    resolution: {integrity: sha512-FzleM9AxZQK2nqsTDtBiY0PMEVWvnKnuu2i09+p6DHvrHsuucoV2j0tmw+kAT3L4hvsLdAIDv6MdGehsPIdT+Q==}
+  '@fontsource/inter@5.2.8':
+    resolution: {integrity: sha512-P6r5WnJoKiNVV+zvW2xM13gNdFhAEpQ9dQJHt3naLvfg+LkF2ldgSLiF4T41lf1SQCM9QmkqPTn4TH568IRagg==}
 
   '@hapi/hoek@9.3.0':
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
@@ -4146,7 +4146,7 @@ snapshots:
 
   '@exodus/bytes@1.6.0': {}
 
-  '@fontsource/inter@4.5.15': {}
+  '@fontsource/inter@5.2.8': {}
 
   '@hapi/hoek@9.3.0': {}
 
