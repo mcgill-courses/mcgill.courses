@@ -1,4 +1,5 @@
-import { ExternalLink, Leaf, Snowflake, Sun } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronDown, ExternalLink, Leaf, Snowflake, Sun } from 'lucide-react';
 import { Fragment, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
@@ -27,6 +28,7 @@ export const Instructor = () => {
   >(undefined);
 
   const [courses, setCourses] = useState<Course[]>([]);
+  const [showAllCourses, setShowAllCourses] = useState(false);
 
   const user = useAuth();
 
@@ -183,22 +185,48 @@ export const Instructor = () => {
                   </div>
                 )}
                 {uniqueCourses.length ? (
-                  <Fragment>
-                    <p>Teaches or has taught the following course(s):</p>
-                    <div className='max-w-sm'>
-                      {uniqueCourses.map((course, index) => (
-                        <Fragment key={index}>
-                          <Link
-                            to={`/course/${courseIdToUrlParam(course._id)}`}
-                            className='font-medium transition hover:text-red-600'
-                          >
-                            {course._id}
-                          </Link>
-                          {index !== uniqueCourses.length - 1 ? ', ' : '.'}
-                        </Fragment>
-                      ))}
-                    </div>
-                  </Fragment>
+                  <div className='rounded-md bg-gray-100 p-2.5 dark:bg-neutral-700/50'>
+                    <button
+                      onClick={() => setShowAllCourses(!showAllCourses)}
+                      className='flex w-full items-center justify-between'
+                    >
+                      <span className='text-sm font-semibold text-gray-700 dark:text-gray-200'>
+                        All Courses ({uniqueCourses.length})
+                      </span>
+                      <ChevronDown
+                        size={16}
+                        className={`text-gray-500 transition-transform dark:text-gray-400 ${showAllCourses ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+                    <AnimatePresence>
+                      {showAllCourses && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className='overflow-hidden'
+                        >
+                          <div className='mt-1.5 flex flex-col gap-1.5'>
+                            {uniqueCourses.map((course) => (
+                              <Link
+                                key={course._id}
+                                to={`/course/${courseIdToUrlParam(course._id)}`}
+                                className='group flex flex-col rounded px-2.5 py-1.5 transition hover:bg-white/50 dark:hover:bg-neutral-700/50'
+                              >
+                                <span className='text-sm font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
+                                  {course._id}
+                                </span>
+                                <span className='text-xs text-gray-600 dark:text-gray-400'>
+                                  {course.title}
+                                </span>
+                              </Link>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 ) : (
                   <p>This professor hasn't taught any courses yet</p>
                 )}
