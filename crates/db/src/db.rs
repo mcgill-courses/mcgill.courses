@@ -833,6 +833,7 @@ impl Db {
         .await?,
     )
   }
+
   pub(crate) async fn add_course(&self, course: Course) -> Result {
     match self.find_course(doc! { "_id": &course.id }).await? {
       Some(found) => {
