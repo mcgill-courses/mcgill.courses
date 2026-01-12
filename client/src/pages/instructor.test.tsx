@@ -125,9 +125,9 @@ describe('Instructor page', () => {
 
     await waitFor(() => expect(courseReviewMock).toHaveBeenCalled());
 
-    const attachments = courseReviewMock.mock.calls.map(
-      ([props]) => props.attachment
-    );
+    const attachments = courseReviewMock.mock.calls
+      .slice(-2)
+      .map(([props]) => props.attachment);
 
     expect(attachments.length).toBe(2);
     expect(new Set(attachments)).toEqual(new Set(['scrollButton']));

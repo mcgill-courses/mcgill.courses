@@ -137,9 +137,12 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
           <CourseDescription description={course.description} />
         </p>
         <div className='grow py-3' />
-        <CourseInfoStats className='mb-4 sm:hidden' reviews={reviews} />
         <CourseInfoStats
-          className='hidden gap-x-6 sm:mb-6 sm:flex md:mb-0 md:hidden'
+          className='mb-4 flex-row sm:hidden'
+          reviews={reviews}
+        />
+        <CourseInfoStats
+          className='hidden flex-row gap-x-6 sm:mb-6 sm:flex md:mb-0 md:hidden'
           variant='medium'
           reviews={reviews}
         />
@@ -151,7 +154,7 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
         <CourseInfoStats
           variant='large'
           reviews={reviews}
-          className='lg:mr-8'
+          className='flex-col gap-y-1 lg:mr-8 lg:flex-row lg:gap-x-2'
         />
       </div>
     </div>
