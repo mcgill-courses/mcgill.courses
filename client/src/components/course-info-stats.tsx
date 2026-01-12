@@ -103,15 +103,7 @@ export const CourseInfoStats = ({
   const averageDifficulty = sum(difficulties) / reviews.length;
 
   return (
-    <div
-      className={twMerge(
-        'flex gap-x-4 bg-transparent',
-        variant === 'large'
-          ? 'flex-col gap-y-1 lg:flex-row lg:gap-x-2'
-          : 'flex-row',
-        className
-      )}
-    >
+    <div className={twMerge('flex gap-x-4 bg-transparent', className)}>
       <div className='md:rounded-xl md:p-2'>
         <Stat
           title='Rating'

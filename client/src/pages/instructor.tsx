@@ -71,9 +71,11 @@ export const Instructor = () => {
   const currentTermHasCourses = getCoursesForTerm(currentTerm).length > 0;
 
   useEffect(() => {
-    if (instructor && activeTab === 'all') {
-      if (currentTermHasCourses) {
+    if (instructor) {
+      if (activeTab === 'all' && currentTermHasCourses) {
         setActiveTab(currentTerm);
+      } else {
+        setActiveTab('all');
       }
     }
   }, [instructor, currentTermHasCourses]);
@@ -139,7 +141,7 @@ export const Instructor = () => {
       <div className='mx-auto mt-10 max-w-5xl md:mt-10'>
         <div className='rounded-md bg-slate-50 p-6 dark:bg-neutral-800'>
           <div className='mb-6 flex flex-row items-center space-x-2'>
-            <h1 className='break-words text-4xl font-semibold text-gray-800 dark:text-gray-200'>
+            <h1 className='break-words text-3xl font-semibold text-gray-800 dark:text-gray-200 sm:text-4xl'>
               {params.name && decodeURIComponent(params.name)}
             </h1>
             <a
@@ -154,8 +156,8 @@ export const Instructor = () => {
             </a>
           </div>
 
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-            <div>
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-2'>
+            <div className='md:col-span-2 lg:col-span-1'>
               <div className='mb-4 flex flex-wrap border-b border-gray-200 dark:border-neutral-700'>
                 {orderedTerms.map((term) => {
                   const termCourses = getCoursesForTerm(term);
@@ -179,7 +181,7 @@ export const Instructor = () => {
                     <button
                       key={term}
                       onClick={() => setActiveTab(term)}
-                      className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
+                      className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors sm:px-4 ${
                         activeTab === term
                           ? 'border-b-2 border-gray-800 text-gray-800 dark:border-gray-200 dark:text-gray-200'
                           : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
@@ -203,7 +205,7 @@ export const Instructor = () => {
               </div>
 
               {activeCourses.length > 0 ? (
-                <div className='grid grid-cols-2 gap-2'>
+                <div className='grid grid-cols-2 gap-2 overflow-scroll md:max-h-72 lg:max-h-44'>
                   {activeCourses.map((course) => (
                     <Link
                       key={course._id}
@@ -226,10 +228,19 @@ export const Instructor = () => {
               )}
             </div>
 
-            <div className='flex justify-center'>
+            <div className='sm:mt-4 md:mx-auto md:mt-0'>
               {reviewCount !== 0 ? (
                 <div>
-                  <CourseInfoStats variant='large' reviews={reviews} />
+                  <CourseInfoStats
+                    variant='large'
+                    reviews={reviews}
+                    className='hidden flex-row gap-y-1 sm:flex md:flex-col lg:flex-row lg:gap-x-2'
+                  />
+                  <CourseInfoStats
+                    variant='small'
+                    reviews={reviews}
+                    className='flex-row xs:flex sm:hidden'
+                  />
                   <p className='mt-4 text-sm text-gray-500 dark:text-gray-400'>
                     {reviewCount} {reviewLabel}
                   </p>
