@@ -1,5 +1,5 @@
 import { ExternalLink, Leaf, Snowflake, Sun } from 'lucide-react';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -12,7 +12,11 @@ import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
 import { Course, type Instructor as InstructorType } from '../lib/types';
 import type { Review } from '../lib/types';
-import { courseIdToUrlParam, getCurrentTerm } from '../lib/utils';
+import {
+  courseIdToUrlParam,
+  getCurrentTerm,
+  getCurrentTerms,
+} from '../lib/utils';
 import { Loading } from './loading';
 import { NotFound } from './not-found';
 
@@ -27,7 +31,7 @@ export const Instructor = () => {
   >(undefined);
 
   const [courses, setCourses] = useState<Course[]>([]);
-  const [activeTab, setActiveTab] = useState<'current' | 'all'>('current');
+  const [activeTab, setActiveTab] = useState<string>('all');
 
   const user = useAuth();
 
@@ -47,20 +51,32 @@ export const Instructor = () => {
   }, [params.name]);
 
   const currentTerm = getCurrentTerm();
+  const academicTerms = getCurrentTerms();
 
-  const hasCurrentCourses = instructor
-    ? courses.some((course) =>
-        course.instructors.some(
-          (ins) => ins.name === instructor.name && ins.term === currentTerm
-        )
+  // Reorder terms so current term is first
+  const orderedTerms = [
+    currentTerm,
+    ...academicTerms.filter((t) => t !== currentTerm),
+  ];
+
+  const getCoursesForTerm = (term: string) => {
+    if (!instructor) return [];
+    return courses.filter((course) =>
+      course.instructors.some(
+        (ins) => ins.name === instructor.name && ins.term === term
       )
-    : false;
+    );
+  };
+
+  const currentTermHasCourses = getCoursesForTerm(currentTerm).length > 0;
 
   useEffect(() => {
-    if (instructor && !hasCurrentCourses) {
-      setActiveTab('all');
+    if (instructor && activeTab === 'all') {
+      if (currentTermHasCourses) {
+        setActiveTab(currentTerm);
+      }
     }
-  }, [instructor, hasCurrentCourses]);
+  }, [instructor, currentTermHasCourses]);
 
   if (instructor === undefined) return <Loading />;
   if (instructor === null) return <NotFound />;
@@ -76,11 +92,8 @@ export const Instructor = () => {
     course.instructors.some((instructor) => instructor.name === decodedName)
   );
 
-  const currentCourses = uniqueCourses.filter((course) =>
-    course.instructors.some(
-      (ins) => ins.name === instructor.name && ins.term === currentTerm
-    )
-  );
+  const activeCourses =
+    activeTab === 'all' ? uniqueCourses : getCoursesForTerm(activeTab);
 
   const updateLikes = (review: Review) => {
     return (likes: number) => {
@@ -143,93 +156,74 @@ export const Instructor = () => {
 
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
             <div>
-              {(() => {
-                const season = currentTerm.split(' ')[0].toLowerCase();
+              <div className='mb-4 flex flex-wrap border-b border-gray-200 dark:border-neutral-700'>
+                {orderedTerms.map((term) => {
+                  const termCourses = getCoursesForTerm(term);
+                  if (termCourses.length === 0) return null;
 
-                const SeasonIcon =
-                  season === 'fall'
-                    ? Leaf
-                    : season === 'winter'
-                      ? Snowflake
-                      : Sun;
+                  const season = term.split(' ')[0].toLowerCase();
+                  const SeasonIcon =
+                    season === 'fall'
+                      ? Leaf
+                      : season === 'winter'
+                        ? Snowflake
+                        : Sun;
+                  const iconColor =
+                    season === 'fall'
+                      ? 'text-red-600'
+                      : season === 'winter'
+                        ? 'text-sky-500'
+                        : 'text-yellow-500';
 
-                const iconColor =
-                  season === 'fall'
-                    ? 'text-red-600'
-                    : season === 'winter'
-                      ? 'text-sky-500'
-                      : 'text-yellow-500';
+                  return (
+                    <button
+                      key={term}
+                      onClick={() => setActiveTab(term)}
+                      className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
+                        activeTab === term
+                          ? 'border-b-2 border-gray-800 text-gray-800 dark:border-gray-200 dark:text-gray-200'
+                          : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                      }`}
+                    >
+                      <SeasonIcon className={iconColor} size={14} />
+                      {term} ({termCourses.length})
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={() => setActiveTab('all')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'all'
+                      ? 'border-b-2 border-gray-800 text-gray-800 dark:border-gray-200 dark:text-gray-200'
+                      : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                  }`}
+                >
+                  All ({uniqueCourses.length})
+                </button>
+              </div>
 
-                return (
-                  <Fragment>
-                    <div className='mb-4 flex border-b border-gray-200 dark:border-neutral-700'>
-                      {currentCourses.length > 0 && (
-                        <button
-                          onClick={() => setActiveTab('current')}
-                          className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors ${
-                            activeTab === 'current'
-                              ? 'border-b-2 border-gray-800 text-gray-800 dark:border-gray-200 dark:text-gray-200'
-                              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-                          }`}
-                        >
-                          <SeasonIcon className={iconColor} size={14} />
-                          {currentTerm} ({currentCourses.length})
-                        </button>
-                      )}
-                      <button
-                        onClick={() => setActiveTab('all')}
-                        className={`px-4 py-2 text-sm font-medium transition-colors ${
-                          activeTab === 'all'
-                            ? 'border-b-2 border-gray-800 text-gray-800 dark:border-gray-200 dark:text-gray-200'
-                            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-                        }`}
-                      >
-                        All Courses ({uniqueCourses.length})
-                      </button>
-                    </div>
-
-                    {activeTab === 'current' && currentCourses.length > 0 ? (
-                      <div className='grid grid-cols-2 gap-2'>
-                        {currentCourses.map((course) => (
-                          <Link
-                            key={course._id}
-                            to={`/course/${courseIdToUrlParam(course._id)}`}
-                            className='group flex flex-col rounded px-3 py-2 transition'
-                          >
-                            <span className='text-sm font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
-                              {course._id}
-                            </span>
-                            <span className='text-xs text-gray-600 dark:text-gray-400'>
-                              {course.title}
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    ) : uniqueCourses.length > 0 ? (
-                      <div className='grid grid-cols-2 gap-2'>
-                        {uniqueCourses.map((course) => (
-                          <Link
-                            key={course._id}
-                            to={`/course/${courseIdToUrlParam(course._id)}`}
-                            className='group flex flex-col rounded px-3 py-2 transition'
-                          >
-                            <span className='text-sm font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
-                              {course._id}
-                            </span>
-                            <span className='text-xs text-gray-600 dark:text-gray-400'>
-                              {course.title}
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className='text-sm text-gray-500 dark:text-gray-400'>
-                        This professor hasn't taught any courses yet.
-                      </p>
-                    )}
-                  </Fragment>
-                );
-              })()}
+              {activeCourses.length > 0 ? (
+                <div className='grid grid-cols-2 gap-2'>
+                  {activeCourses.map((course) => (
+                    <Link
+                      key={course._id}
+                      to={`/course/${courseIdToUrlParam(course._id)}`}
+                      className='group flex flex-col rounded px-3 py-2 transition'
+                    >
+                      <span className='text-sm font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
+                        {course._id}
+                      </span>
+                      <span className='text-xs text-gray-600 dark:text-gray-400'>
+                        {course.title}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className='text-sm text-gray-500 dark:text-gray-400'>
+                  This professor hasn't taught any courses yet.
+                </p>
+              )}
             </div>
 
             <div className='flex justify-center'>
