@@ -819,10 +819,9 @@ impl Db {
     )
   }
 
-  // Returns all courses taught by the instructor (across all terms)
   pub async fn find_courses_by_instructor_name(
     &self,
-    name: &str
+    name: &str,
   ) -> Result<Vec<Course>> {
     Ok(
       self

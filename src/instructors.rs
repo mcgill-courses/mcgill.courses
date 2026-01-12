@@ -41,10 +41,7 @@ pub(crate) async fn get_instructor(
       None => vec![],
     },
     courses: match &instructor {
-      Some(ins) => {
-        let courses = db.find_courses_by_instructor_name(&ins.name).await?;
-        courses
-      }
+      Some(ins) => db.find_courses_by_instructor_name(&ins.name).await?,
       None => vec![],
     },
   }))

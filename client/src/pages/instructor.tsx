@@ -56,12 +56,10 @@ export const Instructor = () => {
   const currentTerm = getCurrentTerm();
   const decodedName = params.name ? decodeURIComponent(params.name) : '';
 
-  // Get all courses the instructor has taught
   const uniqueCourses = courses.filter((course) =>
     course.instructors.some((instructor) => instructor.name === decodedName)
   );
 
-  // Then filter by currentTerm for currentCourses
   const currentCourses = uniqueCourses.filter((course) =>
     course.instructors.some((instructor) => instructor.term === currentTerm)
   );
