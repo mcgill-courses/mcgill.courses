@@ -7,6 +7,7 @@ pub(crate) struct GetInstructorPayload {
   pub(crate) instructor: Option<Instructor>,
   /// Reviews associated with the instructor sorted by newest first.
   pub(crate) reviews: Vec<Review>,
+  /// Courses taught by the instructor.
   pub(crate) courses: Vec<Course>,
 }
 
