@@ -62,7 +62,7 @@ export const Instructor = () => {
   );
 
   // Then filter by currentTerm for currentCourses
-  const currentCourses = (uniqueCourses || []).filter((course) =>
+  const currentCourses = uniqueCourses.filter((course) =>
     course.instructors.some((instructor) => instructor.term === currentTerm)
   );
 
