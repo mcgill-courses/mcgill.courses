@@ -131,24 +131,21 @@ export const Instructor = () => {
                   <div className='mb-5'>
                     {(() => {
                       const season = currentTerm.split(' ')[0].toLowerCase();
-                      const borderColor =
-                        season === 'fall'
-                          ? 'border-l-red-400'
-                          : season === 'winter'
-                            ? 'border-l-sky-400'
-                            : 'border-l-yellow-400';
+
                       const bgColor =
                         season === 'fall'
                           ? 'bg-red-50 dark:bg-red-950/30'
                           : season === 'winter'
                             ? 'bg-sky-50 dark:bg-sky-950/30'
                             : 'bg-yellow-50 dark:bg-yellow-950/30';
+
                       const iconColor =
                         season === 'fall'
                           ? 'text-red-600'
                           : season === 'winter'
                             ? 'text-sky-500'
                             : 'text-yellow-500';
+
                       const SeasonIcon =
                         season === 'fall'
                           ? Leaf
@@ -157,26 +154,24 @@ export const Instructor = () => {
                             : Sun;
 
                       return (
-                        <div
-                          className={`rounded-lg border-l-4 ${borderColor} ${bgColor} p-3`}
-                        >
-                          <div className='mb-2 flex items-center gap-2'>
-                            <SeasonIcon className={iconColor} size={18} />
+                        <div className={`rounded-md ${bgColor} p-2.5`}>
+                          <div className='mb-1.5 flex items-center gap-1.5'>
+                            <SeasonIcon className={iconColor} size={16} />
                             <span className='text-sm font-semibold text-gray-700 dark:text-gray-200'>
-                              Teaching {currentTerm}
+                              {currentTerm}
                             </span>
                           </div>
-                          <div className='flex flex-col gap-2'>
+                          <div className='flex flex-col gap-1.5'>
                             {currentCourses.map((course) => (
                               <Link
                                 key={course._id}
                                 to={`/course/${courseIdToUrlParam(course._id)}`}
-                                className='group flex flex-col rounded-md bg-white/70 px-3 py-2 transition hover:bg-white dark:bg-neutral-800/70 dark:hover:bg-neutral-700'
+                                className='group flex flex-col rounded px-2.5 py-1.5 transition hover:bg-white/50 dark:hover:bg-neutral-700/50'
                               >
-                                <span className='font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
+                                <span className='text-sm font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
                                   {course._id}
                                 </span>
-                                <span className='text-sm text-gray-600 dark:text-gray-400'>
+                                <span className='text-xs text-gray-600 dark:text-gray-400'>
                                   {course.title}
                                 </span>
                               </Link>
