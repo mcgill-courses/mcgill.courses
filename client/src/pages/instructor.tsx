@@ -61,7 +61,9 @@ export const Instructor = () => {
   );
 
   const currentCourses = uniqueCourses.filter((course) =>
-    course.instructors.some((instructor) => instructor.term === currentTerm)
+    course.instructors.some(
+      (ins) => ins.name === instructor.name && ins.term === currentTerm
+    )
   );
 
   const updateLikes = (review: Review) => {
