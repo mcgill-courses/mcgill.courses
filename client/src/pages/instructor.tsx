@@ -1,4 +1,3 @@
-import uniqBy from 'lodash/uniqBy';
 import { ExternalLink } from 'lucide-react';
 import { Fragment, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -11,9 +10,9 @@ import { Layout } from '../components/layout';
 import { ReviewEmptyPrompt } from '../components/review-empty-prompt';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
-import type { Instructor as InstructorType } from '../lib/types';
+import { Course, type Instructor as InstructorType } from '../lib/types';
 import type { Review } from '../lib/types';
-import { courseIdToUrlParam } from '../lib/utils';
+import { courseIdToUrlParam, getCurrentTerm } from '../lib/utils';
 import { Loading } from './loading';
 import { NotFound } from './not-found';
 
@@ -27,6 +26,8 @@ export const Instructor = () => {
     InstructorType | undefined | null
   >(undefined);
 
+  const [courses, setCourses] = useState<Course[]>([]);
+
   const user = useAuth();
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export const Instructor = () => {
       .then((data) => {
         setInstructor(data.instructor);
         setReviews(data.reviews);
+        setCourses(data.courses);
       })
       .catch(() => {
         toast.error('Failed to fetch instructor.');
@@ -46,11 +48,21 @@ export const Instructor = () => {
   if (instructor === undefined) return <Loading />;
   if (instructor === null) return <NotFound />;
 
-  const userReview = reviews.find((r) => r.userId === user?.id),
-    uniqueReviews = uniqBy(reviews, (r) => r.courseId);
+  const userReview = reviews.find((r) => r.userId === user?.id);
 
   const reviewCount = reviews.length;
   const reviewLabel = reviewCount === 1 ? 'review' : 'reviews';
+
+  const currentTerm = getCurrentTerm();
+  const decodedName = params.name ? decodeURIComponent(params.name) : '';
+
+  const uniqueCourses = courses.filter((course) =>
+    course.instructors.some((instructor) => instructor.name === decodedName)
+  );
+
+  const currentCourses = uniqueCourses.filter((course) =>
+    course.instructors.some((instructor) => instructor.term === currentTerm)
+  );
 
   const updateLikes = (review: Review) => {
     return (likes: number) => {
@@ -113,30 +125,43 @@ export const Instructor = () => {
                 </a>
               </div>
               <div className='mt-4 text-gray-500 dark:text-gray-400'>
-                {uniqueReviews.length ? (
+                {currentCourses.length > 0 && (
+                  <Fragment>
+                    <p>Currently teaching:</p>
+                    <div className='mb-4 max-w-sm'>
+                      {currentCourses.map((course, index) => (
+                        <Fragment key={index}>
+                          <Link
+                            to={`/course/${courseIdToUrlParam(course._id)}`}
+                            className='font-medium transition hover:text-red-600'
+                          >
+                            {course._id}
+                          </Link>
+                          {index !== currentCourses.length - 1 ? ', ' : '.'}
+                        </Fragment>
+                      ))}
+                    </div>
+                  </Fragment>
+                )}
+                {uniqueCourses.length ? (
                   <Fragment>
                     <p>Teaches or has taught the following course(s):</p>
                     <div className='max-w-sm'>
-                      {uniqueReviews.map((review, index) => (
+                      {uniqueCourses.map((course, index) => (
                         <Fragment key={index}>
                           <Link
-                            to={`/course/${courseIdToUrlParam(
-                              review.courseId
-                            )}`}
+                            to={`/course/${courseIdToUrlParam(course._id)}`}
                             className='font-medium transition hover:text-red-600'
                           >
-                            {review.courseId}
+                            {course._id}
                           </Link>
-                          {index !== uniqueReviews.length - 1 ? ', ' : '.'}
+                          {index !== uniqueCourses.length - 1 ? ', ' : '.'}
                         </Fragment>
                       ))}
                     </div>
                   </Fragment>
                 ) : (
-                  <p>
-                    This professor hasn't taught any courses that have been
-                    reviewed yet.
-                  </p>
+                  <p>This professor hasn't taught any courses yet</p>
                 )}
               </div>
               {reviewCount !== 0 && (

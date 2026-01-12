@@ -106,6 +106,7 @@ describe('Instructor page', () => {
     getInstructorMock.mockResolvedValue({
       instructor: { name: 'Instructor Name' },
       reviews,
+      courses: [],
     });
 
     render(

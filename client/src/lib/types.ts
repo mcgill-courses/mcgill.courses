@@ -152,6 +152,8 @@ export interface GetInstructorPayload {
   instructor?: Instructor;
   /** Reviews associated with the instructor sorted by newest first. */
   reviews: Review[];
+  /** Courses taught by the instructor. */
+  courses: Course[];
 }
 
 export enum InteractionKind {
