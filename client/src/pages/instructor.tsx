@@ -57,7 +57,7 @@ export const Instructor = () => {
   const decodedName = params.name ? decodeURIComponent(params.name) : '';
 
   // Get all courses the instructor has taught
-  const uniqueCourses = (courses || []).filter((course) =>
+  const uniqueCourses = courses.filter((course) =>
     course.instructors.some((instructor) => instructor.name === decodedName)
   );
 
