@@ -125,10 +125,9 @@ describe('Instructor page', () => {
 
     await waitFor(() => expect(courseReviewMock).toHaveBeenCalled());
 
-    // Get the last set of calls (after any re-renders from useEffect)
-    const calls = courseReviewMock.mock.calls;
-    const lastTwoCalls = calls.slice(-2);
-    const attachments = lastTwoCalls.map(([props]) => props.attachment);
+    const attachments = courseReviewMock.mock.calls
+      .slice(-2)
+      .map(([props]) => props.attachment);
 
     expect(attachments.length).toBe(2);
     expect(new Set(attachments)).toEqual(new Set(['scrollButton']));
