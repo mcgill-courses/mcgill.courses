@@ -1,4 +1,4 @@
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Leaf, Snowflake, Sun } from 'lucide-react';
 import { Fragment, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
@@ -128,22 +128,64 @@ export const Instructor = () => {
               </div>
               <div className='mt-4 text-gray-500 dark:text-gray-400'>
                 {currentCourses.length > 0 && (
-                  <Fragment>
-                    <p>Currently teaching:</p>
-                    <div className='mb-4 max-w-sm'>
-                      {currentCourses.map((course, index) => (
-                        <Fragment key={index}>
-                          <Link
-                            to={`/course/${courseIdToUrlParam(course._id)}`}
-                            className='font-medium transition hover:text-red-600'
-                          >
-                            {course._id}
-                          </Link>
-                          {index !== currentCourses.length - 1 ? ', ' : '.'}
-                        </Fragment>
-                      ))}
-                    </div>
-                  </Fragment>
+                  <div className='mb-5'>
+                    {(() => {
+                      const season = currentTerm.split(' ')[0].toLowerCase();
+                      const borderColor =
+                        season === 'fall'
+                          ? 'border-l-red-400'
+                          : season === 'winter'
+                            ? 'border-l-sky-400'
+                            : 'border-l-yellow-400';
+                      const bgColor =
+                        season === 'fall'
+                          ? 'bg-red-50 dark:bg-red-950/30'
+                          : season === 'winter'
+                            ? 'bg-sky-50 dark:bg-sky-950/30'
+                            : 'bg-yellow-50 dark:bg-yellow-950/30';
+                      const iconColor =
+                        season === 'fall'
+                          ? 'text-red-600'
+                          : season === 'winter'
+                            ? 'text-sky-500'
+                            : 'text-yellow-500';
+                      const SeasonIcon =
+                        season === 'fall'
+                          ? Leaf
+                          : season === 'winter'
+                            ? Snowflake
+                            : Sun;
+
+                      return (
+                        <div
+                          className={`rounded-lg border-l-4 ${borderColor} ${bgColor} p-3`}
+                        >
+                          <div className='mb-2 flex items-center gap-2'>
+                            <SeasonIcon className={iconColor} size={18} />
+                            <span className='text-sm font-semibold text-gray-700 dark:text-gray-200'>
+                              Teaching {currentTerm}
+                            </span>
+                          </div>
+                          <div className='flex flex-col gap-2'>
+                            {currentCourses.map((course) => (
+                              <Link
+                                key={course._id}
+                                to={`/course/${courseIdToUrlParam(course._id)}`}
+                                className='group flex flex-col rounded-md bg-white/70 px-3 py-2 transition hover:bg-white dark:bg-neutral-800/70 dark:hover:bg-neutral-700'
+                              >
+                                <span className='font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
+                                  {course._id}
+                                </span>
+                                <span className='text-sm text-gray-600 dark:text-gray-400'>
+                                  {course.title}
+                                </span>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
                 )}
                 {uniqueCourses.length ? (
                   <Fragment>
