@@ -822,19 +822,18 @@ impl Db {
   // Returns all courses taught by the instructor (across all terms)
   pub async fn find_courses_by_instructor_name(
     &self,
-    name: &str,
+    name: &str
   ) -> Result<Vec<Course>> {
-    let cursor = self
-      .database
-      .collection::<Course>(Self::COURSE_COLLECTION)
-      .find(doc! { "instructors.name": name })
-      .await?;
-
-    let courses: Vec<Course> = cursor.try_collect().await?;
-
-    Ok(courses)
+    Ok(
+      self
+        .database
+        .collection::<Course>(Self::COURSE_COLLECTION)
+        .find(doc! { "instructors.name": name })
+        .await?
+        .try_collect::<Vec<Course>>()
+        .await?,
+    )
   }
-
   pub(crate) async fn add_course(&self, course: Course) -> Result {
     match self.find_course(doc! { "_id": &course.id }).await? {
       Some(found) => {
