@@ -165,18 +165,14 @@ export const Instructor = () => {
                   if (termCourses.length === 0) return null;
 
                   const season = term.split(' ')[0].toLowerCase();
-                  const SeasonIcon =
-                    season === 'fall'
-                      ? Leaf
-                      : season === 'winter'
-                        ? Snowflake
-                        : Sun;
-                  const iconColor =
-                    season === 'fall'
-                      ? 'text-red-600'
-                      : season === 'winter'
-                        ? 'text-sky-500'
-                        : 'text-yellow-500';
+                  const icon =
+                    season === 'fall' ? (
+                      <Leaf size={14} color='brown' />
+                    ) : season === 'winter' ? (
+                      <Snowflake size={14} color='skyblue' />
+                    ) : (
+                      <Sun size={14} color='orange' />
+                    );
 
                   return (
                     <button
@@ -188,7 +184,7 @@ export const Instructor = () => {
                           : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                       }`}
                     >
-                      <SeasonIcon className={iconColor} size={14} />
+                      {icon}
                       {term} ({termCourses.length})
                     </button>
                   );
