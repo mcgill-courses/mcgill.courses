@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 
 import type { Grade, TermAverage } from '../lib/term-average';
+import type { Instructor } from '../lib/types';
 import { compareTerms } from '../lib/utils';
 
 const gradeToGPA: Record<Grade, number> = {
@@ -28,6 +29,7 @@ const gradeToGPA: Record<Grade, number> = {
 
 type GPAChartProps = {
   averages: TermAverage[];
+  termInstructors: Record<string, Instructor[]>;
 };
 
 type DataPoint = {
@@ -35,6 +37,7 @@ type DataPoint = {
   shortTerm: string;
   gpa: number;
   grade: Grade;
+  instructors: string[];
 };
 
 const formatShortTerm = (term: string): string => {
@@ -87,6 +90,12 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
         <p className='text-sm text-gray-600 dark:text-gray-400'>
           GPA: <span className='font-semibold'>{data.gpa.toFixed(1)}</span>
         </p>
+        {data.instructors.length > 0 && (
+          <p className='text-sm text-gray-600 dark:text-gray-400'>
+            {data.instructors.length === 1 ? 'Instructor' : 'Instructors'}:{' '}
+            <span className='font-semibold'>{data.instructors.join(', ')}</span>
+          </p>
+        )}
       </div>
     );
   }
@@ -94,7 +103,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   return null;
 };
 
-export const GPAChart = ({ averages }: GPAChartProps) => {
+export const GPAChart = ({ averages, termInstructors }: GPAChartProps) => {
   const dataPoints = useMemo((): DataPoint[] => {
     return [...averages]
       .sort((a, b) => compareTerms(a.term, b.term))
@@ -103,8 +112,9 @@ export const GPAChart = ({ averages }: GPAChartProps) => {
         grade: avg.average,
         shortTerm: formatShortTerm(avg.term),
         term: avg.term,
+        instructors: (termInstructors[avg.term] ?? []).map((i) => i.name),
       }));
-  }, [averages]);
+  }, [averages, termInstructors]);
 
   const trendLineData = useMemo(() => {
     if (dataPoints.length < 2) {

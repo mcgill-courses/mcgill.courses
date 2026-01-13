@@ -81,7 +81,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
 
       {showGraph ? (
         <div className='py-2'>
-          <GPAChart averages={averages} />
+          <GPAChart averages={averages} termInstructors={termInstructors} />
         </div>
       ) : (
         <>
