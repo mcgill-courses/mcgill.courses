@@ -31,7 +31,9 @@ export const Instructor = () => {
   >(undefined);
 
   const [courses, setCourses] = useState<Course[]>([]);
-  const [activeTab, setActiveTab] = useState<string>('all');
+
+  const currentTerm = getCurrentTerm();
+  const [activeTab, setActiveTab] = useState<string>(currentTerm);
 
   const user = useAuth();
 
@@ -50,7 +52,6 @@ export const Instructor = () => {
       });
   }, [params.name]);
 
-  const currentTerm = getCurrentTerm();
   const academicTerms = getCurrentTerms();
 
   // Reorder terms so current term is first
@@ -72,13 +73,13 @@ export const Instructor = () => {
 
   useEffect(() => {
     if (instructor) {
-      if (activeTab === 'all' && currentTermHasCourses) {
+      if (currentTermHasCourses) {
         setActiveTab(currentTerm);
       } else {
         setActiveTab('all');
       }
     }
-  }, [instructor, currentTermHasCourses]);
+  }, [instructor]);
 
   if (instructor === undefined) return <Loading />;
   if (instructor === null) return <NotFound />;
