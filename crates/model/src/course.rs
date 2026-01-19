@@ -91,15 +91,373 @@ impl PartialOrd for Course {
 
 impl Course {
   pub fn merge(self, other: Course) -> Course {
+    let other_terms = other
+      .instructors
+      .iter()
+      .map(|instructor| &instructor.term)
+      .collect::<HashSet<_>>();
+
+    let mut instructors = self
+      .instructors
+      .into_iter()
+      .filter(|instructor| !other_terms.contains(&instructor.term))
+      .collect::<Vec<_>>();
+
+    instructors.extend(other.instructors);
+
     Course {
-      logical_prerequisites: other
-        .logical_prerequisites
-        .or(self.logical_prerequisites),
+      instructors,
       logical_corequisites: other
         .logical_corequisites
         .or(self.logical_corequisites),
-      schedule: Some(other.schedule.combine_opt(self.schedule)),
+      logical_prerequisites: other
+        .logical_prerequisites
+        .or(self.logical_prerequisites),
+      schedule: Some(self.schedule.combine_opt(other.schedule)),
+      terms: self.terms.combine(other.terms),
       ..other
     }
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  fn instructor(name: &str, term: &str) -> Instructor {
+    Instructor {
+      name: name.to_string(),
+      name_ngrams: None,
+      term: term.to_string(),
+    }
+  }
+
+  fn schedule(term: &str) -> Schedule {
+    Schedule {
+      term: Some(term.to_string()),
+      blocks: None,
+    }
+  }
+
+  fn course() -> Course {
+    Course {
+      id: "COMP-202".to_string(),
+      title: "Foundations of Programming".to_string(),
+      credits: "3".to_string(),
+      subject: "COMP".to_string(),
+      code: "202".to_string(),
+      url: "https://www.mcgill.ca/study/courses/comp-202".to_string(),
+      department: "Computer Science".to_string(),
+      faculty: "Science".to_string(),
+      description: "Introduction to programming".to_string(),
+      ..Default::default()
+    }
+  }
+
+  #[test]
+  fn merge_instructors_replaces_same_term() {
+    let course1 = Course {
+      instructors: vec![
+        instructor("Alice Smith", "Fall 2024"),
+        instructor("Bob Jones", "Winter 2024"),
+      ],
+      ..course()
+    };
+
+    let course2 = Course {
+      instructors: vec![instructor("Charlie Brown", "Fall 2024")],
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(
+      merged.instructors,
+      vec![
+        instructor("Bob Jones", "Winter 2024"),
+        instructor("Charlie Brown", "Fall 2024"),
+      ]
+    );
+  }
+
+  #[test]
+  fn merge_instructors_keeps_non_overlapping_terms() {
+    let course1 = Course {
+      instructors: vec![
+        instructor("Alice Smith", "Fall 2023"),
+        instructor("Bob Jones", "Winter 2023"),
+      ],
+      ..course()
+    };
+
+    let course2 = Course {
+      instructors: vec![instructor("Charlie Brown", "Fall 2024")],
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(
+      merged.instructors,
+      vec![
+        instructor("Alice Smith", "Fall 2023"),
+        instructor("Bob Jones", "Winter 2023"),
+        instructor("Charlie Brown", "Fall 2024"),
+      ]
+    );
+  }
+
+  #[test]
+  fn merge_instructors_empty_other() {
+    let course1 = Course {
+      instructors: vec![instructor("Alice Smith", "Fall 2024")],
+      ..course()
+    };
+
+    let course2 = Course {
+      instructors: vec![],
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(
+      merged.instructors,
+      vec![instructor("Alice Smith", "Fall 2024")]
+    );
+  }
+
+  #[test]
+  fn merge_instructors_empty_self() {
+    let course1 = Course {
+      instructors: vec![],
+      ..course()
+    };
+
+    let course2 = Course {
+      instructors: vec![instructor("Alice Smith", "Fall 2024")],
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(
+      merged.instructors,
+      vec![instructor("Alice Smith", "Fall 2024")]
+    );
+  }
+
+  #[test]
+  fn merge_logical_prerequisites_prefers_other() {
+    let self_prereq = ReqNode::Course("MATH-140".to_string());
+    let other_prereq = ReqNode::Course("MATH-141".to_string());
+
+    let course1 = Course {
+      logical_prerequisites: Some(self_prereq),
+      ..course()
+    };
+
+    let course2 = Course {
+      logical_prerequisites: Some(other_prereq.clone()),
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(merged.logical_prerequisites, Some(other_prereq));
+  }
+
+  #[test]
+  fn merge_logical_prerequisites_falls_back_to_self() {
+    let self_prereq = ReqNode::Course("MATH-140".to_string());
+
+    let course1 = Course {
+      logical_prerequisites: Some(self_prereq.clone()),
+      ..course()
+    };
+
+    let course2 = Course {
+      logical_prerequisites: None,
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(merged.logical_prerequisites, Some(self_prereq));
+  }
+
+  #[test]
+  fn merge_logical_corequisites_prefers_other() {
+    let self_coreq = ReqNode::Course("COMP-206".to_string());
+    let other_coreq = ReqNode::Course("COMP-250".to_string());
+
+    let course1 = Course {
+      logical_corequisites: Some(self_coreq),
+      ..course()
+    };
+
+    let course2 = Course {
+      logical_corequisites: Some(other_coreq.clone()),
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(merged.logical_corequisites, Some(other_coreq));
+  }
+
+  #[test]
+  fn merge_logical_corequisites_falls_back_to_self() {
+    let self_coreq = ReqNode::Course("COMP-206".to_string());
+
+    let course1 = Course {
+      logical_corequisites: Some(self_coreq.clone()),
+      ..course()
+    };
+
+    let course2 = Course {
+      logical_corequisites: None,
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(merged.logical_corequisites, Some(self_coreq));
+  }
+
+  #[test]
+  fn merge_terms_combines_unique() {
+    let course1 = Course {
+      terms: vec!["Fall 2023".to_string(), "Winter 2024".to_string()],
+      ..course()
+    };
+
+    let course2 = Course {
+      terms: vec!["Winter 2024".to_string(), "Fall 2024".to_string()],
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(
+      merged.terms,
+      vec![
+        "Fall 2023".to_string(),
+        "Winter 2024".to_string(),
+        "Fall 2024".to_string(),
+      ]
+    );
+  }
+
+  #[test]
+  fn merge_schedule_combines() {
+    let course1 = Course {
+      schedule: Some(vec![schedule("Fall 2023")]),
+      ..course()
+    };
+
+    let course2 = Course {
+      schedule: Some(vec![schedule("Fall 2024")]),
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(
+      merged.schedule,
+      Some(vec![schedule("Fall 2023"), schedule("Fall 2024")])
+    );
+  }
+
+  #[test]
+  fn merge_schedule_handles_none_self() {
+    let course1 = Course {
+      schedule: None,
+      ..course()
+    };
+
+    let course2 = Course {
+      schedule: Some(vec![schedule("Fall 2024")]),
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(merged.schedule, Some(vec![schedule("Fall 2024")]));
+  }
+
+  #[test]
+  fn merge_schedule_handles_none_other() {
+    let course1 = Course {
+      schedule: Some(vec![schedule("Fall 2023")]),
+      ..course()
+    };
+
+    let course2 = Course {
+      schedule: None,
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(merged.schedule, Some(vec![schedule("Fall 2023")]));
+  }
+
+  #[test]
+  fn merge_uses_other_for_basic_fields() {
+    let course1 = Course {
+      id: "COMP-202".to_string(),
+      title: "Old Title".to_string(),
+      description: "Old description".to_string(),
+      credits: "3".to_string(),
+      ..course()
+    };
+
+    let course2 = Course {
+      id: "COMP-202".to_string(),
+      title: "New Title".to_string(),
+      description: "New description".to_string(),
+      credits: "4".to_string(),
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(merged.title, "New Title");
+    assert_eq!(merged.description, "New description");
+    assert_eq!(merged.credits, "4");
+  }
+
+  #[test]
+  fn merge_complex_logical_prerequisites() {
+    let self_prereq = ReqNode::Group {
+      operator: Operator::And,
+      groups: vec![
+        ReqNode::Course("MATH-140".to_string()),
+        ReqNode::Course("MATH-141".to_string()),
+      ],
+    };
+
+    let other_prereq = ReqNode::Group {
+      operator: Operator::Or,
+      groups: vec![
+        ReqNode::Course("MATH-150".to_string()),
+        ReqNode::Course("MATH-151".to_string()),
+      ],
+    };
+
+    let course1 = Course {
+      logical_prerequisites: Some(self_prereq),
+      ..course()
+    };
+
+    let course2 = Course {
+      logical_prerequisites: Some(other_prereq.clone()),
+      ..course()
+    };
+
+    let merged = course1.merge(course2);
+
+    assert_eq!(merged.logical_prerequisites, Some(other_prereq));
   }
 }
