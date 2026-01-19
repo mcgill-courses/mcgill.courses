@@ -69,7 +69,7 @@ impl Loader {
 
       let mut courses = Vec::new();
 
-      let total_batches = (urls.len() + self.batch_size - 1) / self.batch_size;
+      let total_batches = urls.len().div_ceil(self.batch_size);
 
       for (batch_index, chunk) in urls.chunks(self.batch_size).enumerate() {
         info!(
