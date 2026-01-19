@@ -92,13 +92,15 @@ impl PartialOrd for Course {
 impl Course {
   pub fn merge(self, other: Course) -> Course {
     Course {
-      logical_prerequisites: other
-        .logical_prerequisites
-        .or(self.logical_prerequisites),
+      instructors: self.instructors.combine(other.instructors),
       logical_corequisites: other
         .logical_corequisites
         .or(self.logical_corequisites),
-      schedule: Some(other.schedule.combine_opt(self.schedule)),
+      logical_prerequisites: other
+        .logical_prerequisites
+        .or(self.logical_prerequisites),
+      schedule: Some(self.schedule.combine_opt(other.schedule)),
+      terms: self.terms.combine(other.terms),
       ..other
     }
   }
