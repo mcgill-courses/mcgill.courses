@@ -85,14 +85,14 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
   const reviewLabel = reviewCount === 1 ? 'review' : 'reviews';
 
   return (
-    <div className='relative flex w-full flex-row rounded-md bg-slate-50 px-6 pt-8 shadow-sm dark:bg-neutral-800 md:mt-10'>
+    <div className='relative flex w-full flex-row rounded-md bg-slate-50 px-6 pt-8 shadow-sm md:mt-10 dark:bg-neutral-800'>
       <div className='flex w-full flex-col md:w-7/12'>
         <div className='flex flex-row space-x-2 align-middle'>
           <div className='flex items-center space-x-2'>
             <h1 className='text-3xl font-semibold text-gray-800 dark:text-gray-200'>
               {course.subject} {course.code}
             </h1>
-            <div className='flex h-6 items-center rounded-full bg-slate-200 px-2 text-xs font-medium dark:bg-neutral-700 dark:text-gray-300 '>
+            <div className='flex h-6 items-center rounded-full bg-slate-200 px-2 text-xs font-medium dark:bg-neutral-700 dark:text-gray-300'>
               {course.credits} {course.credits === '1' ? 'Credit' : 'Credits'}
             </div>
           </div>
@@ -150,7 +150,7 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
           {reviewCount} {reviewLabel}
         </p>
       </div>
-      <div className='hidden w-5/12 justify-center rounded-md bg-neutral-50 py-4 dark:bg-neutral-800 md:mx-5 md:flex lg:ml-12 lg:mt-6 xl:justify-start'>
+      <div className='hidden w-5/12 justify-center rounded-md bg-neutral-50 py-4 md:mx-5 md:flex lg:mt-6 lg:ml-12 xl:justify-start dark:bg-neutral-800'>
         <CourseInfoStats
           variant='large'
           reviews={reviews}

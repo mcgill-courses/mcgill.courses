@@ -48,10 +48,10 @@ export const Changelog = () => {
 
       <div className='flex flex-col items-center py-8'>
         <div className='mb-16'>
-          <h1 className='text-center text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-200 sm:text-5xl'>
+          <h1 className='text-center text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-gray-200'>
             Changelog
           </h1>
-          <p className='mt-2 text-center text-sm text-gray-600 dark:text-gray-400 md:text-base'>
+          <p className='mt-2 text-center text-sm text-gray-600 md:text-base dark:text-gray-400'>
             Check out what the development team has been shipping each month.
           </p>
         </div>

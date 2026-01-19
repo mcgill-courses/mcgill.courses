@@ -66,7 +66,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
       }
     >
       <button
-        className='absolute right-4 top-4 z-10 cursor-pointer rounded-full bg-gray-200 p-2 transition duration-150 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
+        className='absolute top-4 right-4 z-10 cursor-pointer rounded-full bg-gray-200 p-2 transition duration-150 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
         onClick={handleGraphToggle}
       >
         <ToggleButtonIcon
@@ -75,7 +75,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
         />
       </button>
 
-      <h2 className='mb-2 mt-1 text-lg font-bold leading-none text-gray-700 dark:text-gray-200 md:text-xl'>
+      <h2 className='mt-1 mb-2 text-lg leading-none font-bold text-gray-700 md:text-xl dark:text-gray-200'>
         Class Averages
       </h2>
 
@@ -150,7 +150,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
 
           {averages.length > 6 && (
             <button
-              className='flex w-full items-center gap-2 text-sm text-gray-500 dark:text-gray-400 md:text-lg'
+              className='flex w-full items-center gap-2 text-sm text-gray-500 md:text-lg dark:text-gray-400'
               onClick={() => setShowAll(!showAll)}
             >
               <p className='my-auto ml-auto text-base font-medium'>

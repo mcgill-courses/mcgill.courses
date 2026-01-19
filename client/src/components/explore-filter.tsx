@@ -112,7 +112,7 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
       )}
     >
       <ResetButton
-        className='absolute right-4 top-4'
+        className='absolute top-4 right-4'
         onClear={() => {
           setSelectedSubjects([]);
           setSelectedLevels([]);

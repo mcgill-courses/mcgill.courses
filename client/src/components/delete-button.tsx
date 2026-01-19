@@ -73,7 +73,7 @@ export const DeleteButton = ({
                 <Dialog.Panel className='w-full max-w-md overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-neutral-800'>
                   <Dialog.Title
                     as='h3'
-                    className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-200'
+                    className='text-lg leading-6 font-medium text-gray-900 dark:text-gray-200'
                   >
                     {title}
                   </Dialog.Title>

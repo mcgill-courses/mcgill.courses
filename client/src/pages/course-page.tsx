@@ -140,7 +140,7 @@ export const CoursePage = () => {
         }
 
         firstFetch.current = false;
-      } catch (err) {
+      } catch {
         toast.error(
           'An error occurred while trying to fetch course information.'
         );

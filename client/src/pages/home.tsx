@@ -64,7 +64,7 @@ export const Home = () => {
         <div className='mx-auto max-w-2xl py-8'>
           <div className='hidden sm:mb-8 sm:flex sm:justify-center'></div>
           <div className='flex flex-col gap-10 text-center'>
-            <h1 className='text-left text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-200 md:text-5xl'>
+            <h1 className='text-left text-3xl font-bold tracking-tight text-gray-900 md:text-5xl dark:text-gray-200'>
               Explore thousands of course and professor reviews from McGill
               students
             </h1>
@@ -76,7 +76,7 @@ export const Home = () => {
               />
               <Link
                 to={`/explore`}
-                className='mx-auto cursor-pointer text-sm text-gray-500 underline underline-offset-4 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-500 md:text-base'
+                className='mx-auto cursor-pointer text-sm text-gray-500 underline underline-offset-4 hover:text-gray-400 md:text-base dark:text-gray-400 dark:hover:text-gray-500'
               >
                 or explore all courses{' '}
                 <span aria-hidden='true'>&rarr;</span>{' '}
