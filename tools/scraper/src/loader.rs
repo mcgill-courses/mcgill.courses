@@ -207,8 +207,10 @@ impl Loader {
       courses[i].leading_to = leading_to;
     }
 
-    let courses_with_leading_to =
-      courses.iter().filter(|c| !c.leading_to.is_empty()).count();
+    let courses_with_leading_to = courses
+      .iter()
+      .filter(|course| !course.leading_to.is_empty())
+      .count();
 
     info!(
       "Post processing complete: {} courses have leading_to relationships",
@@ -306,6 +308,7 @@ impl Loader {
         vsb_schedule.len(),
         course_id
       );
+
       Some(vsb_schedule)
     } else {
       None
@@ -316,7 +319,7 @@ impl Loader {
     let schedule_info = schedule.clone().map(|schedules| {
       let mut terms = schedules
         .iter()
-        .filter_map(|s| s.term.clone())
+        .filter_map(|schedule| schedule.term.clone())
         .collect::<Vec<_>>();
 
       utils::dedup(&mut terms);
