@@ -91,8 +91,22 @@ impl PartialOrd for Course {
 
 impl Course {
   pub fn merge(self, other: Course) -> Course {
+    let other_terms = other
+      .instructors
+      .iter()
+      .map(|instructor| &instructor.term)
+      .collect::<HashSet<_>>();
+
+    let mut instructors = self
+      .instructors
+      .into_iter()
+      .filter(|instructor| !other_terms.contains(&instructor.term))
+      .collect::<Vec<_>>();
+
+    instructors.extend(other.instructors);
+
     Course {
-      instructors: self.instructors.combine(other.instructors),
+      instructors,
       logical_corequisites: other
         .logical_corequisites
         .or(self.logical_corequisites),

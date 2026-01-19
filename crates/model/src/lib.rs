@@ -8,6 +8,7 @@ use {
   std::{
     borrow::Cow,
     cmp::Ordering,
+    collections::HashSet,
     fmt::{self, Display, Formatter},
     path::PathBuf,
   },
