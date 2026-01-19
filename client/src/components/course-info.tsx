@@ -133,7 +133,7 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
         </h2>
         <CourseTerms course={course} variant='large' />
         <div className='py-1' />
-        <p className='break-words text-gray-500 dark:text-gray-400'>
+        <p className='wrap-break-word text-gray-500 dark:text-gray-400'>
           <CourseDescription description={course.description} />
         </p>
         <div className='grow py-3' />

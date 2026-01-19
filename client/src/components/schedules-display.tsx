@@ -426,7 +426,7 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
         ) : (
           <div
             aria-hidden
-            className='pointer-events-none [line-height:1] opacity-0'
+            className='pointer-events-none leading-none opacity-0'
           >
             <TimeblockDays days={['2', '3', '4', '5', '6']} />
           </div>

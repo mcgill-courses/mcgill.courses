@@ -414,7 +414,7 @@ export const CourseReview = ({
     <motion.div
       id={anchorId}
       className={twMerge(
-        'relative flex w-full flex-col gap-4 border-b-[1px] border-b-gray-300 bg-slate-50 px-6 py-3 first:rounded-t-md last:rounded-b-md last:border-b-0 dark:border-b-gray-600 dark:bg-neutral-800',
+        'relative flex w-full flex-col gap-4 border-b border-b-gray-300 bg-slate-50 px-6 py-3 first:rounded-t-md last:rounded-b-md last:border-b-0 dark:border-b-gray-600 dark:bg-neutral-800',
         className
       )}
       animate={highlightAnimation}
@@ -467,7 +467,7 @@ export const CourseReview = ({
 
               if (!shouldTruncate) {
                 return (
-                  <div className='mt-2 mr-4 ml-1 text-left break-words hyphens-auto whitespace-pre-wrap text-gray-800 dark:text-gray-300'>
+                  <div className='mt-2 mr-4 ml-1 text-left wrap-break-word hyphens-auto whitespace-pre-wrap text-gray-800 dark:text-gray-300'>
                     {formatReviewContent(review.content)}
                   </div>
                 );
@@ -475,7 +475,7 @@ export const CourseReview = ({
 
               return (
                 <>
-                  <div className='mt-2 mr-4 ml-1 text-left break-words hyphens-auto whitespace-pre-wrap text-gray-800 dark:text-gray-300'>
+                  <div className='mt-2 mr-4 ml-1 text-left wrap-break-word hyphens-auto whitespace-pre-wrap text-gray-800 dark:text-gray-300'>
                     {formatReviewContent(
                       review.content.substring(0, 300) + '...'
                     )}

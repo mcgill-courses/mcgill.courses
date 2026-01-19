@@ -147,7 +147,7 @@ export const CourseSearchBar = ({
         handleInputChange={handleInputChange}
         inputStyle={twMerge(
           'block w-full bg-gray-100 border border-gray-300 shadow-sm p-3 pl-10 text-sm text-black outline-none dark:border-neutral-50 dark:bg-neutral-800 dark:text-gray-200 dark:placeholder:text-neutral-500 lg:min-w-[570px] dark:border-gray-700',
-          searchSelected ? 'border-b-1' : ''
+          searchSelected ? 'border-b' : ''
         )}
         onKeyDown={handleKeyDown}
         placeholder='Search for courses, subjects or professors'

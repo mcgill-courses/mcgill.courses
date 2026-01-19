@@ -142,7 +142,7 @@ export const Instructor = () => {
       <div className='mx-auto mt-10 max-w-5xl md:mt-10'>
         <div className='rounded-md bg-slate-50 p-6 dark:bg-neutral-800'>
           <div className='mb-6 flex flex-row items-center space-x-2'>
-            <h1 className='text-3xl font-semibold break-words text-gray-800 sm:text-4xl dark:text-gray-200'>
+            <h1 className='text-3xl font-semibold wrap-break-word text-gray-800 sm:text-4xl dark:text-gray-200'>
               {params.name && decodeURIComponent(params.name)}
             </h1>
             <a

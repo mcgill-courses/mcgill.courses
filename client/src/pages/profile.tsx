@@ -175,7 +175,7 @@ export const Profile = () => {
                     'ring-opacity-60 ring-white ring-offset-2 ring-offset-gray-400 focus:outline-none',
                     selected
                       ? 'bg-white shadow'
-                      : 'text-gray-700 hover:bg-white/[0.12] hover:text-gray-400 dark:text-gray-200'
+                      : 'text-gray-700 hover:bg-white/12 hover:text-gray-400 dark:text-gray-200'
                   )
                 }
               >
