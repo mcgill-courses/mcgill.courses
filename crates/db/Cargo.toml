@@ -5,11 +5,11 @@ edition = "2024"
 publish = false
 
 [dependencies]
-bson = { version = "2.15.0", features = ["chrono-0_4"] }
+bson = { workspace = true }
 chrono = { workspace = true }
 combine = { path = "../combine" }
-futures = "0.3.31"
-itertools = "0.14.0"
+futures = { workspace = true }
+itertools = { workspace = true }
 model = { path = "../model" }
 mongodb = "3.2.5"
 serde = { workspace = true }
@@ -20,7 +20,7 @@ tokio = { workspace = true }
 tracing = { workspace = true }
 
 [dev-dependencies]
-include_dir = "0.7.4"
-pretty_assertions = "1.4.1"
-regex = "1.11.2"
+include_dir = { workspace = true }
+pretty_assertions = { workspace = true }
+regex = { workspace = true }
 tempdir = "0.3.7"
