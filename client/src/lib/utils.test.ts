@@ -7,17 +7,24 @@ import {
   capitalize,
   compareTerms,
   courseIdToUrlParam,
+  escapeRegExp,
   getCurrentTerms,
+  groupBy,
   groupCurrentCourseTermInstructors,
   isValidCourseCode,
+  mapValues,
   mod,
   punctuate,
   round2Decimals,
+  sortBy,
   sortSchedulesByBlocks,
   sortTerms,
   spliceCourseCode,
   stripColonPrefix,
+  sum,
   timeSince,
+  uniq,
+  uniqBy,
 } from './utils';
 
 describe('timeSince', () => {
@@ -442,5 +449,207 @@ describe('groupCurrentCourseTermInstructors', () => {
       'Winter 2024': [],
       'Summer 2024': [],
     });
+  });
+});
+
+describe('groupBy', () => {
+  it('groups items by key function', () => {
+    const items = [
+      { name: 'Alice', dept: 'CS' },
+      { name: 'Bob', dept: 'Math' },
+      { name: 'Carol', dept: 'CS' },
+    ];
+
+    const result = groupBy(items, (item) => item.dept);
+
+    expect(result).toEqual({
+      CS: [
+        { name: 'Alice', dept: 'CS' },
+        { name: 'Carol', dept: 'CS' },
+      ],
+      Math: [{ name: 'Bob', dept: 'Math' }],
+    });
+  });
+
+  it('handles empty array', () => {
+    expect(groupBy([], () => 'key')).toEqual({});
+  });
+
+  it('handles undefined keys by using empty string', () => {
+    const items = [{ name: 'Alice', dept: 'CS' }, { name: 'Bob' }];
+
+    const result = groupBy(items, (item) => (item as { dept?: string }).dept);
+
+    expect(result).toEqual({
+      CS: [{ name: 'Alice', dept: 'CS' }],
+      '': [{ name: 'Bob' }],
+    });
+  });
+});
+
+describe('mapValues', () => {
+  it('transforms object values', () => {
+    const obj = { a: 1, b: 2, c: 3 };
+
+    const result = mapValues(obj, (v) => v * 2);
+
+    expect(result).toEqual({ a: 2, b: 4, c: 6 });
+  });
+
+  it('handles empty object', () => {
+    expect(mapValues({}, (v: number) => v * 2)).toEqual({});
+  });
+
+  it('can transform to different types', () => {
+    const obj = { a: 1, b: 2 };
+
+    const result = mapValues(obj, (v) => String(v));
+
+    expect(result).toEqual({ a: '1', b: '2' });
+  });
+});
+
+describe('sortBy', () => {
+  it('sorts by string key', () => {
+    const items = [{ name: 'Carol' }, { name: 'Alice' }, { name: 'Bob' }];
+
+    const result = sortBy(items, (item) => item.name);
+
+    expect(result).toEqual([
+      { name: 'Alice' },
+      { name: 'Bob' },
+      { name: 'Carol' },
+    ]);
+  });
+
+  it('sorts by numeric key', () => {
+    const items = [{ score: 30 }, { score: 10 }, { score: 20 }];
+
+    const result = sortBy(items, (item) => item.score);
+
+    expect(result).toEqual([{ score: 10 }, { score: 20 }, { score: 30 }]);
+  });
+
+  it('handles empty array', () => {
+    expect(sortBy([], (x: number) => x)).toEqual([]);
+  });
+
+  it('does not mutate original array', () => {
+    const original = [{ n: 3 }, { n: 1 }, { n: 2 }];
+    const copy = [...original];
+
+    sortBy(original, (x) => x.n);
+
+    expect(original).toEqual(copy);
+  });
+
+  it('handles undefined keys', () => {
+    const items = [{ n: 2 }, { n: undefined }, { n: 1 }];
+
+    const result = sortBy(items, (item) => item.n);
+
+    expect(result).toEqual([{ n: undefined }, { n: 1 }, { n: 2 }]);
+  });
+});
+
+describe('uniq', () => {
+  it('removes duplicate primitives', () => {
+    expect(uniq([1, 2, 2, 3, 1])).toEqual([1, 2, 3]);
+    expect(uniq(['a', 'b', 'a', 'c'])).toEqual(['a', 'b', 'c']);
+  });
+
+  it('handles empty array', () => {
+    expect(uniq([])).toEqual([]);
+  });
+
+  it('handles array with no duplicates', () => {
+    expect(uniq([1, 2, 3])).toEqual([1, 2, 3]);
+  });
+
+  it('preserves order of first occurrence', () => {
+    expect(uniq([3, 1, 2, 1, 3])).toEqual([3, 1, 2]);
+  });
+});
+
+describe('uniqBy', () => {
+  it('removes duplicates by key function', () => {
+    const items = [
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+      { id: 1, name: 'Carol' },
+    ];
+
+    const result = uniqBy(items, (item) => item.id);
+
+    expect(result).toEqual([
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+    ]);
+  });
+
+  it('handles empty array', () => {
+    expect(uniqBy([], (x: { id: number }) => x.id)).toEqual([]);
+  });
+
+  it('preserves order of first occurrence', () => {
+    const items = [
+      { type: 'b', val: 1 },
+      { type: 'a', val: 2 },
+      { type: 'b', val: 3 },
+    ];
+
+    const result = uniqBy(items, (item) => item.type);
+
+    expect(result).toEqual([
+      { type: 'b', val: 1 },
+      { type: 'a', val: 2 },
+    ]);
+  });
+});
+
+describe('escapeRegExp', () => {
+  it('escapes special regex characters', () => {
+    expect(escapeRegExp('.*+?^${}()|[]\\')).toBe(
+      '\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\'
+    );
+  });
+
+  it('leaves normal text unchanged', () => {
+    expect(escapeRegExp('hello world')).toBe('hello world');
+  });
+
+  it('handles empty string', () => {
+    expect(escapeRegExp('')).toBe('');
+  });
+
+  it('can be used safely in RegExp constructor', () => {
+    const userInput = 'test[1]';
+    const escaped = escapeRegExp(userInput);
+    const regex = new RegExp(escaped);
+
+    expect(regex.test('test[1]')).toBe(true);
+    expect(regex.test('testX1Y')).toBe(false);
+  });
+});
+
+describe('sum', () => {
+  it('sums array of numbers', () => {
+    expect(sum([1, 2, 3, 4])).toBe(10);
+  });
+
+  it('handles empty array', () => {
+    expect(sum([])).toBe(0);
+  });
+
+  it('handles single element', () => {
+    expect(sum([5])).toBe(5);
+  });
+
+  it('handles negative numbers', () => {
+    expect(sum([1, -2, 3])).toBe(2);
+  });
+
+  it('handles decimals', () => {
+    expect(sum([0.1, 0.2])).toBeCloseTo(0.3);
   });
 });

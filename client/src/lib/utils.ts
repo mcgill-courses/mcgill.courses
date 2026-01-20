@@ -1,5 +1,3 @@
-import groupBy from 'lodash/groupBy';
-
 import type { Course } from '../lib/types';
 import { Instructor, Review, Schedule } from './types';
 
@@ -325,3 +323,99 @@ export const timeSince = (
 
   return years === 1 ? '1 year ago' : `${years} years ago`;
 };
+
+/**
+ * Groups array items by a key derived from each item.
+ *
+ * @param arr - Array to group
+ * @param fn - Function that returns the grouping key for each item
+ * @returns Object mapping keys to arrays of items
+ */
+export const groupBy = <T>(
+  arr: T[],
+  fn: (item: T) => string | undefined
+): Record<string, T[]> =>
+  arr.reduce(
+    (acc, item) => {
+      const key = fn(item) ?? '';
+      (acc[key] ??= []).push(item);
+      return acc;
+    },
+    {} as Record<string, T[]>
+  );
+
+/**
+ * Maps the values of an object using a transform function.
+ *
+ * @param obj - Object to transform
+ * @param fn - Function to apply to each value
+ * @returns New object with transformed values
+ */
+export const mapValues = <T, U>(
+  obj: Record<string, T>,
+  fn: (val: T) => U
+): Record<string, U> =>
+  Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, fn(v)])) as Record<
+    string,
+    U
+  >;
+
+/**
+ * Sorts an array by a key derived from each item.
+ *
+ * @param arr - Array to sort
+ * @param fn - Function that returns the sort key for each item
+ * @returns New sorted array
+ */
+export const sortBy = <T>(
+  arr: T[],
+  fn: (item: T) => string | number | undefined
+): T[] =>
+  [...arr].sort((a, b) => {
+    const keyA = fn(a) ?? '';
+    const keyB = fn(b) ?? '';
+    return keyA < keyB ? -1 : keyA > keyB ? 1 : 0;
+  });
+
+/**
+ * Returns unique values from an array.
+ *
+ * @param arr - Array with potential duplicates
+ * @returns Array with duplicates removed
+ */
+export const uniq = <T>(arr: T[]): T[] => [...new Set(arr)];
+
+/**
+ * Returns unique values from an array based on a key function.
+ *
+ * @param arr - Array with potential duplicates
+ * @param fn - Function that returns the uniqueness key for each item
+ * @returns Array with duplicates removed
+ */
+export const uniqBy = <T>(arr: T[], fn: (item: T) => unknown): T[] => {
+  const seen = new Set();
+
+  return arr.filter((item) => {
+    const key = fn(item);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
+/**
+ * Escapes special regex characters in a string.
+ *
+ * @param s - String to escape
+ * @returns String safe for use in RegExp constructor
+ */
+export const escapeRegExp = (s: string): string =>
+  s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * Sums an array of numbers.
+ *
+ * @param arr - Array of numbers to sum
+ * @returns Sum of all numbers
+ */
+export const sum = (arr: number[]): number => arr.reduce((a, b) => a + b, 0);

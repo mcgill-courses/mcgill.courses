@@ -1,11 +1,10 @@
-import sum from 'lodash/sum';
 import { Flame, LucideIcon } from 'lucide-react';
 import { ComponentType, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { useMediaQuery } from '../hooks/use-media-query';
 import type { Review } from '../lib/types';
-import { round2Decimals } from '../lib/utils';
+import { round2Decimals, sum } from '../lib/utils';
 import { BirdIcon } from './bird-icon';
 import { Histogram } from './histogram';
 

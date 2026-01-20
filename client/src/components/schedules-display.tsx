@@ -1,8 +1,3 @@
-import groupBy from 'lodash/groupBy';
-import mapValues from 'lodash/mapValues';
-import sortBy from 'lodash/sortBy';
-import uniq from 'lodash/uniq';
-import uniqBy from 'lodash/uniqBy';
 import { ChevronDown } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -13,7 +8,15 @@ import * as buildingCoordinates from '../assets/building-coordinates.json';
 import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
 import type { Block, Schedule, TimeBlock } from '../lib/types';
 import type { Course } from '../lib/types';
-import { getCurrentTerm, sortTerms } from '../lib/utils';
+import {
+  getCurrentTerm,
+  groupBy,
+  mapValues,
+  sortBy,
+  sortTerms,
+  uniq,
+  uniqBy,
+} from '../lib/utils';
 import { AddToCalendarButton } from './add-to-calendar-button';
 import { BuildingLocation } from './building-location';
 import { Tooltip } from './tooltip';
