@@ -1,6 +1,6 @@
 use {
   anyhow::{Error, anyhow},
-  async_openai::types::{
+  async_openai::types::chat::{
     ChatCompletionRequestSystemMessageArgs, CreateChatCompletionRequestArgs,
   },
   chrono::{DateTime, Utc},
