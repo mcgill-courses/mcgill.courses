@@ -3,7 +3,7 @@ use super::*;
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
   #[error("bson error: {0}")]
-  Bson(#[from] bson::ser::Error),
+  Bson(#[from] bson::error::Error),
   #[error("course not found")]
   CourseNotFound,
   #[error("environment variable error: {0}")]

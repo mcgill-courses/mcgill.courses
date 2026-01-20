@@ -1,7 +1,7 @@
 use {
   crate::{
     assets::Assets,
-    auth::{AuthRedirect, COOKIE_NAME},
+    auth::{AuthRedirect, COOKIE_NAME, OAuthClient},
     documentation::Documentation,
     error::Error,
     hash::Hash,
@@ -41,8 +41,8 @@ use {
     Subscription,
   },
   oauth2::{
-    AuthType, AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, Scope,
-    TokenUrl, basic::BasicClient,
+    AuthUrl, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet,
+    RedirectUrl, Scope, TokenUrl, basic::BasicClient,
   },
   rusoto_core::Region,
   rusoto_s3::S3Client,
