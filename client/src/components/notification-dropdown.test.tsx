@@ -13,22 +13,17 @@ const courseReviewMock = vi.hoisted(() =>
   ))
 );
 
-const IntersectionObserverMock = vi
-  .fn()
-  .mockImplementation(
-    (
-      _callback: IntersectionObserverCallback,
-      _options?: IntersectionObserverInit
-    ) => ({
-      observe: vi.fn(),
-      unobserve: vi.fn(),
-      disconnect: vi.fn(),
-      takeRecords: vi.fn(),
-      root: null,
-      rootMargin: '',
-      thresholds: [],
-    })
-  );
+const IntersectionObserverMock = vi.fn().mockImplementation(
+  class {
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+    takeRecords = vi.fn();
+    root = null;
+    rootMargin = '';
+    thresholds: number[] = [];
+  }
+);
 
 beforeAll(() => {
   Object.defineProperty(window, 'IntersectionObserver', {
