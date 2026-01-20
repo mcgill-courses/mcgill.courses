@@ -923,6 +923,7 @@ impl Db {
 
   pub(crate) async fn create_index<T>(
     &self,
+    name: &str,
     collection: &str,
     keys: Document,
     weights: Document,
@@ -937,7 +938,12 @@ impl Db {
         .create_index(
           IndexModel::builder()
             .keys(keys)
-            .options(IndexOptions::builder().weights(weights).build())
+            .options(
+              IndexOptions::builder()
+                .weights(weights)
+                .name(name.to_string())
+                .build(),
+            )
             .build(),
         )
         .await?,
