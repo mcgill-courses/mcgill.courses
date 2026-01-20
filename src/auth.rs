@@ -10,7 +10,7 @@ pub(crate) type OAuthClient = BasicClient<
 
 pub(crate) const COOKIE_NAME: &str = "session";
 
-pub struct AuthRedirect;
+pub(crate) struct AuthRedirect;
 
 impl IntoResponse for AuthRedirect {
   fn into_response(self) -> Response {
@@ -19,18 +19,18 @@ impl IntoResponse for AuthRedirect {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct AuthRequest {
+pub(crate) struct AuthRequest {
   code: String,
   state: String,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct LoginRequest {
+pub(crate) struct LoginRequest {
   redirect: String,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct LogoutRequest {
+pub(crate) struct LogoutRequest {
   redirect: String,
 }
 
