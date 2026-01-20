@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
@@ -6,7 +7,7 @@ export default defineConfig(({ mode }) => {
     root: './client',
     base: mode === 'production' ? '/assets' : '/',
     build: { assetsDir: '.' },
-    plugins: [react()],
+    plugins: [react(), tailwindcss()],
     server: {
       proxy: {
         '/api': {

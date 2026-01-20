@@ -117,10 +117,10 @@ export const Profile = () => {
       <div className='mx-auto max-w-2xl'>
         <JumpToTopButton />
         <div className='flex w-full justify-center'>
-          <div className='mx-4 flex w-full flex-row rounded-md bg-slate-50 p-6 dark:bg-neutral-800 md:mt-10'>
+          <div className='mx-4 flex w-full flex-row rounded-md bg-slate-50 p-6 md:mt-10 dark:bg-neutral-800'>
             <div className='flex w-fit flex-col space-y-3 md:m-4'>
               <User size={64} className={'-ml-3 text-gray-500'} />
-              <h1 className='text-lg font-medium text-gray-700 dark:text-gray-300 md:text-xl'>
+              <h1 className='text-lg font-medium text-gray-700 md:text-xl dark:text-gray-300'>
                 Your Profile
               </h1>
               <div className='flex items-center gap-x-1'>
@@ -171,11 +171,11 @@ export const Profile = () => {
                 }}
                 className={({ selected }) =>
                   twMerge(
-                    'w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-800',
-                    'ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none',
+                    'w-full rounded-lg py-2.5 text-sm leading-5 font-medium text-gray-800',
+                    'ring-opacity-60 ring-white ring-offset-2 ring-offset-gray-400 focus:outline-none',
                     selected
                       ? 'bg-white shadow'
-                      : 'text-gray-700 hover:bg-white/[0.12] hover:text-gray-400 dark:text-gray-200'
+                      : 'text-gray-700 hover:bg-white/12 hover:text-gray-400 dark:text-gray-200'
                   )
                 }
               >

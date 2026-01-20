@@ -71,7 +71,7 @@ export const NotificationDropdown = ({
         true
       );
       seen.add(notification.review.courseId);
-    } catch (err) {
+    } catch {
       toast.error('Failed to update notification.');
     }
   };
@@ -87,7 +87,7 @@ export const NotificationDropdown = ({
         )
       );
       toast.success('Successfully deleted notification.');
-    } catch (err) {
+    } catch {
       toast.error('Failed to delete notification.');
     }
   };
@@ -111,7 +111,7 @@ export const NotificationDropdown = ({
                     />
                     {notifications.filter((notification) => !notification.seen)
                       .length !== 0 && (
-                      <div className='absolute right-[-3px] top-px size-2 rounded-full bg-red-600' />
+                      <div className='absolute top-px right-[-3px] size-2 rounded-full bg-red-600' />
                     )}
                   </div>
                 </Menu.Button>
@@ -125,7 +125,7 @@ export const NotificationDropdown = ({
                 leaveFrom='transform opacity-100 scale-100'
                 leaveTo='transform opacity-0 scale-95'
               >
-                <Menu.Items className='autocomplete absolute -right-8 z-30 mt-2 max-h-[800px] max-w-[325px] origin-top-right divide-y divide-gray-100 overflow-auto rounded-md bg-slate-100 shadow-lg dark:bg-neutral-900 md:max-w-[800px]'>
+                <Menu.Items className='autocomplete absolute -right-8 z-30 mt-2 max-h-[800px] max-w-[325px] origin-top-right divide-y divide-gray-100 overflow-auto rounded-md bg-slate-100 shadow-lg md:max-w-[800px] dark:bg-neutral-900'>
                   <div className='p-2'>
                     {notifications.length !== 0 ? (
                       notifications.map((notification, i) => (
@@ -178,7 +178,7 @@ export const NotificationDropdown = ({
                         </Menu.Item>
                       ))
                     ) : (
-                      <p className='w-[325px] p-1 text-sm font-medium leading-6 text-gray-600 dark:text-gray-300'>
+                      <p className='w-[325px] p-1 text-sm leading-6 font-medium text-gray-600 dark:text-gray-300'>
                         All caught up! Subscribe to courses to get notified when
                         a user leaves a review.
                       </p>

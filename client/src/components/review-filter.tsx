@@ -102,10 +102,10 @@ export const ReviewFilter = ({
 
   return (
     <div className='rounded-lg dark:bg-neutral-900 dark:text-gray-200'>
-      <div className='relative mt-6 xs:mt-0 xs:flex xs:items-center'>
+      <div className='xs:mt-0 xs:flex xs:items-center relative mt-6'>
         <div className='p-1'>
           <div className='flex max-w-sm gap-x-2'>
-            <div className='w-2/5 xs:max-w-56'>
+            <div className='xs:max-w-56 w-2/5'>
               <h2 className='mb-2 text-sm font-medium text-gray-600 dark:text-gray-400'>
                 Sort By
               </h2>
@@ -117,7 +117,7 @@ export const ReviewFilter = ({
                 />
               </div>
             </div>
-            <div className='w-3/5 xs:w-auto'>
+            <div className='xs:w-auto w-3/5'>
               <h2 className='mb-2 text-sm font-medium text-gray-600 dark:text-gray-400'>
                 Instructor
               </h2>
@@ -132,7 +132,7 @@ export const ReviewFilter = ({
           </div>
         </div>
         <ResetButton
-          className='absolute -top-2 right-2 xs:static xs:mt-6 '
+          className='xs:static xs:mt-6 absolute -top-2 right-2'
           onClear={reset}
         />
       </div>

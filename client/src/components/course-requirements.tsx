@@ -57,7 +57,7 @@ type RequirementBlockProps = {
 const RequirementBlock = ({ title, text }: RequirementBlockProps) => {
   return (
     <div>
-      <h2 className='mb-2 mt-1 text-xl font-bold leading-none text-gray-700 dark:text-gray-200'>
+      <h2 className='mt-1 mb-2 text-xl leading-none font-bold text-gray-700 dark:text-gray-200'>
         {title}
       </h2>
       {text ? (
@@ -101,7 +101,7 @@ export const CourseRequirements = ({
       )}
     >
       <button
-        className='absolute right-4 top-4 z-10 cursor-pointer rounded-full bg-gray-200 p-2 transition duration-150 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
+        className='absolute top-4 right-4 z-10 cursor-pointer rounded-full bg-gray-200 p-2 transition duration-150 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
         onClick={handleGraphToggle}
       >
         <ToggleButtonIcon

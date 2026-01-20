@@ -247,7 +247,7 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
     >
       <div className='flex flex-wrap items-baseline justify-between gap-2'>
         <div>
-          <p className='text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400'>
+          <p className='text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
             Final Exam
           </p>
           <p className='text-lg font-semibold text-gray-900 dark:text-gray-100'>
@@ -374,16 +374,16 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
 
           const infoContent = (
             <div className='relative grid w-full gap-x-6 gap-y-1 sm:grid-cols-[auto_minmax(0,1fr)]'>
-              <span className='flex items-center justify-between text-sm font-medium text-gray-900 dark:text-gray-100 sm:col-start-1 sm:row-start-1'>
+              <span className='flex items-center justify-between text-sm font-medium text-gray-900 sm:col-start-1 sm:row-start-1 dark:text-gray-100'>
                 {dateLabel}
               </span>
               {topLine}
-              <span className='text-sm text-gray-600 dark:text-gray-300 sm:col-start-1 sm:row-start-2'>
+              <span className='text-sm text-gray-600 sm:col-start-1 sm:row-start-2 dark:text-gray-300'>
                 {timeLabel}
               </span>
               {bottomLine}
 
-              <div className='absolute right-[-6px] top-[-4px] sm:hidden lg:block xl:hidden'>
+              <div className='absolute top-[-4px] right-[-6px] sm:hidden lg:block xl:hidden'>
                 {addToCalendarButton}
               </div>
             </div>
@@ -393,7 +393,7 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
             <div
               key={key}
               className={twMerge(
-                'flex flex-col gap-3 rounded-md border border-slate-200/70 bg-white/70 p-3 text-sm text-gray-700 dark:border-neutral-700 dark:bg-neutral-900/60 dark:text-gray-200 sm:flex-row sm:items-start sm:gap-6',
+                'flex flex-col gap-3 rounded-md border border-slate-200/70 bg-white/70 p-3 text-sm text-gray-700 sm:flex-row sm:items-start sm:gap-6 dark:border-neutral-700 dark:bg-neutral-900/60 dark:text-gray-200',
                 examScheduleUrl
                   ? 'transition-colors hover:border-slate-300 hover:bg-white dark:hover:border-neutral-600 dark:hover:bg-neutral-900'
                   : ''

@@ -31,7 +31,7 @@ export const Tooltip = ({
       <Transition
         show={show && !!text}
         className={twMerge(
-          'absolute z-10 min-w-fit -translate-x-0 -translate-y-full rounded-md bg-white p-2 text-center text-xs font-medium text-gray-700 dark:bg-neutral-500 dark:text-gray-100',
+          'absolute z-10 min-w-fit translate-x-0 -translate-y-full rounded-md bg-white p-2 text-center text-xs font-medium text-gray-700 dark:bg-neutral-500 dark:text-gray-100',
           className
         )}
         style={{

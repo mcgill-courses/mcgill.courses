@@ -52,7 +52,7 @@ export const Footer = () => {
   return (
     <nav
       className={twMerge(
-        'fixed bottom-0 left-0 z-40 hidden h-16 w-full flex-row items-center justify-between bg-slate-100 dark:bg-neutral-900 lg:flex',
+        'fixed bottom-0 left-0 z-40 hidden h-16 w-full flex-row items-center justify-between bg-slate-100 lg:flex dark:bg-neutral-900',
         isScrollable && 'transition-transform duration-300 ease-in-out',
         isScrollable && !visible ? 'translate-y-full' : 'translate-y-0'
       )}

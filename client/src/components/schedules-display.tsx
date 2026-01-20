@@ -294,7 +294,7 @@ const BlockLocation = ({ location }: { location: string }) => {
         <Tooltip text={buildingCodes[code as keyof typeof buildingCodes]}>
           <p
             className={twMerge(
-              'inline-block text-xs leading-7 xs:text-sm sm:text-base lg:text-sm xl:text-base',
+              'xs:text-sm inline-block text-xs leading-7 sm:text-base lg:text-sm xl:text-base',
               coordinates !== null && 'cursor-pointer'
             )}
           >
@@ -388,7 +388,7 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
 
   return (
     <tr className='p-2 text-left even:bg-slate-100 even:dark:bg-[rgb(48,48,48)]'>
-      <td className='whitespace-nowrap pl-4 text-xs font-semibold xs:text-sm sm:pl-6 sm:text-base lg:pl-4 lg:text-sm xl:text-base'>
+      <td className='xs:text-sm pl-4 text-xs font-semibold whitespace-nowrap sm:pl-6 sm:text-base lg:pl-4 lg:text-sm xl:text-base'>
         {block.display}
       </td>
       <td className='py-2 text-gray-700 dark:text-gray-300'>
@@ -402,23 +402,23 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
           ) : (
             <span
               aria-hidden
-              className='invisible select-none text-sm font-medium sm:text-base'
+              className='invisible text-sm font-medium select-none sm:text-base'
             >
               Placeholder
             </span>
           )}
         </div>
       </td>
-      <td className='whitespace-nowrap py-2 text-xs font-medium xs:text-sm sm:text-base lg:text-sm xl:text-base'>
+      <td className='xs:text-sm py-2 text-xs font-medium whitespace-nowrap sm:text-base lg:text-sm xl:text-base'>
         {timeRanges.length > 0 ? (
           timeRanges.map((range, index) => <div key={index}>{range}</div>)
         ) : (
-          <span aria-hidden className='invisible select-none font-medium'>
+          <span aria-hidden className='invisible font-medium select-none'>
             Placeholder
           </span>
         )}
       </td>
-      <td className='p-2 xs:pr-0'>
+      <td className='xs:pr-0 p-2'>
         {daySets.length > 0 ? (
           daySets.map((days, index) => (
             <TimeblockDays days={days} key={index} />
@@ -426,7 +426,7 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
         ) : (
           <div
             aria-hidden
-            className='pointer-events-none opacity-0 [line-height:1]'
+            className='pointer-events-none leading-none opacity-0'
           >
             <TimeblockDays days={['2', '3', '4', '5', '6']} />
           </div>
@@ -450,7 +450,7 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
           'CRN unavailable'
         )}
       </td>
-      <td className='hidden whitespace-nowrap px-2 xs:table-cell'>
+      <td className='xs:table-cell hidden px-2 whitespace-nowrap'>
         <AddToCalendarButton
           payload={calendarPayload}
           ariaLabel={`Add ${block.display} schedule to calendar`}
@@ -528,7 +528,7 @@ export const SchedulesDisplay = ({
           <button
             key={i}
             className={twMerge(
-              `flex-1 cursor-pointer border-b p-2 text-center text-sm font-medium transition duration-300 ease-in-out dark:border-b-neutral-600 dark:text-gray-200 sm:text-base`,
+              `flex-1 cursor-pointer border-b p-2 text-center text-sm font-medium transition duration-300 ease-in-out sm:text-base dark:border-b-neutral-600 dark:text-gray-200`,
               term === selectedTerm
                 ? 'bg-slate-50 dark:bg-neutral-800'
                 : 'bg-slate-200 hover:bg-slate-100 dark:bg-neutral-600 dark:hover:bg-neutral-700',

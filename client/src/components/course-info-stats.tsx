@@ -46,7 +46,7 @@ const FillBar = ({ width, percentage, text, variant }: FillBarProps) => {
         )}
         style={{ width: !loaded ? 0 : (percentage / 100) * width }}
       />
-      <div className='absolute inset-y-0 flex w-full justify-center text-sm font-bold leading-4 text-white'>
+      <div className='absolute inset-y-0 flex w-full justify-center text-sm leading-4 font-bold text-white'>
         {text}
       </div>
     </div>
@@ -67,7 +67,7 @@ const Stat = ({ title, value, icon: Icon, variant }: StatProps) => {
         <Icon className='-mt-0.5 stroke-red-600' size={18} />
         <div
           className={twMerge(
-            'mb-0.5 text-xs font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400'
+            'mb-0.5 text-xs font-medium tracking-wider text-gray-600 uppercase dark:text-gray-400'
           )}
         >
           {title}
