@@ -1,4 +1,4 @@
-import { Bars3Icon } from '@heroicons/react/24/outline';
+import { Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -104,8 +104,9 @@ export const Navbar = () => {
             onClick={() => setMobileMenuOpen(true)}
           >
             <span className='sr-only'>Open main menu</span>
-            <Bars3Icon
-              className='size-6 stroke-2 text-gray-400'
+            <Menu
+              className='size-6 text-gray-400'
+              strokeWidth={2}
               aria-hidden='true'
             />
           </button>
