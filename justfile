@@ -46,13 +46,6 @@ dev: services typeshare
     'just watch run -- --db-name=mcgill-courses' \
     'pnpm run dev'
 
-[group: 'setup']
-dev-deps:
-  cargo install present
-  cargo install typeshare-cli
-  brew install --cask chromedriver
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-
 [group: 'test']
 e2e:
   pnpm run cy:e2e
@@ -72,23 +65,29 @@ forbid:
   ./bin/forbid
 
 [group: 'tools']
+[working-directory: 'tools/changelog-genetator']
 generate-changelog *args:
-  RUST_LOG=info cargo run --manifest-path tools/changelog-generator/Cargo.toml \
-    -- \
-    --output client/src/assets/changelog.json \
-    {{ args }}
+  cargo run -- --output client/src/assets/changelog.json {{ args }}
 
 [group: 'setup']
 initialize *args: restart-services
   cargo run -- --source=seed --initialize --db-name=mcgill-courses {{ args }}
+
+[group: 'setup']
+install-dev-deps:
+  cargo install present
+  cargo install typeshare-cli
+  brew install --cask chromedriver
+  curl -LsSf https://astral.sh/uv/install.sh | sh
 
 [group: 'check']
 lint *args:
   pnpm run lint {{ args }}
 
 [group: 'tools']
+[working-directory: 'tools/scraper']
 load *args:
-  cargo run --manifest-path tools/scraper/Cargo.toml -- \
+  cargo run -- \
     --batch-size=5 \
     --course-delay 1000 \
     --source seed \
