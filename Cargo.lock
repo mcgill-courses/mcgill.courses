@@ -1057,7 +1057,6 @@ dependencies = [
  "futures",
  "include_dir",
  "itertools",
- "lazy_static",
  "model",
  "mongodb 3.4.1",
  "pretty_assertions",
