@@ -528,7 +528,7 @@ export const SchedulesDisplay = ({
           <button
             key={i}
             className={twMerge(
-              `flex-1 cursor-pointer border-b p-2 text-center text-sm font-medium transition duration-300 ease-in-out sm:text-base dark:border-b-neutral-600 dark:text-gray-200`,
+              `flex-1 cursor-pointer border-b-neutral-200 p-2 text-center text-sm font-medium transition duration-300 ease-in-out sm:text-base dark:border-b-neutral-600 dark:text-gray-200`,
               term === selectedTerm
                 ? 'bg-slate-50 dark:bg-neutral-800'
                 : 'bg-slate-200 hover:bg-slate-100 dark:bg-neutral-600 dark:hover:bg-neutral-700',
