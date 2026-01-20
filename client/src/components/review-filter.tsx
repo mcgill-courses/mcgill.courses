@@ -1,8 +1,8 @@
-import uniq from 'lodash/uniq';
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from 'react';
 
 import type { Review } from '../lib/types';
 import type { Course } from '../lib/types';
+import { uniq } from '../lib/utils';
 import { Autocomplete } from './autocomplete';
 import { ResetButton } from './reset-button';
 

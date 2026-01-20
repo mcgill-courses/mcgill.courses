@@ -1,6 +1,4 @@
 import { produce } from 'immer';
-import groupBy from 'lodash/groupBy';
-import mapValues from 'lodash/mapValues';
 import { ChevronDown, ChevronUp, LineChart, List } from 'lucide-react';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -8,7 +6,7 @@ import { twMerge } from 'tailwind-merge';
 
 import type { TermAverage } from '../lib/term-average';
 import type { Course, Instructor } from '../lib/types';
-import { compareTerms } from '../lib/utils';
+import { compareTerms, groupBy, mapValues } from '../lib/utils';
 import { GPAChart } from './gpa-chart';
 
 type InstructorLinkProps = {
