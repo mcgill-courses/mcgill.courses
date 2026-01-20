@@ -1,9 +1,8 @@
 use super::*;
 
-lazy_static! {
-  static ref STOP_WORDS: HashSet<String> =
-    HashSet::from_iter(stop_words::get(stop_words::LANGUAGE::English));
-}
+static STOP_WORDS: LazyLock<HashSet<String>> = LazyLock::new(|| {
+  HashSet::from_iter(stop_words::get(stop_words::LANGUAGE::English))
+});
 
 pub(crate) trait StrExt {
   fn filter_stopwords(self) -> String;

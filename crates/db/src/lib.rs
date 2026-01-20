@@ -5,7 +5,6 @@ use {
   futures::Future,
   futures::{TryStreamExt, future::join_all},
   itertools::Itertools,
-  lazy_static::lazy_static,
   model::{
     Course, CourseFilter, CourseSortType, InitializeOptions, Instructor,
     Interaction, InteractionKind, Notification, Review, ReviewFilter,
@@ -18,7 +17,10 @@ use {
     results::{CreateIndexResult, DeleteResult, InsertOneResult, UpdateResult},
   },
   serde::{Serialize, de::DeserializeOwned},
-  std::{collections::HashSet, env, fs, num::TryFromIntError, path::PathBuf},
+  std::{
+    collections::HashSet, env, fs, num::TryFromIntError, path::PathBuf,
+    sync::LazyLock,
+  },
   tokio::task::JoinError,
   tracing::{info, warn},
   {initializer::Initializer, seed::Seed, str_ext::StrExt, utils::*},
