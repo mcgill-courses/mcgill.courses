@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { X } from 'lucide-react';
 import { Fragment } from 'react';
 import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
@@ -86,7 +86,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
                   onClick={() => onClose(false)}
                 >
                   <span className='sr-only'>Close menu</span>
-                  <XMarkIcon className='size-6' aria-hidden='true' />
+                  <X className='size-6' aria-hidden='true' />
                 </button>
               </div>
               <div className='mt-6 flow-root'>

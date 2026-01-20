@@ -23,7 +23,6 @@
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "@headlessui/react": "^1.7.19",
-    "@heroicons/react": "^2.2.0",
     "@tanstack/react-query": "^5.90.5",
     "@vis.gl/react-google-maps": "^1.5.5",
     "date-fns": "^2.30.0",
