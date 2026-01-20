@@ -5,4 +5,4 @@ edition = "2024"
 publish = false
 
 [dependencies]
-itertools = "0.14.0"
+itertools = { workspace = true }

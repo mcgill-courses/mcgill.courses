@@ -7,9 +7,9 @@ publish = false
 [dependencies]
 anyhow = { workspace = true }
 chrono = { workspace = true }
-clap = { version = "4.5.54", features = ["derive"] }
+clap = { workspace = true }
 lopdf = "0.39.0"
-rayon = "1.11.0"
-regex = "1.12.2"
-serde = { workspace = true, features = ["derive"] }
+rayon = { workspace = true }
+regex = { workspace = true }
+serde = { workspace = true }
 serde_json = { workspace = true }
