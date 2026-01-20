@@ -63,7 +63,7 @@ export const getCurrentTerms = (): [string, string, string] => {
  * - August-December: Fall <year>
  * - January-April: Winter <year>
  *
- * @returns string The current term
+ * @returns {string} The current term
  */
 export const getCurrentTerm = (): string => {
   const now = new Date();
