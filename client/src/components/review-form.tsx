@@ -1,6 +1,6 @@
-import { ErrorMessage, Field, FormikState } from 'formik';
-import { PersistFormikValues } from 'formik-persist-values';
+import { ErrorMessage, Field, FormikState, useFormikContext } from 'formik';
 import { Flame } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { PropsWithChildren } from 'react';
 import * as Yup from 'yup';
 
@@ -55,6 +55,28 @@ export type ReviewFormInitialValues = {
   instructors: string[];
   rating: number;
   difficulty: number;
+};
+
+const FormikPersist = ({ name }: { name: string }) => {
+  const { values, setValues } = useFormikContext<ReviewFormInitialValues>();
+
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+
+      const saved = localStorage.getItem(name);
+
+      if (saved) {
+        setValues(JSON.parse(saved));
+      }
+    } else {
+      localStorage.setItem(name, JSON.stringify(values));
+    }
+  }, [name, values, setValues]);
+
+  return null;
 };
 
 type ReviewFormProps = {
@@ -141,7 +163,7 @@ export const ReviewForm = ({
             Submit
           </button>
         </div>
-        <PersistFormikValues name={course._id} persistInvalid={true} />
+        <FormikPersist name={course._id} />
       </div>
     </>
   );
