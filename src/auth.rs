@@ -1,5 +1,13 @@
 use super::*;
 
+pub(crate) type OAuthClient = BasicClient<
+  EndpointSet,
+  EndpointNotSet,
+  EndpointNotSet,
+  EndpointNotSet,
+  EndpointSet,
+>;
+
 pub(crate) const COOKIE_NAME: &str = "session";
 
 pub struct AuthRedirect;
@@ -50,7 +58,7 @@ struct AccessTokenResponse {
 )]
 pub(crate) async fn microsoft_auth(
   Query(query): Query<LoginRequest>,
-  AppState(client): AppState<BasicClient>,
+  AppState(client): AppState<OAuthClient>,
 ) -> impl IntoResponse {
   Redirect::to(
     client
@@ -89,19 +97,19 @@ pub(crate) async fn login_authorized(
 ) -> Result<impl IntoResponse> {
   debug!("Fetching token from oauth client...");
 
+  let redirect_uri = state
+    .oauth_client
+    .redirect_uri()
+    .ok_or_else(|| anyhow!("Missing redirect url"))?
+    .to_string();
+
   let params = [
-    ("client_id", &state.oauth_client.client_id().to_string()),
-    ("client_secret", &state.client_secret),
-    ("code", &query.code),
-    ("grant_type", &"authorization_code".into()),
-    (
-      "redirect_uri",
-      state
-        .oauth_client
-        .redirect_url()
-        .expect("Missing redirect url"),
-    ),
-    ("scope", &"User.Read".into()),
+    ("client_id", state.oauth_client.client_id().to_string()),
+    ("client_secret", state.client_secret.clone()),
+    ("code", query.code.clone()),
+    ("grant_type", "authorization_code".to_string()),
+    ("redirect_uri", redirect_uri),
+    ("scope", "User.Read".to_string()),
   ];
 
   let response = state
