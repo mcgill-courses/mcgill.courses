@@ -40,7 +40,7 @@ const originalClipboardDescriptor = Object.getOwnPropertyDescriptor(
   'clipboard'
 );
 
-let writeTextMock: MockInstance<any, any>;
+let writeTextMock: MockInstance<(text: string) => Promise<void>>;
 
 beforeAll(() => {
   if (
@@ -51,7 +51,7 @@ beforeAll(() => {
       .spyOn(navigator.clipboard, 'writeText')
       .mockImplementation(() => Promise.resolve());
   } else {
-    const mockFn = vi.fn<[text: string], Promise<void>>(() =>
+    const mockFn = vi.fn<(text: string) => Promise<void>>(() =>
       Promise.resolve()
     );
     Object.defineProperty(navigator, 'clipboard', {
