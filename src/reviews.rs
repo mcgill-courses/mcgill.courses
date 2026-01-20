@@ -310,14 +310,14 @@ async fn validate_instructors(
   let mut valid_instructors = course
     .instructors
     .into_iter()
-    .map(|ins| ins.name)
+    .map(|instructor| instructor.name)
     .collect::<Vec<String>>();
 
   valid_instructors.push("Other".into());
 
   if !instructors
     .iter()
-    .all(|ins| valid_instructors.contains(ins))
+    .all(|instructor| valid_instructors.contains(instructor))
   {
     return Err(anyhow!("Invalid instructor(s)").into());
   }
