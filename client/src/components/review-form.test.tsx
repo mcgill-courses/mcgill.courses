@@ -10,6 +10,32 @@ import {
   ReviewSchema,
 } from './review-form';
 
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+
+  return {
+    getItem: vi.fn((key: string) => store[key] ?? null),
+    setItem: vi.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    clear: vi.fn(() => {
+      store = {};
+    }),
+    removeItem: vi.fn((key: string) => {
+      delete store[key];
+    }),
+  };
+})();
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+});
+
+beforeEach(() => {
+  localStorageMock.clear();
+  vi.clearAllMocks();
+});
+
 vi.mock('lucide-react', () => ({
   Flame: (props: Record<string, unknown>) => (
     <svg data-testid='flame-icon' {...props} />
@@ -258,14 +284,6 @@ describe('ReviewForm', () => {
 });
 
 describe('FormikPersist', () => {
-  beforeEach(() => {
-    localStorage.clear();
-  });
-
-  afterEach(() => {
-    localStorage.clear();
-  });
-
   it('loads saved values from localStorage on mount', async () => {
     const savedValues: ReviewFormInitialValues = {
       content: 'Saved draft content',
