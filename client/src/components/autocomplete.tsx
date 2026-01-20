@@ -31,7 +31,7 @@ export const Autocomplete = <T extends string>({
     <div className={className}>
       <Combobox value={value} onChange={(val) => setValue(val)}>
         <div className='w-full'>
-          <div className='relative max-w-[240px] rounded-md border bg-slate-200 p-2 dark:border-neutral-600 dark:bg-neutral-700'>
+          <div className='relative max-w-[240px] rounded-md border border-neutral-200 bg-slate-200 p-2 dark:border-neutral-600 dark:bg-neutral-700'>
             <Combobox.Input
               className={twMerge(
                 'w-[87.5%] bg-slate-200 text-sm outline-none dark:bg-neutral-700 dark:text-gray-200 dark:caret-white',

@@ -24,7 +24,7 @@ export const CourseCard = ({ course, className, query }: CourseCardProps) => {
       key={course._id}
       className={className}
     >
-      <div className='max-w-xl rounded-lg bg-slate-50 p-5 duration-150 hover:bg-gray-50 dark:bg-neutral-800'>
+      <div className='max-w-xl rounded-lg bg-slate-50 p-5 duration-150 dark:bg-neutral-800'>
         <div className='mb-2 font-bold dark:text-gray-200'>
           {query ? (
             <Highlight
