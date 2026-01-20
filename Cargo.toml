@@ -9,7 +9,7 @@ members = ["crates/*", "tools/changelog-generator", "tools/final-exam-schedule-p
 
 [workspace.dependencies]
 anyhow = "1.0.100"
-bson = { version = "2.15.0", features = ["chrono-0_4"] }
+bson = { version = "3.1.0", features = ["chrono-0_4"] }
 chrono = "0.4.43"
 clap = { version = "4.5.54", features = ["derive"] }
 dotenv = "0.15.0"
