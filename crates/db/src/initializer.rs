@@ -45,6 +45,7 @@ impl Initializer {
     self
       .db
       .create_index::<Course>(
+        "courses_text_search",
         Self::COURSE_COLLECTION,
         doc! {
           "subject": "text",
@@ -70,6 +71,7 @@ impl Initializer {
     self
       .db
       .create_index::<Instructor>(
+        "instructors_text_search",
         Self::INSTRUCTOR_COLLECTION,
         doc! { "name": "text", "nameNgrams": "text" },
         doc! { "name": 10, "nameNgrams": 4 },
