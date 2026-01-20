@@ -29,7 +29,7 @@ type FieldErrorProps = {
 };
 
 const FieldError = ({ name }: FieldErrorProps) => (
-  <div className='text-sm italic text-red-400'>
+  <div className='text-sm text-red-400 italic'>
     <ErrorMessage name={name} />
   </div>
 );
@@ -44,7 +44,7 @@ const FieldLabel = ({
 }: PropsWithChildren<FieldLabelProps>) => (
   <label
     htmlFor={htmlFor}
-    className='mb-1 mt-4 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400'
+    className='mt-4 mb-1 text-xs tracking-wider text-gray-500 uppercase dark:text-gray-400'
   >
     {children}
   </label>

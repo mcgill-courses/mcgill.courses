@@ -7,7 +7,7 @@ export const CourseReviewPrompt = ({
 }: CourseReviewPromptProps) => {
   return (
     <div className='flex h-fit justify-between rounded-md px-3 py-2 dark:bg-neutral-900'>
-      <p className='my-auto text-sm dark:text-gray-200 sm:text-base'>
+      <p className='my-auto text-sm sm:text-base dark:text-gray-200'>
         Taken this course?{' '}
       </p>
       <button

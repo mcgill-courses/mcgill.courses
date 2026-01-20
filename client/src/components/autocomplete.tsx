@@ -41,7 +41,7 @@ export const Autocomplete = <T extends string>({
             />
             <Combobox.Button className='absolute inset-y-0 flex w-full items-center'>
               <ChevronDown
-                className='ml-auto mr-4 size-5 text-gray-400'
+                className='mr-4 ml-auto size-5 text-gray-400'
                 aria-hidden='true'
               />
             </Combobox.Button>

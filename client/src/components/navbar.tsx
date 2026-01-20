@@ -128,7 +128,7 @@ export const Navbar = () => {
                 href={`${env.VITE_API_URL}/api/auth/login?redirect=${
                   window.location.href
                 }`}
-                className='my-auto text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200'
+                className='my-auto text-sm leading-6 font-semibold text-gray-900 dark:text-gray-200'
                 onMouseEnter={() => setArrowColor('text-red-600')}
                 onMouseLeave={() =>
                   setArrowColor('text-gray-900 dark:text-gray-200')

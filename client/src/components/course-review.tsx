@@ -53,7 +53,7 @@ const formatReviewContent = (content: string): ReactNode[] => {
 
 const LoginPrompt = () => {
   return (
-    <div className='absolute bottom-20 end-4 h-fit rounded-md border bg-gray-100 px-2 py-1 text-neutral-800 dark:border-0 dark:bg-neutral-700 dark:text-gray-200 sm:bottom-16'>
+    <div className='absolute end-4 bottom-20 h-fit rounded-md border bg-gray-100 px-2 py-1 text-neutral-800 sm:bottom-16 dark:border-0 dark:bg-neutral-700 dark:text-gray-200'>
       You must be logged in
     </div>
   );
@@ -164,19 +164,23 @@ const ReviewInteractions = ({
   };
 
   const handleLike = () => {
-    user
-      ? kind === InteractionKind.Like
-        ? removeInteraction()
-        : addInteraction(InteractionKind.Like)
-      : displayLoginPrompt();
+    if (!user) {
+      displayLoginPrompt();
+    } else if (kind === InteractionKind.Like) {
+      removeInteraction();
+    } else {
+      addInteraction(InteractionKind.Like);
+    }
   };
 
   const handleDislike = () => {
-    user
-      ? kind === InteractionKind.Dislike
-        ? removeInteraction()
-        : addInteraction(InteractionKind.Dislike)
-      : displayLoginPrompt();
+    if (!user) {
+      displayLoginPrompt();
+    } else if (kind === InteractionKind.Dislike) {
+      removeInteraction();
+    } else {
+      addInteraction(InteractionKind.Dislike);
+    }
   };
 
   return (
@@ -410,7 +414,7 @@ export const CourseReview = ({
     <motion.div
       id={anchorId}
       className={twMerge(
-        'relative flex w-full flex-col gap-4 border-b-[1px] border-b-gray-300 bg-slate-50 px-6 py-3 first:rounded-t-md last:rounded-b-md last:border-b-0 dark:border-b-gray-600 dark:bg-neutral-800',
+        'relative flex w-full flex-col gap-4 border-b border-b-gray-300 bg-slate-50 px-6 py-3 first:rounded-t-md last:rounded-b-md last:border-b-0 dark:border-b-gray-600 dark:bg-neutral-800',
         className
       )}
       animate={highlightAnimation}
@@ -431,25 +435,25 @@ export const CourseReview = ({
                   text='External review from RateMyProfessors'
                   className='w-36'
                 >
-                  <Tag className='ml-2 mt-1 w-4 text-red-600' />
+                  <Tag className='mt-1 ml-2 w-4 text-red-600' />
                 </Tooltip>
               )}
               {canModify && (
                 <Pin
                   size={15}
-                  className='ml-2 mt-2 fill-rose-600 text-red-600'
+                  className='mt-2 ml-2 fill-rose-600 text-red-600'
                 />
               )}
               <div className='grow' />
               <div className='flex w-64 flex-col items-end rounded-lg p-2'>
                 <div className='flex items-center gap-x-2'>
-                  <div className='text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400'>
+                  <div className='text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400'>
                     Rating
                   </div>
                   <IconRating rating={review.rating} icon={BirdIcon} />
                 </div>
                 <div className='flex items-center gap-x-2'>
-                  <div className='text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400'>
+                  <div className='text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400'>
                     Difficulty
                   </div>
                   <IconRating rating={review.difficulty} icon={Flame} />
@@ -463,7 +467,7 @@ export const CourseReview = ({
 
               if (!shouldTruncate) {
                 return (
-                  <div className='ml-1 mr-4 mt-2 hyphens-auto whitespace-pre-wrap break-words text-left text-gray-800 dark:text-gray-300'>
+                  <div className='mt-2 mr-4 ml-1 text-left wrap-break-word hyphens-auto whitespace-pre-wrap text-gray-800 dark:text-gray-300'>
                     {formatReviewContent(review.content)}
                   </div>
                 );
@@ -471,13 +475,13 @@ export const CourseReview = ({
 
               return (
                 <>
-                  <div className='ml-1 mr-4 mt-2 hyphens-auto whitespace-pre-wrap break-words text-left text-gray-800 dark:text-gray-300'>
+                  <div className='mt-2 mr-4 ml-1 text-left wrap-break-word hyphens-auto whitespace-pre-wrap text-gray-800 dark:text-gray-300'>
                     {formatReviewContent(
                       review.content.substring(0, 300) + '...'
                     )}
                   </div>
                   <button
-                    className='ml-1 mr-auto pt-1 text-gray-700 underline transition duration-300 ease-in-out hover:text-red-500 dark:text-gray-300 dark:hover:text-red-500'
+                    className='mr-auto ml-1 pt-1 text-gray-700 underline transition duration-300 ease-in-out hover:text-red-500 dark:text-gray-300 dark:hover:text-red-500'
                     onClick={() => setReadMore(true)}
                   >
                     Show more
@@ -489,7 +493,7 @@ export const CourseReview = ({
         </div>
       </div>
       <div className='flex items-center'>
-        <p className='mb-2 mt-auto flex-1 text-sm italic leading-4 text-gray-700 dark:text-gray-200'>
+        <p className='mt-auto mb-2 flex-1 text-sm leading-4 text-gray-700 italic dark:text-gray-200'>
           <span className='inline-flex flex-wrap items-center gap-1'>
             {reviewContext}
             {attachmentNode}
@@ -509,7 +513,7 @@ export const CourseReview = ({
         <div className='flex items-center'>
           <div className='mb-1 flex'>
             {canModify && (
-              <div className='ml-2 mr-1 flex h-fit space-x-2'>
+              <div className='mr-1 ml-2 flex h-fit space-x-2'>
                 <div onClick={openEditReview}>
                   <Edit
                     className='cursor-pointer stroke-gray-500 transition duration-200 hover:stroke-gray-800 dark:stroke-gray-400 dark:hover:stroke-gray-200'

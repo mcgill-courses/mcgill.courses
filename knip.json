@@ -3,5 +3,6 @@
   "entry": ["client/src/main.tsx", "vitest.setup.ts"],
   "project": ["client/src/**/*.{ts,tsx}"],
   "ignore": ["client/dist/**", "tools/**"],
+  "ignoreDependencies": ["tailwindcss"],
   "ignoreUnresolved": ["../vitest.setup.ts"]
 }
