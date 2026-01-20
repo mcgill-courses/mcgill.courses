@@ -1,6 +1,6 @@
 import { PropsWithChildren, createContext, useMemo, useState } from 'react';
 
-import type { SortByType } from '../components/explore-filter';
+import type { SortBy } from '../components/explore-filter';
 
 type ExploreFilterState = {
   selectedSubjects: string[];
@@ -9,8 +9,8 @@ type ExploreFilterState = {
   setSelectedLevels: (selected: string[]) => void;
   selectedTerms: string[];
   setSelectedTerms: (selected: string[]) => void;
-  sortBy: SortByType;
-  setSortBy: (selected: SortByType) => void;
+  sortBy: SortBy;
+  setSortBy: (selected: SortBy) => void;
 };
 
 export const ExploreFilterContext = createContext<ExploreFilterState>({
@@ -28,7 +28,7 @@ const ExploreFilterStateProvider = ({ children }: PropsWithChildren<any>) => {
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [selectedTerms, setSelectedTerms] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState<SortByType>('');
+  const [sortBy, setSortBy] = useState<SortBy>('');
 
   const val = useMemo(
     () => ({

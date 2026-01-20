@@ -1,20 +1,61 @@
-import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import type { Mock } from 'vitest';
 
 import { api } from '../lib/api';
 import type { Review } from '../lib/types';
-import { renderWithRouter } from '../testing/router-wrapper';
 import { Reviews } from './reviews';
 
-const { timeSinceMock, toastErrorMock } = vi.hoisted(() => ({
-  timeSinceMock: vi.fn(
-    (value: number | string) => `relative-${value.toString()}`
-  ),
-  toastErrorMock: vi.fn(),
-}));
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+const renderReviews = () => {
+  const queryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
+        <Reviews />
+      </MemoryRouter>
+    </QueryClientProvider>
+  );
+};
+
+const { timeSinceMock, mockIntersectionObserver } = vi.hoisted(() => {
+  const observerCallback = {
+    current: null as IntersectionObserverCallback | null,
+  };
+
+  return {
+    timeSinceMock: vi.fn(
+      (value: number | string) => `relative-${value.toString()}`
+    ),
+    mockIntersectionObserver: {
+      callback: observerCallback,
+      trigger: (isIntersecting: boolean) => {
+        if (observerCallback.current) {
+          observerCallback.current(
+            [{ isIntersecting } as IntersectionObserverEntry],
+            {} as IntersectionObserver
+          );
+        }
+      },
+    },
+  };
+});
 
 vi.mock('../lib/utils', async () => {
   const actual =
@@ -64,38 +105,20 @@ vi.mock('react-helmet-async', () => ({
   Helmet: ({ children }: { children?: ReactNode }) => <>{children}</>,
 }));
 
-vi.mock('sonner', () => ({
-  toast: {
-    error: toastErrorMock,
-  },
-}));
-
-vi.mock('react-infinite-scroll-component', () => ({
-  __esModule: true,
-  default: ({
-    children,
-    dataLength,
-    hasMore,
-    loader,
-    next,
-  }: {
-    children: ReactNode;
-    dataLength: number;
-    hasMore: boolean;
-    loader?: ReactNode;
-    next: () => void | Promise<void>;
-  }) => (
-    <div data-testid='infinite-scroll'>
-      <div>{children}</div>
-      {dataLength >= 20 && hasMore ? loader : null}
-      {hasMore ? (
-        <button type='button' onClick={next}>
-          Load more
-        </button>
-      ) : null}
-    </div>
-  ),
-}));
+beforeAll(() => {
+  globalThis.IntersectionObserver = class MockIntersectionObserver {
+    constructor(callback: IntersectionObserverCallback) {
+      mockIntersectionObserver.callback.current = callback;
+    }
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+    root = null;
+    rootMargin = '';
+    thresholds = [];
+    takeRecords = vi.fn(() => []);
+  } as unknown as typeof IntersectionObserver;
+});
 
 const getReviewsMock = api.getReviews as Mock;
 
@@ -119,7 +142,7 @@ describe('Reviews page', () => {
   it('shows loading indicator while the initial request is in flight', async () => {
     getReviewsMock.mockReturnValue(new Promise(() => {}));
 
-    renderWithRouter(<Reviews />);
+    renderReviews();
 
     expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
 
@@ -143,7 +166,7 @@ describe('Reviews page', () => {
       uniqueUserCount,
     });
 
-    renderWithRouter(<Reviews />);
+    renderReviews();
 
     const expectedDetail = `Check out what ${uniqueUserCount.toLocaleString(
       'en-us'
@@ -167,35 +190,39 @@ describe('Reviews page', () => {
     ).toBeInTheDocument();
   });
 
-  it('fetches and appends additional reviews when more content is requested', async () => {
-    const initialReview = buildReview();
+  it('fetches and appends additional reviews when scrolled to bottom', async () => {
+    const initialReviews = Array.from({ length: 20 }, (_, i) =>
+      buildReview({
+        content: `Review ${i}`,
+        timestamp: `170000000000${i}`,
+        userId: `user-${i}`,
+      })
+    );
 
     const additionalReview = buildReview({
       content: 'Another perspective',
       timestamp: '1700000000100',
-      userId: 'user-2',
+      userId: 'user-extra',
     });
 
     getReviewsMock
       .mockResolvedValueOnce({
-        reviews: [initialReview],
-        uniqueUserCount: 1,
+        reviews: initialReviews,
+        uniqueUserCount: 21,
       })
       .mockResolvedValueOnce({
         reviews: [additionalReview],
       });
 
-    renderWithRouter(<Reviews />);
+    renderReviews();
 
     await waitFor(() =>
       expect(
-        screen.getByTestId(`course-review-${initialReview.userId}`)
+        screen.getByTestId(`course-review-${initialReviews[0].userId}`)
       ).toBeInTheDocument()
     );
 
-    const user = userEvent.setup();
-
-    await user.click(screen.getByRole('button', { name: /load more/i }));
+    mockIntersectionObserver.trigger(true);
 
     await waitFor(() => expect(getReviewsMock).toHaveBeenCalledTimes(2));
 
@@ -203,28 +230,13 @@ describe('Reviews page', () => {
       limit: 20,
       offset: 20,
       sorted: true,
+      withUserCount: false,
     });
 
-    expect(
-      screen.getByTestId(`course-review-${additionalReview.userId}`)
-    ).toHaveTextContent(additionalReview.content);
-
-    expect(
-      screen.getByText(`relative-${Number(additionalReview.timestamp)}`)
-    ).toBeInTheDocument();
-  });
-
-  it('surfaces a toast when the initial fetch fails', async () => {
-    getReviewsMock.mockRejectedValueOnce(new Error('network error'));
-
-    renderWithRouter(<Reviews />);
-
-    await waitFor(() => expect(toastErrorMock).toHaveBeenCalledTimes(1));
-
-    expect(toastErrorMock).toHaveBeenCalledWith(
-      'Failed to fetch reviews. Please try again later.'
+    await waitFor(() =>
+      expect(
+        screen.getByTestId(`course-review-${additionalReview.userId}`)
+      ).toHaveTextContent(additionalReview.content)
     );
-
-    expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
   });
 });

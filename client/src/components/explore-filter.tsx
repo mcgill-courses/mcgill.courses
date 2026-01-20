@@ -9,12 +9,19 @@ import { termColorMap } from './course-terms';
 import { MultiSelect } from './multi-select';
 import { ResetButton } from './reset-button';
 
-const termsOptions = ['Fall', 'Winter', 'Summer'] as const;
-type CourseTerm = (typeof termsOptions)[number];
+const TERM_OPTIONS = ['Fall', 'Winter', 'Summer'] as const;
 
-const levelsOptions = ['1XX', '2XX', '3XX', '4XX', '5XX', '6XX', '7XX'];
+const LEVEL_OPTIONS = [
+  '1XX',
+  '2XX',
+  '3XX',
+  '4XX',
+  '5XX',
+  '6XX',
+  '7XX',
+] as const;
 
-const sortByOptions = [
+const SORT_BY_OPTIONS = [
   '',
   'Highest Rating',
   'Lowest Rating',
@@ -23,7 +30,10 @@ const sortByOptions = [
   'Most Reviews',
   'Least Reviews',
 ] as const;
-export type SortByType = (typeof sortByOptions)[number];
+
+type CourseTerm = (typeof TERM_OPTIONS)[number];
+
+export type SortBy = (typeof SORT_BY_OPTIONS)[number];
 
 type ExploreFilterProp = {
   variant: 'mobile' | 'desktop';
@@ -126,7 +136,7 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
       <div className='py-1' />
       <div className='relative z-20'>
         <Autocomplete
-          options={sortByOptions}
+          options={SORT_BY_OPTIONS}
           value={sortBy}
           setValue={setSortBy}
         />
@@ -149,7 +159,7 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
       </h1>
       <div className='py-1' />
       <div className='flex flex-wrap gap-2 py-1'>
-        {levelsOptions.map((level, i) => (
+        {LEVEL_OPTIONS.map((level, i) => (
           <FilterButton
             key={i}
             name={level}
@@ -165,7 +175,7 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
       </h1>
       <div className='py-1' />
       <div className='flex flex-wrap gap-2'>
-        {termsOptions.map((term, i) => (
+        {TERM_OPTIONS.map((term, i) => (
           <FilterButton
             key={i}
             icon={termToIcon(term as CourseTerm)}

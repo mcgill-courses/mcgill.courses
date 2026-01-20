@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
-import { toast } from 'sonner';
 
 import { CourseReview, ReviewAttachment } from '../components/course-review';
 import { JumpToTopButton } from '../components/jump-to-top-button';
@@ -15,39 +14,46 @@ import { Loading } from './loading';
 
 export const Reviews = () => {
   const limit = 20;
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const [hasMore, setHasMore] = useState(true);
-  const [offset, setOffset] = useState(0);
-  const [reviews, setReviews] = useState<Review[] | undefined>(undefined);
-  const [uniqueUserCount, setUniqueUserCount] = useState<number | undefined>(
-    undefined
-  );
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ['reviews'],
+      queryFn: ({ pageParam = 0 }) =>
+        api.getReviews({
+          limit,
+          offset: pageParam,
+          sorted: true,
+          withUserCount: pageParam === 0,
+        }),
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.reviews.length < limit) return undefined;
+        return allPages.reduce((acc, page) => acc + page.reviews.length, 0);
+      },
+      initialPageParam: 0,
+    });
+
+  const reviews = data?.pages.flatMap((page) => page.reviews);
+  const uniqueUserCount = data?.pages[0]?.uniqueUserCount;
 
   useEffect(() => {
-    api
-      .getReviews({ limit, offset: 0, sorted: true, withUserCount: true })
-      .then((data) => {
-        setReviews(data.reviews);
-        setUniqueUserCount(data.uniqueUserCount);
-      })
-      .catch(() => {
-        toast.error('Failed to fetch reviews. Please try again later.');
-      });
-    setHasMore(true);
-    setOffset(limit);
-  }, []);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-  const fetchMore = async () => {
-    const batch = await api.getReviews({ limit, offset, sorted: true });
-
-    if (batch.reviews.length === 0) setHasMore(false);
-    else {
-      setReviews(reviews?.concat(batch.reviews));
-      setOffset(offset + limit);
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
     }
-  };
 
-  if (reviews === undefined || uniqueUserCount === undefined) {
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  if (isLoading || reviews === undefined || uniqueUserCount === undefined) {
     return <Loading />;
   }
 
@@ -92,61 +98,41 @@ export const Reviews = () => {
           </p>
         </div>
         <div className='relative flex w-full max-w-xl flex-col lg:max-w-6xl lg:flex-row lg:justify-center'>
-          <InfiniteScroll
-            dataLength={reviews?.length || 0}
-            hasMore={hasMore}
-            loader={
-              (reviews?.length || 0) >= 20 &&
-              hasMore && (
-                <div className='mt-4 text-center'>
-                  <Spinner />
-                </div>
-              )
-            }
-            next={fetchMore}
-            style={{ overflowY: 'hidden' }}
-          >
-            <div className='ml-auto flex w-full max-w-xl flex-col lg:max-w-4xl'>
-              {reviews.map((review: Review) => (
-                <div
-                  className='mb-6'
-                  key={`${review.courseId}-${review.userId}-${review.timestamp}`}
+          <div className='ml-auto flex w-full max-w-xl flex-col lg:max-w-4xl'>
+            {reviews.map((review: Review) => (
+              <div
+                className='mb-6'
+                key={`${review.courseId}-${review.userId}-${review.timestamp}`}
+              >
+                <Link
+                  to={`/course/${courseIdToUrlParam(review.courseId)}`}
+                  className='font-semibold text-gray-800 hover:underline dark:text-gray-200'
                 >
-                  <Link
-                    to={`/course/${courseIdToUrlParam(review.courseId)}`}
-                    className='font-semibold text-gray-800 hover:underline dark:text-gray-200'
-                  >
-                    {spliceCourseCode(review.courseId, ' ')}
-                  </Link>
-                  <p className='mb-3 text-xs font-medium text-gray-600 dark:text-gray-400'>
-                    {timeSince(parseInt(review.timestamp, 10))}
-                  </p>
-                  <div>
-                    <CourseReview
-                      canModify={false}
-                      handleDelete={() => undefined}
-                      openEditReview={() => undefined}
-                      review={review}
-                      attachment={ReviewAttachment.ScrollButton}
-                    />
-                  </div>
+                  {spliceCourseCode(review.courseId, ' ')}
+                </Link>
+                <p className='mb-3 text-xs font-medium text-gray-600 dark:text-gray-400'>
+                  {timeSince(parseInt(review.timestamp, 10))}
+                </p>
+                <div>
+                  <CourseReview
+                    canModify={false}
+                    handleDelete={() => undefined}
+                    openEditReview={() => undefined}
+                    review={review}
+                    attachment={ReviewAttachment.ScrollButton}
+                  />
                 </div>
-              ))}
-              {!hasMore ? (
-                reviews?.length ? (
-                  <div className='mx-[200px] mt-4 text-center'>
-                    <p className='text-gray-500 dark:text-gray-400'>
-                      No more reviews to show
-                    </p>
-                  </div>
-                ) : (
-                  <div className='mt-4 text-center'>
-                    <Spinner />
-                  </div>
-                )
-              ) : null}
+              </div>
+            ))}
+            <div ref={loadMoreRef} className='mt-4 text-center'>
+              {isFetchingNextPage && <Spinner />}
+              {!hasNextPage && reviews.length > 0 && (
+                <p className='text-gray-500 dark:text-gray-400'>
+                  No more reviews to show
+                </p>
+              )}
             </div>
-          </InfiniteScroll>
+          </div>
         </div>
       </div>
       <JumpToTopButton />

@@ -1,11 +1,10 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import Skeleton from 'react-loading-skeleton';
-import { toast } from 'sonner';
 
 import { CourseCard } from '../components/course-card';
-import { ExploreFilter, SortByType } from '../components/explore-filter';
+import { ExploreFilter, SortBy } from '../components/explore-filter';
 import { FilterToggle } from '../components/filter-toggle';
 import { JumpToTopButton } from '../components/jump-to-top-button';
 import { Layout } from '../components/layout';
@@ -14,10 +13,9 @@ import { Spinner } from '../components/spinner';
 import { useDarkMode } from '../hooks/use-dark-mode';
 import { useExploreFilterState } from '../hooks/use-explore-filter-state';
 import { api } from '../lib/api';
-import type { Course } from '../lib/types';
 import { getCurrentTerms } from '../lib/utils';
 
-const makeSortPayload = (sort: SortByType) => {
+const makeSortPayload = (sort: SortBy) => {
   switch (sort) {
     case '':
       return undefined;
@@ -57,11 +55,7 @@ const makeSortPayload = (sort: SortByType) => {
 export const Explore = () => {
   const limit = 20;
   const currentTerms = getCurrentTerms();
-
-  const [courses, setCourses] = useState<Course[] | undefined>(undefined);
-  const [courseCount, setCourseCount] = useState<number | undefined>(undefined);
-  const [hasMore, setHasMore] = useState(true);
-  const [offset, setOffset] = useState(limit);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const [query, setQuery] = useState<string>('');
   const [searchSelected, setSearchSelected] = useState<boolean>(false);
@@ -85,32 +79,44 @@ export const Explore = () => {
     sortBy: makeSortPayload(sortBy),
   };
 
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: [
+        'courses',
+        selectedSubjects,
+        selectedLevels,
+        selectedTerms,
+        sortBy,
+        query,
+      ],
+      queryFn: ({ pageParam = 0 }) =>
+        api.getCourses(limit, pageParam, pageParam === 0, filters),
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.courses.length < limit) return undefined;
+        return allPages.reduce((acc, page) => acc + page.courses.length, 0);
+      },
+      initialPageParam: 0,
+    });
+
+  const courses = data?.pages.flatMap((page) => page.courses);
+  const courseCount = data?.pages[0]?.courseCount;
+
   useEffect(() => {
-    api
-      .getCourses(limit, 0, true, filters)
-      .then((data) => {
-        setCourses(data.courses);
-        setCourseCount(data.courseCount);
-      })
-      .catch(() => {
-        toast.error('Failed to fetch courses. Please try again later.');
-      });
-    setHasMore(true);
-    setOffset(limit);
-  }, [selectedSubjects, selectedLevels, selectedTerms, sortBy, query]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-  const fetchMore = async () => {
-    const batch = await api.getCourses(limit, offset, false, filters);
-
-    if (batch.courses.length === 0) setHasMore(false);
-    else {
-      const newCourses = courses
-        ? courses.concat(batch.courses)
-        : batch.courses;
-      setCourses(newCourses);
-      setOffset(offset + limit);
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
     }
-  };
+
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
     <Layout>
@@ -158,72 +164,50 @@ export const Explore = () => {
             </FilterToggle>
           </div>
           <div className='lg:flex-1'>
-            <InfiniteScroll
-              dataLength={courses?.length || 0}
-              hasMore={hasMore}
-              loader={
-                (courses?.length || 0) >= 20 &&
-                hasMore && (
-                  <div className='mt-4 text-center'>
-                    <Spinner />
-                  </div>
-                )
-              }
-              next={fetchMore}
-              style={{ overflowY: 'hidden' }}
-            >
-              <div className='ml-auto flex w-full max-w-xl flex-col'>
-                {courses ? (
-                  <Fragment>
-                    <SearchBar
-                      handleInputChange={(value) => setQuery(value)}
-                      iconStyle='mt-2 lg:mt-0'
-                      inputStyle='block rounded-lg w-full bg-slate-200 p-3 pr-5 pl-10 text-sm text-black outline-none dark:border-neutral-50 dark:bg-neutral-800 dark:text-gray-200 dark:placeholder:text-neutral-500'
-                      outerInputStyle='my-2 mt-4 lg:mt-2'
-                      placeholder='Search by course code, title, description or instructor name'
-                      searchSelected={searchSelected}
-                      setSearchSelected={setSearchSelected}
+            <div className='ml-auto flex w-full max-w-xl flex-col'>
+              {courses ? (
+                <Fragment>
+                  <SearchBar
+                    handleInputChange={(value) => setQuery(value)}
+                    iconStyle='mt-2 lg:mt-0'
+                    inputStyle='block rounded-lg w-full bg-slate-200 p-3 pr-5 pl-10 text-sm text-black outline-none dark:border-neutral-50 dark:bg-neutral-800 dark:text-gray-200 dark:placeholder:text-neutral-500'
+                    outerInputStyle='my-2 mt-4 lg:mt-2'
+                    placeholder='Search by course code, title, description or instructor name'
+                    searchSelected={searchSelected}
+                    setSearchSelected={setSearchSelected}
+                  />
+                  {courses.map((course, i) => (
+                    <CourseCard
+                      className='my-1.5'
+                      course={course}
+                      key={i}
+                      query={query}
                     />
-                    {courses.map((course, i) => (
-                      <CourseCard
-                        className='my-1.5'
-                        course={course}
-                        key={i}
-                        query={query}
-                      />
-                    ))}
-                  </Fragment>
-                ) : (
-                  <div className='mx-2'>
-                    <Skeleton
-                      baseColor={
-                        darkMode ? 'rgb(38 38 38)' : 'rgb(248 250 252)'
-                      }
-                      className='mb-2 rounded-lg first:mt-2'
-                      count={10}
-                      duration={2}
-                      height={256}
-                      highlightColor={
-                        darkMode ? 'rgb(64 64 64)' : 'rgb(226 232 240)'
-                      }
-                    />
-                  </div>
+                  ))}
+                </Fragment>
+              ) : (
+                <div className='mx-2'>
+                  <Skeleton
+                    baseColor={darkMode ? 'rgb(38 38 38)' : 'rgb(248 250 252)'}
+                    className='mb-2 rounded-lg first:mt-2'
+                    count={10}
+                    duration={2}
+                    height={256}
+                    highlightColor={
+                      darkMode ? 'rgb(64 64 64)' : 'rgb(226 232 240)'
+                    }
+                  />
+                </div>
+              )}
+              <div ref={loadMoreRef} className='mt-4 text-center'>
+                {isFetchingNextPage && <Spinner />}
+                {!hasNextPage && courses && courses.length > 0 && (
+                  <p className='text-gray-500 dark:text-gray-400'>
+                    No more courses to show
+                  </p>
                 )}
-                {!hasMore ? (
-                  courses?.length ? (
-                    <div className='mx-auto mt-4 text-center'>
-                      <p className='text-gray-500 dark:text-gray-400'>
-                        No more courses to show
-                      </p>
-                    </div>
-                  ) : (
-                    <div className='mt-4 text-center'>
-                      <Spinner />
-                    </div>
-                  )
-                ) : null}
               </div>
-            </InfiniteScroll>
+            </div>
           </div>
           <div className='m-2 mx-4 hidden lg:flex'>
             <ExploreFilter variant='desktop' />
