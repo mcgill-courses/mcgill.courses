@@ -836,7 +836,7 @@ impl Db {
 
   pub(crate) async fn add_course(&self, course: Course) -> Result {
     match self.find_course(doc! { "_id": &course.id }).await? {
-      Some(found) => {
+      Some(_) => {
         self
           .update_course(
             doc! { "_id": &course.id },
@@ -849,7 +849,7 @@ impl Db {
                 "department": course.department,
                 "description": course.description,
                 "faculty": course.faculty,
-                "instructors": course.instructors.combine(found.instructors),
+                "instructors": course.instructors,
                 "leadingTo": course.leading_to,
                 "logicalCorequisites": course.logical_corequisites,
                 "logicalPrerequisites": course.logical_prerequisites,
@@ -858,7 +858,7 @@ impl Db {
                 "restrictions": course.restrictions,
                 "schedule": course.schedule,
                 "subject": course.subject,
-                "terms": course.terms.combine(found.terms),
+                "terms": course.terms,
                 "title": course.title.clone(),
                 "titleNgrams": course.title.filter_stopwords().ngrams(),
                 "url": course.url,
