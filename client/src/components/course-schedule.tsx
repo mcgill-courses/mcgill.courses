@@ -49,12 +49,6 @@ type RepeatingBlock = {
   endTime: string;
 };
 
-const formatTimeRange = (start: string, end: string) => {
-  const startDisplay = formatDisplayTime(start);
-  const endDisplay = formatDisplayTime(end);
-  return `${startDisplay} - ${endDisplay}`;
-};
-
 const DAY_CODE_MAP: Record<string, string> = {
   '1': 'SU',
   '2': 'MO',
@@ -352,7 +346,10 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
 
   const timeRanges = block.timeblocks
     .filter((tb) => Boolean(tb.startTime) && Boolean(tb.endTime))
-    .map((tb) => formatTimeRange(tb.startTime, tb.endTime));
+    .map(
+      (tb) =>
+        `${formatDisplayTime(tb.startTime)} - ${formatDisplayTime(tb.endTime)}`
+    );
 
   const daySets = block.timeblocks
     .map((tb) =>
