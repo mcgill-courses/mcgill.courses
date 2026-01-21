@@ -345,15 +345,19 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
     .filter((location) => location.length > 0);
 
   const timeRanges = block.timeblocks
-    .filter((tb) => Boolean(tb.startTime) && Boolean(tb.endTime))
+    .filter(
+      (timeblock) => Boolean(timeblock.startTime) && Boolean(timeblock.endTime)
+    )
     .map(
-      (tb) =>
-        `${formatDisplayTime(tb.startTime)} - ${formatDisplayTime(tb.endTime)}`
+      (timeblock) =>
+        `${formatDisplayTime(timeblock.startTime)} - ${formatDisplayTime(timeblock.endTime)}`
     );
 
   const daySets = block.timeblocks
-    .map((tb) =>
-      tb.days.filter((day) => typeof day === 'string' && day.trim().length > 0)
+    .map((timeblock) =>
+      timeblock.days.filter(
+        (day) => typeof day === 'string' && day.trim().length > 0
+      )
     )
     .filter((days) => days.length > 0);
 
