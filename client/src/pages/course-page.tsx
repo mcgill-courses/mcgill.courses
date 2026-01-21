@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import courseAverageData from '../assets/course-averages-data.json';
@@ -10,13 +10,13 @@ import { CourseInfo } from '../components/course-info';
 import { CourseRequirements } from '../components/course-requirements';
 import { CourseReview, ReviewAttachment } from '../components/course-review';
 import { CourseReviewPrompt } from '../components/course-review-prompt';
+import { CourseSchedule } from '../components/course-schedule';
 import { EditReviewForm } from '../components/edit-review-form';
 import { FinalExamRow } from '../components/final-exam-row';
 import { Layout } from '../components/layout';
 import { NotFound } from '../components/not-found';
 import { ReviewEmptyPrompt } from '../components/review-empty-prompt';
 import { ReviewFilter, ReviewSortType } from '../components/review-filter';
-import { SchedulesDisplay } from '../components/schedules-display';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
 import type { TermAverage } from '../lib/term-average';
@@ -28,7 +28,6 @@ import { Loading } from './loading';
 export const CoursePage = () => {
   const params = useParams<{ id: string }>();
   const location = useLocation();
-  const navigate = useNavigate();
 
   const user = useAuth();
   const currentTerms = getCurrentTerms();
@@ -62,58 +61,15 @@ export const CoursePage = () => {
   }, [params.id]);
 
   useEffect(() => {
-    const state = location.state as { scrollToReview?: string } | null;
-
     const searchParams = new URLSearchParams(location.search);
     const reviewParam = searchParams.get('review');
-    const searchTarget = searchParams.get('scrollToReview');
 
-    const hashTarget =
-      typeof location.hash === 'string' && location.hash.length > 1
-        ? location.hash.slice(1)
-        : null;
-
-    const normalizeAnchor = (anchor: string) => {
-      const withoutPrefix = anchor.replace(/^(desktop|mobile)-/, '');
-
-      if (!withoutPrefix.startsWith('review-')) {
-        return withoutPrefix;
-      }
-
-      const remainder = withoutPrefix.slice('review-'.length);
-      const lastDashIndex = remainder.lastIndexOf('-');
-      const firstDashIndex = remainder.indexOf('-');
-
-      const hasLegacyPattern =
-        firstDashIndex !== -1 &&
-        lastDashIndex !== -1 &&
-        lastDashIndex > firstDashIndex &&
-        /^\d+$/.test(remainder.slice(lastDashIndex + 1));
-
-      if (hasLegacyPattern) {
-        const userId = remainder.slice(firstDashIndex + 1, lastDashIndex);
-        return `review-${userId}`;
-      }
-
-      return withoutPrefix;
-    };
-
-    const resolvedTarget = state?.scrollToReview
-      ? normalizeAnchor(state.scrollToReview)
-      : reviewParam
-        ? normalizeAnchor(`review-${reviewParam}`)
-        : searchTarget
-          ? normalizeAnchor(searchTarget)
-          : hashTarget
-            ? normalizeAnchor(hashTarget)
-            : null;
-
-    if (resolvedTarget && lastScrollTarget.current !== resolvedTarget) {
-      scrollToReviewId.current = resolvedTarget;
+    if (reviewParam && lastScrollTarget.current !== reviewParam) {
+      scrollToReviewId.current = `review-${reviewParam}`;
       hasAttemptedScroll.current = false;
-      lastScrollTarget.current = resolvedTarget;
+      lastScrollTarget.current = reviewParam;
     }
-  }, [location.hash, location.search, location.state]);
+  }, [location.search]);
 
   const refetch = () => {
     const id = params.id?.replace('-', '').toUpperCase();
@@ -175,11 +131,6 @@ export const CoursePage = () => {
       hasAttemptedScroll.current = true;
       scrollToReviewId.current = null;
 
-      navigate(
-        { pathname: location.pathname, search: location.search },
-        { replace: true, state: null }
-      );
-
       return;
     }
 
@@ -200,19 +151,7 @@ export const CoursePage = () => {
         highlightTimeoutRef.current = null;
       }, 1600);
     });
-
-    navigate(
-      { pathname: location.pathname, search: location.search },
-      { replace: true, state: null }
-    );
-  }, [
-    allReviews,
-    location.pathname,
-    location.search,
-    location.state,
-    navigate,
-    showAllReviews,
-  ]);
+  }, [allReviews, showAllReviews]);
 
   useEffect(() => {
     return () => {
@@ -338,7 +277,7 @@ export const CoursePage = () => {
         <div className='hidden gap-x-6 lg:grid lg:grid-cols-5'>
           <div className='col-span-3'>
             <FinalExamRow course={course} className='mb-4' />
-            <SchedulesDisplay
+            <CourseSchedule
               course={course}
               className={canReview ? 'mb-4' : ''}
             />
@@ -447,7 +386,7 @@ export const CoursePage = () => {
             )}
           </div>
           <FinalExamRow course={course} className='mb-4' />
-          <SchedulesDisplay course={course} />
+          <CourseSchedule course={course} />
           <div className='mt-4 flex w-full flex-row justify-between'>
             <div className='w-full'>
               {canReview && (

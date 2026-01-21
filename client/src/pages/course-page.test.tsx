@@ -6,7 +6,6 @@ import type { Mock } from 'vitest';
 import { api } from '../lib/api';
 import type { Review } from '../lib/types';
 import type { Course } from '../lib/types';
-import { getReviewAnchorId } from '../lib/utils';
 import { CoursePage } from './course-page';
 
 const courseReviewMock = vi.hoisted(() =>
@@ -69,8 +68,8 @@ vi.mock('../components/review-empty-prompt', () => ({
   ReviewEmptyPrompt: () => <div data-testid='review-empty' />,
 }));
 
-vi.mock('../components/schedules-display', () => ({
-  SchedulesDisplay: () => <div data-testid='schedules-display' />,
+vi.mock('../components/course-schedule', () => ({
+  CourseSchedule: () => <div data-testid='schedules-display' />,
 }));
 
 vi.mock('../components/course-review', () => ({
@@ -134,7 +133,7 @@ describe('Course page', () => {
     vi.unstubAllGlobals();
   });
 
-  it('expands review list and scrolls to targeted review from location state', async () => {
+  it('expands review list and scrolls to targeted review', async () => {
     const course: Course = {
       _id: 'COMP202',
       title: 'Foundations of Programming',
@@ -175,16 +174,9 @@ describe('Course page', () => {
       reviews,
     });
 
-    const initialEntries = [
-      {
-        pathname: '/course/comp-202',
-        state: { scrollToReview: getReviewAnchorId(targetReview) },
-      },
-    ];
-
     render(
       <MemoryRouter
-        initialEntries={initialEntries}
+        initialEntries={[`/course/comp-202?review=${targetReview.userId}`]}
         future={{
           v7_startTransition: true,
           v7_relativeSplatPath: true,
@@ -218,7 +210,7 @@ describe('Course page', () => {
     expect(new Set(attachments)).toEqual(new Set(['copyButton']));
   });
 
-  it('scrolls to review when scrollToReview is present in the URL search params', async () => {
+  it('scrolls to review when review param is present in the URL', async () => {
     const course: Course = {
       _id: 'COMP202',
       title: 'Foundations of Programming',
@@ -276,64 +268,5 @@ describe('Course page', () => {
 
     const [[firstCallProps]] = courseReviewMock.mock.calls;
     expect(firstCallProps.attachment).toBe('copyButton');
-  });
-
-  it('scrolls to review when legacy scrollToReview is present in the URL search params', async () => {
-    const course: Course = {
-      _id: 'COMP202',
-      title: 'Foundations of Programming',
-      description: 'Intro course',
-      subject: 'COMP',
-      code: '202',
-      credits: '3',
-      url: '',
-      department: 'Computer Science',
-      faculty: 'Science',
-      terms: ['Fall 2023'],
-      instructors: [],
-      prerequisites: [],
-      corequisites: [],
-      leadingTo: [],
-      restrictions: '',
-      schedule: [],
-      avgRating: 0,
-      avgDifficulty: 0,
-      reviewCount: 0,
-    };
-
-    const review: Review = {
-      content: 'Legacy review',
-      courseId: 'COMP202',
-      difficulty: 3,
-      instructors: ['Instructor'],
-      likes: 0,
-      rating: 4,
-      timestamp: '1700000011111',
-      userId: 'legacy-user',
-    };
-
-    const legacyAnchor = `review-${review.courseId}-${review.userId}-${review.timestamp}`;
-
-    getCourseByIdMock.mockResolvedValue({
-      course,
-      reviews: [review],
-    });
-
-    render(
-      <MemoryRouter
-        initialEntries={[`/course/comp-202?scrollToReview=${legacyAnchor}`]}
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
-        <Routes>
-          <Route path='/course/:id' element={<CoursePage />} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(api.getCourseById).toHaveBeenCalled());
-    await waitFor(() => expect(scrollIntoViewMock).toHaveBeenCalled());
   });
 });

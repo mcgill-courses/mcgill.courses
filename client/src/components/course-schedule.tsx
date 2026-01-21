@@ -9,6 +9,7 @@ import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
 import type { Block, Schedule, TimeBlock } from '../lib/types';
 import type { Course } from '../lib/types';
 import {
+  formatDisplayTime,
   getCurrentTerm,
   groupBy,
   mapValues,
@@ -20,58 +21,6 @@ import {
 import { AddToCalendarButton } from './add-to-calendar-button';
 import { BuildingLocation } from './building-location';
 import { Tooltip } from './tooltip';
-
-const VSBtimeToDisplay = (time: string) => {
-  const totalMinutes = parseInt(time, 10);
-
-  if (Number.isNaN(totalMinutes)) {
-    return time;
-  }
-
-  const hour = Math.floor(totalMinutes / 60);
-  const minute = totalMinutes % 60;
-
-  return `${hour.toString().padStart(2, '0')}:${minute
-    .toString()
-    .padStart(2, '0')}`;
-};
-
-type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
-  location: string;
-  display: string;
-  timeblocks: RepeatingBlock[];
-};
-
-type RepeatingBlock = {
-  days: string[];
-  startTime: string;
-  endTime: string;
-};
-
-const formatDisplayTime = (time: string) => {
-  const [hourString, minuteString] = time.split(':');
-
-  const hour = parseInt(hourString, 10);
-  const minute = parseInt(minuteString, 10);
-
-  if (Number.isNaN(hour) || Number.isNaN(minute)) {
-    return time;
-  }
-
-  const period = hour >= 12 ? 'PM' : 'AM';
-  const normalizedHour = hour % 12 || 12;
-
-  const minutePart =
-    minute === 0 ? '' : `:${minute.toString().padStart(2, '0')}`;
-
-  return `${normalizedHour}${minutePart}${period}`;
-};
-
-const formatTimeRange = (start: string, end: string) => {
-  const startDisplay = formatDisplayTime(start);
-  const endDisplay = formatDisplayTime(end);
-  return `${startDisplay} - ${endDisplay}`;
-};
 
 const DAY_CODE_MAP: Record<string, string> = {
   '1': 'SU',
@@ -93,7 +42,34 @@ const TERM_START_CONFIG = {
   Fall: { startMonth: 9, offsetDays: 6 },
 } as const;
 
+type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
+  location: string;
+  display: string;
+  timeblocks: RepeatingBlock[];
+};
+
+type RepeatingBlock = {
+  days: string[];
+  startTime: string;
+  endTime: string;
+};
+
 type TermSeason = keyof typeof TERM_START_CONFIG;
+
+const VSBtimeToDisplay = (time: string) => {
+  const totalMinutes = parseInt(time, 10);
+
+  if (Number.isNaN(totalMinutes)) {
+    return time;
+  }
+
+  const hour = Math.floor(totalMinutes / 60);
+  const minute = totalMinutes % 60;
+
+  return `${hour.toString().padStart(2, '0')}:${minute
+    .toString()
+    .padStart(2, '0')}`;
+};
 
 const parseTermSeason = (
   term: string
@@ -369,12 +345,19 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
     .filter((location) => location.length > 0);
 
   const timeRanges = block.timeblocks
-    .filter((tb) => Boolean(tb.startTime) && Boolean(tb.endTime))
-    .map((tb) => formatTimeRange(tb.startTime, tb.endTime));
+    .filter(
+      (timeblock) => Boolean(timeblock.startTime) && Boolean(timeblock.endTime)
+    )
+    .map(
+      (timeblock) =>
+        `${formatDisplayTime(timeblock.startTime)} - ${formatDisplayTime(timeblock.endTime)}`
+    );
 
   const daySets = block.timeblocks
-    .map((tb) =>
-      tb.days.filter((day) => typeof day === 'string' && day.trim().length > 0)
+    .map((timeblock) =>
+      timeblock.days.filter(
+        (day) => typeof day === 'string' && day.trim().length > 0
+      )
     )
     .filter((days) => days.length > 0);
 
@@ -474,15 +457,12 @@ const getDefaultTerm = (offeredTerms: string[]) => {
   return offeredTerms.includes(currentTerm) ? currentTerm : offeredTerms.at(0);
 };
 
-type SchedulesDisplayProps = {
+type CourseScheduleProps = {
   course: Course;
   className?: string;
 };
 
-export const SchedulesDisplay = ({
-  course,
-  className,
-}: SchedulesDisplayProps) => {
+export const CourseSchedule = ({ course, className }: CourseScheduleProps) => {
   const schedules = course.schedule;
 
   if (!schedules) {

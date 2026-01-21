@@ -71,6 +71,40 @@ export const escapeRegExp = (s: string): string =>
   s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 /**
+ * Formats a 24-hour time string to 12-hour AM/PM format.
+ *
+ * Omits minutes if they are zero (e.g., "14:00" becomes "2PM").
+ * Returns the original string if parsing fails.
+ *
+ * @param time - Time string in "HH:MM" format
+ * @returns Formatted time string (e.g., "2:30PM" or "2PM")
+ *
+ * @example
+ * formatDisplayTime("14:30") // "2:30PM"
+ * formatDisplayTime("09:00") // "9AM"
+ * formatDisplayTime("12:00") // "12PM"
+ * formatDisplayTime("00:00") // "12AM"
+ */
+export const formatDisplayTime = (time: string): string => {
+  const [hourString, minuteString] = time.split(':');
+
+  const hour = parseInt(hourString, 10);
+  const minute = parseInt(minuteString, 10);
+
+  if (Number.isNaN(hour) || Number.isNaN(minute)) {
+    return time;
+  }
+
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const normalizedHour = hour % 12 || 12;
+
+  const minutePart =
+    minute === 0 ? '' : `:${minute.toString().padStart(2, '0')}`;
+
+  return `${normalizedHour}${minutePart}${period}`;
+};
+
+/**
  * Determines the current academic term based on the current date.
  *
  * - May-July: Summer <year>
