@@ -474,15 +474,12 @@ const getDefaultTerm = (offeredTerms: string[]) => {
   return offeredTerms.includes(currentTerm) ? currentTerm : offeredTerms.at(0);
 };
 
-type SchedulesDisplayProps = {
+type CourseScheduleProps = {
   course: Course;
   className?: string;
 };
 
-export const SchedulesDisplay = ({
-  course,
-  className,
-}: SchedulesDisplayProps) => {
+export const CourseSchedule = ({ course, className }: CourseScheduleProps) => {
   const schedules = course.schedule;
 
   if (!schedules) {
