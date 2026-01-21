@@ -77,10 +77,16 @@
     "department": "Computer Science",
     "faculty": "Faculty of Science",
     "terms": [
+      "Fall 2024",
       "Winter 2026"
     ],
     "description": "Control and scheduling of large information processing systems. Operating system software - resource allocation, dispatching, processors, access methods, job control languages, main storage management. Batch processing, multiprogramming, multiprocessing, time sharing.",
     "instructors": [
+      {
+        "name": "Max Kopinsky",
+        "nameNgrams": null,
+        "term": "Fall 2024"
+      },
       {
         "name": "Oana Balmau",
         "nameNgrams": null,
