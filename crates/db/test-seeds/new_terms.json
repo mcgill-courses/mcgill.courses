@@ -10,19 +10,9 @@
     "url": "https://coursecatalogue.mcgill.ca/courses/comp-360/index.html",
     "department": "Computer Science",
     "faculty": "Faculty of Science",
-    "terms": ["Fall 2024", "Winter 2025", "Fall 2025", "Winter 2026"],
+    "terms": ["Fall 2025", "Winter 2026", "Fall 2024", "Winter 2025"],
     "description": "Advanced algorithm design and analysis. Linear programming, complexity and NP-completeness, advanced algorithmic techniques.",
     "instructors": [
-      {
-        "name": "Adrian Vetta",
-        "nameNgrams": null,
-        "term": "Fall 2024"
-      },
-      {
-        "name": "Hamed Hatami",
-        "nameNgrams": null,
-        "term": "Winter 2025"
-      },
       {
         "name": "Rohit Vasishta",
         "nameNgrams": null,
@@ -37,6 +27,16 @@
         "name": "Pascale Gourdeau",
         "nameNgrams": null,
         "term": "Winter 2026"
+      },
+      {
+        "name": "Adrian Vetta",
+        "nameNgrams": null,
+        "term": "Fall 2024"
+      },
+      {
+        "name": "Hamed Hatami",
+        "nameNgrams": null,
+        "term": "Winter 2025"
       }
     ],
     "prerequisitesText": "Prerequisite: Either COMP 251 or COMP 252, and either MATH 240 or MATH 235 or MATH 363.",
@@ -60,18 +60,18 @@
     "url": "https://coursecatalogue.mcgill.ca/courses/comp-310/index.html",
     "department": "Computer Science",
     "faculty": "Faculty of Science",
-    "terms": ["Fall 2024", "Winter 2026"],
+    "terms": ["Winter 2026", "Fall 2024"],
     "description": "Control and scheduling of large information processing systems. Operating system software - resource allocation, dispatching, processors, access methods, job control languages, main storage management. Batch processing, multiprogramming, multiprocessing, time sharing.",
     "instructors": [
-      {
-        "name": "Max Kopinsky",
-        "nameNgrams": null,
-        "term": "Fall 2024"
-      },
       {
         "name": "Oana Balmau",
         "nameNgrams": null,
         "term": "Winter 2026"
+      },
+      {
+        "name": "Max Kopinsky",
+        "nameNgrams": null,
+        "term": "Fall 2024"
       }
     ],
     "prerequisitesText": "Prerequisite: COMP 273",

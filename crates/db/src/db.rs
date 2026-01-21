@@ -860,8 +860,8 @@ impl Db {
               .collect::<Vec<_>>();
 
             (
-              instructors.combine(course.instructors),
-              terms.combine(course.terms),
+              course.instructors.combine(instructors),
+              course.terms.combine(terms),
             )
           }
         };
