@@ -8,6 +8,7 @@ import {
   compareTerms,
   courseIdToUrlParam,
   escapeRegExp,
+  formatDisplayTime,
   getCurrentTerms,
   groupBy,
   groupCurrentCourseTermInstructors,
@@ -88,6 +89,47 @@ describe('escapeRegExp', () => {
 
     expect(regex.test('test[1]')).toBe(true);
     expect(regex.test('testX1Y')).toBe(false);
+  });
+});
+
+describe('formatDisplayTime', () => {
+  it('converts 24-hour time to 12-hour AM format', () => {
+    expect(formatDisplayTime('09:00')).toBe('9AM');
+    expect(formatDisplayTime('09:30')).toBe('9:30AM');
+    expect(formatDisplayTime('11:45')).toBe('11:45AM');
+  });
+
+  it('converts 24-hour time to 12-hour PM format', () => {
+    expect(formatDisplayTime('14:00')).toBe('2PM');
+    expect(formatDisplayTime('14:30')).toBe('2:30PM');
+    expect(formatDisplayTime('23:15')).toBe('11:15PM');
+  });
+
+  it('handles noon correctly', () => {
+    expect(formatDisplayTime('12:00')).toBe('12PM');
+    expect(formatDisplayTime('12:30')).toBe('12:30PM');
+  });
+
+  it('handles midnight correctly', () => {
+    expect(formatDisplayTime('00:00')).toBe('12AM');
+    expect(formatDisplayTime('00:30')).toBe('12:30AM');
+  });
+
+  it('omits minutes when they are zero', () => {
+    expect(formatDisplayTime('09:00')).toBe('9AM');
+    expect(formatDisplayTime('14:00')).toBe('2PM');
+    expect(formatDisplayTime('12:00')).toBe('12PM');
+  });
+
+  it('pads single-digit minutes', () => {
+    expect(formatDisplayTime('09:05')).toBe('9:05AM');
+    expect(formatDisplayTime('14:01')).toBe('2:01PM');
+  });
+
+  it('returns original string for invalid input', () => {
+    expect(formatDisplayTime('invalid')).toBe('invalid');
+    expect(formatDisplayTime('not:time')).toBe('not:time');
+    expect(formatDisplayTime('')).toBe('');
   });
 });
 
