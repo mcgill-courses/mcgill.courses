@@ -34,7 +34,8 @@
     "prerequisites": ["COMP251", "COMP252", "MATH240", "MATH235", "MATH363"],
     "corequisites": [],
     "leadingTo": ["COMP532", "COMP547", "COMP654", "ECSE608"],
-    "restrictions": "Not open to students who have taken or are taking COMP 362."
+    "restrictions": "Not open to students who have taken or are taking COMP 362.",
+    "schedule": []
   },
   {
     "_id": "COMP310",
@@ -61,6 +62,7 @@
     "prerequisites": ["COMP273"],
     "corequisites": [],
     "leadingTo": ["COMP409", "COMP512", "COMP513", "COMP535"],
-    "restrictions": null
+    "restrictions": null,
+    "schedule": []
   }
 ]

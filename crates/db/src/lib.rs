@@ -1,7 +1,6 @@
 use {
   bson::Bson,
   chrono::{Datelike, TimeZone, Utc},
-  combine::Combine,
   futures::Future,
   futures::{TryStreamExt, future::join_all},
   itertools::Itertools,
@@ -18,12 +17,12 @@ use {
   },
   serde::{Serialize, de::DeserializeOwned},
   std::{
-    collections::HashSet, env, fmt::Display, fs, num::TryFromIntError,
-    path::PathBuf, sync::LazyLock,
+    collections::HashSet, env, fs, num::TryFromIntError, path::PathBuf,
+    sync::LazyLock,
   },
   tokio::task::JoinError,
   tracing::{info, warn},
-  {initializer::Initializer, seed::Seed, str_ext::StrExt, term::*, utils::*},
+  {initializer::Initializer, seed::Seed, str_ext::StrExt, utils::*},
 };
 
 #[cfg(test)]
@@ -41,7 +40,6 @@ mod error;
 mod initializer;
 mod seed;
 mod str_ext;
-mod term;
 mod utils;
 
 pub use crate::{db::Db, error::Error};

@@ -38,6 +38,7 @@ mod review_filter;
 mod schedule;
 mod search_results;
 mod subscription;
+mod term;
 
 pub use crate::{
   course::Course,
@@ -56,4 +57,5 @@ pub use crate::{
   schedule::{Block, Schedule, TimeBlock},
   search_results::SearchResults,
   subscription::Subscription,
+  term::Term,
 };

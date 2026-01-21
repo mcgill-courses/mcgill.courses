@@ -52,7 +52,8 @@
     "restrictions": "Not open to students who have taken or are taking COMP 362.",
     "avgRating": 0.0,
     "avgDifficulty": 0.0,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "schedule": []
   },
   {
     "_id": "COMP310",
@@ -92,6 +93,7 @@
     "restrictions": null,
     "avgRating": 0.0,
     "avgDifficulty": 0.0,
-    "reviewCount": 0
+    "reviewCount": 0,
+    "schedule": []
   }
 ]

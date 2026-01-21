@@ -1,7 +1,7 @@
 use super::*;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
-pub(crate) enum Season {
+pub enum Season {
   // Within the same year, we have winter -> summer -> fall for the academic terms
   // Order of declaration matters for the PartialOrd derive
   Winter,
@@ -16,29 +16,37 @@ impl Display for Season {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
-pub(crate) struct Term {
+pub struct Term {
   // Compare by year then season for PartialOrd derive
   year: u16,
   season: Season,
 }
 
+#[derive(Debug, Clone)]
+pub struct ParseTermError(String);
+
+impl fmt::Display for ParseTermError {
+  fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    write!(f, "Invalid course term '{}'", self.0)
+  }
+}
+
 impl Term {
-  pub fn parse(term: &str) -> Result<Self> {
-    let (season, year) = term
+  pub fn parse(term: &str) -> Result<Self, ParseTermError> {
+    term
       .split_once(' ')
-      .ok_or_else(|| Error::InvalidCourseTerm(term.to_string()))?;
-    let year = year
-      .parse::<u16>()
-      .map_err(|_| Error::InvalidCourseTerm(term.to_string()))?;
-
-    let season = match season {
-      "Fall" => Season::Fall,
-      "Winter" => Season::Winter,
-      "Summer" => Season::Summer,
-      _ => return Err(Error::InvalidCourseTerm(term.to_string())),
-    };
-
-    Ok(Term { season, year })
+      .and_then(|(season, year)| {
+        year.parse::<u16>().ok().and_then(|year| {
+          let season = match season {
+            "Fall" => Season::Fall,
+            "Winter" => Season::Winter,
+            "Summer" => Season::Summer,
+            _ => return None,
+          };
+          Some(Term { season, year })
+        })
+      })
+      .ok_or_else(|| ParseTermError(term.to_string()))
   }
 
   pub fn academic_year_terms(&self) -> Vec<Self> {

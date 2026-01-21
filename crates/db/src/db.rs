@@ -837,34 +837,7 @@ impl Db {
   pub(crate) async fn add_course(&self, course: Course) -> Result {
     match self.find_course(doc! { "_id": &course.id }).await? {
       Some(found) => {
-        let (instructors, terms) = match course.terms.first() {
-          None => (found.instructors, found.terms),
-          Some(term) => {
-            let term = Term::parse(term)?;
-            let year_terms = term
-              .academic_year_terms()
-              .into_iter()
-              .map(|t| t.to_string())
-              .collect::<Vec<_>>();
-
-            let instructors = found
-              .instructors
-              .into_iter()
-              .filter(|ins| !year_terms.iter().contains(&ins.term))
-              .collect::<Vec<_>>();
-
-            let terms = found
-              .terms
-              .into_iter()
-              .filter(|term| !year_terms.iter().contains(term))
-              .collect::<Vec<_>>();
-
-            (
-              course.instructors.combine(instructors),
-              course.terms.combine(terms),
-            )
-          }
-        };
+        let course = found.merge(course);
 
         self
           .update_course(
@@ -878,7 +851,7 @@ impl Db {
                 "department": course.department,
                 "description": course.description,
                 "faculty": course.faculty,
-                "instructors": instructors,
+                "instructors": course.instructors,
                 "leadingTo": course.leading_to,
                 "logicalCorequisites": course.logical_corequisites,
                 "logicalPrerequisites": course.logical_prerequisites,
@@ -887,7 +860,7 @@ impl Db {
                 "restrictions": course.restrictions,
                 "schedule": course.schedule,
                 "subject": course.subject,
-                "terms": terms,
+                "terms": course.terms,
                 "title": course.title.clone(),
                 "titleNgrams": course.title.filter_stopwords().ngrams(),
                 "url": course.url,
