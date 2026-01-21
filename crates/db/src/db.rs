@@ -837,6 +837,35 @@ impl Db {
   pub(crate) async fn add_course(&self, course: Course) -> Result {
     match self.find_course(doc! { "_id": &course.id }).await? {
       Some(found) => {
+        let (instructors, terms) = match course.terms.first() {
+          None => (found.instructors, found.terms),
+          Some(term) => {
+            let term = Term::parse(term)?;
+            let year_terms = term
+              .academic_year_terms()
+              .into_iter()
+              .map(|t| t.to_string())
+              .collect::<Vec<_>>();
+
+            let instructors = found
+              .instructors
+              .into_iter()
+              .filter(|ins| !year_terms.iter().contains(&ins.term))
+              .collect::<Vec<_>>();
+
+            let terms = found
+              .terms
+              .into_iter()
+              .filter(|term| !year_terms.iter().contains(term))
+              .collect::<Vec<_>>();
+
+            (
+              instructors.combine(course.instructors),
+              terms.combine(course.terms),
+            )
+          }
+        };
+
         self
           .update_course(
             doc! { "_id": &course.id },
@@ -849,7 +878,7 @@ impl Db {
                 "department": course.department,
                 "description": course.description,
                 "faculty": course.faculty,
-                "instructors": course.instructors.combine(found.instructors),
+                "instructors": instructors,
                 "leadingTo": course.leading_to,
                 "logicalCorequisites": course.logical_corequisites,
                 "logicalPrerequisites": course.logical_prerequisites,
@@ -858,7 +887,7 @@ impl Db {
                 "restrictions": course.restrictions,
                 "schedule": course.schedule,
                 "subject": course.subject,
-                "terms": course.terms.combine(found.terms),
+                "terms": terms,
                 "title": course.title.clone(),
                 "titleNgrams": course.title.filter_stopwords().ngrams(),
                 "url": course.url,
@@ -1249,6 +1278,51 @@ mod tests {
     assert_eq!(
       courses,
       serde_json::from_str::<Vec<Course>>(&get_content("after_update.json"))
+        .unwrap()
+        .into_iter()
+        .map(|c| Course {
+          id_ngrams: Some(c.id.ngrams()),
+          title_ngrams: Some(c.title.filter_stopwords().ngrams()),
+          ..c
+        })
+        .collect::<Vec<Course>>()
+    );
+  }
+
+  #[tokio::test(flavor = "multi_thread")]
+  async fn course_terms_update_properly_when_seeding() {
+    let TestContext { db, db_name } = TestContext::new().await;
+
+    let tempdir = TempDir::new(&db_name).unwrap();
+
+    let source = tempdir.path().join("courses.json");
+
+    fs::write(&source, get_content("old_terms.json")).unwrap();
+
+    db.initialize(InitializeOptions {
+      source: source.clone(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    assert_eq!(db.courses(None, None, None).await.unwrap().len(), 2);
+
+    fs::write(&source, get_content("terms_update.json")).unwrap();
+
+    db.initialize(InitializeOptions {
+      source,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let courses = db.courses(None, None, None).await.unwrap();
+    assert_eq!(courses.len(), 2);
+
+    assert_eq!(
+      courses,
+      serde_json::from_str::<Vec<Course>>(&get_content("new_terms.json"))
         .unwrap()
         .into_iter()
         .map(|c| Course {
