@@ -22,11 +22,7 @@ import { api } from '../lib/api';
 import type { Review } from '../lib/types';
 import type { Interaction } from '../lib/types';
 import { InteractionKind } from '../lib/types';
-import {
-  courseIdToUrlParam,
-  getReviewAnchorId,
-  spliceCourseCode,
-} from '../lib/utils';
+import { courseIdToUrlParam, spliceCourseCode } from '../lib/utils';
 import { BirdIcon } from './bird-icon';
 import { DeleteButton } from './delete-button';
 import { IconRating } from './icon-rating';
@@ -283,7 +279,6 @@ export const CourseReview = ({
     }
 
     const link = new URL(window.location.href);
-    link.searchParams.delete('scrollToReview');
     link.searchParams.set('review', review.userId);
 
     const copyPromise = navigator.clipboard.writeText(link.toString());
@@ -321,8 +316,7 @@ export const CourseReview = ({
     attachment === ReviewAttachment.ScrollButton ? (
       <Tooltip text='Scroll to this review' className='w-36'>
         <Link
-          to={`/course/${courseIdToUrlParam(review.courseId)}`}
-          state={{ scrollToReview: getReviewAnchorId(review) }}
+          to={`/course/${courseIdToUrlParam(review.courseId)}?review=${review.userId}`}
           className='inline-flex h-6 items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
           aria-label={`Open ${review.courseId} and scroll to this review`}
         >

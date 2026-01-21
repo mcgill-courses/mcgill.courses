@@ -6,7 +6,6 @@ import type { Mock } from 'vitest';
 import { api } from '../lib/api';
 import type { Review } from '../lib/types';
 import type { Course } from '../lib/types';
-import { getReviewAnchorId } from '../lib/utils';
 import { CoursePage } from './course-page';
 
 const courseReviewMock = vi.hoisted(() =>
@@ -134,7 +133,7 @@ describe('Course page', () => {
     vi.unstubAllGlobals();
   });
 
-  it('expands review list and scrolls to targeted review from location state', async () => {
+  it('expands review list and scrolls to targeted review', async () => {
     const course: Course = {
       _id: 'COMP202',
       title: 'Foundations of Programming',
@@ -175,16 +174,9 @@ describe('Course page', () => {
       reviews,
     });
 
-    const initialEntries = [
-      {
-        pathname: '/course/comp-202',
-        state: { scrollToReview: getReviewAnchorId(targetReview) },
-      },
-    ];
-
     render(
       <MemoryRouter
-        initialEntries={initialEntries}
+        initialEntries={[`/course/comp-202?review=${targetReview.userId}`]}
         future={{
           v7_startTransition: true,
           v7_relativeSplatPath: true,
@@ -218,7 +210,7 @@ describe('Course page', () => {
     expect(new Set(attachments)).toEqual(new Set(['copyButton']));
   });
 
-  it('scrolls to review when scrollToReview is present in the URL search params', async () => {
+  it('scrolls to review when review param is present in the URL', async () => {
     const course: Course = {
       _id: 'COMP202',
       title: 'Foundations of Programming',
