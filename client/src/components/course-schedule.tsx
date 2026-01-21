@@ -22,39 +22,6 @@ import { AddToCalendarButton } from './add-to-calendar-button';
 import { BuildingLocation } from './building-location';
 import { Tooltip } from './tooltip';
 
-const VSBtimeToDisplay = (time: string) => {
-  const totalMinutes = parseInt(time, 10);
-
-  if (Number.isNaN(totalMinutes)) {
-    return time;
-  }
-
-  const hour = Math.floor(totalMinutes / 60);
-  const minute = totalMinutes % 60;
-
-  return `${hour.toString().padStart(2, '0')}:${minute
-    .toString()
-    .padStart(2, '0')}`;
-};
-
-type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
-  location: string;
-  display: string;
-  timeblocks: RepeatingBlock[];
-};
-
-type RepeatingBlock = {
-  days: string[];
-  startTime: string;
-  endTime: string;
-};
-
-const formatTimeRange = (start: string, end: string) => {
-  const startDisplay = formatDisplayTime(start);
-  const endDisplay = formatDisplayTime(end);
-  return `${startDisplay} - ${endDisplay}`;
-};
-
 const DAY_CODE_MAP: Record<string, string> = {
   '1': 'SU',
   '2': 'MO',
@@ -75,7 +42,34 @@ const TERM_START_CONFIG = {
   Fall: { startMonth: 9, offsetDays: 6 },
 } as const;
 
+type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
+  location: string;
+  display: string;
+  timeblocks: RepeatingBlock[];
+};
+
+type RepeatingBlock = {
+  days: string[];
+  startTime: string;
+  endTime: string;
+};
+
 type TermSeason = keyof typeof TERM_START_CONFIG;
+
+const VSBtimeToDisplay = (time: string) => {
+  const totalMinutes = parseInt(time, 10);
+
+  if (Number.isNaN(totalMinutes)) {
+    return time;
+  }
+
+  const hour = Math.floor(totalMinutes / 60);
+  const minute = totalMinutes % 60;
+
+  return `${hour.toString().padStart(2, '0')}:${minute
+    .toString()
+    .padStart(2, '0')}`;
+};
 
 const parseTermSeason = (
   term: string
@@ -351,12 +345,19 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
     .filter((location) => location.length > 0);
 
   const timeRanges = block.timeblocks
-    .filter((tb) => Boolean(tb.startTime) && Boolean(tb.endTime))
-    .map((tb) => formatTimeRange(tb.startTime, tb.endTime));
+    .filter(
+      (timeblock) => Boolean(timeblock.startTime) && Boolean(timeblock.endTime)
+    )
+    .map(
+      (timeblock) =>
+        `${formatDisplayTime(timeblock.startTime)} - ${formatDisplayTime(timeblock.endTime)}`
+    );
 
   const daySets = block.timeblocks
-    .map((tb) =>
-      tb.days.filter((day) => typeof day === 'string' && day.trim().length > 0)
+    .map((timeblock) =>
+      timeblock.days.filter(
+        (day) => typeof day === 'string' && day.trim().length > 0
+      )
     )
     .filter((days) => days.length > 0);
 
