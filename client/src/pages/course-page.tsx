@@ -73,30 +73,8 @@ export const CoursePage = () => {
         ? location.hash.slice(1)
         : null;
 
-    const normalizeAnchor = (anchor: string) => {
-      const withoutPrefix = anchor.replace(/^(desktop|mobile)-/, '');
-
-      if (!withoutPrefix.startsWith('review-')) {
-        return withoutPrefix;
-      }
-
-      const remainder = withoutPrefix.slice('review-'.length);
-      const lastDashIndex = remainder.lastIndexOf('-');
-      const firstDashIndex = remainder.indexOf('-');
-
-      const hasLegacyPattern =
-        firstDashIndex !== -1 &&
-        lastDashIndex !== -1 &&
-        lastDashIndex > firstDashIndex &&
-        /^\d+$/.test(remainder.slice(lastDashIndex + 1));
-
-      if (hasLegacyPattern) {
-        const userId = remainder.slice(firstDashIndex + 1, lastDashIndex);
-        return `review-${userId}`;
-      }
-
-      return withoutPrefix;
-    };
+    const normalizeAnchor = (anchor: string) =>
+      anchor.replace(/^(desktop|mobile)-/, '');
 
     const resolvedTarget = state?.scrollToReview
       ? normalizeAnchor(state.scrollToReview)
