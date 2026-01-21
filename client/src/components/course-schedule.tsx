@@ -22,33 +22,6 @@ import { AddToCalendarButton } from './add-to-calendar-button';
 import { BuildingLocation } from './building-location';
 import { Tooltip } from './tooltip';
 
-const VSBtimeToDisplay = (time: string) => {
-  const totalMinutes = parseInt(time, 10);
-
-  if (Number.isNaN(totalMinutes)) {
-    return time;
-  }
-
-  const hour = Math.floor(totalMinutes / 60);
-  const minute = totalMinutes % 60;
-
-  return `${hour.toString().padStart(2, '0')}:${minute
-    .toString()
-    .padStart(2, '0')}`;
-};
-
-type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
-  location: string;
-  display: string;
-  timeblocks: RepeatingBlock[];
-};
-
-type RepeatingBlock = {
-  days: string[];
-  startTime: string;
-  endTime: string;
-};
-
 const DAY_CODE_MAP: Record<string, string> = {
   '1': 'SU',
   '2': 'MO',
@@ -69,7 +42,34 @@ const TERM_START_CONFIG = {
   Fall: { startMonth: 9, offsetDays: 6 },
 } as const;
 
+type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
+  location: string;
+  display: string;
+  timeblocks: RepeatingBlock[];
+};
+
+type RepeatingBlock = {
+  days: string[];
+  startTime: string;
+  endTime: string;
+};
+
 type TermSeason = keyof typeof TERM_START_CONFIG;
+
+const VSBtimeToDisplay = (time: string) => {
+  const totalMinutes = parseInt(time, 10);
+
+  if (Number.isNaN(totalMinutes)) {
+    return time;
+  }
+
+  const hour = Math.floor(totalMinutes / 60);
+  const minute = totalMinutes % 60;
+
+  return `${hour.toString().padStart(2, '0')}:${minute
+    .toString()
+    .padStart(2, '0')}`;
+};
 
 const parseTermSeason = (
   term: string
