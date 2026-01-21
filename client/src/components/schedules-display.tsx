@@ -9,6 +9,7 @@ import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
 import type { Block, Schedule, TimeBlock } from '../lib/types';
 import type { Course } from '../lib/types';
 import {
+  formatDisplayTime,
   getCurrentTerm,
   groupBy,
   mapValues,
@@ -46,25 +47,6 @@ type RepeatingBlock = {
   days: string[];
   startTime: string;
   endTime: string;
-};
-
-const formatDisplayTime = (time: string) => {
-  const [hourString, minuteString] = time.split(':');
-
-  const hour = parseInt(hourString, 10);
-  const minute = parseInt(minuteString, 10);
-
-  if (Number.isNaN(hour) || Number.isNaN(minute)) {
-    return time;
-  }
-
-  const period = hour >= 12 ? 'PM' : 'AM';
-  const normalizedHour = hour % 12 || 12;
-
-  const minutePart =
-    minute === 0 ? '' : `:${minute.toString().padStart(2, '0')}`;
-
-  return `${normalizedHour}${minutePart}${period}`;
 };
 
 const formatTimeRange = (start: string, end: string) => {
