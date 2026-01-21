@@ -10,10 +10,7 @@
     "url": "https://coursecatalogue.mcgill.ca/courses/comp-360/index.html",
     "department": "Computer Science",
     "faculty": "Faculty of Science",
-    "terms": [
-      "Fall 2025",
-      "Winter 2026"
-    ],
+    "terms": ["Fall 2025", "Winter 2026"],
     "description": "Advanced algorithm design and analysis. Linear programming, complexity and NP-completeness, advanced algorithmic techniques.",
     "instructors": [
       {
@@ -34,20 +31,9 @@
     ],
     "prerequisitesText": "Prerequisite: Either COMP 251 or COMP 252, and either MATH 240 or MATH 235 or MATH 363.",
     "corequisitesText": null,
-    "prerequisites": [
-      "COMP251",
-      "COMP252",
-      "MATH240",
-      "MATH235",
-      "MATH363"
-    ],
+    "prerequisites": ["COMP251", "COMP252", "MATH240", "MATH235", "MATH363"],
     "corequisites": [],
-    "leadingTo": [
-      "COMP532",
-      "COMP547",
-      "COMP654",
-      "ECSE608"
-    ],
+    "leadingTo": ["COMP532", "COMP547", "COMP654", "ECSE608"],
     "restrictions": "Not open to students who have taken or are taking COMP 362."
   },
   {
@@ -61,9 +47,7 @@
     "url": "https://coursecatalogue.mcgill.ca/courses/comp-310/index.html",
     "department": "Computer Science",
     "faculty": "Faculty of Science",
-    "terms": [
-      "Winter 2026"
-    ],
+    "terms": ["Winter 2026"],
     "description": "Control and scheduling of large information processing systems. Operating system software - resource allocation, dispatching, processors, access methods, job control languages, main storage management. Batch processing, multiprogramming, multiprocessing, time sharing.",
     "instructors": [
       {
@@ -74,16 +58,9 @@
     ],
     "prerequisitesText": "Prerequisite: COMP 273",
     "corequisitesText": null,
-    "prerequisites": [
-      "COMP273"
-    ],
+    "prerequisites": ["COMP273"],
     "corequisites": [],
-    "leadingTo": [
-      "COMP409",
-      "COMP512",
-      "COMP513",
-      "COMP535"
-    ],
+    "leadingTo": ["COMP409", "COMP512", "COMP513", "COMP535"],
     "restrictions": null
   }
 ]
