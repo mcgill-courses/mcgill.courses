@@ -69,8 +69,8 @@ vi.mock('../components/review-empty-prompt', () => ({
   ReviewEmptyPrompt: () => <div data-testid='review-empty' />,
 }));
 
-vi.mock('../components/schedules-display', () => ({
-  SchedulesDisplay: () => <div data-testid='schedules-display' />,
+vi.mock('../components/course-schedule', () => ({
+  CourseSchedule: () => <div data-testid='schedules-display' />,
 }));
 
 vi.mock('../components/course-review', () => ({

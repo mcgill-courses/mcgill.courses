@@ -10,13 +10,13 @@ import { CourseInfo } from '../components/course-info';
 import { CourseRequirements } from '../components/course-requirements';
 import { CourseReview, ReviewAttachment } from '../components/course-review';
 import { CourseReviewPrompt } from '../components/course-review-prompt';
+import { CourseSchedule } from '../components/course-schedule';
 import { EditReviewForm } from '../components/edit-review-form';
 import { FinalExamRow } from '../components/final-exam-row';
 import { Layout } from '../components/layout';
 import { NotFound } from '../components/not-found';
 import { ReviewEmptyPrompt } from '../components/review-empty-prompt';
 import { ReviewFilter, ReviewSortType } from '../components/review-filter';
-import { SchedulesDisplay } from '../components/schedules-display';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
 import type { TermAverage } from '../lib/term-average';
@@ -338,7 +338,7 @@ export const CoursePage = () => {
         <div className='hidden gap-x-6 lg:grid lg:grid-cols-5'>
           <div className='col-span-3'>
             <FinalExamRow course={course} className='mb-4' />
-            <SchedulesDisplay
+            <CourseSchedule
               course={course}
               className={canReview ? 'mb-4' : ''}
             />
@@ -447,7 +447,7 @@ export const CoursePage = () => {
             )}
           </div>
           <FinalExamRow course={course} className='mb-4' />
-          <SchedulesDisplay course={course} />
+          <CourseSchedule course={course} />
           <div className='mt-4 flex w-full flex-row justify-between'>
             <div className='w-full'>
               {canReview && (
