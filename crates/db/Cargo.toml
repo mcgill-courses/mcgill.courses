@@ -7,7 +7,6 @@ publish = false
 [dependencies]
 bson = { workspace = true }
 chrono = { workspace = true }
-combine = { path = "../combine" }
 futures = { workspace = true }
 itertools = { workspace = true }
 model = { path = "../model" }
