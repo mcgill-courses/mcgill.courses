@@ -1,5 +1,4 @@
 import { Transition } from '@headlessui/react';
-import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import {
   ArrowUpRight,
@@ -249,8 +248,14 @@ export const CourseReview = ({
 
   const date = new Date(parseInt(review.timestamp, 10));
 
-  const shortDate = format(date, 'P'),
-    longDate = format(date, 'EEEE, MMMM d, yyyy');
+  const shortDate = date.toLocaleDateString();
+
+  const longDate = date.toLocaleDateString(undefined, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   const highlightAnimation = { scale: highlighted ? 1.05 : 1 };
 
