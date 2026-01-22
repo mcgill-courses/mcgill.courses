@@ -1,0 +1,94 @@
+[
+  {
+    "_id": "COMP360",
+    "idNgrams": null,
+    "title": "Algorithm Design",
+    "titleNgrams": null,
+    "credits": "3",
+    "subject": "COMP",
+    "code": "360",
+    "url": "https://coursecatalogue.mcgill.ca/courses/comp-360/index.html",
+    "department": "Computer Science",
+    "faculty": "Faculty of Science",
+    "terms": ["Fall 2024", "Winter 2025", "Fall 2025", "Winter 2026"],
+    "description": "Advanced algorithm design and analysis. Linear programming, complexity and NP-completeness, advanced algorithmic techniques.",
+    "instructors": [
+      {
+        "name": "Adrian Vetta",
+        "nameNgrams": null,
+        "term": "Fall 2024"
+      },
+      {
+        "name": "Hamed Hatami",
+        "nameNgrams": null,
+        "term": "Winter 2025"
+      },
+      {
+        "name": "Rohit Vasishta",
+        "nameNgrams": null,
+        "term": "Fall 2025"
+      },
+      {
+        "name": "Robert Robere",
+        "nameNgrams": null,
+        "term": "Winter 2026"
+      },
+      {
+        "name": "Pascale Gourdeau",
+        "nameNgrams": null,
+        "term": "Winter 2026"
+      }
+    ],
+    "prerequisitesText": "Prerequisite: Either COMP 251 or COMP 252, and either MATH 240 or MATH 235 or MATH 363.",
+    "corequisitesText": null,
+    "prerequisites": ["COMP251", "COMP252", "MATH240", "MATH235", "MATH363"],
+    "corequisites": [],
+    "leadingTo": ["COMP532", "COMP547", "COMP654", "ECSE608"],
+    "restrictions": "Not open to students who have taken or are taking COMP 362.",
+    "avgRating": 0.0,
+    "avgDifficulty": 0.0,
+    "reviewCount": 0,
+    "schedule": []
+  },
+  {
+    "_id": "COMP310",
+    "idNgrams": null,
+    "title": "Operating Systems",
+    "titleNgrams": null,
+    "credits": "3",
+    "subject": "COMP",
+    "code": "310",
+    "url": "https://coursecatalogue.mcgill.ca/courses/comp-310/index.html",
+    "department": "Computer Science",
+    "faculty": "Faculty of Science",
+    "terms": ["Fall 2024", "Fall 2025", "Winter 2026"],
+    "description": "Control and scheduling of large information processing systems. Operating system software - resource allocation, dispatching, processors, access methods, job control languages, main storage management. Batch processing, multiprogramming, multiprocessing, time sharing.",
+    "instructors": [
+      {
+        "name": "Max Kopinsky",
+        "nameNgrams": null,
+        "term": "Fall 2025"
+      },
+      {
+        "name": "Max Kopinsky",
+        "nameNgrams": null,
+        "term": "Fall 2024"
+      },
+      {
+        "name": "Oana Balmau",
+        "nameNgrams": null,
+        "term": "Winter 2026"
+      }
+    ],
+    "prerequisitesText": "Prerequisite: COMP 273",
+    "corequisitesText": null,
+    "prerequisites": ["COMP273"],
+    "corequisites": [],
+    "leadingTo": ["COMP409", "COMP512", "COMP513", "COMP535"],
+    "restrictions": null,
+    "avgRating": 0.0,
+    "avgDifficulty": 0.0,
+    "reviewCount": 0,
+    "schedule": []
+  }
+]

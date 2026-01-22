@@ -1,7 +1,6 @@
 use {
   bson::Bson,
   chrono::{Datelike, TimeZone, Utc},
-  combine::Combine,
   futures::Future,
   futures::{TryStreamExt, future::join_all},
   itertools::Itertools,

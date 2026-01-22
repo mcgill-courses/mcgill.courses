@@ -10,6 +10,8 @@ pub enum Error {
   Env(#[from] std::env::VarError),
   #[error("io error: {0}")]
   Io(#[from] std::io::Error),
+  #[error("invalid course term: {0}")]
+  InvalidCourseTerm(String),
   #[error("task join error: {0}")]
   Join(#[from] JoinError),
   #[error("json error: {0}")]
