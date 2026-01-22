@@ -270,8 +270,6 @@ export const api = {
     withCourseCount?: boolean,
     filters?: any
   ): Promise<GetCoursesPayload> {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
     return client.deserialize<GetCoursesPayload>(
       'POST',
       client.buildQuery(`/courses`, {
