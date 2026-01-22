@@ -1,4 +1,3 @@
-import { produce } from 'immer';
 import { ChevronDown, ChevronUp, LineChart, List } from 'lucide-react';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -37,11 +36,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
   const [expandedState, setExpandedState] = useState(initialExpandedState());
 
   const handleInstructorToggle = (term: string) => {
-    setExpandedState(
-      produce(expandedState, (draft) => {
-        draft[term] = !draft[term];
-      })
-    );
+    setExpandedState({ ...expandedState, [term]: !expandedState[term] });
   };
 
   const handleGraphToggle = useCallback(
