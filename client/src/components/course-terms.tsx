@@ -1,4 +1,3 @@
-import { produce } from 'immer';
 import { ChevronDown } from 'lucide-react';
 import { Leaf, Snowflake, Sun, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -68,11 +67,7 @@ export const CourseTerms = ({ course, variant, query }: CourseTermsProps) => {
   const [expandedState, setExpandedState] = useState(initialExpandedState());
 
   const handleToggle = (i: number) => {
-    setExpandedState(
-      produce(expandedState, (draft) => {
-        draft[i] = !draft[i];
-      })
-    );
+    setExpandedState(expandedState.map((val, idx) => (idx === i ? !val : val)));
   };
 
   useEffect(() => {
