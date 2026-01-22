@@ -108,11 +108,11 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
     <div
       className={twMerge(
         variant === 'mobile' ? 'w-full' : 'w-[340px]',
-        'relative flex h-fit flex-col flex-wrap rounded-lg bg-slate-50 px-8 py-6 dark:bg-neutral-800 dark:text-gray-200'
+        'relative flex h-fit flex-col flex-wrap rounded-lg bg-slate-50 px-6 py-4 lg:px-8 lg:py-6 dark:bg-neutral-800 dark:text-gray-200'
       )}
     >
       <ResetButton
-        className='absolute top-4 right-4'
+        className='absolute top-2 right-2 lg:top-4 lg:right-4'
         onClear={() => {
           setSelectedSubjects([]);
           setSelectedLevels([]);
