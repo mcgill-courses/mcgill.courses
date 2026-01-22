@@ -54,7 +54,7 @@ export const Autocomplete = <T extends string>({
             leaveFrom='transform scale-100 opacity-100'
             leaveTo='transform scale-95 opacity-0'
           >
-            <Combobox.Options className='autocomplete absolute max-h-80 w-full max-w-[240px] overflow-scroll rounded-md text-sm shadow-md'>
+            <Combobox.Options className='styled-scrollbar absolute max-h-80 w-full max-w-[240px] overflow-scroll rounded-md text-sm shadow-md'>
               {filtered.map((val, i) => (
                 <Combobox.Option
                   key={i}

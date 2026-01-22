@@ -125,7 +125,7 @@ export const NotificationDropdown = ({
                 leaveFrom='transform opacity-100 scale-100'
                 leaveTo='transform opacity-0 scale-95'
               >
-                <Menu.Items className='autocomplete absolute -right-8 z-30 mt-2 max-h-[800px] max-w-[325px] origin-top-right divide-y divide-gray-100 overflow-auto rounded-md bg-slate-100 shadow-lg md:max-w-[800px] dark:bg-neutral-900'>
+                <Menu.Items className='styled-scrollbar absolute -right-8 z-30 mt-2 max-h-[800px] max-w-[325px] origin-top-right divide-y divide-gray-100 overflow-auto rounded-md bg-slate-100 shadow-lg md:max-w-[800px] dark:bg-neutral-900'>
                   <div className='p-2'>
                     {notifications.length !== 0 ? (
                       notifications.map((notification, i) => (

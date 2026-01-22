@@ -202,7 +202,21 @@ export const Instructor = () => {
               </div>
 
               {activeCourses.length > 0 ? (
-                <div className='grid grid-cols-2 gap-2 overflow-y-scroll md:max-h-72 lg:max-h-44'>
+                <div className='styled-scrollbar grid grid-cols-2 gap-2 overflow-y-scroll md:max-h-72 lg:max-h-44'>
+                  {activeCourses.map((course) => (
+                    <Link
+                      key={course._id}
+                      to={`/course/${courseIdToUrlParam(course._id)}`}
+                      className='group flex flex-col rounded px-3 py-2 transition'
+                    >
+                      <span className='text-sm font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
+                        {course._id}
+                      </span>
+                      <span className='text-xs text-gray-600 dark:text-gray-400'>
+                        {course.title}
+                      </span>
+                    </Link>
+                  ))}
                   {activeCourses.map((course) => (
                     <Link
                       key={course._id}
