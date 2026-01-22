@@ -5,11 +5,13 @@ import { Skeleton } from './skeleton';
 describe('Skeleton', () => {
   it('renders a single skeleton by default', () => {
     const { container } = render(<Skeleton />);
+
     expect(container.querySelectorAll('.animate-pulse')).toHaveLength(1);
   });
 
   it('renders multiple skeletons when count is specified', () => {
     const { container } = render(<Skeleton count={5} />);
+
     expect(container.querySelectorAll('.animate-pulse')).toHaveLength(5);
   });
 
