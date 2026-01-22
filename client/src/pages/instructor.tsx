@@ -217,20 +217,6 @@ export const Instructor = () => {
                       </span>
                     </Link>
                   ))}
-                  {activeCourses.map((course) => (
-                    <Link
-                      key={course._id}
-                      to={`/course/${courseIdToUrlParam(course._id)}`}
-                      className='group flex flex-col rounded px-3 py-2 transition'
-                    >
-                      <span className='text-sm font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
-                        {course._id}
-                      </span>
-                      <span className='text-xs text-gray-600 dark:text-gray-400'>
-                        {course.title}
-                      </span>
-                    </Link>
-                  ))}
                 </div>
               ) : (
                 <p className='text-sm text-gray-500 dark:text-gray-400'>
