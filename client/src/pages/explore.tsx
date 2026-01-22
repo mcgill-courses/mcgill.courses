@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Skeleton from 'react-loading-skeleton';
 import { toast } from 'sonner';
 
 import { CourseCard } from '../components/course-card';
@@ -10,8 +9,8 @@ import { FilterToggle } from '../components/filter-toggle';
 import { JumpToTopButton } from '../components/jump-to-top-button';
 import { Layout } from '../components/layout';
 import { SearchBar } from '../components/search-bar';
+import { Skeleton } from '../components/skeleton';
 import { Spinner } from '../components/spinner';
-import { useDarkMode } from '../hooks/use-dark-mode';
 import { useExploreFilterState } from '../hooks/use-explore-filter-state';
 import { api } from '../lib/api';
 import type { Course } from '../lib/types';
@@ -65,8 +64,6 @@ export const Explore = () => {
 
   const [query, setQuery] = useState<string>('');
   const [searchSelected, setSearchSelected] = useState<boolean>(false);
-
-  const [darkMode] = useDarkMode();
 
   const { selectedSubjects, selectedLevels, selectedTerms, sortBy } =
     useExploreFilterState();
@@ -196,16 +193,9 @@ export const Explore = () => {
                 ) : (
                   <div className='mx-2'>
                     <Skeleton
-                      baseColor={
-                        darkMode ? 'rgb(38 38 38)' : 'rgb(248 250 252)'
-                      }
                       className='mb-2 rounded-lg first:mt-2'
                       count={10}
-                      duration={2}
                       height={256}
-                      highlightColor={
-                        darkMode ? 'rgb(64 64 64)' : 'rgb(226 232 240)'
-                      }
                     />
                   </div>
                 )}
