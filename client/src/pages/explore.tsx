@@ -11,6 +11,7 @@ import { Layout } from '../components/layout';
 import { SearchBar } from '../components/search-bar';
 import { Skeleton } from '../components/skeleton';
 import { Spinner } from '../components/spinner';
+import { useDebouncedValue } from '../hooks/use-debounced-value';
 import { useExploreFilterState } from '../hooks/use-explore-filter-state';
 import { api } from '../lib/api';
 import type { Course } from '../lib/types';
@@ -57,13 +58,14 @@ export const Explore = () => {
   const limit = 20;
   const currentTerms = getCurrentTerms();
 
-  const [courses, setCourses] = useState<Course[] | undefined>(undefined);
   const [courseCount, setCourseCount] = useState<number | undefined>(undefined);
+  const [courses, setCourses] = useState<Course[] | undefined>(undefined);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(limit);
-
   const [query, setQuery] = useState<string>('');
   const [searchSelected, setSearchSelected] = useState<boolean>(false);
+
+  const debouncedQuery = useDebouncedValue(query, 250);
 
   const { selectedSubjects, selectedLevels, selectedTerms, sortBy } =
     useExploreFilterState();
@@ -78,7 +80,7 @@ export const Explore = () => {
         (term) => currentTerms.filter((t) => t.split(' ')[0] === term)[0]
       )
     ),
-    query: query === '' ? null : query,
+    query: debouncedQuery === '' ? null : debouncedQuery,
     sortBy: makeSortPayload(sortBy),
   };
 
@@ -94,7 +96,7 @@ export const Explore = () => {
       });
     setHasMore(true);
     setOffset(limit);
-  }, [selectedSubjects, selectedLevels, selectedTerms, sortBy, query]);
+  }, [selectedSubjects, selectedLevels, selectedTerms, sortBy, debouncedQuery]);
 
   const fetchMore = async () => {
     const batch = await api.getCourses(limit, offset, false, filters);
