@@ -15,6 +15,7 @@ describe('Skeleton', () => {
 
   it('applies custom className', () => {
     const { container } = render(<Skeleton className='mb-2 rounded-lg' />);
+
     expect(container.querySelector('.animate-pulse')).toHaveClass(
       'rounded-lg',
       'mb-2'
@@ -23,6 +24,7 @@ describe('Skeleton', () => {
 
   it('applies width and height styles', () => {
     const { container } = render(<Skeleton width={200} height={100} />);
+
     expect(container.querySelector('.animate-pulse')).toHaveStyle({
       width: '200px',
       height: '100px',
