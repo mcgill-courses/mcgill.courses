@@ -12,20 +12,20 @@
 
 @variant dark (&:where(.dark, .dark *));
 
-::-webkit-scrollbar {
+.styled-scrollbar::-webkit-scrollbar {
   width: 3px;
 }
 
-::-webkit-scrollbar-track {
+.styled-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
+.styled-scrollbar::-webkit-scrollbar-thumb {
   background-color: rgb(182, 182, 182);
   border-radius: 20px;
   border: transparent;
 }
 
-::-webkit-scrollbar:horizontal {
+.styled-scrollbar::-webkit-scrollbar:horizontal {
   display: none;
 }

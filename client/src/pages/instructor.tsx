@@ -202,7 +202,7 @@ export const Instructor = () => {
               </div>
 
               {activeCourses.length > 0 ? (
-                <div className='grid grid-cols-2 gap-2 overflow-y-scroll md:max-h-72 lg:max-h-44'>
+                <div className='styled-scrollbar grid grid-cols-2 gap-2 overflow-y-scroll md:max-h-72 lg:max-h-44'>
                   {activeCourses.map((course) => (
                     <Link
                       key={course._id}
