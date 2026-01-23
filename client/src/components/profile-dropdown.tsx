@@ -20,7 +20,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ href, onClick, children }) => {
           active
             ? 'bg-gray-100 text-gray-900 dark:bg-neutral-700 dark:text-gray-200 rounded-lg'
             : 'text-gray-700 dark:bg-neutral-800 dark:text-gray-200',
-          'flex items-center justify-between px-3 py-2 text-sm w-full text-left'
+          'flex items-center justify-between px-3 py-2 text-sm w-full text-left cursor-pointer'
         );
 
         const icon = href && active && <ChevronRight size={20} />;
