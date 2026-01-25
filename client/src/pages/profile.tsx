@@ -171,7 +171,7 @@ export const Profile = () => {
                 }}
                 className={({ selected }) =>
                   twMerge(
-                    'w-full rounded-lg py-2.5 text-sm leading-5 font-medium text-gray-800',
+                    'w-full cursor-pointer rounded-lg py-2.5 text-sm leading-5 font-medium text-gray-800',
                     'ring-opacity-60 ring-white ring-offset-2 ring-offset-gray-400 focus:outline-none',
                     selected
                       ? 'bg-white shadow'

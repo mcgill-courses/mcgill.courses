@@ -60,7 +60,7 @@ const FilterButton = ({
   return (
     <button
       className={twMerge(
-        'rounded-full px-2 py-1 text-sm font-medium tracking-wider transition duration-150 ease-in-out',
+        'cursor-pointer rounded-full px-2 py-1 text-sm font-medium tracking-wider transition duration-150 ease-in-out',
         selected ? selectedColor : unselectedColor,
         className
       )}

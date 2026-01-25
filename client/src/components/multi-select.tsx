@@ -73,7 +73,7 @@ export const MultiSelect = ({
               onChange={(event) => setQuery(event.target.value)}
               onBlur={handleInputBlur}
             />
-            <Combobox.Button className='absolute inset-y-0 flex w-full items-center'>
+            <Combobox.Button className='absolute inset-y-0 flex w-full cursor-pointer items-center'>
               <ChevronDown
                 className='mr-4 ml-auto size-5 text-gray-400'
                 aria-hidden='true'
@@ -123,7 +123,11 @@ export const MultiSelect = ({
             className='flex space-x-1 rounded-3xl bg-gray-100 px-2.5 py-1 text-sm font-medium text-gray-800 dark:bg-neutral-700 dark:text-gray-200'
           >
             <div>{val}</div>
-            <button type='button' onClick={() => removeVal(val)}>
+            <button
+              type='button'
+              className='cursor-pointer'
+              onClick={() => removeVal(val)}
+            >
               <X
                 size={18}
                 className='transition duration-75 hover:stroke-red-600'

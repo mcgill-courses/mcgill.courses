@@ -150,7 +150,7 @@ export const CourseSearchBar = ({
           searchSelected ? 'border-b' : ''
         )}
         onKeyDown={handleKeyDown}
-        placeholder='Search for courses, subjects or professors'
+        placeholder='Search by course, subject, or professor'
         searchSelected={searchSelected}
         setSearchSelected={setSearchSelected}
         inputRef={inputRef}

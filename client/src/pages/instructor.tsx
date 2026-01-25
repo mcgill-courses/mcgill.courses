@@ -178,7 +178,7 @@ export const Instructor = () => {
                     <button
                       key={term}
                       onClick={() => setActiveTab(term)}
-                      className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors sm:px-4 ${
+                      className={`flex cursor-pointer items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors sm:px-4 ${
                         activeTab === term
                           ? 'border-b-2 border-gray-800 text-gray-800 dark:border-gray-200 dark:text-gray-200'
                           : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
@@ -191,7 +191,7 @@ export const Instructor = () => {
                 })}
                 <button
                   onClick={() => setActiveTab('all')}
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                  className={`cursor-pointer px-4 py-2 text-sm font-medium transition-colors ${
                     activeTab === 'all'
                       ? 'border-b-2 border-gray-800 text-gray-800 dark:border-gray-200 dark:text-gray-200'
                       : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
