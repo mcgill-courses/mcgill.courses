@@ -179,7 +179,7 @@ export const Explore = () => {
                       iconStyle='mt-2 lg:mt-0'
                       inputStyle='block rounded-lg w-full bg-slate-200 p-3 pr-5 pl-10 text-sm text-black outline-none dark:border-neutral-50 dark:bg-neutral-800 dark:text-gray-200 dark:placeholder:text-neutral-500'
                       outerInputStyle='my-2 mt-4 lg:mt-2'
-                      placeholder='Search by course code, title, description or instructor name'
+                      placeholder='Search by course, subject, or professor'
                       searchSelected={searchSelected}
                       setSearchSelected={setSearchSelected}
                     />

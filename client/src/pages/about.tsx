@@ -29,7 +29,7 @@ const Questions = ({ input }: QuestionsProps) => {
         <Disclosure as='div' key={item.title} className='w-full'>
           {({ open }) => (
             <>
-              <Disclosure.Button className='focus-visible:ring-mcgill-red/75 mx-auto flex w-full justify-between rounded-lg bg-gray-200 px-4 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus-visible:ring dark:bg-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-600'>
+              <Disclosure.Button className='focus-visible:ring-mcgill-red/75 mx-auto flex w-full cursor-pointer justify-between rounded-lg bg-gray-200 px-4 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus-visible:ring dark:bg-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-600'>
                 <span>{item.title}</span>
                 <motion.div
                   animate={{ rotate: open ? 180 : 0 }}

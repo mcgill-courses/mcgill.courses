@@ -39,7 +39,7 @@ export const Autocomplete = <T extends string>({
               )}
               onChange={(event) => setQuery(event.target.value)}
             />
-            <Combobox.Button className='absolute inset-y-0 flex w-full items-center'>
+            <Combobox.Button className='absolute inset-y-0 flex w-full cursor-pointer items-center'>
               <ChevronDown
                 className='mr-4 ml-auto size-5 text-gray-400'
                 aria-hidden='true'

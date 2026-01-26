@@ -103,7 +103,7 @@ export const NotificationDropdown = ({
           return (
             <>
               <div>
-                <Menu.Button className='m-2 inline-flex justify-center text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white'>
+                <Menu.Button className='m-2 inline-flex cursor-pointer justify-center text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white'>
                   <div className='relative'>
                     <Bell
                       className='-mr-1 ml-2 size-5 text-neutral-500 dark:text-gray-400'
