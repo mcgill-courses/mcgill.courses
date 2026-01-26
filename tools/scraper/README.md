@@ -51,6 +51,14 @@ Moreover, the following environment variables must be set:
 
 ## Output
 
-JSON files containing course arrays are written to the `--source` path. The
-scraper computes `leading_to` relationships from prerequisite data and merges
-new data with existing courses.
+We output JSON files containing course arrays and write them to the `--source` path. When
+`--source` is a directory, output files are named `courses-YYYY-YYYY.json`
+based on the `--mcgill-terms` values (e.g., `courses-2025-2026.json`).
+
+After scraping, the scraper computes `leadingTo` relationships by examining
+each course's `prerequisites` array. If course A lists course B as a
+prerequisite, then B's `leadingTo` array will include A.
+
+When an output file already exists, the scraper merges new data with existing
+courses by ID. Basic fields are replaced with new values, while `terms`,
+`instructors`, and `schedule` are combined to preserve historical data.
