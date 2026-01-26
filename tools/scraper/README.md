@@ -20,7 +20,7 @@ Selenium.
 You can invoke `scraper` from within this directory as follows:
 
 ```bash
-cargo run -- --batch-size 5 --course-delay 1000 --source seed --user-agent "Mozilla/5.0 ..."
+cargo run -- --batch-size 5 --course-delay 1000 --source ../../seed --user-agent "Mozilla/5.0 ..."
 ```
 
 The `--user-agent` flag is required. The `--source` flag specifies the
