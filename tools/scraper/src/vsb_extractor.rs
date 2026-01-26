@@ -89,7 +89,7 @@ mod tests {
     pretty_assertions::assert_eq,
   };
 
-  static MOCK_DIR: Dir<'_> = include_dir!("tools/scraper/test-samples");
+  static MOCK_DIR: Dir<'_> = include_dir!("tools/scraper/fixtures");
 
   fn get_content(name: &str) -> String {
     MOCK_DIR
