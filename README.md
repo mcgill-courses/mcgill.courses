@@ -71,9 +71,9 @@ more recipes.
 
 ## Tools
 
-We have a few tools that we use throughout the project, below documents some of
-them. You can find them all under the
-[`/tools`](https://github.com/terror/mcgill.courses/tree/master/tools) directory
+We have a few tools that we use for project-specific maintenance tasks. You can
+find all of them under the
+[`tools`](https://github.com/terror/mcgill.courses/tree/master/tools) directory
 from the project root.
 
 For python-based tools, we highly recommend you install
