@@ -455,21 +455,111 @@ mod tests {
   }
 
   #[tokio::test]
-  async fn courses_route_with_sort() {
-    let TestContext { app, .. } = TestContext::new().await;
+  async fn courses_route_with_filters() {
+    let TestContext { db, app, .. } = TestContext::new().await;
 
-    let response = app
-      .oneshot(
-        Request::builder()
-          .method(Method::GET)
-          .uri("/api/courses?sortReverse=false&sortType=difficulty")
-          .body(Body::empty())
-          .unwrap(),
-      )
-      .await
-      .unwrap();
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
 
-    assert_eq!(response.status(), StatusCode::OK);
+    db.add_review(Review {
+      course_id: "COMP202".into(),
+      user_id: "1".into(),
+      rating: 3,
+      difficulty: 2,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "COMP252".into(),
+      user_id: "1".into(),
+      rating: 5,
+      difficulty: 4,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "MATH240".into(),
+      user_id: "1".into(),
+      rating: 4,
+      difficulty: 3,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    async fn case(app: Router, uri: &str, expected_ids: &[&str]) {
+      let response = app
+        .oneshot(
+          Request::builder()
+            .method(Method::GET)
+            .uri(uri)
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::OK);
+
+      let payload = response.convert::<GetCoursesPayload>().await;
+
+      let ids = payload
+        .courses
+        .iter()
+        .map(|course| course.id.as_str())
+        .collect::<Vec<&str>>();
+
+      assert_eq!(ids, expected_ids);
+    }
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP&sortType=rating&sortReverse=true",
+      &["COMP252", "COMP202"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP&sortType=rating&sortReverse=false",
+      &["COMP202", "COMP252"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?sortType=difficulty&sortReverse=true",
+      &["COMP252", "MATH240", "COMP202"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?levels=2&sortType=reviewCount&sortReverse=true",
+      &["COMP202", "COMP252", "MATH240"],
+    )
+    .await;
+
+    case(app.clone(), "/api/courses?query=Honours", &["COMP252"]).await;
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP,MATH&levels=2",
+      &["COMP202", "COMP252", "MATH240"],
+    )
+    .await;
+
+    case(app.clone(), "/api/courses?subjects=PHYS", &[]).await;
+
+    case(app.clone(), "/api/courses?levels=1", &[]).await;
   }
 
   #[tokio::test]
