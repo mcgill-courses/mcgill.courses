@@ -3,10 +3,14 @@ use super::*;
 #[derive(Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct GetCoursesParams {
+  /// Filter criteria for courses.
   #[serde(flatten)]
   filter: CourseFilter,
+  /// Maximum number of courses to return.
   limit: Option<i64>,
+  /// Number of courses to skip for pagination.
   offset: Option<u64>,
+  /// Whether to include the total course count in the response.
   with_course_count: Option<bool>,
 }
 
