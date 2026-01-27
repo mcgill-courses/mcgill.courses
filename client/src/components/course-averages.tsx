@@ -1,4 +1,5 @@
-import { ChevronDown, ChevronUp, LineChart, List } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronDown, LineChart, List } from 'lucide-react';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
@@ -80,10 +81,14 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
         <>
           <div className='py-1' />
 
-          {averages
-            .sort((a, b) => compareTerms(b.term, a.term))
-            .slice(0, showAll ? averages.length : 6)
-            .map((average) => {
+          {(() => {
+            const sortedAverages = averages.sort((a, b) =>
+              compareTerms(b.term, a.term)
+            );
+            const firstSix = sortedAverages.slice(0, 6);
+            const remaining = sortedAverages.slice(6);
+
+            const renderAverageItem = (average: TermAverage) => {
               const instructors = termInstructors[average.term];
               return (
                 <Fragment key={average.term}>
@@ -105,7 +110,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
                                   +{instructors.length - 1}
                                   <ChevronDown
                                     className={twMerge(
-                                      'ml-1 inline-block',
+                                      'ml-1 inline-block transition-transform duration-200',
                                       expandedState[average.term]
                                         ? 'rotate-180'
                                         : 'rotate-0'
@@ -114,15 +119,27 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
                                   />
                                 </span>
                               )}
-                              <div className='flex flex-col gap-y-0.5'>
+                              <AnimatePresence initial={false}>
                                 {expandedState[average.term] && (
-                                  <>
+                                  <motion.div
+                                    className='flex flex-col gap-y-0.5 overflow-hidden'
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{
+                                      duration: 0.2,
+                                      ease: 'easeInOut',
+                                    }}
+                                  >
                                     {instructors.slice(1).map((ins) => (
-                                      <InstructorLink instructor={ins} />
+                                      <InstructorLink
+                                        key={ins.name}
+                                        instructor={ins}
+                                      />
                                     ))}
-                                  </>
+                                  </motion.div>
                                 )}
-                              </div>
+                              </AnimatePresence>
                             </div>
                           ) : (
                             <div>Instructor Unknown</div>
@@ -137,23 +154,45 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
                   <hr className='my-1 w-full border border-neutral-200 dark:border-neutral-700' />
                 </Fragment>
               );
-            })}
+            };
+
+            return (
+              <>
+                {firstSix.map(renderAverageItem)}
+                <AnimatePresence initial={false}>
+                  {showAll && remaining.length > 0 && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className='overflow-hidden'
+                    >
+                      {remaining.map(renderAverageItem)}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </>
+            );
+          })()}
 
           <div className='py-1' />
 
           {averages.length > 6 && (
             <button
-              className='flex w-full items-center gap-2 text-sm text-gray-500 md:text-lg dark:text-gray-400'
+              className='flex w-full cursor-pointer items-center gap-2 text-sm text-gray-500 md:text-lg dark:text-gray-400'
               onClick={() => setShowAll(!showAll)}
             >
               <p className='my-auto ml-auto text-base font-medium'>
                 {showAll ? 'Show less' : 'Show all'}
               </p>
-              {showAll ? (
-                <ChevronUp className='my-auto mr-auto font-extrabold' />
-              ) : (
-                <ChevronDown className='my-auto mr-auto font-extrabold' />
-              )}
+              <motion.div
+                className='my-auto mr-auto'
+                animate={{ rotate: showAll ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ChevronDown className='font-extrabold' />
+              </motion.div>
             </button>
           )}
         </>
