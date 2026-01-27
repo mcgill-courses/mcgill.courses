@@ -138,13 +138,6 @@ export interface CourseFilter {
   query?: string;
 }
 
-export interface CourseSort {
-  /** Whether to reverse the sort order. */
-  reverse: boolean;
-  /** Sort type for ordering results. */
-  sortType: CourseSortType;
-}
-
 export interface Review {
   /** The text content of the review. */
   content: string;

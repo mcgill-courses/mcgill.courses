@@ -14,7 +14,7 @@ import { Spinner } from '../components/spinner';
 import { useDebouncedValue } from '../hooks/use-debounced-value';
 import { useExploreFilterState } from '../hooks/use-explore-filter-state';
 import { api } from '../lib/api';
-import type { Course, CourseFilter, CourseSort } from '../lib/types';
+import type { Course, CourseFilter } from '../lib/types';
 import { CourseSortType } from '../lib/types';
 import { getCurrentTerms } from '../lib/utils';
 
@@ -36,35 +36,37 @@ export const Explore = () => {
 
   const orUndefined = (arr: string[]) => (arr.length === 0 ? undefined : arr);
 
-  const makeSortPayload = useCallback(
-    (sort: SortByType): CourseSort | undefined => {
+  const getSortFields = useCallback(
+    (
+      sort: SortByType
+    ): { sortReverse: boolean; sortType: CourseSortType } | undefined => {
       switch (sort) {
         case '':
           return undefined;
         case 'Highest Rating':
-          return { reverse: true, sortType: CourseSortType.Rating };
+          return { sortReverse: true, sortType: CourseSortType.Rating };
         case 'Lowest Rating':
-          return { reverse: false, sortType: CourseSortType.Rating };
+          return { sortReverse: false, sortType: CourseSortType.Rating };
         case 'Hardest':
-          return { reverse: true, sortType: CourseSortType.Difficulty };
+          return { sortReverse: true, sortType: CourseSortType.Difficulty };
         case 'Easiest':
-          return { reverse: false, sortType: CourseSortType.Difficulty };
+          return { sortReverse: false, sortType: CourseSortType.Difficulty };
         case 'Most Reviews':
-          return { reverse: true, sortType: CourseSortType.ReviewCount };
+          return { sortReverse: true, sortType: CourseSortType.ReviewCount };
         case 'Least Reviews':
-          return { reverse: false, sortType: CourseSortType.ReviewCount };
+          return { sortReverse: false, sortType: CourseSortType.ReviewCount };
       }
     },
     [sortBy]
   );
 
-  const sortPayload = makeSortPayload(sortBy);
+  const sortFields = getSortFields(sortBy);
 
   const filters: CourseFilter = {
     levels: orUndefined(selectedLevels.map((level) => level.charAt(0))),
     query: debouncedQuery === '' ? undefined : debouncedQuery,
-    sortReverse: sortPayload?.reverse,
-    sortType: sortPayload?.sortType,
+    sortReverse: sortFields?.sortReverse,
+    sortType: sortFields?.sortType,
     subjects: orUndefined(selectedSubjects),
     terms: orUndefined(
       selectedTerms.map(
