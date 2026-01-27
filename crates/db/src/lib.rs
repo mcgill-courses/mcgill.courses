@@ -28,7 +28,7 @@ use {
 #[cfg(test)]
 use {
   include_dir::{Dir, include_dir},
-  model::{CourseSort, DateTime},
+  model::DateTime,
   std::sync::atomic::{AtomicUsize, Ordering},
   tempdir::TempDir,
 };

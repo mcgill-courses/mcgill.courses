@@ -1,3 +1,4 @@
+import type { CourseFilter } from '../lib/types';
 import type { GetCourseByIdPayload } from '../lib/types';
 import type { GetCoursesPayload } from '../lib/types';
 import type { GetInstructorPayload } from '../lib/types';
@@ -268,21 +269,21 @@ export const api = {
     limit: number,
     offset: number,
     withCourseCount?: boolean,
-    filters?: any
+    filters?: CourseFilter
   ): Promise<GetCoursesPayload> {
     return client.deserialize<GetCoursesPayload>(
-      'POST',
+      'GET',
       client.buildQuery(`/courses`, {
+        levels: filters?.levels?.join(','),
         limit,
         offset,
+        query: filters?.query,
+        sortReverse: filters?.sortReverse,
+        sortType: filters?.sortType,
+        subjects: filters?.subjects?.join(','),
+        terms: filters?.terms?.join(','),
         with_course_count: withCourseCount,
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(filters),
-      }
+      })
     );
   },
 

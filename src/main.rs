@@ -21,7 +21,7 @@ use {
       State as AppState,
     },
     response::{IntoResponse, Redirect, Response},
-    routing::{Router, get, post},
+    routing::{Router, get},
   },
   axum_extra::{
     TypedHeader, headers::Cookie, typed_header::TypedHeaderRejectionReason,
@@ -37,9 +37,9 @@ use {
   },
   indoc::indoc,
   model::{
-    Course, CourseFilter, InitializeOptions, Instructor, Interaction,
-    InteractionKind, Notification, Review, ReviewFilter, SearchResults,
-    Subscription,
+    Course, CourseFilter, CourseSortType, InitializeOptions, Instructor,
+    Interaction, InteractionKind, Notification, Review, ReviewFilter,
+    SearchResults, Subscription,
   },
   oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet,

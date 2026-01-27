@@ -122,9 +122,14 @@ impl Db {
         document.insert("$or", [vec![id, instructor], rest].concat());
       }
 
-      if let Some(sort_by) = filter.sort_by {
-        let reverse = if sort_by.reverse { -1 } else { 1 };
-        let field = match sort_by.sort_type {
+      if let Some(sort_type) = filter.sort_type {
+        let reverse = if filter.sort_reverse.unwrap_or(false) {
+          -1
+        } else {
+          1
+        };
+
+        let field = match sort_type {
           CourseSortType::Rating => {
             document.insert("reviewCount", doc! { "$gt": 0 });
             "avgRating"
@@ -135,6 +140,7 @@ impl Db {
           }
           CourseSortType::ReviewCount => "reviewCount",
         };
+
         sort_document.insert(field, reverse);
       } else if query.is_none() {
         sort_document.insert("_id", 1);
@@ -1505,10 +1511,8 @@ mod tests {
         Some(10),
         None,
         Some(CourseFilter {
-          sort_by: Some(CourseSort {
-            sort_type: CourseSortType::Rating,
-            reverse: true,
-          }),
+          sort_reverse: Some(true),
+          sort_type: Some(CourseSortType::Rating),
           ..Default::default()
         }),
       )
@@ -1533,10 +1537,8 @@ mod tests {
         Some(10),
         None,
         Some(CourseFilter {
-          sort_by: Some(CourseSort {
-            sort_type: CourseSortType::Difficulty,
-            reverse: true,
-          }),
+          sort_reverse: Some(true),
+          sort_type: Some(CourseSortType::Difficulty),
           ..Default::default()
         }),
       )
@@ -1575,10 +1577,8 @@ mod tests {
         Some(10),
         None,
         Some(CourseFilter {
-          sort_by: Some(CourseSort {
-            sort_type: CourseSortType::ReviewCount,
-            reverse: true,
-          }),
+          sort_reverse: Some(true),
+          sort_type: Some(CourseSortType::ReviewCount),
           ..Default::default()
         }),
       )

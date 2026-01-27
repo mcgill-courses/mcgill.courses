@@ -114,7 +114,7 @@ impl Server {
       .route("/api/auth/authorized", get(auth::login_authorized))
       .route("/api/auth/login", get(auth::microsoft_auth))
       .route("/api/auth/logout", get(auth::logout))
-      .route("/api/courses", post(courses::get_courses))
+      .route("/api/courses", get(courses::get_courses))
       .route("/api/courses/{id}", get(courses::get_course_by_id))
       .route("/api/instructors/{name}", get(instructors::get_instructor))
       .route(
@@ -404,19 +404,12 @@ mod tests {
     .await
     .unwrap();
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
@@ -441,19 +434,12 @@ mod tests {
     .await
     .unwrap();
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses?limit=10&offset=40")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
@@ -473,26 +459,127 @@ mod tests {
   async fn courses_route_disallows_negative_limit_or_offset() {
     let TestContext { app, .. } = TestContext::new().await;
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .clone()
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses?limit=-10&offset=-10")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
       .unwrap();
 
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+  }
+
+  #[tokio::test]
+  async fn courses_route_with_filters() {
+    let TestContext { db, app, .. } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "COMP202".into(),
+      user_id: "1".into(),
+      rating: 3,
+      difficulty: 2,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "COMP252".into(),
+      user_id: "1".into(),
+      rating: 5,
+      difficulty: 4,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "MATH240".into(),
+      user_id: "1".into(),
+      rating: 4,
+      difficulty: 3,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    async fn case(app: Router, uri: &str, expected_ids: &[&str]) {
+      let response = app
+        .oneshot(
+          Request::builder()
+            .method(Method::GET)
+            .uri(uri)
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::OK);
+
+      let payload = response.convert::<GetCoursesPayload>().await;
+
+      let ids = payload
+        .courses
+        .iter()
+        .map(|course| course.id.as_str())
+        .collect::<Vec<&str>>();
+
+      assert_eq!(ids, expected_ids);
+    }
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP&sortType=rating&sortReverse=true",
+      &["COMP252", "COMP202"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP&sortType=rating&sortReverse=false",
+      &["COMP202", "COMP252"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?sortType=difficulty&sortReverse=true",
+      &["COMP252", "MATH240", "COMP202"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?levels=2&sortType=reviewCount&sortReverse=true",
+      &["COMP202", "COMP252", "MATH240"],
+    )
+    .await;
+
+    case(app.clone(), "/api/courses?query=Honours", &["COMP252"]).await;
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP,MATH&levels=2",
+      &["COMP202", "COMP252", "MATH240"],
+    )
+    .await;
+
+    case(app.clone(), "/api/courses?subjects=PHYS", &[]).await;
+
+    case(app.clone(), "/api/courses?levels=1", &[]).await;
   }
 
   #[tokio::test]
