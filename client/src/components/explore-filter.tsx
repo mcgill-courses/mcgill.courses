@@ -9,10 +9,6 @@ import { termColorMap } from './course-terms';
 import { MultiSelect } from './multi-select';
 import { ResetButton } from './reset-button';
 
-const TERM_OPTIONS = ['Fall', 'Winter', 'Summer'] as const;
-
-const LEVEL_OPTIONS = ['1XX', '2XX', '3XX', '4XX', '5XX', '6XX', '7XX'];
-
 const SORT_BY_OPTIONS = [
   '',
   'Highest Rating',
@@ -22,6 +18,8 @@ const SORT_BY_OPTIONS = [
   'Most Reviews',
   'Least Reviews',
 ] as const;
+const LEVEL_OPTIONS = ['1XX', '2XX', '3XX', '4XX', '5XX', '6XX', '7XX'];
+const TERM_OPTIONS = ['Fall', 'Winter', 'Summer'] as const;
 
 export type SortByType = (typeof SORT_BY_OPTIONS)[number];
 
