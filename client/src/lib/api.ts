@@ -1,13 +1,13 @@
-import type { Subscription } from '../lib/types';
-import type { UserResponse } from '../lib/types';
-import type { Notification } from '../lib/types';
-import { InteractionKind } from '../lib/types';
+import type { GetCourseByIdPayload } from '../lib/types';
+import type { GetCoursesPayload } from '../lib/types';
+import type { GetInstructorPayload } from '../lib/types';
+import type { GetInteractionKindPayload } from '../lib/types';
 import type { GetReviewsPayload } from '../lib/types';
 import type { GetUserInteractionForCoursePayload } from '../lib/types';
-import type { GetInteractionKindPayload } from '../lib/types';
-import type { GetInstructorPayload } from '../lib/types';
-import type { GetCoursesPayload } from '../lib/types';
-import type { GetCourseByIdPayload } from '../lib/types';
+import type { InteractionKind } from '../lib/types';
+import type { Notification } from '../lib/types';
+import type { Subscription } from '../lib/types';
+import type { UserResponse } from '../lib/types';
 import type { SearchResults } from './search-index';
 
 const prefix = '/api';
