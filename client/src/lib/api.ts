@@ -1,4 +1,5 @@
 import type { CourseFilter } from '../lib/types';
+import type { GetAveragesPayload } from '../lib/types';
 import type { GetCourseByIdPayload } from '../lib/types';
 import type { GetCoursesPayload } from '../lib/types';
 import type { GetInstructorPayload } from '../lib/types';
@@ -83,6 +84,15 @@ const client = {
 };
 
 export const api = {
+  async getAverages(courseId?: string): Promise<GetAveragesPayload> {
+    return client.deserialize<GetAveragesPayload>(
+      'GET',
+      client.buildQuery('/averages', {
+        course_id: courseId,
+      })
+    );
+  },
+
   async getSubscription(courseId: string): Promise<Subscription | null> {
     return client.deserialize<Subscription | null>(
       'GET',

@@ -7,6 +7,7 @@ pub struct Db {
 }
 
 impl Db {
+  const AVERAGE_COLLECTION: &'static str = "averages";
   const COURSE_COLLECTION: &'static str = "courses";
   const INSTRUCTOR_COLLECTION: &'static str = "instructors";
   const INTERACTION_COLLECTION: &'static str = "interactions";
@@ -200,6 +201,37 @@ impl Db {
   #[tracing::instrument(name = "db_find_course_by_id", skip(self), fields(course_id = %id))]
   pub async fn find_course_by_id(&self, id: &str) -> Result<Option<Course>> {
     self.find_course(doc! { "_id": id }).await
+  }
+
+  pub async fn averages(
+    &self,
+    course_id: Option<&str>,
+  ) -> Result<Vec<CourseAverage>> {
+    let document = if let Some(course_id) = course_id {
+      doc! { "courseId": course_id }
+    } else {
+      doc! {}
+    };
+
+    Ok(
+      self
+        .database
+        .collection::<CourseAverage>(Self::AVERAGE_COLLECTION)
+        .find(document)
+        .await?
+        .try_collect::<Vec<CourseAverage>>()
+        .await?,
+    )
+  }
+
+  pub async fn add_average(&self, average: CourseAverage) -> Result {
+    self
+      .database
+      .collection::<CourseAverage>(Self::AVERAGE_COLLECTION)
+      .insert_one(average)
+      .await?;
+
+    Ok(())
   }
 
   #[tracing::instrument(name = "db_add_review", skip(self), fields(course_id = %review.course_id, user_id = %review.user_id))]

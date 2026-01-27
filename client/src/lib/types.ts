@@ -114,6 +114,12 @@ export interface Course {
   reviewCount: number;
 }
 
+export interface CourseAverage {
+  courseId: string;
+  term: string;
+  average: string;
+}
+
 export enum CourseSortType {
   /** Sort by course difficulty. */
   Difficulty = 'difficulty',
@@ -136,6 +142,10 @@ export interface CourseFilter {
   subjects?: string[];
   /** Term identifiers to filter by (e.g., "Fall 2024"). */
   terms?: string[];
+}
+
+export interface GetAveragesPayload {
+  averages: CourseAverage[];
 }
 
 export interface Review {

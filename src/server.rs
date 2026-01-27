@@ -114,6 +114,7 @@ impl Server {
       .route("/api/auth/authorized", get(auth::login_authorized))
       .route("/api/auth/login", get(auth::microsoft_auth))
       .route("/api/auth/logout", get(auth::logout))
+      .route("/api/averages", get(averages::get_averages))
       .route("/api/courses", get(courses::get_courses))
       .route("/api/courses/{id}", get(courses::get_course_by_id))
       .route("/api/instructors/{name}", get(instructors::get_instructor))
@@ -2541,5 +2542,94 @@ mod tests {
     let notifications = response.convert::<Vec<Notification>>().await;
     assert_eq!(notifications.len(), 1);
     assert_eq!(notifications[0].review.user_id, "c");
+  }
+
+  #[tokio::test]
+  async fn averages_route_works() {
+    let TestContext { db, mut app, .. } = TestContext::new().await;
+
+    db.add_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Fall 2024".into(),
+      average: "B+".into(),
+    })
+    .await
+    .unwrap();
+
+    db.add_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Winter 2024".into(),
+      average: "B".into(),
+    })
+    .await
+    .unwrap();
+
+    db.add_average(model::CourseAverage {
+      course_id: "MATH240".into(),
+      term: "Fall 2024".into(),
+      average: "A-".into(),
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .uri("/api/averages")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(
+      response
+        .convert::<averages::GetAveragesPayload>()
+        .await
+        .averages
+        .len(),
+      3
+    );
+  }
+
+  #[tokio::test]
+  async fn averages_route_filters_by_course_id() {
+    let TestContext { db, mut app, .. } = TestContext::new().await;
+
+    db.add_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Fall 2024".into(),
+      average: "B+".into(),
+    })
+    .await
+    .unwrap();
+
+    db.add_average(model::CourseAverage {
+      course_id: "MATH240".into(),
+      term: "Fall 2024".into(),
+      average: "A-".into(),
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .uri("/api/averages?course_id=COMP202")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let payload = response.convert::<averages::GetAveragesPayload>().await;
+    assert_eq!(payload.averages.len(), 1);
+    assert_eq!(payload.averages[0].course_id, "COMP202");
+    assert_eq!(payload.averages[0].average, "B+");
   }
 }

@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet-async';
 import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import courseAverageData from '../assets/course-averages-data.json';
 import { AddReviewForm } from '../components/add-review-form';
 import { CourseAverages } from '../components/course-averages';
 import { CourseInfo } from '../components/course-info';
@@ -44,6 +43,7 @@ export const CoursePage = () => {
     Interaction[] | undefined
   >([]);
   const [course, setCourse] = useState<Course | null | undefined>(undefined);
+  const [courseAverages, setCourseAverages] = useState<TermAverage[]>([]);
   const [editReviewOpen, setEditReviewOpen] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [showingReviews, setShowingReviews] = useState<Review[]>([]);
@@ -93,6 +93,16 @@ export const CoursePage = () => {
             await api.getUserInteractionsForCourse(id, user.id);
 
           setUserInteractions(courseInteractionsPayload.interactions);
+        }
+
+        if (id) {
+          const averagesPayload = await api.getAverages(id);
+          setCourseAverages(
+            averagesPayload.averages.map((a) => ({
+              term: a.term,
+              average: a.average as TermAverage['average'],
+            }))
+          );
         }
 
         firstFetch.current = false;
@@ -185,11 +195,6 @@ export const CoursePage = () => {
   const canReview = Boolean(
     user && !allReviews?.find((r) => r.userId === user?.id)
   );
-
-  const allCourseAverages: Record<string, TermAverage[]> =
-    courseAverageData as Record<string, TermAverage[]>;
-
-  const courseAverages: TermAverage[] = allCourseAverages[course._id];
 
   const handleSubmit = (successMessage: string) => {
     return (res: Response) => {

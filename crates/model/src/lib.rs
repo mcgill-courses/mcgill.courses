@@ -24,6 +24,7 @@ use {
 };
 
 mod course;
+mod course_average;
 mod course_filter;
 mod course_page;
 mod course_sort_type;
@@ -41,6 +42,7 @@ mod subscription;
 
 pub use crate::{
   course::Course,
+  course_average::CourseAverage,
   course_filter::CourseFilter,
   course_page::CoursePage,
   course_sort_type::CourseSortType,
