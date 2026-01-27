@@ -25,15 +25,61 @@ pub(crate) struct GetCoursesPayload {
   path = "/courses",
   description = "Get a list of courses with optional filtering.",
   params(
-    ("levels" = Option<String>, Query, description = "Comma-separated list of course levels to filter by."),
-    ("limit" = Option<i64>, Query, description = "Maximum number of courses to return."),
-    ("offset" = Option<u64>, Query, description = "Number of courses to skip."),
-    ("query" = Option<String>, Query, description = "Search query string."),
-    ("sortReverse" = Option<bool>, Query, description = "Whether to reverse the sort order."),
-    ("sortType" = Option<String>, Query, description = "Sort type (difficulty, rating, reviewCount)."),
-    ("subjects" = Option<String>, Query, description = "Comma-separated list of subjects to filter by."),
-    ("terms" = Option<String>, Query, description = "Comma-separated list of terms to filter by."),
-    ("with_course_count" = Option<bool>, Query, description = "Whether to include the total course count in the response."),
+    (
+      "levels" = Option<String>,
+      Query,
+      description = "Comma-separated list of course levels to filter by.",
+      example = "2,3,4"
+    ),
+    (
+      "limit" = Option<i64>,
+      Query,
+      description = "Maximum number of courses to return.",
+      minimum = 0,
+      example = 20
+    ),
+    (
+      "offset" = Option<u64>,
+      Query,
+      description = "Number of courses to skip for pagination.",
+      minimum = 0,
+      example = 0
+    ),
+    (
+      "query" = Option<String>,
+      Query,
+      description = "Search query string to filter courses by title, description, or ID.",
+      example = "algorithms"
+    ),
+    (
+      "sortReverse" = Option<bool>,
+      Query,
+      description = "Whether to reverse the sort order. When true, sorts descending (highest first).",
+      example = true
+    ),
+    (
+      "sortType" = Option<CourseSortType>,
+      Query,
+      description = "Field to sort results by."
+    ),
+    (
+      "subjects" = Option<String>,
+      Query,
+      description = "Comma-separated list of subject codes to filter by.",
+      example = "COMP,MATH"
+    ),
+    (
+      "terms" = Option<String>,
+      Query,
+      description = "Comma-separated list of terms to filter by.",
+      example = "Fall 2024,Winter 2025"
+    ),
+    (
+      "with_course_count" = Option<bool>,
+      Query,
+      description = "Whether to include the total course count in the response.",
+      example = true
+    ),
   ),
   responses(
     (status = StatusCode::OK, description = "Information about many courses.", body = GetCoursesPayload),

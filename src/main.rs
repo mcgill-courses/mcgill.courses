@@ -36,9 +36,9 @@ use {
     HeaderMap, Request, StatusCode, header, header::SET_COOKIE, request::Parts,
   },
   model::{
-    Course, CourseFilter, InitializeOptions, Instructor, Interaction,
-    InteractionKind, Notification, Review, ReviewFilter, SearchResults,
-    Subscription,
+    Course, CourseFilter, CourseSortType, InitializeOptions, Instructor,
+    Interaction, InteractionKind, Notification, Review, ReviewFilter,
+    SearchResults, Subscription,
   },
   oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet,
