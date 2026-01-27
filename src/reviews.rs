@@ -257,12 +257,6 @@ pub(crate) struct AddOrUpdateReviewBody {
       description = "Review added successfully."
     ),
     (
-      status = StatusCode::BAD_REQUEST,
-      description = "Invalid request. Course not found or invalid instructor(s) provided.",
-      body = String,
-      content_type = "text/plain"
-    ),
-    (
       status = StatusCode::UNAUTHORIZED,
       description = "User is not authenticated.",
       content_type = "text/plain"
@@ -336,12 +330,6 @@ pub(crate) async fn add_review(
     (
       status = StatusCode::OK,
       description = "Review updated successfully."
-    ),
-    (
-      status = StatusCode::BAD_REQUEST,
-      description = "Invalid request. Course not found or invalid instructor(s) provided.",
-      body = String,
-      content_type = "text/plain"
     ),
     (
       status = StatusCode::UNAUTHORIZED,
