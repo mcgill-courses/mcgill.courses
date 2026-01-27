@@ -79,13 +79,36 @@ pub(crate) struct GetCourseByIdPayload {
   path = "/courses/{id}",
   description = "Get information about a specific course by its ID.",
   params(
-    ("id" = String, Path, description = "Course ID to get course information for."),
-    ("with_reviews" = Option<bool>, Query, description = "Whether to include reviews in the response."),
+    (
+      "id" = String,
+      Path,
+      description = "Course ID (e.g., COMP202). Case-insensitive.",
+      example = "COMP202"
+    ),
+    (
+      "with_reviews" = Option<bool>,
+      Query,
+      description = "Whether to include reviews in the response. Reviews are sorted by timestamp, newest first.",
+      example = true
+    ),
   ),
   responses(
-    (status = StatusCode::OK, description = "Information about a specific course.", body = GetCourseByIdPayload),
-    (status = StatusCode::NOT_FOUND, description = "Course not found."),
-    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
+    (
+      status = StatusCode::OK,
+      description = "Course found and returned successfully.",
+      body = GetCourseByIdPayload,
+      content_type = "application/json"
+    ),
+    (
+      status = StatusCode::NOT_FOUND,
+      description = "No course exists with the given ID."
+    ),
+    (
+      status = StatusCode::INTERNAL_SERVER_ERROR,
+      description = "Internal server error.",
+      body = String,
+      content_type = "text/plain"
+    )
   )
 )]
 pub(crate) async fn get_course_by_id(
@@ -93,6 +116,8 @@ pub(crate) async fn get_course_by_id(
   Query(params): Query<GetCourseByIdParams>,
   AppState(state): AppState<State>,
 ) -> Result<impl IntoResponse> {
+  let id = id.to_uppercase();
+
   Ok(match state.db.find_course_by_id(&id).await? {
     Some(course) => {
       let mut reviews = params

@@ -1,7 +1,7 @@
 import type { Subscription } from '../lib/types';
 import type { UserResponse } from '../lib/types';
 import type { Notification } from '../lib/types';
-import { InteractionKind } from '../lib/types';
+import type { InteractionKind } from '../lib/types';
 import type { GetReviewsPayload } from '../lib/types';
 import type { GetUserInteractionForCoursePayload } from '../lib/types';
 import type { GetInteractionKindPayload } from '../lib/types';

@@ -505,6 +505,33 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn course_by_id_is_case_insensitive() {
+    let TestContext { db, app, .. } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    for id in ["comp202", "Comp202", "COMP202", "cOmP202"] {
+      let response = app
+        .clone()
+        .oneshot(
+          Request::builder()
+            .uri(format!("/api/courses/{id}"))
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::OK, "failed for id: {id}");
+    }
+  }
+
+  #[tokio::test]
   async fn can_get_course_with_reviews() {
     let TestContext {
       db,
