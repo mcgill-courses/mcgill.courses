@@ -35,6 +35,7 @@ use {
   http::{
     HeaderMap, Request, StatusCode, header, header::SET_COOKIE, request::Parts,
   },
+  indoc::indoc,
   model::{
     Course, CourseFilter, CourseSortType, InitializeOptions, Instructor,
     Interaction, InteractionKind, Notification, Review, ReviewFilter,
