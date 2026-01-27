@@ -114,6 +114,37 @@ export interface Course {
   reviewCount: number;
 }
 
+export enum CourseSortType {
+  /** Sort by course difficulty. */
+  Difficulty = 'difficulty',
+  /** Sort by course rating. */
+  Rating = 'rating',
+  /** Sort by number of reviews. */
+  ReviewCount = 'reviewCount',
+}
+
+export interface CourseFilter {
+  /** Course levels to filter by (e.g., "1", "2", "3"). */
+  levels?: string[];
+  /** Whether to reverse the sort order. */
+  sortReverse?: boolean;
+  /** Sort type for ordering results. */
+  sortType?: CourseSortType;
+  /** Subject codes to filter by (e.g., "COMP", "MATH"). */
+  subjects?: string[];
+  /** Term identifiers to filter by (e.g., "Fall 2024"). */
+  terms?: string[];
+  /** Search query string. */
+  query?: string;
+}
+
+export interface CourseSort {
+  /** Whether to reverse the sort order. */
+  reverse: boolean;
+  /** Sort type for ordering results. */
+  sortType: CourseSortType;
+}
+
 export interface Review {
   /** The text content of the review. */
   content: string;
@@ -141,10 +172,10 @@ export interface GetCourseByIdPayload {
 }
 
 export interface GetCoursesPayload {
-  /** List of courses matching the query. */
-  courses: Course[];
   /** Total number of courses available (if requested). */
   courseCount?: number;
+  /** List of courses matching the query. */
+  courses: Course[];
 }
 
 export interface GetInstructorPayload {

@@ -1,12 +1,12 @@
 use super::*;
 
 #[derive(Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub(crate) struct GetCoursesParams {
-  /// Maximum number of courses to return.
+  #[serde(flatten)]
+  filter: CourseFilter,
   limit: Option<i64>,
-  /// Number of courses to skip.
   offset: Option<u64>,
-  /// Whether to include the total course count in the response.
   with_course_count: Option<bool>,
 }
 
@@ -14,19 +14,25 @@ pub(crate) struct GetCoursesParams {
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub(crate) struct GetCoursesPayload {
-  /// List of courses matching the query.
-  pub(crate) courses: Vec<Course>,
   /// Total number of courses available (if requested).
   pub(crate) course_count: Option<u32>,
+  /// List of courses matching the query.
+  pub(crate) courses: Vec<Course>,
 }
 
 #[utoipa::path(
-  post,
+  get,
   path = "/courses",
   description = "Get a list of courses with optional filtering.",
   params(
+    ("levels" = Option<String>, Query, description = "Comma-separated list of course levels to filter by."),
     ("limit" = Option<i64>, Query, description = "Maximum number of courses to return."),
     ("offset" = Option<u64>, Query, description = "Number of courses to skip."),
+    ("query" = Option<String>, Query, description = "Search query string."),
+    ("sortReverse" = Option<bool>, Query, description = "Whether to reverse the sort order."),
+    ("sortType" = Option<String>, Query, description = "Sort type (difficulty, rating, reviewCount)."),
+    ("subjects" = Option<String>, Query, description = "Comma-separated list of subjects to filter by."),
+    ("terms" = Option<String>, Query, description = "Comma-separated list of terms to filter by."),
     ("with_course_count" = Option<bool>, Query, description = "Whether to include the total course count in the response."),
   ),
   responses(
@@ -37,10 +43,9 @@ pub(crate) struct GetCoursesPayload {
 pub(crate) async fn get_courses(
   Query(params): Query<GetCoursesParams>,
   AppState(db): AppState<Arc<Db>>,
-  Json(filter): Json<CourseFilter>,
 ) -> Result<impl IntoResponse> {
   let courses = db
-    .courses(params.limit, params.offset, Some(filter))
+    .courses(params.limit, params.offset, Some(params.filter))
     .await?;
 
   let course_count = if params.with_course_count.unwrap_or(false) {
@@ -52,8 +57,8 @@ pub(crate) async fn get_courses(
   Ok((
     StatusCode::OK,
     Json(GetCoursesPayload {
-      courses,
       course_count,
+      courses,
     }),
   ))
 }

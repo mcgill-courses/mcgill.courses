@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { toast } from 'sonner';
@@ -14,79 +14,71 @@ import { Spinner } from '../components/spinner';
 import { useDebouncedValue } from '../hooks/use-debounced-value';
 import { useExploreFilterState } from '../hooks/use-explore-filter-state';
 import { api } from '../lib/api';
-import type { Course } from '../lib/types';
+import type { Course, CourseFilter, CourseSort } from '../lib/types';
+import { CourseSortType } from '../lib/types';
 import { getCurrentTerms } from '../lib/utils';
 
-const makeSortPayload = (sort: SortByType) => {
-  switch (sort) {
-    case '':
-      return undefined;
-    case 'Highest Rating':
-      return {
-        sortType: 'rating',
-        reverse: true,
-      };
-    case 'Lowest Rating':
-      return {
-        sortType: 'rating',
-        reverse: false,
-      };
-    case 'Hardest':
-      return {
-        sortType: 'difficulty',
-        reverse: true,
-      };
-    case 'Easiest':
-      return {
-        sortType: 'difficulty',
-        reverse: false,
-      };
-    case 'Most Reviews':
-      return {
-        sortType: 'reviewCount',
-        reverse: true,
-      };
-    case 'Least Reviews':
-      return {
-        sortType: 'reviewCount',
-        reverse: false,
-      };
-  }
-};
+const COURSE_LIMIT = 20;
 
 export const Explore = () => {
-  const limit = 20;
-  const currentTerms = getCurrentTerms();
-
   const [courseCount, setCourseCount] = useState<number | undefined>(undefined);
   const [courses, setCourses] = useState<Course[] | undefined>(undefined);
   const [hasMore, setHasMore] = useState(true);
-  const [offset, setOffset] = useState(limit);
+  const [offset, setOffset] = useState(COURSE_LIMIT);
   const [query, setQuery] = useState<string>('');
   const [searchSelected, setSearchSelected] = useState<boolean>(false);
 
+  const currentTerms = getCurrentTerms();
   const debouncedQuery = useDebouncedValue(query, 250);
 
   const { selectedSubjects, selectedLevels, selectedTerms, sortBy } =
     useExploreFilterState();
 
-  const nullable = (arr: string[]) => (arr.length === 0 ? null : arr);
+  const orUndefined = (arr: string[]) => (arr.length === 0 ? undefined : arr);
 
-  const filters = {
-    subjects: nullable(selectedSubjects),
-    levels: nullable(selectedLevels.map((l) => l.charAt(0))),
-    terms: nullable(
+  const makeSortPayload = useCallback(
+    (sort: SortByType): CourseSort | undefined => {
+      switch (sort) {
+        case '':
+          return undefined;
+        case 'Highest Rating':
+          return { reverse: true, sortType: CourseSortType.Rating };
+        case 'Lowest Rating':
+          return { reverse: false, sortType: CourseSortType.Rating };
+        case 'Hardest':
+          return { reverse: true, sortType: CourseSortType.Difficulty };
+        case 'Easiest':
+          return { reverse: false, sortType: CourseSortType.Difficulty };
+        case 'Most Reviews':
+          return { reverse: true, sortType: CourseSortType.ReviewCount };
+        case 'Least Reviews':
+          return { reverse: false, sortType: CourseSortType.ReviewCount };
+      }
+    },
+    [sortBy]
+  );
+
+  const sortPayload = makeSortPayload(sortBy);
+
+  const filters: CourseFilter = {
+    levels: orUndefined(selectedLevels.map((level) => level.charAt(0))),
+    query: debouncedQuery === '' ? undefined : debouncedQuery,
+    sortReverse: sortPayload?.reverse,
+    sortType: sortPayload?.sortType,
+    subjects: orUndefined(selectedSubjects),
+    terms: orUndefined(
       selectedTerms.map(
-        (term) => currentTerms.filter((t) => t.split(' ')[0] === term)[0]
+        (term) =>
+          currentTerms.filter(
+            (currentTerm) => currentTerm.split(' ')[0] === term
+          )[0]
       )
     ),
-    query: debouncedQuery === '' ? null : debouncedQuery,
-    sortBy: makeSortPayload(sortBy),
   };
 
   useEffect(() => {
     api
-      .getCourses(limit, 0, true, filters)
+      .getCourses(COURSE_LIMIT, 0, true, filters)
       .then((data) => {
         setCourses(data.courses);
         setCourseCount(data.courseCount);
@@ -95,19 +87,20 @@ export const Explore = () => {
         toast.error('Failed to fetch courses. Please try again later.');
       });
     setHasMore(true);
-    setOffset(limit);
+    setOffset(COURSE_LIMIT);
   }, [selectedSubjects, selectedLevels, selectedTerms, sortBy, debouncedQuery]);
 
   const fetchMore = async () => {
-    const batch = await api.getCourses(limit, offset, false, filters);
+    const batch = await api.getCourses(COURSE_LIMIT, offset, false, filters);
 
-    if (batch.courses.length === 0) setHasMore(false);
-    else {
+    if (batch.courses.length === 0) {
+      setHasMore(false);
+    } else {
       const newCourses = courses
         ? courses.concat(batch.courses)
         : batch.courses;
       setCourses(newCourses);
-      setOffset(offset + limit);
+      setOffset(offset + COURSE_LIMIT);
     }
   };
 

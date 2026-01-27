@@ -114,7 +114,7 @@ impl Server {
       .route("/api/auth/authorized", get(auth::login_authorized))
       .route("/api/auth/login", get(auth::microsoft_auth))
       .route("/api/auth/logout", get(auth::logout))
-      .route("/api/courses", post(courses::get_courses))
+      .route("/api/courses", get(courses::get_courses))
       .route("/api/courses/{id}", get(courses::get_course_by_id))
       .route("/api/instructors/{name}", get(instructors::get_instructor))
       .route(
@@ -384,19 +384,12 @@ mod tests {
     .await
     .unwrap();
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
@@ -421,19 +414,12 @@ mod tests {
     .await
     .unwrap();
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses?limit=10&offset=40")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
@@ -453,26 +439,37 @@ mod tests {
   async fn courses_route_disallows_negative_limit_or_offset() {
     let TestContext { app, .. } = TestContext::new().await;
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .clone()
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses?limit=-10&offset=-10")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
       .unwrap();
 
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+  }
+
+  #[tokio::test]
+  async fn courses_route_with_sort() {
+    let TestContext { app, .. } = TestContext::new().await;
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .method(Method::GET)
+          .uri("/api/courses?sortReverse=false&sortType=difficulty")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
   }
 
   #[tokio::test]
