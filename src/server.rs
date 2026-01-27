@@ -150,7 +150,26 @@ impl Server {
           .delete(subscriptions::delete_subscription),
       )
       .route("/api/user", get(user::get_user))
-      .merge(Scalar::with_url("/api/docs", Documentation::openapi()));
+      .merge(
+        Scalar::with_url("/api/docs", Documentation::openapi()).custom_html(indoc! {
+          r#"
+          <!doctype html>
+          <html>
+          <head>
+            <title>API - mcgill.courses</title>
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+          </head>
+          <body>
+          <script id="api-reference" type="application/json">
+            $spec
+          </script>
+          <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+          </body>
+          </html>
+          "#
+        }),
+      );
 
     // Serve microsoft identity association file
     router = router.route(
