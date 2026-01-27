@@ -126,6 +126,8 @@ export enum CourseSortType {
 export interface CourseFilter {
   /** Course levels to filter by (e.g., "1", "2", "3"). */
   levels?: string[];
+  /** Search query string. */
+  query?: string;
   /** Whether to reverse the sort order. */
   sortReverse?: boolean;
   /** Sort type for ordering results. */
@@ -134,8 +136,6 @@ export interface CourseFilter {
   subjects?: string[];
   /** Term identifiers to filter by (e.g., "Fall 2024"). */
   terms?: string[];
-  /** Search query string. */
-  query?: string;
 }
 
 export interface Review {
