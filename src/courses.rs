@@ -82,7 +82,7 @@ pub(crate) struct GetCourseByIdPayload {
     (
       "id" = String,
       Path,
-      description = "Course ID (e.g., COMP202). Case-insensitive.",
+      description = "Course ID in the format {SUBJECT}{CODE} (e.g., COMP202, MATH240). Case-insensitive.",
       example = "COMP202"
     ),
     (
