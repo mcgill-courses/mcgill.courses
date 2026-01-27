@@ -1,4 +1,4 @@
-use {super::*, serde_with::DisplayFromStr};
+use super::*;
 
 serde_with::serde_conv!(
   CommaSeparated,
@@ -9,9 +9,9 @@ serde_with::serde_conv!(
   }
 );
 
-#[serde_with::serde_as]
 #[derive(Debug, Clone, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
+#[serde_with::serde_as]
 #[typeshare]
 pub struct CourseFilter {
   /// Course levels to filter by (e.g., "1", "2", "3").
