@@ -18,6 +18,9 @@ pub struct CourseFilter {
   #[serde_as(as = "Option<CommaSeparated>")]
   #[serde(default, skip_serializing_if = "Option::is_none")]
   pub levels: Option<Vec<String>>,
+  /// Search query string.
+  #[serde(default, skip_serializing_if = "Option::is_none")]
+  pub query: Option<String>,
   /// Whether to reverse the sort order.
   #[serde_as(as = "Option<DisplayFromStr>")]
   #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33,7 +36,4 @@ pub struct CourseFilter {
   #[serde_as(as = "Option<CommaSeparated>")]
   #[serde(default, skip_serializing_if = "Option::is_none")]
   pub terms: Option<Vec<String>>,
-  /// Search query string.
-  #[serde(default, skip_serializing_if = "Option::is_none")]
-  pub query: Option<String>,
 }
