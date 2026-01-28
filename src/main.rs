@@ -1,7 +1,7 @@
 use {
   crate::{
     assets::Assets,
-    auth::{AuthRedirect, COOKIE_NAME, OAuthClient},
+    auth::{AuthRedirect, COOKIE_NAME, MCGILL_TENANT_ID, OAuthClient},
     documentation::Documentation,
     error::Error,
     hash::Hash,

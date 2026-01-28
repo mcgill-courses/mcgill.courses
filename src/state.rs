@@ -50,17 +50,15 @@ impl State {
       ))
       .set_client_secret(ClientSecret::new(client_secret))
       .set_auth_uri(
-        AuthUrl::new(
-          "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
-            .to_string(),
-        )
+        AuthUrl::new(format!(
+          "https://login.microsoftonline.com/{MCGILL_TENANT_ID}/oauth2/v2.0/authorize",
+        ))
         .expect("Invalid authorization URL"),
       )
       .set_token_uri(
-        TokenUrl::new(
-          "https://login.microsoftonline.com/common/oauth2/v2.0/token"
-            .to_string(),
-        )
+        TokenUrl::new(format!(
+          "https://login.microsoftonline.com/{MCGILL_TENANT_ID}/oauth2/v2.0/token",
+        ))
         .expect("Invalid token endpoint URL"),
       )
       .set_redirect_uri(
