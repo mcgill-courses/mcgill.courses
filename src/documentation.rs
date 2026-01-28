@@ -14,8 +14,12 @@ impl Modify for MicrosoftOAuthSecurity {
       "microsoftOAuth",
       SecurityScheme::OAuth2(OAuth2::new([Flow::AuthorizationCode(
         AuthorizationCode::new(
-          "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
-          "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+          &format!(
+            "https://login.microsoftonline.com/{MCGILL_TENANT_ID}/oauth2/v2.0/authorize",
+          ),
+          &format!(
+            "https://login.microsoftonline.com/{MCGILL_TENANT_ID}/oauth2/v2.0/token",
+          ),
           Scopes::from_iter([
             ("openid", "Authenticate with Microsoft."),
             (
