@@ -152,23 +152,38 @@ impl Server {
       .route("/api/user", get(user::get_user))
       .merge(
         Scalar::with_url("/api/docs", Documentation::openapi()).custom_html(indoc! {
-          r#"
+          r##"
           <!doctype html>
-          <html>
+          <html lang="en">
           <head>
-            <title>API - mcgill.courses</title>
-            <meta charset="utf-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <meta charset="UTF-8"/>
+            <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"/>
             <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+            <link rel="shortcut icon" href="/favicon.ico"/>
+            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
+            <meta name="apple-mobile-web-app-title" content="mcgill.courses"/>
+            <link rel="manifest" href="/site.webmanifest"/>
+            <meta name="msapplication-TileColor" content="#da532c"/>
+            <meta name="theme-color" content="#ffffff"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <meta name="description" content="API documentation for mcgill.courses."/>
+            <title>API - mcgill.courses</title>
           </head>
-          <body>
-          <script id="api-reference" type="application/json">
-            $spec
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-XJYTRP283X"></script>
+          <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag("js", new Date());
+            gtag("config", "G-XJYTRP283X");
           </script>
-          <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+          <body>
+            <script id="api-reference" type="application/json">
+              $spec
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
           </body>
           </html>
-          "#
+          "##
         }),
       );
 
