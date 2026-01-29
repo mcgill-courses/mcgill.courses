@@ -70,6 +70,7 @@ use {
   tower::{ServiceBuilder, timeout::TimeoutLayer},
   tower_governor::{GovernorLayer, governor::GovernorConfigBuilder},
   tower_http::{
+    compression::CompressionLayer,
     cors::CorsLayer,
     services::{ServeDir, ServeFile},
     trace::TraceLayer,

@@ -256,7 +256,7 @@ impl Server {
     });
 
     Ok(
-      router.layer(
+      router.layer(CompressionLayer::new()).layer(
         ServiceBuilder::new()
           .layer(HandleErrorLayer::new(|error: BoxError| async move {
             if error.is::<tower::timeout::error::Elapsed>() {
