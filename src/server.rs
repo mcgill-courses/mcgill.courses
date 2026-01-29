@@ -255,7 +255,7 @@ impl Server {
       }
     });
 
-    Ok(if config.rate_limit {
+    Ok(
       router.layer(
         ServiceBuilder::new()
           .layer(HandleErrorLayer::new(|error: BoxError| async move {
@@ -266,23 +266,14 @@ impl Server {
             }
           }))
           .layer(TimeoutLayer::new(Duration::from_secs(30)))
-          .layer(GovernorLayer::new(governor_config))
+          .layer(tower::util::option_layer(
+            config
+              .rate_limit
+              .then(|| GovernorLayer::new(governor_config)),
+          ))
           .layer(CorsLayer::very_permissive()),
-      )
-    } else {
-      router.layer(
-        ServiceBuilder::new()
-          .layer(HandleErrorLayer::new(|error: BoxError| async move {
-            if error.is::<tower::timeout::error::Elapsed>() {
-              StatusCode::REQUEST_TIMEOUT
-            } else {
-              StatusCode::INTERNAL_SERVER_ERROR
-            }
-          }))
-          .layer(TimeoutLayer::new(Duration::from_secs(30)))
-          .layer(CorsLayer::very_permissive()),
-      )
-    })
+      ),
+    )
   }
 }
 
