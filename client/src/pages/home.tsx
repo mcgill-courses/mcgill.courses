@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useSearchParams } from 'react-router-dom';
-import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 import { CourseSearchBar } from '../components/course-search-bar';
 import { Layout } from '../components/layout';
@@ -11,17 +10,12 @@ import {
   updateSearchResults,
 } from '../lib/search-index';
 
-const alerts: Map<string, string> = new Map([
-  ['invalidMail', 'Please use a McGill email address to authenticate.'],
-]);
-
 const { courses, instructors, coursesIndex, instructorsIndex } =
   getSearchIndex();
 
 export const Home = () => {
   const searchBarInputRef = useRef<HTMLInputElement>(null);
 
-  const [searchParams] = useSearchParams();
   const [results, setResults] = useState<SearchResults>({
     query: '',
     courses: [],
@@ -30,13 +24,10 @@ export const Home = () => {
 
   useEffect(() => {
     const isDesktopScreen = window.innerWidth >= 1024;
-    if (isDesktopScreen) searchBarInputRef.current?.focus();
-  }, []);
 
-  useEffect(() => {
-    const err = searchParams.get('err');
-    if (err === null) return;
-    toast.error(alerts.get(err));
+    if (isDesktopScreen) {
+      searchBarInputRef.current?.focus();
+    }
   }, []);
 
   const handleInputChange = (query: string) => {

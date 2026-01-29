@@ -72,10 +72,6 @@ impl User {
     self.id
   }
 
-  pub(crate) fn mail(&self) -> &str {
-    &self.mail
-  }
-
   #[cfg(test)]
   pub(crate) fn new(id: &str, mail: &str) -> Self {
     User {
