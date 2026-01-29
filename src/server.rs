@@ -2549,7 +2549,9 @@ mod tests {
       .unwrap();
 
     assert_eq!(response.status(), StatusCode::OK);
+
     let notifications = response.convert::<Vec<Notification>>().await;
+
     assert_eq!(notifications.len(), 1);
     assert_eq!(notifications[0].review.user_id, "c");
   }
