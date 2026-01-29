@@ -2,37 +2,12 @@ use {
   anyhow::{Error, anyhow, bail},
   chrono::NaiveDateTime,
   clap::Parser,
-  lopdf::{Document, Object},
+  lopdf::Document,
   rayon::prelude::*,
   regex::Regex,
   serde::{Deserialize, Serialize},
   std::{collections::BTreeMap, fs, path::PathBuf, process},
 };
-
-static IGNORE: &[&[u8]] = &[
-  b"Length",
-  b"BBox",
-  b"FormType",
-  b"Matrix",
-  b"Type",
-  b"XObject",
-  b"Subtype",
-  b"Filter",
-  b"ColorSpace",
-  b"Width",
-  b"Height",
-  b"BitsPerComponent",
-  b"Length1",
-  b"Length2",
-  b"Length3",
-  b"PTEX.FileName",
-  b"PTEX.PageNumber",
-  b"PTEX.InfoDict",
-  b"FontDescriptor",
-  b"ExtGState",
-  b"MediaBox",
-  b"Annot",
-];
 
 #[derive(Debug, Deserialize, Serialize)]
 struct PdfText {
@@ -115,32 +90,6 @@ impl Arguments {
   }
 }
 
-fn filter_func(
-  object_id: (u32, u16),
-  object: &mut Object,
-) -> Option<((u32, u16), Object)> {
-  if IGNORE.contains(&object.type_name().unwrap_or_default()) {
-    return None;
-  }
-
-  if let Ok(dictionary) = object.as_dict_mut() {
-    dictionary.remove(b"Producer");
-    dictionary.remove(b"ModDate");
-    dictionary.remove(b"Creator");
-    dictionary.remove(b"ProcSet");
-    dictionary.remove(b"Procset");
-    dictionary.remove(b"XObject");
-    dictionary.remove(b"MediaBox");
-    dictionary.remove(b"Annots");
-
-    if dictionary.is_empty() {
-      return None;
-    }
-  }
-
-  Some((object_id, object.to_owned()))
-}
-
 fn get_pdf_text(doc: &Document) -> Result<PdfText, Error> {
   let mut pdf_text = PdfText {
     text: BTreeMap::new(),
@@ -181,7 +130,7 @@ fn get_pdf_text(doc: &Document) -> Result<PdfText, Error> {
 }
 
 fn extract_pdf_text(source: &PathBuf) -> Result<PdfText> {
-  let doc = Document::load_filtered(source, filter_func)?;
+  let doc = Document::load(&source)?;
 
   let text = get_pdf_text(&doc)?;
 
