@@ -89,6 +89,7 @@ use {
     },
   },
   utoipa_scalar::{Scalar, Servable},
+  uuid::Uuid,
   walkdir::WalkDir,
 };
 

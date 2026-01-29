@@ -212,7 +212,7 @@ impl Server {
 
     let trace_layer = TraceLayer::new_for_http()
       .make_span_with(|request: &Request<Body>| {
-        let request_id = uuid::Uuid::new_v4().to_string();
+        let request_id = Uuid::new_v4().to_string();
 
         info_span!(
           "http_request",
