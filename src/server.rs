@@ -258,8 +258,12 @@ impl Server {
     Ok(if config.rate_limit {
       router.layer(
         ServiceBuilder::new()
-          .layer(HandleErrorLayer::new(|_: BoxError| async {
-            StatusCode::REQUEST_TIMEOUT
+          .layer(HandleErrorLayer::new(|error: BoxError| async move {
+            if error.is::<tower::timeout::error::Elapsed>() {
+              StatusCode::REQUEST_TIMEOUT
+            } else {
+              StatusCode::INTERNAL_SERVER_ERROR
+            }
           }))
           .layer(TimeoutLayer::new(Duration::from_secs(30)))
           .layer(GovernorLayer::new(governor_config))
@@ -268,8 +272,12 @@ impl Server {
     } else {
       router.layer(
         ServiceBuilder::new()
-          .layer(HandleErrorLayer::new(|_: BoxError| async {
-            StatusCode::REQUEST_TIMEOUT
+          .layer(HandleErrorLayer::new(|error: BoxError| async move {
+            if error.is::<tower::timeout::error::Elapsed>() {
+              StatusCode::REQUEST_TIMEOUT
+            } else {
+              StatusCode::INTERNAL_SERVER_ERROR
+            }
           }))
           .layer(TimeoutLayer::new(Duration::from_secs(30)))
           .layer(CorsLayer::very_permissive()),
