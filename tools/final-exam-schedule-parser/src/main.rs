@@ -130,7 +130,7 @@ fn get_pdf_text(doc: &Document) -> Result<PdfText, Error> {
 }
 
 fn extract_pdf_text(source: &PathBuf) -> Result<PdfText> {
-  let doc = Document::load(&source)?;
+  let doc = Document::load(source)?;
 
   let text = get_pdf_text(&doc)?;
 
