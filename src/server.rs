@@ -258,11 +258,22 @@ impl Server {
     Ok(if config.rate_limit {
       router.layer(
         ServiceBuilder::new()
+          .layer(HandleErrorLayer::new(|_: BoxError| async {
+            StatusCode::REQUEST_TIMEOUT
+          }))
+          .layer(TimeoutLayer::new(Duration::from_secs(30)))
           .layer(GovernorLayer::new(governor_config))
           .layer(CorsLayer::very_permissive()),
       )
     } else {
-      router.layer(CorsLayer::very_permissive())
+      router.layer(
+        ServiceBuilder::new()
+          .layer(HandleErrorLayer::new(|_: BoxError| async {
+            StatusCode::REQUEST_TIMEOUT
+          }))
+          .layer(TimeoutLayer::new(Duration::from_secs(30)))
+          .layer(CorsLayer::very_permissive()),
+      )
     })
   }
 }
