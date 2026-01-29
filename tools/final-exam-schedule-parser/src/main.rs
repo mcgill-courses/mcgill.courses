@@ -6,6 +6,7 @@ use {
   model::{FinalExam, FinalExamGroup},
   rayon::prelude::*,
   regex::Regex,
+  reqwest::blocking::Client,
   serde::{Deserialize, Serialize},
   std::{collections::BTreeMap, fs, path::PathBuf, process},
 };
@@ -23,8 +24,9 @@ struct PdfText {
   about = "Extract exam schedule data from a PDF file."
 )]
 struct Arguments {
-  /// Path to the source PDF file.
-  source: PathBuf,
+  /// Path to a local PDF file. If not provided, fetches from the URL.
+  #[clap(short, long)]
+  source: Option<PathBuf>,
   /// Term to namespace exams for (e.g. 'Fall 2025', 'Winter 2026')
   #[clap(short, long)]
   term: String,
@@ -38,7 +40,12 @@ struct Arguments {
 
 impl Arguments {
   fn run(self) -> Result {
-    let text = extract_pdf_text(&self.source)?;
+    let text = if let Some(source) = &self.source {
+      extract_pdf_text(source)?
+    } else {
+      let pdf_data = fetch_pdf(&self.url)?;
+      extract_pdf_bytes(&pdf_data)?
+    };
 
     let parsed_exams = parse_exam_schedule(&text)?;
 
@@ -63,6 +70,25 @@ impl Arguments {
 
     Ok(())
   }
+}
+
+fn fetch_pdf(url: &str) -> Result<Vec<u8>> {
+  eprintln!("Fetching PDF from {url}");
+
+  let response = Client::new()
+    .get(url)
+    .send()
+    .map_err(|e| anyhow!("Failed to fetch PDF: {e}"))?;
+
+  if !response.status().is_success() {
+    bail!("Failed to fetch PDF: HTTP {}", response.status());
+  }
+
+  let bytes = response
+    .bytes()
+    .map_err(|e| anyhow!("Failed to read PDF bytes: {e}"))?;
+
+  Ok(bytes.to_vec())
 }
 
 fn get_pdf_text(doc: &Document) -> Result<PdfText, Error> {
@@ -115,6 +141,22 @@ fn extract_pdf_text(source: &PathBuf) -> Result<PdfText> {
       source.display(),
       text.errors.len()
     );
+
+    for error in text.errors.iter().take(10) {
+      eprintln!("{error}");
+    }
+  }
+
+  Ok(text)
+}
+
+fn extract_pdf_bytes(data: &[u8]) -> Result<PdfText> {
+  let doc = Document::load_mem(data)?;
+
+  let text = get_pdf_text(&doc)?;
+
+  if !text.errors.is_empty() {
+    eprintln!("PDF produced {} errors:", text.errors.len());
 
     for error in text.errors.iter().take(10) {
       eprintln!("{error}");

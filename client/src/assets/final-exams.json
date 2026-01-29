@@ -1142,7 +1142,6 @@
         "section": "001",
         "format": "ONLINE",
         "type": "ORAL EXAM",
-        "location": null,
         "startTime": "2025-12-10T09:00:00",
         "endTime": "2025-12-10T12:00:00"
       },
@@ -8519,7 +8518,6 @@
         "section": "001",
         "format": "ONLINE",
         "type": "ORAL EXAM",
-        "location": null,
         "startTime": "2026-04-24T09:00:00",
         "endTime": "2026-04-24T12:00:00"
       },

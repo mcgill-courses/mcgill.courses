@@ -1566,6 +1566,7 @@ dependencies = [
  "model",
  "rayon",
  "regex",
+ "reqwest 0.13.1",
  "serde",
  "serde_json",
 ]
