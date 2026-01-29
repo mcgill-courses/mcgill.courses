@@ -70,12 +70,14 @@ use {
   tower::{ServiceBuilder, timeout::TimeoutLayer},
   tower_governor::{GovernorLayer, governor::GovernorConfigBuilder},
   tower_http::{
+    catch_panic::CatchPanicLayer,
+    compression::CompressionLayer,
     cors::CorsLayer,
     services::{ServeDir, ServeFile},
     trace::TraceLayer,
   },
   tracing::Span,
-  tracing::{debug, error, info, trace},
+  tracing::{debug, error, info, info_span, trace},
   tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt},
   typeshare::typeshare,
   url::Url,
@@ -87,6 +89,7 @@ use {
     },
   },
   utoipa_scalar::{Scalar, Servable},
+  uuid::Uuid,
   walkdir::WalkDir,
 };
 
