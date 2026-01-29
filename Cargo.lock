@@ -1563,6 +1563,7 @@ dependencies = [
  "chrono",
  "clap",
  "lopdf",
+ "model",
  "rayon",
  "regex",
  "serde",

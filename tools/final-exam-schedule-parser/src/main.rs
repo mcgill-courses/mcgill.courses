@@ -3,6 +3,7 @@ use {
   chrono::NaiveDateTime,
   clap::Parser,
   lopdf::Document,
+  model::{FinalExam, FinalExamGroup},
   rayon::prelude::*,
   regex::Regex,
   serde::{Deserialize, Serialize},
@@ -13,31 +14,6 @@ use {
 struct PdfText {
   text: BTreeMap<u32, Vec<String>>,
   errors: Vec<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct ExamDetails {
-  format: String,
-  #[serde(rename = "type")]
-  exam_type: String,
-  #[serde(skip_serializing_if = "Option::is_none")]
-  location: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct CourseExam {
-  id: String,
-  section: String,
-  exam: ExamDetails,
-  start_time: String,
-  end_time: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct Term {
-  term: String,
-  url: String,
-  exams: Vec<CourseExam>,
 }
 
 #[derive(Parser, Debug)]
@@ -66,25 +42,24 @@ impl Arguments {
 
     let parsed_exams = parse_exam_schedule(&text)?;
 
-    let mut terms: Vec<Term> = if self.output.exists() {
+    let mut groups: Vec<FinalExamGroup> = if self.output.exists() {
       serde_json::from_str(&fs::read_to_string(&self.output)?)?
     } else {
       Vec::new()
     };
 
-    if let Some(existing_term) = terms.iter_mut().find(|t| t.term == self.term)
-    {
-      existing_term.url = self.url;
-      existing_term.exams = parsed_exams;
+    if let Some(group) = groups.iter_mut().find(|g| g.term == self.term) {
+      group.url = self.url;
+      group.exams = parsed_exams;
     } else {
-      terms.push(Term {
+      groups.push(FinalExamGroup {
         exams: parsed_exams,
         term: self.term.clone(),
         url: self.url.clone(),
       });
     }
 
-    fs::write(self.output, serde_json::to_string_pretty(&terms)?)?;
+    fs::write(self.output, serde_json::to_string_pretty(&groups)?)?;
 
     Ok(())
   }
@@ -149,7 +124,7 @@ fn extract_pdf_text(source: &PathBuf) -> Result<PdfText> {
   Ok(text)
 }
 
-fn parse_exam_schedule(text: &PdfText) -> Result<Vec<CourseExam>> {
+fn parse_exam_schedule(text: &PdfText) -> Result<Vec<FinalExam>> {
   let course_pattern = Regex::new(r"^[A-Z0-9]{3,5}\s+[0-9]{3}[A-Z0-9]*$")?;
 
   let section_pattern = Regex::new(r"^[0-9]{3}[A-Z0-9]*$")?;
@@ -217,7 +192,7 @@ fn parse_exam_schedule(text: &PdfText) -> Result<Vec<CourseExam>> {
       .get(title_index + 2)
       .ok_or_else(|| anyhow!("Missing end time for {course_id}"))?;
 
-    let exam = parse_exam_details(exam_line)?;
+    let (format, exam_type, location) = parse_exam_details(exam_line)?;
 
     let start_time = parse_datetime(start_line).ok_or_else(|| {
       anyhow!("Unrecognized start time \"{start_line}\" for {course_id}")
@@ -227,10 +202,12 @@ fn parse_exam_schedule(text: &PdfText) -> Result<Vec<CourseExam>> {
       anyhow!("Unrecognized end time \"{end_line}\" for {course_id}")
     })?;
 
-    exams.push(CourseExam {
+    exams.push(FinalExam {
       id: course_id,
       section: section_line.trim().to_string(),
-      exam,
+      format,
+      exam_type,
+      location,
       start_time,
       end_time,
     });
@@ -241,7 +218,9 @@ fn parse_exam_schedule(text: &PdfText) -> Result<Vec<CourseExam>> {
   Ok(exams)
 }
 
-fn parse_exam_details(line: &str) -> Result<ExamDetails, Error> {
+fn parse_exam_details(
+  line: &str,
+) -> Result<(String, String, Option<String>), Error> {
   let parts = line.split(" - ").map(str::trim).collect::<Vec<_>>();
 
   if parts.len() < 2 {
@@ -264,11 +243,7 @@ fn parse_exam_details(line: &str) -> Result<ExamDetails, Error> {
     None
   };
 
-  Ok(ExamDetails {
-    format,
-    exam_type,
-    location,
-  })
+  Ok((format, exam_type, location))
 }
 
 fn parse_datetime(value: &str) -> Option<String> {
