@@ -1,11 +1,13 @@
 import { Dot } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 
-import finalExams from '../assets/final-exams.json';
+import finalExamsData from '../assets/final-exams.json';
 import { sanitizeForFilename } from '../lib/calendar';
-import type { Course, FinalExam } from '../lib/types';
+import type { Course, FinalExam, FinalExamGroup } from '../lib/types';
 import { getCurrentTerm } from '../lib/utils';
 import { AddToCalendarButton } from './add-to-calendar-button';
+
+const finalExams = finalExamsData as FinalExamGroup;
 
 type GroupedExam = {
   key: string;
