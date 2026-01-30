@@ -3,37 +3,21 @@ import { twMerge } from 'tailwind-merge';
 
 import finalExamsData from '../assets/final-exams.json';
 import { sanitizeForFilename } from '../lib/calendar';
-import type { Course } from '../lib/types';
+import type { Course, FinalExam, FinalExamGroup } from '../lib/types';
 import { getCurrentTerm } from '../lib/utils';
 import { AddToCalendarButton } from './add-to-calendar-button';
 
-type RawFinalExam = {
-  id: string;
-  section?: string;
-  exam: {
-    format?: string | null;
-    type?: string | null;
-    location?: string | null;
-  };
-  start_time?: string | null;
-  end_time?: string | null;
-};
-
-type FinalExamTerm = {
-  term: string;
-  url?: string | null;
-  exams: RawFinalExam[];
-};
-
 type GroupedExam = {
   key: string;
-  start_time?: string | null;
-  end_time?: string | null;
-  exam: RawFinalExam['exam'];
+  startTime?: string | null;
+  endTime?: string | null;
+  format: string;
+  type: string;
+  location?: string;
   sections: string[];
 };
 
-const finalExams = finalExamsData as FinalExamTerm[];
+const finalExams = finalExamsData as FinalExamGroup[];
 
 const parseDate = (value?: string | null) => {
   if (!value) return null;
@@ -85,7 +69,7 @@ const formatTimeLabel = (start: Date | null, end: Date | null) => {
   return startLabel ?? endLabel ?? 'Time TBA';
 };
 
-const sortExams = (exams: RawFinalExam[]): RawFinalExam[] => {
+const sortExams = (exams: FinalExam[]): FinalExam[] => {
   const toSortable = (value?: string | null) => value ?? '';
 
   const compareSections = (a?: string, b?: string) =>
@@ -95,8 +79,8 @@ const sortExams = (exams: RawFinalExam[]): RawFinalExam[] => {
     });
 
   return exams.slice().sort((a, b) => {
-    const aStart = toSortable(a.start_time);
-    const bStart = toSortable(b.start_time);
+    const aStart = toSortable(a.startTime);
+    const bStart = toSortable(b.startTime);
 
     if (aStart && bStart) {
       const cmp = aStart.localeCompare(bStart);
@@ -111,15 +95,17 @@ const sortExams = (exams: RawFinalExam[]): RawFinalExam[] => {
   });
 };
 
-const groupExams = (exams: RawFinalExam[]): GroupedExam[] => {
+const groupExams = (exams: FinalExam[]): GroupedExam[] => {
   const sectionComparator = (a: string, b: string) =>
     a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
 
   const grouped: {
     key: string;
-    start_time?: string | null;
-    end_time?: string | null;
-    exam: RawFinalExam['exam'];
+    startTime?: string | null;
+    endTime?: string | null;
+    format: string;
+    type: string;
+    location?: string;
     sections: Set<string>;
   }[] = [];
 
@@ -128,11 +114,11 @@ const groupExams = (exams: RawFinalExam[]): GroupedExam[] => {
   exams.forEach((exam) => {
     const groupKey = [
       exam.id,
-      exam.start_time ?? '',
-      exam.end_time ?? '',
-      exam.exam.location ?? '',
-      exam.exam.type ?? '',
-      exam.exam.format ?? '',
+      exam.startTime ?? '',
+      exam.endTime ?? '',
+      exam.location ?? '',
+      exam.type ?? '',
+      exam.format ?? '',
     ].join('|');
 
     const existingIndex = indexByKey.get(groupKey);
@@ -154,9 +140,11 @@ const groupExams = (exams: RawFinalExam[]): GroupedExam[] => {
 
     grouped.push({
       key: groupKey,
-      start_time: exam.start_time,
-      end_time: exam.end_time,
-      exam: exam.exam,
+      startTime: exam.startTime,
+      endTime: exam.endTime,
+      format: exam.format,
+      type: exam.type,
+      location: exam.location,
       sections,
     });
 
@@ -165,9 +153,11 @@ const groupExams = (exams: RawFinalExam[]): GroupedExam[] => {
 
   return grouped.map((entry) => ({
     key: entry.key,
-    start_time: entry.start_time,
-    end_time: entry.end_time,
-    exam: entry.exam,
+    startTime: entry.startTime,
+    endTime: entry.endTime,
+    format: entry.format,
+    type: entry.type,
+    location: entry.location,
     sections: Array.from(entry.sections).sort(sectionComparator),
   }));
 };
@@ -261,8 +251,8 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
 
       <div className='mt-3 flex flex-col gap-3'>
         {groupedExams.map((exam) => {
-          const start = parseDate(exam.start_time);
-          const end = parseDate(exam.end_time);
+          const start = parseDate(exam.startTime);
+          const end = parseDate(exam.endTime);
 
           const sectionLabel =
             exam.sections.length === 0
@@ -272,9 +262,9 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
           const topLineParts = [sectionLabel].filter(Boolean) as string[];
 
           const bottomLineParts = [
-            exam.exam.location ?? null,
-            exam.exam.type ?? null,
-            exam.exam.format ?? null,
+            exam.location ?? null,
+            exam.type ?? null,
+            exam.format ?? null,
           ].filter(Boolean) as string[];
 
           const key = exam.key;
@@ -308,9 +298,9 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
             sectionLabel ? `Sections: ${exam.sections.join(', ')}` : null,
             `Date: ${dateLabel}`,
             `Time: ${timeLabel}`,
-            exam.exam.location ? `Location: ${exam.exam.location}` : null,
-            exam.exam.type ? `Type: ${exam.exam.type}` : null,
-            exam.exam.format ? `Format: ${exam.exam.format}` : null,
+            exam.location ? `Location: ${exam.location}` : null,
+            exam.type ? `Type: ${exam.type}` : null,
+            exam.format ? `Format: ${exam.format}` : null,
             examScheduleUrl ? `Schedule: ${examScheduleUrl}` : null,
           ].filter(Boolean) as string[];
 
@@ -334,8 +324,8 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
             sanitizeForFilename(
               [
                 course._id ?? '',
-                exam.start_time ?? '',
-                exam.end_time ?? '',
+                exam.startTime ?? '',
+                exam.endTime ?? '',
                 currentTerm,
               ]
                 .filter(Boolean)
@@ -354,7 +344,7 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
                     end,
                     summary: summaryTitle,
                     description,
-                    location: exam.exam.location,
+                    location: exam.location,
                     url: examScheduleUrl,
                     uid,
                   },

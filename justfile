@@ -133,6 +133,7 @@ test *filter:
 [group: 'dev']
 typeshare:
   typeshare -l typescript -o client/src/lib/types.ts .
+  prettier --write client/src/lib/types.ts
 
 [group: 'dev']
 watch +COMMAND='test':
