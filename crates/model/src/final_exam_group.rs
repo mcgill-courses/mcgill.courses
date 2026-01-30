@@ -8,6 +8,6 @@ pub struct FinalExamGroup {
   pub term: String,
   /// URL to the official exam schedule PDF.
   pub url: String,
-  /// List of final exams for this term.
+  /// List of final exams for this group.
   pub exams: Vec<FinalExam>,
 }
