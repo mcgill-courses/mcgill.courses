@@ -43,8 +43,7 @@ impl Arguments {
     let text = if let Some(source) = &self.source {
       extract_pdf_text(source)?
     } else {
-      let pdf_data = fetch_pdf(&self.url)?;
-      extract_pdf_bytes(&pdf_data)?
+      extract_pdf_bytes(&fetch_pdf(&self.url)?)?
     };
 
     let parsed_exams = parse_exam_schedule(&text)?;
@@ -55,7 +54,8 @@ impl Arguments {
       Vec::new()
     };
 
-    if let Some(group) = groups.iter_mut().find(|g| g.term == self.term) {
+    if let Some(group) = groups.iter_mut().find(|group| group.term == self.term)
+    {
       group.url = self.url;
       group.exams = parsed_exams;
     } else {
@@ -75,20 +75,13 @@ impl Arguments {
 fn fetch_pdf(url: &str) -> Result<Vec<u8>> {
   eprintln!("Fetching PDF from {url}");
 
-  let response = Client::new()
-    .get(url)
-    .send()
-    .map_err(|e| anyhow!("Failed to fetch PDF: {e}"))?;
+  let response = Client::new().get(url).send()?;
 
   if !response.status().is_success() {
-    bail!("Failed to fetch PDF: HTTP {}", response.status());
+    bail!("failed to fetch pdf: http {}", response.status());
   }
 
-  let bytes = response
-    .bytes()
-    .map_err(|e| anyhow!("Failed to read PDF bytes: {e}"))?;
-
-  Ok(bytes.to_vec())
+  Ok(response.bytes()?.to_vec())
 }
 
 fn get_pdf_text(doc: &Document) -> Result<PdfText, Error> {
@@ -156,10 +149,10 @@ fn extract_pdf_bytes(data: &[u8]) -> Result<PdfText> {
   let text = get_pdf_text(&doc)?;
 
   if !text.errors.is_empty() {
-    eprintln!("PDF produced {} errors:", text.errors.len());
+    eprintln!("document produced {} errors:", text.errors.len());
 
     for error in text.errors.iter().take(10) {
-      eprintln!("{error}");
+      eprintln!("- {error}");
     }
   }
 
@@ -291,7 +284,7 @@ fn parse_exam_details(
 fn parse_datetime(value: &str) -> Option<String> {
   NaiveDateTime::parse_from_str(value.trim(), "%d-%b-%Y at %I:%M %p")
     .ok()
-    .map(|dt| dt.format("%Y-%m-%dT%H:%M:%S").to_string())
+    .map(|datetime| datetime.format("%Y-%m-%dT%H:%M:%S").to_string())
 }
 
 type Result<T = (), E = Error> = std::result::Result<T, E>;
