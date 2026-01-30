@@ -3,13 +3,37 @@ use {
   chrono::NaiveDateTime,
   clap::Parser,
   lopdf::Document,
-  model::{FinalExam, FinalExamGroup},
   rayon::prelude::*,
   regex::Regex,
   reqwest::blocking::Client,
   serde::{Deserialize, Serialize},
   std::{collections::BTreeMap, fs, path::PathBuf, process},
+  typeshare::typeshare,
 };
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
+pub struct FinalExam {
+  pub id: String,
+  pub section: String,
+  pub format: String,
+  #[serde(rename = "type")]
+  pub exam_type: String,
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub location: Option<String>,
+  pub start_time: String,
+  pub end_time: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
+pub struct FinalExamGroup {
+  pub term: String,
+  pub url: String,
+  pub exams: Vec<FinalExam>,
+}
 
 #[derive(Debug, Deserialize, Serialize)]
 struct PdfText {

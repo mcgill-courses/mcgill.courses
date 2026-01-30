@@ -28,8 +28,6 @@ mod course_filter;
 mod course_page;
 mod course_sort_type;
 mod datetime;
-mod final_exam;
-mod final_exam_group;
 mod initialize_options;
 mod instructor;
 mod interaction;
@@ -47,8 +45,6 @@ pub use crate::{
   course_page::CoursePage,
   course_sort_type::CourseSortType,
   datetime::DateTime,
-  final_exam::FinalExam,
-  final_exam_group::FinalExamGroup,
   initialize_options::InitializeOptions,
   instructor::Instructor,
   interaction::{Interaction, InteractionKind},
