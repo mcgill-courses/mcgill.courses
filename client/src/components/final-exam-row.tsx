@@ -1,9 +1,9 @@
 import { Dot } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 
-import finalExamsData from '../assets/final-exams.json';
+import finalExams from '../assets/final-exams.json';
 import { sanitizeForFilename } from '../lib/calendar';
-import type { Course, FinalExam, FinalExamGroup } from '../lib/types';
+import type { Course, FinalExam } from '../lib/types';
 import { getCurrentTerm } from '../lib/utils';
 import { AddToCalendarButton } from './add-to-calendar-button';
 
@@ -16,8 +16,6 @@ type GroupedExam = {
   location?: string;
   sections: string[];
 };
-
-const finalExams = finalExamsData as FinalExamGroup[];
 
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat('en-CA', {
@@ -119,13 +117,11 @@ type FinalExamRowProps = {
 export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
   const currentTerm = getCurrentTerm();
 
-  const termEntry = finalExams.find((entry) => entry.term === currentTerm);
-
-  if (!termEntry) {
+  if (finalExams.term !== currentTerm) {
     return null;
   }
 
-  const exams = termEntry.exams.filter((exam) => exam.id === course._id);
+  const exams = finalExams.exams.filter((exam) => exam.id === course._id);
 
   if (exams.length === 0) {
     return null;
@@ -135,7 +131,7 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
 
   const sectionCount = new Set(exams.map((exam) => exam.section)).size;
 
-  const examScheduleUrl = `${termEntry.url}#:~:text=${encodeURIComponent(`${course.subject} ${course.code}`)}`;
+  const examScheduleUrl = `${finalExams.url}#:~:text=${encodeURIComponent(`${course.subject} ${course.code}`)}`;
 
   return (
     <div

@@ -46,27 +46,14 @@ impl Arguments {
       extract_pdf_bytes(&fetch_pdf(&self.url)?)?
     };
 
-    let parsed_exams = parse_exam_schedule(&text)?;
-
-    let mut groups: Vec<FinalExamGroup> = if self.output.exists() {
-      serde_json::from_str(&fs::read_to_string(&self.output)?)?
-    } else {
-      Vec::new()
-    };
-
-    if let Some(group) = groups.iter_mut().find(|group| group.term == self.term)
-    {
-      group.url = self.url;
-      group.exams = parsed_exams;
-    } else {
-      groups.push(FinalExamGroup {
-        exams: parsed_exams,
-        term: self.term.clone(),
-        url: self.url.clone(),
-      });
-    }
-
-    fs::write(self.output, serde_json::to_string_pretty(&groups)?)?;
+    fs::write(
+      self.output,
+      serde_json::to_string_pretty(&FinalExamGroup {
+        exams: parse_exam_schedule(&text)?,
+        term: self.term,
+        url: self.url,
+      })?,
+    )?;
 
     Ok(())
   }
