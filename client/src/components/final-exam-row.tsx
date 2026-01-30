@@ -92,7 +92,10 @@ const DetailLine = ({
   className?: string;
 }) => {
   const filtered = parts.filter(Boolean) as string[];
-  if (filtered.length === 0) return null;
+
+  if (filtered.length === 0) {
+    return null;
+  }
 
   return (
     <div className={twMerge('flex flex-wrap items-center', className)}>
@@ -122,15 +125,15 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
     return null;
   }
 
-  const courseExams = termEntry.exams.filter((exam) => exam.id === course._id);
+  const exams = termEntry.exams.filter((exam) => exam.id === course._id);
 
-  if (courseExams.length === 0) {
+  if (exams.length === 0) {
     return null;
   }
 
-  const groupedExams = groupExams(sortExams(courseExams));
+  const groupedExams = groupExams(sortExams(exams));
 
-  const sectionCount = new Set(courseExams.map((e) => e.section)).size;
+  const sectionCount = new Set(exams.map((exam) => exam.section)).size;
 
   const examScheduleUrl = `${termEntry.url}#:~:text=${encodeURIComponent(`${course.subject} ${course.code}`)}`;
 
