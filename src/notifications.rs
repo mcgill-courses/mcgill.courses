@@ -4,11 +4,28 @@ use super::*;
   get,
   path = "/notifications",
   tag = "notifications",
-  description = "Get the current user's notifications.",
-  security(("microsoftOAuth" = ["User.Read"])),
+  description = "Get the current user's notifications. Returns notifications for reviews on courses the user is subscribed to, sorted by most recent first. Requires authentication.",
+  security(
+    ("microsoftOAuth" = ["User.Read"])
+  ),
   responses(
-    (status = StatusCode::OK, description = "Notifications for the authenticated user, sorted by recency.", body = [Notification]),
-    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
+    (
+      status = StatusCode::OK,
+      description = "Notifications for the authenticated user, sorted by recency.",
+      body = [Notification],
+      content_type = "application/json"
+    ),
+    (
+      status = StatusCode::UNAUTHORIZED,
+      description = "User is not authenticated.",
+      content_type = "text/plain"
+    ),
+    (
+      status = StatusCode::INTERNAL_SERVER_ERROR,
+      description = "Internal server error.",
+      body = String,
+      content_type = "text/plain"
+    )
   )
 )]
 pub(crate) async fn get_notifications(
@@ -34,12 +51,31 @@ pub(crate) struct UpdateNotificationBody {
   put,
   path = "/notifications",
   tag = "notifications",
-  description = "Mark a notification as seen or unseen.",
-  security(("microsoftOAuth" = ["User.Read"])),
-  request_body = UpdateNotificationBody,
+  description = "Mark a notification as seen or unseen. The notification is identified by the course ID and the ID of the user who created the review. Requires authentication.",
+  security(
+    ("microsoftOAuth" = ["User.Read"])
+  ),
+  request_body(
+    content = UpdateNotificationBody,
+    description = "Notification identifier and the new seen status.",
+    content_type = "application/json"
+  ),
   responses(
-    (status = StatusCode::OK, description = "Notification updated successfully."),
-    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
+    (
+      status = StatusCode::OK,
+      description = "Notification updated successfully."
+    ),
+    (
+      status = StatusCode::UNAUTHORIZED,
+      description = "User is not authenticated.",
+      content_type = "text/plain"
+    ),
+    (
+      status = StatusCode::INTERNAL_SERVER_ERROR,
+      description = "Internal server error.",
+      body = String,
+      content_type = "text/plain"
+    )
   )
 )]
 pub(crate) async fn update_notification(
@@ -70,12 +106,31 @@ pub(crate) struct DeleteNotificationBody {
   delete,
   path = "/notifications",
   tag = "notifications",
-  description = "Delete a notification for the current user.",
-  security(("microsoftOAuth" = ["User.Read"])),
-  request_body = DeleteNotificationBody,
+  description = "Delete a notification for the current user. The notification is identified by the course ID and the ID of the user who created the review. Requires authentication.",
+  security(
+    ("microsoftOAuth" = ["User.Read"])
+  ),
+  request_body(
+    content = DeleteNotificationBody,
+    description = "Notification identifier specifying which notification to delete.",
+    content_type = "application/json"
+  ),
   responses(
-    (status = StatusCode::OK, description = "Notification deleted successfully."),
-    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
+    (
+      status = StatusCode::OK,
+      description = "Notification deleted successfully."
+    ),
+    (
+      status = StatusCode::UNAUTHORIZED,
+      description = "User is not authenticated.",
+      content_type = "text/plain"
+    ),
+    (
+      status = StatusCode::INTERNAL_SERVER_ERROR,
+      description = "Internal server error.",
+      body = String,
+      content_type = "text/plain"
+    )
   )
 )]
 pub(crate) async fn delete_notification(

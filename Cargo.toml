@@ -11,7 +11,7 @@ members = ["crates/*", "tools/changelog-generator", "tools/final-exam-schedule-p
 anyhow = "1.0.100"
 bson = { version = "3.1.0", features = ["chrono-0_4", "serde"] }
 chrono = "0.4.43"
-clap = { version = "4.5.54", features = ["derive"] }
+clap = { version = "4.5.56", features = ["derive"] }
 dotenv = "0.15.0"
 futures = "0.3.31"
 include_dir = "0.7.4"
@@ -51,8 +51,8 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 sha2 = "0.10.9"
 tokio = { workspace = true }
-tower = { version = "0.5.3", features = ["tracing", "limit", "buffer"] }
-tower-http = { version = "0.6.8", features = ["cors", "fs", "trace"] }
+tower = { version = "0.5.3", features = ["buffer", "limit", "timeout", "tracing", "util"] }
+tower-http = { version = "0.6.8", features = ["catch-panic", "compression-gzip", "cors", "fs", "trace"] }
 tower_governor = "0.8.0"
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
@@ -60,7 +60,7 @@ typeshare = { workspace = true }
 url = "2.5.8"
 utoipa = { workspace = true }
 utoipa-scalar = { version = "0.3.0", features = ["axum"] }
-uuid = { version = "1.19", features = ["v4"] }
+uuid = { version = "1.20", features = ["v4"] }
 walkdir = "2.5.0"
 
 [dev-dependencies]
