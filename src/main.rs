@@ -30,7 +30,6 @@ use {
   base64::{Engine, engine::general_purpose::STANDARD},
   chrono::prelude::*,
   clap::Parser,
-  course_averages::GetCourseAveragesPayload,
   db::Db,
   dotenv::dotenv,
   futures::TryStreamExt,
@@ -39,9 +38,9 @@ use {
   },
   indoc::indoc,
   model::{
-    Course, CourseAverage, CourseFilter, CourseSortType, Grade,
-    InitializeOptions, Instructor, Interaction, InteractionKind, Notification,
-    Review, ReviewFilter, SearchResults, Subscription,
+    Course, CourseAverage, CourseFilter, CourseSortType, InitializeOptions,
+    Instructor, Interaction, InteractionKind, Notification, Review,
+    ReviewFilter, SearchResults, Subscription,
   },
   oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet,

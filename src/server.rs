@@ -298,16 +298,14 @@ impl Server {
 mod tests {
   use {
     super::*,
-    crate::{
-      instructors::GetInstructorPayload,
-      interactions::GetUserInteractionForCoursePayload,
-      subscriptions::SubscriptionResponse,
-    },
     axum::body::Body,
+    course_averages::GetCourseAveragesPayload,
     courses::{GetCourseByIdPayload, GetCoursesPayload},
     http::{Method, Request},
+    instructors::GetInstructorPayload,
     interactions::GetInteractionKindPayload,
-    model::{Notification, Subscription},
+    interactions::GetUserInteractionForCoursePayload,
+    model::{Grade, Notification, Subscription},
     pretty_assertions::assert_eq,
     reviews::GetReviewsPayload,
     serde::de::DeserializeOwned,
@@ -316,6 +314,7 @@ mod tests {
       collections::HashSet,
       sync::atomic::{AtomicUsize, Ordering},
     },
+    subscriptions::SubscriptionResponse,
     tower::{Service, ServiceExt},
   };
 
