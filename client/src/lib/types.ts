@@ -115,8 +115,11 @@ export interface Course {
 }
 
 export interface CourseAverage {
+  /** Course identifier (e.g., "COMP202"). */
   courseId: string;
+  /** Term name (e.g., "Fall 2024", "Winter 2025"). */
   term: string;
+  /** Letter grade average (e.g., "A-", "B+"). */
   average: string;
 }
 
@@ -145,22 +148,33 @@ export interface CourseFilter {
 }
 
 export interface FinalExam {
+  /** Course identifier (e.g., "COMP202"). */
   id: string;
+  /** Section number (e.g., "001"). */
   section: string;
+  /** Exam format (e.g., "IN-PERSON", "ONLINE"). */
   format: string;
+  /** Exam type (e.g., "FORMAL EXAM"). */
   type: string;
+  /** Location where the exam is held. */
   location?: string;
+  /** Exam start time in ISO 8601 format. */
   startTime: string;
+  /** Exam end time in ISO 8601 format. */
   endTime: string;
 }
 
 export interface FinalExamGroup {
+  /** Term name (e.g., "Fall 2025", "Winter 2026"). */
   term: string;
+  /** URL to the official exam schedule PDF. */
   url: string;
+  /** List of final exams for this group. */
   exams: FinalExam[];
 }
 
 export interface GetCourseAveragesPayload {
+  /** List of course grade averages by term. */
   courseAverages: CourseAverage[];
 }
 
