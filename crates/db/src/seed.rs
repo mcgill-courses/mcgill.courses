@@ -2,7 +2,7 @@ use super::*;
 
 #[derive(Debug, Clone)]
 pub(crate) enum Seed {
-  Averages((PathBuf, Vec<CourseAverage>)),
+  CourseAverages((PathBuf, Vec<CourseAverage>)),
   Courses((PathBuf, Vec<Course>)),
   Reviews((PathBuf, Vec<Review>)),
   Unknown(PathBuf),
@@ -15,7 +15,9 @@ impl Seed {
       serde_json::from_str::<Vec<Course>>(&content).ok(),
       serde_json::from_str::<Vec<Review>>(&content).ok(),
     ) {
-      (Some(averages), _, _) => Self::Averages((path, averages)),
+      (Some(course_averages), _, _) => {
+        Self::CourseAverages((path, course_averages))
+      }
       (_, Some(courses), _) => Self::Courses((path, courses)),
       (_, _, Some(reviews)) => Self::Reviews((path, reviews)),
       _ => Self::Unknown(path),

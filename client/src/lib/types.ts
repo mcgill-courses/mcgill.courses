@@ -144,8 +144,8 @@ export interface CourseFilter {
   terms?: string[];
 }
 
-export interface GetAveragesPayload {
-  averages: CourseAverage[];
+export interface GetCourseAveragesPayload {
+  courseAverages: CourseAverage[];
 }
 
 export interface Review {

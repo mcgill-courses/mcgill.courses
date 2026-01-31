@@ -1,20 +1,20 @@
 use super::*;
 
 #[derive(Deserialize, ToSchema)]
-pub(crate) struct GetAveragesParams {
+pub(crate) struct GetCourseAveragesParams {
   course_id: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
-pub(crate) struct GetAveragesPayload {
-  pub averages: Vec<model::CourseAverage>,
+pub(crate) struct GetCourseAveragesPayload {
+  pub course_averages: Vec<model::CourseAverage>,
 }
 
 #[utoipa::path(
   get,
-  path = "/averages",
+  path = "/course-averages",
   description = "Get course grade averages by term.",
   params(
     (
@@ -25,15 +25,18 @@ pub(crate) struct GetAveragesPayload {
     ),
   ),
   responses(
-    (status = StatusCode::OK, description = "Course averages.", body = GetAveragesPayload),
+    (status = StatusCode::OK, description = "Course averages.", body = GetCourseAveragesPayload),
     (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
   )
 )]
-pub(crate) async fn get_averages(
-  Query(params): Query<GetAveragesParams>,
+pub(crate) async fn get_course_averages(
+  Query(params): Query<GetCourseAveragesParams>,
   AppState(db): AppState<Arc<Db>>,
 ) -> Result<impl IntoResponse> {
-  let averages = db.averages(params.course_id.as_deref()).await?;
+  let course_averages = db.course_averages(params.course_id.as_deref()).await?;
 
-  Ok((StatusCode::OK, Json(GetAveragesPayload { averages })))
+  Ok((
+    StatusCode::OK,
+    Json(GetCourseAveragesPayload { course_averages }),
+  ))
 }

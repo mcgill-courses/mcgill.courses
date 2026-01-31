@@ -136,15 +136,15 @@ impl Initializer {
 
     for seed in seeds {
       match seed {
-        Seed::Averages((path, averages)) => {
-          info!("Seeding averages from {}...", path.display());
+        Seed::CourseAverages((path, course_averages)) => {
+          info!("Seeding course averages from {}...", path.display());
 
           let runner = |db: Db, item: CourseAverage| async move {
-            db.add_average(item).await?;
+            db.add_course_average(item).await?;
             Ok(())
           };
 
-          self.populate(averages, runner).await?;
+          self.populate(course_averages, runner).await?;
         }
         Seed::Courses((path, courses)) if !self.options.skip_courses => {
           info!("Seeding courses from {}...", path.display());

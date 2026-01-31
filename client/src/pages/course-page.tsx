@@ -96,9 +96,9 @@ export const CoursePage = () => {
         }
 
         if (id) {
-          const averagesPayload = await api.getAverages(id);
+          const courseAveragesPayload = await api.getCourseAverages(id);
           setCourseAverages(
-            averagesPayload.averages.map((a) => ({
+            courseAveragesPayload.courseAverages.map((a) => ({
               term: a.term,
               average: a.average as TermAverage['average'],
             }))

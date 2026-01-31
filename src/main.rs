@@ -91,7 +91,7 @@ use {
 
 mod assets;
 mod auth;
-mod averages;
+mod course_averages;
 mod courses;
 mod documentation;
 mod error;

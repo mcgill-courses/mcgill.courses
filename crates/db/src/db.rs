@@ -7,7 +7,7 @@ pub struct Db {
 }
 
 impl Db {
-  const AVERAGE_COLLECTION: &'static str = "averages";
+  const COURSE_AVERAGE_COLLECTION: &'static str = "course-averages";
   const COURSE_COLLECTION: &'static str = "courses";
   const INSTRUCTOR_COLLECTION: &'static str = "instructors";
   const INTERACTION_COLLECTION: &'static str = "interactions";
@@ -203,7 +203,7 @@ impl Db {
     self.find_course(doc! { "_id": id }).await
   }
 
-  pub async fn averages(
+  pub async fn course_averages(
     &self,
     course_id: Option<&str>,
   ) -> Result<Vec<CourseAverage>> {
@@ -216,7 +216,7 @@ impl Db {
     Ok(
       self
         .database
-        .collection::<CourseAverage>(Self::AVERAGE_COLLECTION)
+        .collection::<CourseAverage>(Self::COURSE_AVERAGE_COLLECTION)
         .find(document)
         .await?
         .try_collect::<Vec<CourseAverage>>()
@@ -224,10 +224,10 @@ impl Db {
     )
   }
 
-  pub async fn add_average(&self, average: CourseAverage) -> Result {
+  pub async fn add_course_average(&self, average: CourseAverage) -> Result {
     self
       .database
-      .collection::<CourseAverage>(Self::AVERAGE_COLLECTION)
+      .collection::<CourseAverage>(Self::COURSE_AVERAGE_COLLECTION)
       .insert_one(average)
       .await?;
 
