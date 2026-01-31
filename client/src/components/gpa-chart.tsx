@@ -10,8 +10,7 @@ import {
   YAxis,
 } from 'recharts';
 
-import type { Grade, TermAverage } from '../lib/term-average';
-import type { Instructor } from '../lib/types';
+import type { CourseAverage, Grade, Instructor } from '../lib/types';
 import { compareTerms } from '../lib/utils';
 
 const gradeToGPA: Record<Grade, number> = {
@@ -28,7 +27,7 @@ const gradeToGPA: Record<Grade, number> = {
 };
 
 type GPAChartProps = {
-  averages: TermAverage[];
+  averages: CourseAverage[];
   termInstructors: Record<string, Instructor[]>;
 };
 

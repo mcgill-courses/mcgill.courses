@@ -29,6 +29,7 @@ mod course_filter;
 mod course_page;
 mod course_sort_type;
 mod datetime;
+mod grade;
 mod initialize_options;
 mod instructor;
 mod interaction;
@@ -47,6 +48,7 @@ pub use crate::{
   course_page::CoursePage,
   course_sort_type::CourseSortType,
   datetime::DateTime,
+  grade::Grade,
   initialize_options::InitializeOptions,
   instructor::Instructor,
   interaction::{Interaction, InteractionKind},

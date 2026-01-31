@@ -10,6 +10,6 @@ pub struct CourseAverage {
   pub course_id: String,
   /// Term name (e.g., "Fall 2024", "Winter 2025").
   pub term: String,
-  /// Letter grade average (e.g., "A-", "B+").
-  pub average: String,
+  /// Letter grade average.
+  pub average: Grade,
 }

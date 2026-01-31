@@ -2579,7 +2579,7 @@ mod tests {
     db.add_course_average(model::CourseAverage {
       course_id: "COMP202".into(),
       term: "Fall 2024".into(),
-      average: "B+".into(),
+      average: Grade::BPlus,
     })
     .await
     .unwrap();
@@ -2587,7 +2587,7 @@ mod tests {
     db.add_course_average(model::CourseAverage {
       course_id: "COMP202".into(),
       term: "Winter 2024".into(),
-      average: "B".into(),
+      average: Grade::B,
     })
     .await
     .unwrap();
@@ -2595,7 +2595,7 @@ mod tests {
     db.add_course_average(model::CourseAverage {
       course_id: "MATH240".into(),
       term: "Fall 2024".into(),
-      average: "A-".into(),
+      average: Grade::AMinus,
     })
     .await
     .unwrap();
@@ -2629,7 +2629,7 @@ mod tests {
     db.add_course_average(model::CourseAverage {
       course_id: "COMP202".into(),
       term: "Fall 2024".into(),
-      average: "B+".into(),
+      average: Grade::BPlus,
     })
     .await
     .unwrap();
@@ -2637,7 +2637,7 @@ mod tests {
     db.add_course_average(model::CourseAverage {
       course_id: "MATH240".into(),
       term: "Fall 2024".into(),
-      average: "A-".into(),
+      average: Grade::AMinus,
     })
     .await
     .unwrap();
@@ -2660,6 +2660,6 @@ mod tests {
       .await;
     assert_eq!(payload.course_averages.len(), 1);
     assert_eq!(payload.course_averages[0].course_id, "COMP202");
-    assert_eq!(payload.course_averages[0].average, "B+");
+    assert_eq!(payload.course_averages[0].average, Grade::BPlus);
   }
 }
