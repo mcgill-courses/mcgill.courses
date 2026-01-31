@@ -8,6 +8,7 @@ pub(crate) struct GetCourseAveragesParams {
 #[utoipa::path(
   get,
   path = "/course-averages",
+  tag = "course-averages",
   description = "Get course grade averages by term.",
   params(
     (

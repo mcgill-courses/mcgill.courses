@@ -99,7 +99,7 @@ impl Modify for MicrosoftOAuthSecurity {
   ),
   tags(
     (name = "auth", description = "All authentication related endpoints."),
-    (name = "course_averages", description = "All course average related endpoints."),
+    (name = "course-averages", description = "All course average related endpoints."),
     (name = "courses", description = "All course related endpoints."),
     (name = "instructors", description = "All instructor related endpoints."),
     (name = "interactions", description = "All interaction related endpoints."),
