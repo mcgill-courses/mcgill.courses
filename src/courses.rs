@@ -115,6 +115,8 @@ pub(crate) async fn get_courses(
 
 #[derive(Debug, Deserialize, ToSchema)]
 pub(crate) struct GetCourseByIdParams {
+  /// Whether to include course averages in the response.
+  with_averages: Option<bool>,
   /// Whether to include reviews in the response.
   with_reviews: Option<bool>,
 }
@@ -125,6 +127,8 @@ pub(crate) struct GetCourseByIdParams {
 pub(crate) struct GetCourseByIdPayload {
   /// The course information.
   pub(crate) course: Course,
+  /// Grade averages for the course by term.
+  pub(crate) course_averages: Vec<CourseAverage>,
   /// Reviews for the course (sorted by timestamp, newest first).
   pub(crate) reviews: Vec<Review>,
 }
@@ -139,6 +143,12 @@ pub(crate) struct GetCourseByIdPayload {
       Path,
       description = "Course ID in the format {SUBJECT}{CODE} (e.g., COMP202, MATH240). Case-insensitive.",
       example = "COMP202"
+    ),
+    (
+      "with_averages" = Option<bool>,
+      Query,
+      description = "Whether to include grade averages in the response.",
+      example = true
     ),
     (
       "with_reviews" = Option<bool>,
@@ -175,28 +185,26 @@ pub(crate) async fn get_course_by_id(
 
   Ok(match state.db.find_course_by_id(&id).await? {
     Some(course) => {
-      let mut reviews = params
-        .with_reviews
-        .unwrap_or(false)
-        .then_some(state.db.find_reviews_by_course_id(&id).await?);
+      let course_averages = if params.with_averages.unwrap_or(false) {
+        state.db.course_averages(Some(&id)).await?
+      } else {
+        vec![]
+      };
 
-      if let Some(ref mut reviews) = reviews {
+      let reviews = if params.with_reviews.unwrap_or(false) {
+        let mut reviews = state.db.find_reviews_by_course_id(&id).await?;
         reviews.sort_by(|a, b| b.timestamp.cmp(&a.timestamp));
-
-        return Ok((
-          StatusCode::OK,
-          Json(Some(GetCourseByIdPayload {
-            course,
-            reviews: reviews.to_vec(),
-          })),
-        ));
-      }
+        reviews
+      } else {
+        vec![]
+      };
 
       (
         StatusCode::OK,
         Json(Some(GetCourseByIdPayload {
           course,
-          reviews: vec![],
+          course_averages,
+          reviews,
         })),
       )
     }

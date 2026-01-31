@@ -88,21 +88,18 @@ export const CoursePage = () => {
         setShowingReviews(payload.reviews);
         setAllReviews(payload.reviews);
 
+        setCourseAverages(
+          payload.courseAverages.map((a) => ({
+            term: a.term,
+            average: a.average as TermAverage['average'],
+          }))
+        );
+
         if (user && id) {
           const courseInteractionsPayload =
             await api.getUserInteractionsForCourse(id, user.id);
 
           setUserInteractions(courseInteractionsPayload.interactions);
-        }
-
-        if (id) {
-          const courseAveragesPayload = await api.getCourseAverages(id);
-          setCourseAverages(
-            courseAveragesPayload.courseAverages.map((a) => ({
-              term: a.term,
-              average: a.average as TermAverage['average'],
-            }))
-          );
         }
 
         firstFetch.current = false;

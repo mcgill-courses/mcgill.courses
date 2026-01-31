@@ -273,7 +273,7 @@ export const api = {
   ): Promise<GetCourseByIdPayload | null> {
     return client.deserialize<GetCourseByIdPayload | null>(
       'GET',
-      `/courses/${id}?with_reviews=true`
+      `/courses/${id}?with_reviews=true&with_averages=true`
     );
   },
 

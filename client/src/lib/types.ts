@@ -186,6 +186,8 @@ export interface Review {
 export interface GetCourseByIdPayload {
   /** The course information. */
   course: Course;
+  /** Grade averages for the course by term. */
+  courseAverages: CourseAverage[];
   /** Reviews for the course (sorted by timestamp, newest first). */
   reviews: Review[];
 }
