@@ -9,7 +9,8 @@ pub(crate) struct GetCourseAveragesParams {
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub(crate) struct GetCourseAveragesPayload {
-  pub course_averages: Vec<model::CourseAverage>,
+  /// List of course grade averages by term.
+  pub course_averages: Vec<CourseAverage>,
 }
 
 #[utoipa::path(
@@ -33,10 +34,10 @@ pub(crate) async fn get_course_averages(
   Query(params): Query<GetCourseAveragesParams>,
   AppState(db): AppState<Arc<Db>>,
 ) -> Result<impl IntoResponse> {
-  let course_averages = db.course_averages(params.course_id.as_deref()).await?;
-
   Ok((
     StatusCode::OK,
-    Json(GetCourseAveragesPayload { course_averages }),
+    Json(GetCourseAveragesPayload {
+      course_averages: db.course_averages(params.course_id.as_deref()).await?,
+    }),
   ))
 }
