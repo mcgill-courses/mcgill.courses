@@ -299,7 +299,6 @@ mod tests {
   use {
     super::*,
     axum::body::Body,
-    course_averages::GetCourseAveragesPayload,
     courses::{GetCourseByIdPayload, GetCoursesPayload},
     http::{Method, Request},
     instructors::GetInstructorPayload,
@@ -2612,14 +2611,7 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    assert_eq!(
-      response
-        .convert::<GetCourseAveragesPayload>()
-        .await
-        .course_averages
-        .len(),
-      3
-    );
+    assert_eq!(response.convert::<Vec<CourseAverage>>().await.len(), 3);
   }
 
   #[tokio::test]
@@ -2655,10 +2647,10 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let payload = response.convert::<GetCourseAveragesPayload>().await;
+    let averages = response.convert::<Vec<CourseAverage>>().await;
 
-    assert_eq!(payload.course_averages.len(), 1);
-    assert_eq!(payload.course_averages[0].course_id, "COMP202");
-    assert_eq!(payload.course_averages[0].average, Grade::BPlus);
+    assert_eq!(averages.len(), 1);
+    assert_eq!(averages[0].course_id, "COMP202");
+    assert_eq!(averages[0].average, Grade::BPlus);
   }
 }

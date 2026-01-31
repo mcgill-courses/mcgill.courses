@@ -186,11 +186,6 @@ export interface FinalExamGroup {
   exams: FinalExam[];
 }
 
-export interface GetCourseAveragesPayload {
-  /** List of course grade averages by term. */
-  courseAverages: CourseAverage[];
-}
-
 export interface Review {
   /** The text content of the review. */
   content: string;
