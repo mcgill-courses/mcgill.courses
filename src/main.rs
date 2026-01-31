@@ -30,6 +30,7 @@ use {
   base64::{Engine, engine::general_purpose::STANDARD},
   chrono::prelude::*,
   clap::Parser,
+  course_averages::GetCourseAveragesPayload,
   db::Db,
   dotenv::dotenv,
   futures::TryStreamExt,

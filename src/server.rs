@@ -2612,9 +2612,10 @@ mod tests {
       .unwrap();
 
     assert_eq!(response.status(), StatusCode::OK);
+
     assert_eq!(
       response
-        .convert::<course_averages::GetCourseAveragesPayload>()
+        .convert::<GetCourseAveragesPayload>()
         .await
         .course_averages
         .len(),
@@ -2655,9 +2656,8 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let payload = response
-      .convert::<course_averages::GetCourseAveragesPayload>()
-      .await;
+    let payload = response.convert::<GetCourseAveragesPayload>().await;
+
     assert_eq!(payload.course_averages.len(), 1);
     assert_eq!(payload.course_averages[0].course_id, "COMP202");
     assert_eq!(payload.course_averages[0].average, Grade::BPlus);
