@@ -7,6 +7,7 @@ pub struct Db {
 }
 
 impl Db {
+  const COURSE_AVERAGE_COLLECTION: &'static str = "course-averages";
   const COURSE_COLLECTION: &'static str = "courses";
   const INSTRUCTOR_COLLECTION: &'static str = "instructors";
   const INTERACTION_COLLECTION: &'static str = "interactions";
@@ -200,6 +201,50 @@ impl Db {
   #[tracing::instrument(name = "db_find_course_by_id", skip(self), fields(course_id = %id))]
   pub async fn find_course_by_id(&self, id: &str) -> Result<Option<Course>> {
     self.find_course(doc! { "_id": id }).await
+  }
+
+  pub async fn course_averages(
+    &self,
+    course_id: Option<&str>,
+  ) -> Result<Vec<CourseAverage>> {
+    let document = if let Some(course_id) = course_id {
+      doc! { "courseId": course_id }
+    } else {
+      doc! {}
+    };
+
+    Ok(
+      self
+        .database
+        .collection::<CourseAverage>(Self::COURSE_AVERAGE_COLLECTION)
+        .find(document)
+        .await?
+        .try_collect::<Vec<CourseAverage>>()
+        .await?,
+    )
+  }
+
+  pub async fn add_course_average(&self, average: CourseAverage) -> Result {
+    self
+      .database
+      .collection::<CourseAverage>(Self::COURSE_AVERAGE_COLLECTION)
+      .update_one(
+        doc! {
+          "courseId": &average.course_id,
+          "term": &average.term,
+        },
+        doc! {
+          "$setOnInsert": {
+            "courseId": &average.course_id,
+            "term": &average.term,
+            "average": average.average.to_string(),
+          }
+        },
+      )
+      .upsert(true)
+      .await?;
+
+    Ok(())
   }
 
   #[tracing::instrument(name = "db_add_review", skip(self), fields(course_id = %review.course_id, user_id = %review.user_id))]

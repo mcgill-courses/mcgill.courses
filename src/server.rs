@@ -114,6 +114,7 @@ impl Server {
       .route("/api/auth/authorized", get(auth::login_authorized))
       .route("/api/auth/login", get(auth::microsoft_auth))
       .route("/api/auth/logout", get(auth::logout))
+      .route("/api/course-averages", get(course_averages::get_course_averages))
       .route("/api/courses", get(courses::get_courses))
       .route("/api/courses/{id}", get(courses::get_course_by_id))
       .route("/api/instructors/{name}", get(instructors::get_instructor))
@@ -297,16 +298,13 @@ impl Server {
 mod tests {
   use {
     super::*,
-    crate::{
-      instructors::GetInstructorPayload,
-      interactions::GetUserInteractionForCoursePayload,
-      subscriptions::SubscriptionResponse,
-    },
     axum::body::Body,
     courses::{GetCourseByIdPayload, GetCoursesPayload},
     http::{Method, Request},
+    instructors::GetInstructorPayload,
     interactions::GetInteractionKindPayload,
-    model::{Notification, Subscription},
+    interactions::GetUserInteractionForCoursePayload,
+    model::{Grade, Notification, Subscription},
     pretty_assertions::assert_eq,
     reviews::GetReviewsPayload,
     serde::de::DeserializeOwned,
@@ -315,6 +313,7 @@ mod tests {
       collections::HashSet,
       sync::atomic::{AtomicUsize, Ordering},
     },
+    subscriptions::SubscriptionResponse,
     tower::{Service, ServiceExt},
   };
 
@@ -2569,5 +2568,89 @@ mod tests {
 
     assert_eq!(notifications.len(), 1);
     assert_eq!(notifications[0].review.user_id, "c");
+  }
+
+  #[tokio::test]
+  async fn course_averages_route_works() {
+    let TestContext { db, mut app, .. } = TestContext::new().await;
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Fall 2024".into(),
+      average: Grade::BPlus,
+    })
+    .await
+    .unwrap();
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Winter 2024".into(),
+      average: Grade::B,
+    })
+    .await
+    .unwrap();
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "MATH240".into(),
+      term: "Fall 2024".into(),
+      average: Grade::AMinus,
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .uri("/api/course-averages")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    assert_eq!(response.convert::<Vec<CourseAverage>>().await.len(), 3);
+  }
+
+  #[tokio::test]
+  async fn course_averages_route_filters_by_course_id() {
+    let TestContext { db, mut app, .. } = TestContext::new().await;
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Fall 2024".into(),
+      average: Grade::BPlus,
+    })
+    .await
+    .unwrap();
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "MATH240".into(),
+      term: "Fall 2024".into(),
+      average: Grade::AMinus,
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .uri("/api/course-averages?course_id=COMP202")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let averages = response.convert::<Vec<CourseAverage>>().await;
+
+    assert_eq!(averages.len(), 1);
+    assert_eq!(averages[0].course_id, "COMP202");
+    assert_eq!(averages[0].average, Grade::BPlus);
   }
 }

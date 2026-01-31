@@ -5,9 +5,9 @@ use {
   futures::{TryStreamExt, future::join_all},
   itertools::Itertools,
   model::{
-    Course, CourseFilter, CourseSortType, InitializeOptions, Instructor,
-    Interaction, InteractionKind, Notification, Review, ReviewFilter,
-    SearchResults, Subscription,
+    Course, CourseAverage, CourseFilter, CourseSortType, InitializeOptions,
+    Instructor, Interaction, InteractionKind, Notification, Review,
+    ReviewFilter, SearchResults, Subscription,
   },
   mongodb::{
     Client, Cursor, Database, IndexModel,

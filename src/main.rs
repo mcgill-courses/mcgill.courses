@@ -38,9 +38,9 @@ use {
   },
   indoc::indoc,
   model::{
-    Course, CourseFilter, CourseSortType, InitializeOptions, Instructor,
-    Interaction, InteractionKind, Notification, Review, ReviewFilter,
-    SearchResults, Subscription,
+    Course, CourseAverage, CourseFilter, CourseSortType, InitializeOptions,
+    Instructor, Interaction, InteractionKind, Notification, Review,
+    ReviewFilter, SearchResults, Subscription,
   },
   oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet,
@@ -95,6 +95,7 @@ use {
 
 mod assets;
 mod auth;
+mod course_averages;
 mod courses;
 mod documentation;
 mod error;

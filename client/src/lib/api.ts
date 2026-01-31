@@ -1,3 +1,4 @@
+import type { CourseAverage } from '../lib/types';
 import type { CourseFilter } from '../lib/types';
 import type { GetCourseByIdPayload } from '../lib/types';
 import type { GetCoursesPayload } from '../lib/types';
@@ -83,6 +84,15 @@ const client = {
 };
 
 export const api = {
+  async getCourseAverages(courseId?: string): Promise<CourseAverage[]> {
+    return client.deserialize<CourseAverage[]>(
+      'GET',
+      client.buildQuery('/course-averages', {
+        course_id: courseId,
+      })
+    );
+  },
+
   async getSubscription(courseId: string): Promise<Subscription | null> {
     return client.deserialize<Subscription | null>(
       'GET',
@@ -261,7 +271,7 @@ export const api = {
   ): Promise<GetCourseByIdPayload | null> {
     return client.deserialize<GetCourseByIdPayload | null>(
       'GET',
-      `/courses/${id}?with_reviews=true`
+      `/courses/${id}?with_reviews=true&with_averages=true`
     );
   },
 

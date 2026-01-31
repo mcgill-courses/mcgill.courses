@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet-async';
 import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import courseAverageData from '../assets/course-averages-data.json';
 import { AddReviewForm } from '../components/add-review-form';
 import { CourseAverages } from '../components/course-averages';
 import { CourseInfo } from '../components/course-info';
@@ -19,40 +18,36 @@ import { ReviewEmptyPrompt } from '../components/review-empty-prompt';
 import { ReviewFilter, ReviewSortType } from '../components/review-filter';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
-import type { TermAverage } from '../lib/term-average';
-import { Interaction } from '../lib/types';
-import type { Course, Review } from '../lib/types';
+import type { Course, CourseAverage, Interaction, Review } from '../lib/types';
 import { getCurrentTerms, getReviewAnchorId } from '../lib/utils';
 import { Loading } from './loading';
 
 export const CoursePage = () => {
-  const params = useParams<{ id: string }>();
-  const location = useLocation();
-
-  const user = useAuth();
   const currentTerms = getCurrentTerms();
-
   const firstFetch = useRef(true);
-  const scrollToReviewId = useRef<string | null>(null);
   const hasAttemptedScroll = useRef(false);
   const highlightTimeoutRef = useRef<number | null>(null);
   const lastScrollTarget = useRef<string | null>(null);
+  const location = useLocation();
+  const params = useParams<{ id: string }>();
+  const scrollToReviewId = useRef<string | null>(null);
+  const user = useAuth();
 
   const [addReviewOpen, setAddReviewOpen] = useState(false);
   const [allReviews, setAllReviews] = useState<Review[] | undefined>(undefined);
-  const [userInteractions, setUserInteractions] = useState<
-    Interaction[] | undefined
-  >([]);
   const [course, setCourse] = useState<Course | null | undefined>(undefined);
+  const [courseAverages, setCourseAverages] = useState<CourseAverage[]>([]);
   const [editReviewOpen, setEditReviewOpen] = useState(false);
-  const [showAllReviews, setShowAllReviews] = useState(false);
-  const [showingReviews, setShowingReviews] = useState<Review[]>([]);
   const [highlightedReviewId, setHighlightedReviewId] = useState<string | null>(
     null
   );
-
-  const [sortBy, setSortBy] = useState<ReviewSortType>('Most Recent');
+  const [interactions, setInteractions] = useState<Interaction[] | undefined>(
+    []
+  );
   const [selectedInstructor, setSelectedInstructor] = useState('');
+  const [showAllReviews, setShowAllReviews] = useState(false);
+  const [showingReviews, setShowingReviews] = useState<Review[]>([]);
+  const [sortBy, setSortBy] = useState<ReviewSortType>('Most Recent');
 
   useEffect(() => {
     firstFetch.current = true;
@@ -87,12 +82,13 @@ export const CoursePage = () => {
 
         setShowingReviews(payload.reviews);
         setAllReviews(payload.reviews);
+        setCourseAverages(payload.courseAverages);
 
         if (user && id) {
           const courseInteractionsPayload =
             await api.getUserInteractionsForCourse(id, user.id);
 
-          setUserInteractions(courseInteractionsPayload.interactions);
+          setInteractions(courseInteractionsPayload.interactions);
         }
 
         firstFetch.current = false;
@@ -185,11 +181,6 @@ export const CoursePage = () => {
   const canReview = Boolean(
     user && !allReviews?.find((r) => r.userId === user?.id)
   );
-
-  const allCourseAverages: Record<string, TermAverage[]> =
-    courseAverageData as Record<string, TermAverage[]>;
-
-  const courseAverages: TermAverage[] = allCourseAverages[course._id];
 
   const handleSubmit = (successMessage: string) => {
     return (res: Response) => {
@@ -318,7 +309,7 @@ export const CoursePage = () => {
                       handleDelete={() => handleDelete(userReview)}
                       openEditReview={() => setEditReviewOpen(true)}
                       review={userReview}
-                      interactions={userInteractions}
+                      interactions={interactions}
                       attachment={ReviewAttachment.CopyButton}
                       updateLikes={updateLikes(userReview)}
                     />
@@ -338,7 +329,7 @@ export const CoursePage = () => {
                           anchorId={desktopAnchorId}
                           highlighted={highlightedReviewId === desktopAnchorId}
                           canModify={Boolean(user && review.userId === user.id)}
-                          interactions={userInteractions}
+                          interactions={interactions}
                           handleDelete={() => handleDelete(review)}
                           key={i}
                           openEditReview={() => setEditReviewOpen(true)}
@@ -427,7 +418,7 @@ export const CoursePage = () => {
                         handleDelete={() => handleDelete(userReview)}
                         openEditReview={() => setEditReviewOpen(true)}
                         review={userReview}
-                        interactions={userInteractions}
+                        interactions={interactions}
                         attachment={ReviewAttachment.CopyButton}
                         updateLikes={updateLikes(userReview)}
                       />
@@ -453,7 +444,7 @@ export const CoursePage = () => {
                             key={i}
                             openEditReview={() => setEditReviewOpen(true)}
                             review={review}
-                            interactions={userInteractions}
+                            interactions={interactions}
                             attachment={ReviewAttachment.CopyButton}
                             updateLikes={updateLikes(review)}
                           />

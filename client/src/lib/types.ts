@@ -114,6 +114,28 @@ export interface Course {
   reviewCount: number;
 }
 
+export enum Grade {
+  A = 'A',
+  AMinus = 'A-',
+  BPlus = 'B+',
+  B = 'B',
+  BMinus = 'B-',
+  CPlus = 'C+',
+  C = 'C',
+  CMinus = 'C-',
+  D = 'D',
+  F = 'F',
+}
+
+export interface CourseAverage {
+  /** Course identifier (e.g., "COMP202"). */
+  courseId: string;
+  /** Term name (e.g., "Fall 2024", "Winter 2025"). */
+  term: string;
+  /** Letter grade average. */
+  average: Grade;
+}
+
 export enum CourseSortType {
   /** Sort by course difficulty. */
   Difficulty = 'difficulty',
@@ -186,6 +208,8 @@ export interface Review {
 export interface GetCourseByIdPayload {
   /** The course information. */
   course: Course;
+  /** Grade averages for the course by term. */
+  courseAverages: CourseAverage[];
   /** Reviews for the course (sorted by timestamp, newest first). */
   reviews: Review[];
 }

@@ -47,6 +47,7 @@ impl Modify for MicrosoftOAuthSecurity {
     auth::login_authorized,
     auth::logout,
     auth::microsoft_auth,
+    course_averages::get_course_averages,
     courses::get_course_by_id,
     courses::get_courses,
     instructors::get_instructor,
@@ -71,6 +72,7 @@ impl Modify for MicrosoftOAuthSecurity {
   ),
   components(
     schemas(
+      course_averages::GetCourseAveragesParams,
       courses::GetCourseByIdParams,
       courses::GetCourseByIdPayload,
       courses::GetCoursesParams,
@@ -97,6 +99,7 @@ impl Modify for MicrosoftOAuthSecurity {
   ),
   tags(
     (name = "auth", description = "All authentication related endpoints."),
+    (name = "course-averages", description = "All course average related endpoints."),
     (name = "courses", description = "All course related endpoints."),
     (name = "instructors", description = "All instructor related endpoints."),
     (name = "interactions", description = "All interaction related endpoints."),
