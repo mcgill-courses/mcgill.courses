@@ -114,7 +114,6 @@ export interface Course {
   reviewCount: number;
 }
 
-/** Letter grade values used for course averages. */
 export enum Grade {
   A = 'A',
   AMinus = 'A-',

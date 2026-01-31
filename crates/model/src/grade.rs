@@ -1,6 +1,5 @@
 use super::*;
 
-/// Letter grade values used for course averages.
 #[derive(
   Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize, ToSchema,
 )]
