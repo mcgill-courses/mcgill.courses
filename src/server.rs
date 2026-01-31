@@ -153,23 +153,38 @@ impl Server {
       .route("/api/user", get(user::get_user))
       .merge(
         Scalar::with_url("/api/docs", Documentation::openapi()).custom_html(indoc! {
-          r#"
+          r##"
           <!doctype html>
-          <html>
+          <html lang="en">
           <head>
+            <meta charset="UTF-8"/>
+            <link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96"/>
+            <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"/>
+            <link rel="shortcut icon" href="/assets/favicon.ico"/>
+            <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"/>
+            <meta name="apple-mobile-web-app-title" content="mcgill.courses"/>
+            <link rel="manifest" href="/assets/site.webmanifest"/>
+            <meta name="msapplication-TileColor" content="#da532c"/>
+            <meta name="theme-color" content="#ffffff"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <meta name="description" content="API documentation for mcgill.courses."/>
             <title>API - mcgill.courses</title>
-            <meta charset="utf-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1"/>
-            <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
           </head>
-          <body>
-          <script id="api-reference" type="application/json">
-            $spec
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-XJYTRP283X"></script>
+          <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag("js", new Date());
+            gtag("config", "G-XJYTRP283X");
           </script>
-          <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+          <body>
+            <script id="api-reference" type="application/json">
+              $spec
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
           </body>
           </html>
-          "#
+          "##
         }),
       );
 
@@ -194,51 +209,6 @@ impl Server {
         .fallback_service(assets.index)
     }
 
-    let router = router
-      .with_state(State::new(config.db, config.session_store).await?)
-      .layer(
-        TraceLayer::new_for_http()
-          .make_span_with(|request: &Request<Body>| {
-            let request_id = uuid::Uuid::new_v4().to_string();
-
-            tracing::info_span!(
-              "http_request",
-              method = %request.method(),
-              uri = %request.uri(),
-              path = %request.uri().path(),
-              query = %request.uri().query().unwrap_or(""),
-              request_id = %request_id,
-              user_agent = %request.headers()
-                .get("user-agent")
-                .and_then(|h| h.to_str().ok())
-                .unwrap_or("unknown"),
-            )
-          })
-          .on_request(|_request: &Request<Body>, span: &Span| {
-            tracing::info!(parent: span, "request started");
-          })
-          .on_response(|response: &Response, latency: Duration, span: &Span| {
-            tracing::info!(
-              parent: span,
-              status = %response.status(),
-              latency_ms = %latency.as_millis(),
-              "request completed"
-            );
-          })
-          .on_failure(
-            |error: tower_http::classify::ServerErrorsFailureClass,
-             latency: Duration,
-             span: &Span| {
-              tracing::error!(
-                parent: span,
-                error = %error,
-                latency_ms = %latency.as_millis(),
-                "request failed"
-              );
-            },
-          ),
-      );
-
     let governor_config = GovernorConfigBuilder::default()
       .per_millisecond(10)
       .burst_size(100)
@@ -256,15 +226,71 @@ impl Server {
       }
     });
 
-    Ok(if config.rate_limit {
-      router.layer(
-        ServiceBuilder::new()
-          .layer(GovernorLayer::new(governor_config))
-          .layer(CorsLayer::very_permissive()),
-      )
-    } else {
-      router.layer(CorsLayer::very_permissive())
-    })
+    let trace_layer = TraceLayer::new_for_http()
+      .make_span_with(|request: &Request<Body>| {
+        let request_id = Uuid::new_v4().to_string();
+
+        info_span!(
+          "http_request",
+          method = %request.method(),
+          uri = %request.uri(),
+          path = %request.uri().path(),
+          query = %request.uri().query().unwrap_or(""),
+          request_id = %request_id,
+          user_agent = %request.headers()
+            .get("user-agent")
+            .and_then(|header| header.to_str().ok())
+            .unwrap_or("unknown"),
+        )
+      })
+      .on_request(|_request: &Request<Body>, span: &Span| {
+        info!(parent: span, "request started");
+      })
+      .on_response(|response: &Response, latency: Duration, span: &Span| {
+        info!(
+          parent: span,
+          status = %response.status(),
+          latency_ms = %latency.as_millis(),
+          "request completed"
+        );
+      })
+      .on_failure(
+        |error: tower_http::classify::ServerErrorsFailureClass,
+         latency: Duration,
+         span: &Span| {
+          error!(
+            parent: span,
+            error = %error,
+            latency_ms = %latency.as_millis(),
+            "request failed"
+          );
+        },
+      );
+
+    Ok(
+      router
+        .with_state(State::new(config.db, config.session_store).await?)
+        .layer(
+          ServiceBuilder::new()
+            .layer(CatchPanicLayer::new())
+            .layer(HandleErrorLayer::new(|error: BoxError| async move {
+              if error.is::<tower::timeout::error::Elapsed>() {
+                StatusCode::REQUEST_TIMEOUT
+              } else {
+                StatusCode::INTERNAL_SERVER_ERROR
+              }
+            }))
+            .layer(TimeoutLayer::new(Duration::from_secs(30)))
+            .layer(CompressionLayer::new())
+            .layer(trace_layer)
+            .layer(tower::util::option_layer(
+              config
+                .rate_limit
+                .then(|| GovernorLayer::new(governor_config)),
+            ))
+            .layer(CorsLayer::very_permissive()),
+        ),
+    )
   }
 }
 
@@ -2539,7 +2565,9 @@ mod tests {
       .unwrap();
 
     assert_eq!(response.status(), StatusCode::OK);
+
     let notifications = response.convert::<Vec<Notification>>().await;
+
     assert_eq!(notifications.len(), 1);
     assert_eq!(notifications[0].review.user_id, "c");
   }

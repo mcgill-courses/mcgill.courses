@@ -144,6 +144,22 @@ export interface CourseFilter {
   terms?: string[];
 }
 
+export interface FinalExam {
+  id: string;
+  section: string;
+  format: string;
+  type: string;
+  location?: string;
+  startTime: string;
+  endTime: string;
+}
+
+export interface FinalExamGroup {
+  term: string;
+  url: string;
+  exams: FinalExam[];
+}
+
 export interface GetCourseAveragesPayload {
   courseAverages: CourseAverage[];
 }

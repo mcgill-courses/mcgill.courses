@@ -14,8 +14,9 @@ use {
   async_mongodb_session::MongodbSessionStore,
   async_session::{Session, SessionStore, async_trait},
   axum::{
-    Json, RequestPartsExt,
+    BoxError, Json, RequestPartsExt,
     body::Body,
+    error_handling::HandleErrorLayer,
     extract::{
       FromRef, FromRequestParts, OptionalFromRequestParts, Path, Query,
       State as AppState,
@@ -66,15 +67,17 @@ use {
     time::Duration,
   },
   tokio::net::TcpListener,
-  tower::ServiceBuilder,
+  tower::{ServiceBuilder, timeout::TimeoutLayer},
   tower_governor::{GovernorLayer, governor::GovernorConfigBuilder},
   tower_http::{
+    catch_panic::CatchPanicLayer,
+    compression::CompressionLayer,
     cors::CorsLayer,
     services::{ServeDir, ServeFile},
     trace::TraceLayer,
   },
   tracing::Span,
-  tracing::{debug, error, info, trace},
+  tracing::{debug, error, info, info_span, trace},
   tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt},
   typeshare::typeshare,
   url::Url,
@@ -86,6 +89,7 @@ use {
     },
   },
   utoipa_scalar::{Scalar, Servable},
+  uuid::Uuid,
   walkdir::WalkDir,
 };
 
