@@ -228,7 +228,20 @@ impl Db {
     self
       .database
       .collection::<CourseAverage>(Self::COURSE_AVERAGE_COLLECTION)
-      .insert_one(average)
+      .update_one(
+        doc! {
+          "courseId": &average.course_id,
+          "term": &average.term,
+        },
+        doc! {
+          "$setOnInsert": {
+            "courseId": &average.course_id,
+            "term": &average.term,
+            "average": average.average.to_string(),
+          }
+        },
+      )
+      .upsert(true)
       .await?;
 
     Ok(())
