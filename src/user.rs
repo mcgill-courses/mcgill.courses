@@ -1,6 +1,9 @@
 use super::*;
 
+const ADMINS: &[&str] = &["c89e21e2-11be-4eb9-b8f7-b4fcd2851e59"];
+
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 #[typeshare]
 pub(crate) struct User {
   /// Microsoft Graph user identifier.
@@ -70,6 +73,10 @@ where
 impl User {
   pub(crate) fn id(self) -> String {
     self.id
+  }
+
+  pub(crate) fn is_admin(&self) -> bool {
+    ADMINS.contains(&self.id.as_str())
   }
 
   #[cfg(test)]
