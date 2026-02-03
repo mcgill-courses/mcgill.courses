@@ -11,7 +11,7 @@ export const CourseReviewPrompt = ({
         Taken this course?{' '}
       </p>
       <button
-        className='rounded-lg bg-red-700 px-3 py-2 text-sm font-medium text-white transition duration-200 hover:bg-red-600 sm:text-base'
+        className='cursor-pointer rounded-lg bg-red-700 px-3 py-2 text-sm font-medium text-white transition duration-200 hover:bg-red-600 sm:text-base'
         onClick={openAddReview}
       >
         Leave a review

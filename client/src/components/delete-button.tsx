@@ -33,7 +33,7 @@ export const DeleteButton = ({
     <>
       <button
         type='button'
-        className={twMerge('h-fit', className)}
+        className={twMerge('h-fit cursor-pointer', className)}
         onClick={() => setOpen(true)}
       >
         <Trash2
@@ -86,14 +86,14 @@ export const DeleteButton = ({
                   <div className='mt-4 flex justify-end space-x-3'>
                     <button
                       type='button'
-                      className='rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 dark:bg-neutral-700 dark:text-gray-200 dark:hover:bg-neutral-600'
+                      className='cursor-pointer rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 dark:bg-neutral-700 dark:text-gray-200 dark:hover:bg-neutral-600'
                       onClick={() => setOpen(false)}
                     >
                       Cancel
                     </button>
                     <button
                       type='button'
-                      className='rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:bg-red-500 dark:text-gray-200 dark:hover:bg-red-600'
+                      className='cursor-pointer rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:bg-red-500 dark:text-gray-200 dark:hover:bg-red-600'
                       onClick={onDeleteClick}
                     >
                       Delete

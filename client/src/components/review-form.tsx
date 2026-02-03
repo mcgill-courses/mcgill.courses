@@ -153,7 +153,7 @@ export const ReviewForm = ({
           </div>
           <button
             type='submit'
-            className='ml-auto w-fit rounded-md bg-red-600 px-4 py-2 font-medium text-white transition duration-300 hover:bg-red-800'
+            className='ml-auto w-fit cursor-pointer rounded-md bg-red-600 px-4 py-2 font-medium text-white transition duration-300 hover:bg-red-800'
           >
             Submit
           </button>
