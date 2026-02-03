@@ -106,7 +106,7 @@ export const ReviewFilter = ({
         <div className='p-1'>
           <div className='flex max-w-sm gap-x-2'>
             <div className='xs:max-w-56 w-2/5'>
-              <h2 className='mb-2 text-sm font-medium text-gray-600 dark:text-gray-400'>
+              <h2 className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
                 Sort By
               </h2>
               <div className='relative z-10'>
@@ -118,7 +118,7 @@ export const ReviewFilter = ({
               </div>
             </div>
             <div className='xs:w-auto w-3/5'>
-              <h2 className='mb-2 text-sm font-medium text-gray-600 dark:text-gray-400'>
+              <h2 className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
                 Instructor
               </h2>
               <div className='relative z-10'>
