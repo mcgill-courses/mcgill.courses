@@ -128,7 +128,7 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
           }}
         />
       )}
-      <h1 className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
+      <h1 className='text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
         Sort By
       </h1>
       <div className='py-1' />
@@ -140,7 +140,7 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
         />
       </div>
       <div className='py-2.5' />
-      <h1 className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
+      <h1 className='text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
         Subject
       </h1>
       <div className='py-1' />
@@ -152,7 +152,7 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
         />
       </div>
       <div className='py-2.5' />
-      <h1 className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
+      <h1 className='text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
         Level
       </h1>
       <div className='py-1' />
@@ -168,7 +168,7 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
         ))}
       </div>
       <div className='py-2.5' />
-      <h1 className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
+      <h1 className='text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
         Term
       </h1>
       <div className='py-1' />
