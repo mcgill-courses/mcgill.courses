@@ -81,7 +81,10 @@ export const AddReviewForm = ({
                   initialValues={initialValues}
                   validationSchema={ReviewSchema}
                   onSubmit={async (values, actions) => {
-                    const res = await api.addReview(course._id, values);
+                    const res = await api.addReview({
+                      ...values,
+                      courseId: course._id,
+                    });
                     actions.setSubmitting(false);
                     onClose();
                     handleSubmit(res);

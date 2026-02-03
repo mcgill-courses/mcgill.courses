@@ -83,7 +83,7 @@ type ReviewFormProps = {
   course: Course;
   setFieldValue: (
     field: string,
-    value: any,
+    value: string | string[] | number,
     shouldValidate?: boolean | undefined
   ) => void;
   values: ReviewFormInitialValues;

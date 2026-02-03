@@ -47,7 +47,7 @@ export const Tooltip = ({
       >
         <div>{text}</div>
       </Transition>
-      {cloneElement<any>(elem, {
+      {cloneElement(elem, {
         onMouseEnter: () => {
           elem.props.onMouseEnter?.();
           setShow(true);

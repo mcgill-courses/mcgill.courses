@@ -108,8 +108,8 @@ const ReviewInteractions = ({
     try {
       const payload = await api.getInteractions(courseId, userId, user?.id);
       setKind(payload.kind);
-    } catch (err: any) {
-      toast.error(err.toString());
+    } catch (err: unknown) {
+      toast.error(String(err));
     }
   };
 
@@ -127,8 +127,8 @@ const ReviewInteractions = ({
           ' '
         )}.`
       );
-    } catch (err: any) {
-      toast.error(err.toString());
+    } catch (err: unknown) {
+      toast.error(String(err));
     }
   };
 
@@ -148,8 +148,8 @@ const ReviewInteractions = ({
           ' '
         )}.`
       );
-    } catch (err: any) {
-      toast.error(err.toString());
+    } catch (err: unknown) {
+      toast.error(String(err));
     }
   };
 

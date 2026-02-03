@@ -81,7 +81,10 @@ export const EditReviewForm = ({
                   initialValues={initialValues}
                   validationSchema={ReviewSchema}
                   onSubmit={async (values, actions) => {
-                    const res = await api.updateReview(course._id, values);
+                    const res = await api.updateReview({
+                      ...values,
+                      courseId: course._id,
+                    });
                     actions.setSubmitting(false);
                     onClose();
                     handleSubmit(res);

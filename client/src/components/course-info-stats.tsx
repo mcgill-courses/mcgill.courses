@@ -55,7 +55,7 @@ const FillBar = ({ width, percentage, text, variant }: FillBarProps) => {
 type StatProps = {
   title: string;
   value: number;
-  icon: LucideIcon | ComponentType<any>;
+  icon: LucideIcon | ComponentType<{ className?: string; size?: number }>;
   variant: Size;
 };
 
