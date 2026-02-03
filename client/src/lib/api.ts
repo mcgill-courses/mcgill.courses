@@ -1,3 +1,5 @@
+import type { CourseAverage } from '../lib/types';
+import type { CourseFilter } from '../lib/types';
 import type { GetCourseByIdPayload } from '../lib/types';
 import type { GetCoursesPayload } from '../lib/types';
 import type { GetInstructorPayload } from '../lib/types';
@@ -82,6 +84,15 @@ const client = {
 };
 
 export const api = {
+  async getCourseAverages(courseId?: string): Promise<CourseAverage[]> {
+    return client.deserialize<CourseAverage[]>(
+      'GET',
+      client.buildQuery('/course-averages', {
+        course_id: courseId,
+      })
+    );
+  },
+
   async getSubscription(courseId: string): Promise<Subscription | null> {
     return client.deserialize<Subscription | null>(
       'GET',
@@ -260,7 +271,7 @@ export const api = {
   ): Promise<GetCourseByIdPayload | null> {
     return client.deserialize<GetCourseByIdPayload | null>(
       'GET',
-      `/courses/${id}?with_reviews=true`
+      `/courses/${id}?with_reviews=true&with_averages=true`
     );
   },
 
@@ -268,21 +279,21 @@ export const api = {
     limit: number,
     offset: number,
     withCourseCount?: boolean,
-    filters?: any
+    filters?: CourseFilter
   ): Promise<GetCoursesPayload> {
     return client.deserialize<GetCoursesPayload>(
-      'POST',
+      'GET',
       client.buildQuery(`/courses`, {
+        levels: filters?.levels?.join(','),
         limit,
         offset,
+        query: filters?.query,
+        sortReverse: filters?.sortReverse,
+        sortType: filters?.sortType,
+        subjects: filters?.subjects?.join(','),
+        terms: filters?.terms?.join(','),
         with_course_count: withCourseCount,
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(filters),
-      }
+      })
     );
   },
 

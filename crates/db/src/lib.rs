@@ -5,9 +5,9 @@ use {
   futures::{TryStreamExt, future::join_all},
   itertools::Itertools,
   model::{
-    Course, CourseFilter, CourseSortType, InitializeOptions, Instructor,
-    Interaction, InteractionKind, Notification, Review, ReviewFilter,
-    SearchResults, Subscription,
+    Course, CourseAverage, CourseFilter, CourseSortType, InitializeOptions,
+    Instructor, Interaction, InteractionKind, Notification, Review,
+    ReviewFilter, SearchResults, Subscription,
   },
   mongodb::{
     Client, Cursor, Database, IndexModel,
@@ -28,7 +28,7 @@ use {
 #[cfg(test)]
 use {
   include_dir::{Dir, include_dir},
-  model::{CourseSort, DateTime},
+  model::DateTime,
   std::sync::atomic::{AtomicUsize, Ordering},
   tempdir::TempDir,
 };

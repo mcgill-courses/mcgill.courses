@@ -7,6 +7,7 @@ pub struct Db {
 }
 
 impl Db {
+  const COURSE_AVERAGE_COLLECTION: &'static str = "course-averages";
   const COURSE_COLLECTION: &'static str = "courses";
   const INSTRUCTOR_COLLECTION: &'static str = "instructors";
   const INTERACTION_COLLECTION: &'static str = "interactions";
@@ -122,9 +123,14 @@ impl Db {
         document.insert("$or", [vec![id, instructor], rest].concat());
       }
 
-      if let Some(sort_by) = filter.sort_by {
-        let reverse = if sort_by.reverse { -1 } else { 1 };
-        let field = match sort_by.sort_type {
+      if let Some(sort_type) = filter.sort_type {
+        let reverse = if filter.sort_reverse.unwrap_or(false) {
+          -1
+        } else {
+          1
+        };
+
+        let field = match sort_type {
           CourseSortType::Rating => {
             document.insert("reviewCount", doc! { "$gt": 0 });
             "avgRating"
@@ -135,6 +141,7 @@ impl Db {
           }
           CourseSortType::ReviewCount => "reviewCount",
         };
+
         sort_document.insert(field, reverse);
       } else if query.is_none() {
         sort_document.insert("_id", 1);
@@ -194,6 +201,50 @@ impl Db {
   #[tracing::instrument(name = "db_find_course_by_id", skip(self), fields(course_id = %id))]
   pub async fn find_course_by_id(&self, id: &str) -> Result<Option<Course>> {
     self.find_course(doc! { "_id": id }).await
+  }
+
+  pub async fn course_averages(
+    &self,
+    course_id: Option<&str>,
+  ) -> Result<Vec<CourseAverage>> {
+    let document = if let Some(course_id) = course_id {
+      doc! { "courseId": course_id }
+    } else {
+      doc! {}
+    };
+
+    Ok(
+      self
+        .database
+        .collection::<CourseAverage>(Self::COURSE_AVERAGE_COLLECTION)
+        .find(document)
+        .await?
+        .try_collect::<Vec<CourseAverage>>()
+        .await?,
+    )
+  }
+
+  pub async fn add_course_average(&self, average: CourseAverage) -> Result {
+    self
+      .database
+      .collection::<CourseAverage>(Self::COURSE_AVERAGE_COLLECTION)
+      .update_one(
+        doc! {
+          "courseId": &average.course_id,
+          "term": &average.term,
+        },
+        doc! {
+          "$setOnInsert": {
+            "courseId": &average.course_id,
+            "term": &average.term,
+            "average": average.average.to_string(),
+          }
+        },
+      )
+      .upsert(true)
+      .await?;
+
+    Ok(())
   }
 
   #[tracing::instrument(name = "db_add_review", skip(self), fields(course_id = %review.course_id, user_id = %review.user_id))]
@@ -1505,10 +1556,8 @@ mod tests {
         Some(10),
         None,
         Some(CourseFilter {
-          sort_by: Some(CourseSort {
-            sort_type: CourseSortType::Rating,
-            reverse: true,
-          }),
+          sort_reverse: Some(true),
+          sort_type: Some(CourseSortType::Rating),
           ..Default::default()
         }),
       )
@@ -1533,10 +1582,8 @@ mod tests {
         Some(10),
         None,
         Some(CourseFilter {
-          sort_by: Some(CourseSort {
-            sort_type: CourseSortType::Difficulty,
-            reverse: true,
-          }),
+          sort_reverse: Some(true),
+          sort_type: Some(CourseSortType::Difficulty),
           ..Default::default()
         }),
       )
@@ -1575,10 +1622,8 @@ mod tests {
         Some(10),
         None,
         Some(CourseFilter {
-          sort_by: Some(CourseSort {
-            sort_type: CourseSortType::ReviewCount,
-            reverse: true,
-          }),
+          sort_reverse: Some(true),
+          sort_type: Some(CourseSortType::ReviewCount),
           ..Default::default()
         }),
       )

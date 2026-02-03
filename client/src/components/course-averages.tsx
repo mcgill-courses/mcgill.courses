@@ -4,8 +4,7 @@ import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
-import type { TermAverage } from '../lib/term-average';
-import type { Course, Instructor } from '../lib/types';
+import type { Course, CourseAverage, Instructor } from '../lib/types';
 import { compareTerms, groupBy, mapValues } from '../lib/utils';
 import { GPAChart } from './gpa-chart';
 
@@ -24,7 +23,7 @@ const InstructorLink = ({ instructor }: InstructorLinkProps) => (
 
 type CourseAveragesProps = {
   course: Course;
-  averages: TermAverage[];
+  averages: CourseAverage[];
 };
 
 export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
@@ -88,7 +87,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
             const firstSix = sortedAverages.slice(0, 6);
             const remaining = sortedAverages.slice(6);
 
-            const renderAverageItem = (average: TermAverage) => {
+            const renderAverageItem = (average: CourseAverage) => {
               const instructors = termInstructors[average.term];
               return (
                 <Fragment key={average.term}>

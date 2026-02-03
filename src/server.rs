@@ -114,7 +114,8 @@ impl Server {
       .route("/api/auth/authorized", get(auth::login_authorized))
       .route("/api/auth/login", get(auth::microsoft_auth))
       .route("/api/auth/logout", get(auth::logout))
-      .route("/api/courses", post(courses::get_courses))
+      .route("/api/course-averages", get(course_averages::get_course_averages))
+      .route("/api/courses", get(courses::get_courses))
       .route("/api/courses/{id}", get(courses::get_course_by_id))
       .route("/api/instructors/{name}", get(instructors::get_instructor))
       .route(
@@ -152,23 +153,38 @@ impl Server {
       .route("/api/user", get(user::get_user))
       .merge(
         Scalar::with_url("/api/docs", Documentation::openapi()).custom_html(indoc! {
-          r#"
+          r##"
           <!doctype html>
-          <html>
+          <html lang="en">
           <head>
+            <meta charset="UTF-8"/>
+            <link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96"/>
+            <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"/>
+            <link rel="shortcut icon" href="/assets/favicon.ico"/>
+            <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"/>
+            <meta name="apple-mobile-web-app-title" content="mcgill.courses"/>
+            <link rel="manifest" href="/assets/site.webmanifest"/>
+            <meta name="msapplication-TileColor" content="#da532c"/>
+            <meta name="theme-color" content="#ffffff"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <meta name="description" content="API documentation for mcgill.courses."/>
             <title>API - mcgill.courses</title>
-            <meta charset="utf-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1"/>
-            <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
           </head>
-          <body>
-          <script id="api-reference" type="application/json">
-            $spec
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-XJYTRP283X"></script>
+          <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag("js", new Date());
+            gtag("config", "G-XJYTRP283X");
           </script>
-          <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+          <body>
+            <script id="api-reference" type="application/json">
+              $spec
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
           </body>
           </html>
-          "#
+          "##
         }),
       );
 
@@ -193,51 +209,6 @@ impl Server {
         .fallback_service(assets.index)
     }
 
-    let router = router
-      .with_state(State::new(config.db, config.session_store).await?)
-      .layer(
-        TraceLayer::new_for_http()
-          .make_span_with(|request: &Request<Body>| {
-            let request_id = uuid::Uuid::new_v4().to_string();
-
-            tracing::info_span!(
-              "http_request",
-              method = %request.method(),
-              uri = %request.uri(),
-              path = %request.uri().path(),
-              query = %request.uri().query().unwrap_or(""),
-              request_id = %request_id,
-              user_agent = %request.headers()
-                .get("user-agent")
-                .and_then(|h| h.to_str().ok())
-                .unwrap_or("unknown"),
-            )
-          })
-          .on_request(|_request: &Request<Body>, span: &Span| {
-            tracing::info!(parent: span, "request started");
-          })
-          .on_response(|response: &Response, latency: Duration, span: &Span| {
-            tracing::info!(
-              parent: span,
-              status = %response.status(),
-              latency_ms = %latency.as_millis(),
-              "request completed"
-            );
-          })
-          .on_failure(
-            |error: tower_http::classify::ServerErrorsFailureClass,
-             latency: Duration,
-             span: &Span| {
-              tracing::error!(
-                parent: span,
-                error = %error,
-                latency_ms = %latency.as_millis(),
-                "request failed"
-              );
-            },
-          ),
-      );
-
     let governor_config = GovernorConfigBuilder::default()
       .per_millisecond(10)
       .burst_size(100)
@@ -255,15 +226,71 @@ impl Server {
       }
     });
 
-    Ok(if config.rate_limit {
-      router.layer(
-        ServiceBuilder::new()
-          .layer(GovernorLayer::new(governor_config))
-          .layer(CorsLayer::very_permissive()),
-      )
-    } else {
-      router.layer(CorsLayer::very_permissive())
-    })
+    let trace_layer = TraceLayer::new_for_http()
+      .make_span_with(|request: &Request<Body>| {
+        let request_id = Uuid::new_v4().to_string();
+
+        info_span!(
+          "http_request",
+          method = %request.method(),
+          uri = %request.uri(),
+          path = %request.uri().path(),
+          query = %request.uri().query().unwrap_or(""),
+          request_id = %request_id,
+          user_agent = %request.headers()
+            .get("user-agent")
+            .and_then(|header| header.to_str().ok())
+            .unwrap_or("unknown"),
+        )
+      })
+      .on_request(|_request: &Request<Body>, span: &Span| {
+        info!(parent: span, "request started");
+      })
+      .on_response(|response: &Response, latency: Duration, span: &Span| {
+        info!(
+          parent: span,
+          status = %response.status(),
+          latency_ms = %latency.as_millis(),
+          "request completed"
+        );
+      })
+      .on_failure(
+        |error: tower_http::classify::ServerErrorsFailureClass,
+         latency: Duration,
+         span: &Span| {
+          error!(
+            parent: span,
+            error = %error,
+            latency_ms = %latency.as_millis(),
+            "request failed"
+          );
+        },
+      );
+
+    Ok(
+      router
+        .with_state(State::new(config.db, config.session_store).await?)
+        .layer(
+          ServiceBuilder::new()
+            .layer(CatchPanicLayer::new())
+            .layer(HandleErrorLayer::new(|error: BoxError| async move {
+              if error.is::<tower::timeout::error::Elapsed>() {
+                StatusCode::REQUEST_TIMEOUT
+              } else {
+                StatusCode::INTERNAL_SERVER_ERROR
+              }
+            }))
+            .layer(TimeoutLayer::new(Duration::from_secs(30)))
+            .layer(CompressionLayer::new())
+            .layer(trace_layer)
+            .layer(tower::util::option_layer(
+              config
+                .rate_limit
+                .then(|| GovernorLayer::new(governor_config)),
+            ))
+            .layer(CorsLayer::very_permissive()),
+        ),
+    )
   }
 }
 
@@ -271,16 +298,13 @@ impl Server {
 mod tests {
   use {
     super::*,
-    crate::{
-      instructors::GetInstructorPayload,
-      interactions::GetUserInteractionForCoursePayload,
-      subscriptions::SubscriptionResponse,
-    },
     axum::body::Body,
     courses::{GetCourseByIdPayload, GetCoursesPayload},
     http::{Method, Request},
+    instructors::GetInstructorPayload,
     interactions::GetInteractionKindPayload,
-    model::{Notification, Subscription},
+    interactions::GetUserInteractionForCoursePayload,
+    model::{Grade, Notification, Subscription},
     pretty_assertions::assert_eq,
     reviews::GetReviewsPayload,
     serde::de::DeserializeOwned,
@@ -289,6 +313,7 @@ mod tests {
       collections::HashSet,
       sync::atomic::{AtomicUsize, Ordering},
     },
+    subscriptions::SubscriptionResponse,
     tower::{Service, ServiceExt},
   };
 
@@ -404,19 +429,12 @@ mod tests {
     .await
     .unwrap();
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
@@ -441,19 +459,12 @@ mod tests {
     .await
     .unwrap();
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses?limit=10&offset=40")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
@@ -473,26 +484,127 @@ mod tests {
   async fn courses_route_disallows_negative_limit_or_offset() {
     let TestContext { app, .. } = TestContext::new().await;
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .clone()
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses?limit=-10&offset=-10")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
       .unwrap();
 
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+  }
+
+  #[tokio::test]
+  async fn courses_route_with_filters() {
+    let TestContext { db, app, .. } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "COMP202".into(),
+      user_id: "1".into(),
+      rating: 3,
+      difficulty: 2,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "COMP252".into(),
+      user_id: "1".into(),
+      rating: 5,
+      difficulty: 4,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "MATH240".into(),
+      user_id: "1".into(),
+      rating: 4,
+      difficulty: 3,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    async fn case(app: Router, uri: &str, expected_ids: &[&str]) {
+      let response = app
+        .oneshot(
+          Request::builder()
+            .method(Method::GET)
+            .uri(uri)
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::OK);
+
+      let payload = response.convert::<GetCoursesPayload>().await;
+
+      let ids = payload
+        .courses
+        .iter()
+        .map(|course| course.id.as_str())
+        .collect::<Vec<&str>>();
+
+      assert_eq!(ids, expected_ids);
+    }
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP&sortType=rating&sortReverse=true",
+      &["COMP252", "COMP202"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP&sortType=rating&sortReverse=false",
+      &["COMP202", "COMP252"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?sortType=difficulty&sortReverse=true",
+      &["COMP252", "MATH240", "COMP202"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?levels=2&sortType=reviewCount&sortReverse=true",
+      &["COMP202", "COMP252", "MATH240"],
+    )
+    .await;
+
+    case(app.clone(), "/api/courses?query=Honours", &["COMP252"]).await;
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP,MATH&levels=2",
+      &["COMP202", "COMP252", "MATH240"],
+    )
+    .await;
+
+    case(app.clone(), "/api/courses?subjects=PHYS", &[]).await;
+
+    case(app.clone(), "/api/courses?levels=1", &[]).await;
   }
 
   #[tokio::test]
@@ -2451,8 +2563,94 @@ mod tests {
       .unwrap();
 
     assert_eq!(response.status(), StatusCode::OK);
+
     let notifications = response.convert::<Vec<Notification>>().await;
+
     assert_eq!(notifications.len(), 1);
     assert_eq!(notifications[0].review.user_id, "c");
+  }
+
+  #[tokio::test]
+  async fn course_averages_route_works() {
+    let TestContext { db, mut app, .. } = TestContext::new().await;
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Fall 2024".into(),
+      average: Grade::BPlus,
+    })
+    .await
+    .unwrap();
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Winter 2024".into(),
+      average: Grade::B,
+    })
+    .await
+    .unwrap();
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "MATH240".into(),
+      term: "Fall 2024".into(),
+      average: Grade::AMinus,
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .uri("/api/course-averages")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    assert_eq!(response.convert::<Vec<CourseAverage>>().await.len(), 3);
+  }
+
+  #[tokio::test]
+  async fn course_averages_route_filters_by_course_id() {
+    let TestContext { db, mut app, .. } = TestContext::new().await;
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Fall 2024".into(),
+      average: Grade::BPlus,
+    })
+    .await
+    .unwrap();
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "MATH240".into(),
+      term: "Fall 2024".into(),
+      average: Grade::AMinus,
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .uri("/api/course-averages?course_id=COMP202")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let averages = response.convert::<Vec<CourseAverage>>().await;
+
+    assert_eq!(averages.len(), 1);
+    assert_eq!(averages[0].course_id, "COMP202");
+    assert_eq!(averages[0].average, Grade::BPlus);
   }
 }

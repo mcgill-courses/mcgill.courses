@@ -10,6 +10,9 @@ pub(crate) type OAuthClient = BasicClient<
 
 pub(crate) const COOKIE_NAME: &str = "session";
 
+pub(crate) const MCGILL_TENANT_ID: &str =
+  "cd319671-52e7-4a68-afa9-fcf8f89f09ea";
+
 pub(crate) struct AuthRedirect;
 
 impl IntoResponse for AuthRedirect {
@@ -114,7 +117,9 @@ pub(crate) async fn login_authorized(
 
   let response = state
     .request_client
-    .post("https://login.microsoftonline.com/organizations/oauth2/v2.0/token")
+    .post(format!(
+      "https://login.microsoftonline.com/{MCGILL_TENANT_ID}/oauth2/v2.0/token"
+    ))
     .form(&params)
     .header("Accept", "application/x-www-form-urlencoded")
     .send()
@@ -135,16 +140,6 @@ pub(crate) async fn login_authorized(
 
   let url =
     Url::parse(&String::from_utf8(STANDARD.decode(&query.state[22..])?)?)?;
-
-  if !user.mail().ends_with("mcgill.ca") {
-    return Ok((
-      HeaderMap::new(),
-      Redirect::to(&format!(
-        "{}?err=invalidMail",
-        url.origin().ascii_serialization()
-      )),
-    ));
-  }
 
   let mut session = Session::new();
 

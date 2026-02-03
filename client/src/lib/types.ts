@@ -114,6 +114,78 @@ export interface Course {
   reviewCount: number;
 }
 
+export enum Grade {
+  A = 'A',
+  AMinus = 'A-',
+  BPlus = 'B+',
+  B = 'B',
+  BMinus = 'B-',
+  CPlus = 'C+',
+  C = 'C',
+  CMinus = 'C-',
+  D = 'D',
+  F = 'F',
+}
+
+export interface CourseAverage {
+  /** Course identifier (e.g., "COMP202"). */
+  courseId: string;
+  /** Term name (e.g., "Fall 2024", "Winter 2025"). */
+  term: string;
+  /** Letter grade average. */
+  average: Grade;
+}
+
+export enum CourseSortType {
+  /** Sort by course difficulty. */
+  Difficulty = 'difficulty',
+  /** Sort by course rating. */
+  Rating = 'rating',
+  /** Sort by number of reviews. */
+  ReviewCount = 'reviewCount',
+}
+
+export interface CourseFilter {
+  /** Course levels to filter by (e.g., "1", "2", "3"). */
+  levels?: string[];
+  /** Search query string. */
+  query?: string;
+  /** Whether to reverse the sort order. */
+  sortReverse?: boolean;
+  /** Sort type for ordering results. */
+  sortType?: CourseSortType;
+  /** Subject codes to filter by (e.g., "COMP", "MATH"). */
+  subjects?: string[];
+  /** Term identifiers to filter by (e.g., "Fall 2024"). */
+  terms?: string[];
+}
+
+export interface FinalExam {
+  /** Course identifier (e.g., "COMP202"). */
+  id: string;
+  /** Section number (e.g., "001"). */
+  section: string;
+  /** Exam format (e.g., "IN-PERSON", "ONLINE"). */
+  format: string;
+  /** Exam type (e.g., "FORMAL EXAM"). */
+  type: string;
+  /** Location where the exam is held. */
+  location?: string;
+  /** Exam start time in ISO 8601 format. */
+  startTime: string;
+  /** Exam end time in ISO 8601 format. */
+  endTime: string;
+}
+
+export interface FinalExamGroup {
+  /** Term name (e.g., "Fall 2025", "Winter 2026"). */
+  term: string;
+  /** URL to the official exam schedule PDF. */
+  url: string;
+  /** List of final exams for this group. */
+  exams: FinalExam[];
+}
+
 export interface Review {
   /** The text content of the review. */
   content: string;
@@ -136,15 +208,17 @@ export interface Review {
 export interface GetCourseByIdPayload {
   /** The course information. */
   course: Course;
+  /** Grade averages for the course by term. */
+  courseAverages: CourseAverage[];
   /** Reviews for the course (sorted by timestamp, newest first). */
   reviews: Review[];
 }
 
 export interface GetCoursesPayload {
-  /** List of courses matching the query. */
-  courses: Course[];
   /** Total number of courses available (if requested). */
   courseCount?: number;
+  /** List of courses matching the query. */
+  courses: Course[];
 }
 
 export interface GetInstructorPayload {

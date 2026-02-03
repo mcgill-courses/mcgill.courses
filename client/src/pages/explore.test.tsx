@@ -144,10 +144,12 @@ describe('Explore page', () => {
       0,
       true,
       expect.objectContaining({
-        subjects: null,
-        levels: null,
-        terms: null,
-        query: null,
+        levels: undefined,
+        query: undefined,
+        sortReverse: undefined,
+        sortType: undefined,
+        subjects: undefined,
+        terms: undefined,
       })
     );
   });
