@@ -93,6 +93,12 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
     setSortBy,
   } = useExploreFilterState();
 
+  const hasActiveFilters =
+    selectedSubjects.length > 0 ||
+    selectedLevels.length > 0 ||
+    selectedTerms.length > 0 ||
+    sortBy !== '';
+
   const termToIcon = (term: CourseTerm) => {
     switch (term) {
       case 'Fall':
@@ -111,15 +117,17 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
         'relative flex h-fit flex-col flex-wrap rounded-lg bg-slate-50 px-6 py-4 lg:px-8 lg:py-6 dark:bg-neutral-800 dark:text-gray-200'
       )}
     >
-      <ResetButton
-        className='absolute top-2 right-2 lg:top-4 lg:right-4'
-        onClear={() => {
-          setSelectedSubjects([]);
-          setSelectedLevels([]);
-          setSelectedTerms([]);
-          setSortBy('');
-        }}
-      />
+      {hasActiveFilters && (
+        <ResetButton
+          className='absolute top-2 right-2 lg:top-4 lg:right-4'
+          onClear={() => {
+            setSelectedSubjects([]);
+            setSelectedLevels([]);
+            setSelectedTerms([]);
+            setSortBy('');
+          }}
+        />
+      )}
       <h1 className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
         Sort By
       </h1>
