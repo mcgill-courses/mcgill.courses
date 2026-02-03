@@ -385,6 +385,7 @@ pub(crate) async fn update_review(
 }
 
 #[derive(Debug, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub(crate) struct DeleteReviewBody {
   /// Course ID to delete the review for.
   course_id: String,

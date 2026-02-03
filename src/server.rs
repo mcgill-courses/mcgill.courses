@@ -683,7 +683,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -771,7 +771,7 @@ mod tests {
           .method(http::Method::POST)
           .uri("/api/reviews")
           .body(Body::from(
-            json!({"content": "test", "course_id": "MATH240"}).to_string(),
+            json!({"content": "test", "courseId": "MATH240"}).to_string(),
           ))
           .unwrap(),
       )
@@ -799,7 +799,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -845,7 +845,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta", "lmao"],
       "rating": 5,
       "difficulty": 5
@@ -891,7 +891,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -921,7 +921,7 @@ mod tests {
           .header("Cookie", cookie.clone())
           .header("Content-Type", "application/json")
           .uri("/api/reviews")
-          .body(Body::from(json!({"course_id": "MATH240"}).to_string()))
+          .body(Body::from(json!({"courseId": "MATH240"}).to_string()))
           .unwrap(),
       )
       .await
@@ -951,7 +951,7 @@ mod tests {
 
     let review = json!({
         "content": "test",
-        "course_id": "MATH240",
+        "courseId": "MATH240",
         "instructors": ["Adrian Roshan Vetta"],
         "rating": 1,
         "difficulty": 5
@@ -973,7 +973,7 @@ mod tests {
 
     let review = json!({
       "content": "updated",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Jeremy Macdonald"],
       "rating": 5,
       "difficulty": 2
@@ -1024,21 +1024,21 @@ mod tests {
     let reviews = vec![
       json!({
         "content": "test",
-        "course_id": "COMP202",
+        "courseId": "COMP202",
         "instructors": ["Jonathan Campbell"],
         "rating": 5,
         "difficulty": 5
       }),
       json!({
         "content": "test2",
-        "course_id": "MATH240",
+        "courseId": "MATH240",
         "instructors": ["Adrian Roshan Vetta"],
         "rating": 5,
         "difficulty": 5
       }),
       json!({
         "content": "test3",
-        "course_id": "COMP252",
+        "courseId": "COMP252",
         "instructors": ["Luc P Devroye"],
         "rating": 5,
         "difficulty": 5
@@ -1071,7 +1071,7 @@ mod tests {
           .header("Content-Type", "application/json")
           .uri("/api/reviews")
           .body(Body::from(
-            json!({"content": "test4", "course_id": "COMP202"}).to_string(),
+            json!({"content": "test4", "courseId": "COMP202"}).to_string(),
           ))
           .unwrap(),
       )
@@ -1121,14 +1121,14 @@ mod tests {
     let reviews = vec![
       json!({
         "content": "test",
-        "course_id": "MATH240",
+        "courseId": "MATH240",
         "instructors": ["Adrian Roshan Vetta"],
         "rating": 5,
         "difficulty": 5
       }),
       json!({
          "content": "test2",
-         "course_id": "MATH240",
+         "courseId": "MATH240",
          "instructors": ["Adrian Roshan Vetta"],
          "rating": 5,
          "difficulty": 5
@@ -1189,7 +1189,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -1231,8 +1231,8 @@ mod tests {
 
     let interaction = json! ({
       "kind": "like",
-      "course_id": "MATH240",
-      "user_id": "test",
+      "courseId": "MATH240",
+      "userId": "test",
       "referrer": "test"
     })
     .to_string();
@@ -1283,8 +1283,8 @@ mod tests {
     );
 
     let interaction = json! ({
-      "course_id": "MATH240",
-      "user_id": "test",
+      "courseId": "MATH240",
+      "userId": "test",
       "referrer": "test"
     })
     .to_string();
@@ -1361,7 +1361,7 @@ mod tests {
         author_cookie,
         json!({
           "content": "test",
-          "course_id": "COMP202",
+          "courseId": "COMP202",
           "instructors": ["Jonathan Campbell"],
           "rating": 5,
           "difficulty": 4
@@ -1371,7 +1371,7 @@ mod tests {
         author_two_cookie,
         json!({
           "content": "test2",
-          "course_id": "MATH240",
+          "courseId": "MATH240",
           "instructors": ["Adrian Roshan Vetta"],
           "rating": 4,
           "difficulty": 3
@@ -1399,8 +1399,8 @@ mod tests {
 
     let like = json!({
       "kind": "like",
-      "course_id": "COMP202",
-      "user_id": "author1",
+      "courseId": "COMP202",
+      "userId": "author1",
       "referrer": "liker"
     })
     .to_string();
@@ -1420,8 +1420,8 @@ mod tests {
 
     let dislike = json!({
       "kind": "dislike",
-      "course_id": "MATH240",
-      "user_id": "author2",
+      "courseId": "MATH240",
+      "userId": "author2",
       "referrer": "liker"
     })
     .to_string();
@@ -1443,8 +1443,8 @@ mod tests {
       mock_login(session_store, "other", "other@mail.mcgill.ca").await;
     let other_like = json!({
       "kind": "like",
-      "course_id": "MATH240",
-      "user_id": "author2",
+      "courseId": "MATH240",
+      "userId": "author2",
       "referrer": "other"
     })
     .to_string();
@@ -1504,7 +1504,7 @@ mod tests {
         .await;
     let review = json!({
       "content": "test",
-      "course_id": "COMP202",
+      "courseId": "COMP202",
       "instructors": ["Jonathan Campbell"],
       "rating": 5,
       "difficulty": 4
@@ -1594,7 +1594,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -1700,7 +1700,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -1725,8 +1725,8 @@ mod tests {
 
     let interaction = json! ({
       "kind": "like",
-      "course_id": "MATH240",
-      "user_id": "test",
+      "courseId": "MATH240",
+      "userId": "test",
       "referrer": "test"
     })
     .to_string();
@@ -1798,7 +1798,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -1823,8 +1823,8 @@ mod tests {
 
     let interaction = json! ({
       "kind": "like",
-      "course_id": "MATH240",
-      "user_id": "test",
+      "courseId": "MATH240",
+      "userId": "test",
       "referrer": "test"
     })
     .to_string();
@@ -1859,7 +1859,7 @@ mod tests {
           .header("Cookie", cookie.clone())
           .header("Content-Type", "application/json")
           .uri("/api/reviews")
-          .body(Body::from(json!({"course_id": "MATH240"}).to_string()))
+          .body(Body::from(json!({"courseId": "MATH240"}).to_string()))
           .unwrap(),
       )
       .await
@@ -1920,7 +1920,7 @@ mod tests {
             .uri("/api/subscriptions")
             .body(Body::from(
               json!({
-                "course_id": course_id,
+                "courseId": course_id,
               })
               .to_string(),
             ))
@@ -2006,7 +2006,7 @@ mod tests {
           .uri("/api/subscriptions")
           .body(Body::from(
             json!({
-              "course_id": "MATH240",
+              "courseId": "MATH240",
             })
             .to_string(),
           ))
@@ -2112,7 +2112,7 @@ mod tests {
           .header("Cookie", a.clone())
           .header("Content-Type", "application/json")
           .uri("/api/subscriptions")
-          .body(Body::from(json!({ "course_id": "MATH240" }).to_string()))
+          .body(Body::from(json!({ "courseId": "MATH240" }).to_string()))
           .unwrap(),
       )
       .await
@@ -2123,7 +2123,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -2191,7 +2191,7 @@ mod tests {
           .header("Cookie", a.clone())
           .header("Content-Type", "application/json")
           .uri("/api/subscriptions")
-          .body(Body::from(json!({ "course_id": "MATH240" }).to_string()))
+          .body(Body::from(json!({ "courseId": "MATH240" }).to_string()))
           .unwrap(),
       )
       .await
@@ -2202,7 +2202,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -2248,7 +2248,7 @@ mod tests {
           .header("Cookie", a.clone())
           .header("Content-Type", "application/json")
           .uri("/api/subscriptions")
-          .body(Body::from(json!({ "course_id": "MATH240" }).to_string()))
+          .body(Body::from(json!({ "courseId": "MATH240" }).to_string()))
           .unwrap(),
       )
       .await
@@ -2301,7 +2301,7 @@ mod tests {
           .header("Cookie", a.clone())
           .header("Content-Type", "application/json")
           .uri("/api/subscriptions")
-          .body(Body::from(json!({ "course_id": "MATH240" }).to_string()))
+          .body(Body::from(json!({ "courseId": "MATH240" }).to_string()))
           .unwrap(),
       )
       .await
@@ -2312,7 +2312,7 @@ mod tests {
 
     let review = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -2360,8 +2360,8 @@ mod tests {
           .uri("/api/notifications")
           .body(Body::from(
             json!({
-              "course_id": "MATH240",
-              "user_id": "b"
+              "courseId": "MATH240",
+              "userId": "b"
             })
             .to_string(),
           ))
@@ -2418,7 +2418,7 @@ mod tests {
           .header("Cookie", a.clone())
           .header("Content-Type", "application/json")
           .uri("/api/subscriptions")
-          .body(Body::from(json!({ "course_id": "MATH240" }).to_string()))
+          .body(Body::from(json!({ "courseId": "MATH240" }).to_string()))
           .unwrap(),
       )
       .await
@@ -2429,7 +2429,7 @@ mod tests {
 
     let review_b = json!({
       "content": "test",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 5,
       "difficulty": 5
@@ -2453,7 +2453,7 @@ mod tests {
 
     let review_c = json!({
       "content": "another",
-      "course_id": "MATH240",
+      "courseId": "MATH240",
       "instructors": ["Adrian Roshan Vetta"],
       "rating": 4,
       "difficulty": 3
@@ -2500,8 +2500,8 @@ mod tests {
           .uri("/api/notifications")
           .body(Body::from(
             json!({
-              "course_id": "MATH240",
-              "user_id": "missing"
+              "courseId": "MATH240",
+              "userId": "missing"
             })
             .to_string(),
           ))
@@ -2537,8 +2537,8 @@ mod tests {
           .uri("/api/notifications")
           .body(Body::from(
             json!({
-              "course_id": "MATH240",
-              "user_id": "b"
+              "courseId": "MATH240",
+              "userId": "b"
             })
             .to_string(),
           ))

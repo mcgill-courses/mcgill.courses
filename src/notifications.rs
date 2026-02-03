@@ -38,6 +38,7 @@ pub(crate) async fn get_notifications(
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub(crate) struct UpdateNotificationBody {
   /// Identifier of the course associated with the notification.
   pub(crate) course_id: String,
@@ -95,6 +96,7 @@ pub(crate) async fn update_notification(
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub(crate) struct DeleteNotificationBody {
   /// Identifier of the course whose notification should be removed.
   pub(crate) course_id: String,
