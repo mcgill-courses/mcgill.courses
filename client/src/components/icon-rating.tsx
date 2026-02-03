@@ -1,6 +1,6 @@
 type IconRatingProps = {
   rating: number;
-  icon: any;
+  icon: React.ElementType;
 };
 
 export const IconRating = ({ rating, icon: Icon }: IconRatingProps) => {

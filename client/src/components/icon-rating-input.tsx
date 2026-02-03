@@ -2,7 +2,7 @@ type IconRatingInputProps = {
   name: string;
   rating: number;
   icon: React.ElementType;
-  setFieldValue: (name: string, value: any) => void;
+  setFieldValue: (name: string, value: number) => void;
 };
 
 export const IconRatingInput = ({

@@ -226,7 +226,8 @@ pub(crate) async fn get_review(
 }
 
 #[derive(Debug, Deserialize, ToSchema)]
-pub(crate) struct AddOrUpdateReviewBody {
+#[typeshare]
+pub struct AddOrUpdateReviewBody {
   /// The review content/text.
   pub(crate) content: String,
   /// Course ID this review is for.

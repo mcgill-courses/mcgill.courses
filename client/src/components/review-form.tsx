@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { PropsWithChildren } from 'react';
 import * as Yup from 'yup';
 
-import type { Course } from '../lib/types';
+import type { AddOrUpdateReviewBody, Course } from '../lib/types';
 import { BirdIcon } from './bird-icon';
 import { IconRatingInput } from './icon-rating-input';
 import { MultiSelect } from './multi-select';
@@ -50,12 +50,7 @@ const FieldLabel = ({
   </label>
 );
 
-export type ReviewFormInitialValues = {
-  content: string;
-  instructors: string[];
-  rating: number;
-  difficulty: number;
-};
+export type ReviewFormInitialValues = Omit<AddOrUpdateReviewBody, 'course_id'>;
 
 const FormikPersist = ({ name }: { name: string }) => {
   const { values, setValues } = useFormikContext<ReviewFormInitialValues>();
@@ -83,7 +78,7 @@ type ReviewFormProps = {
   course: Course;
   setFieldValue: (
     field: string,
-    value: any,
+    value: string | string[] | number,
     shouldValidate?: boolean | undefined
   ) => void;
   values: ReviewFormInitialValues;
@@ -158,7 +153,7 @@ export const ReviewForm = ({
           </div>
           <button
             type='submit'
-            className='ml-auto w-fit rounded-md bg-red-600 px-4 py-2 font-medium text-white transition duration-300 hover:bg-red-800'
+            className='ml-auto w-fit cursor-pointer rounded-md bg-red-600 px-4 py-2 font-medium text-white transition duration-300 hover:bg-red-800'
           >
             Submit
           </button>

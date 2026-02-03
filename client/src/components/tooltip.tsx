@@ -21,8 +21,10 @@ export const Tooltip = ({
   children,
 }: TooltipProps & PropsWithChildren) => {
   const [show, setShow] = useState(false);
-  const elem = Children.only(children);
-  if (!isValidElement(elem)) {
+
+  const element = Children.only(children);
+
+  if (!isValidElement(element)) {
     throw new Error('Tooltip must have a single child that is a React Element');
   }
 
@@ -47,13 +49,13 @@ export const Tooltip = ({
       >
         <div>{text}</div>
       </Transition>
-      {cloneElement<any>(elem, {
+      {cloneElement(element, {
         onMouseEnter: () => {
-          elem.props.onMouseEnter?.();
+          element.props.onMouseEnter?.();
           setShow(true);
         },
         onMouseLeave: () => {
-          elem.props.onMouseLeave?.();
+          element.props.onMouseLeave?.();
           setShow(false);
         },
       })}

@@ -108,8 +108,8 @@ const ReviewInteractions = ({
     try {
       const payload = await api.getInteractions(courseId, userId, user?.id);
       setKind(payload.kind);
-    } catch (err: any) {
-      toast.error(err.toString());
+    } catch (err: unknown) {
+      toast.error(String(err));
     }
   };
 
@@ -127,8 +127,8 @@ const ReviewInteractions = ({
           ' '
         )}.`
       );
-    } catch (err: any) {
-      toast.error(err.toString());
+    } catch (err: unknown) {
+      toast.error(String(err));
     }
   };
 
@@ -148,8 +148,8 @@ const ReviewInteractions = ({
           ' '
         )}.`
       );
-    } catch (err: any) {
-      toast.error(err.toString());
+    } catch (err: unknown) {
+      toast.error(String(err));
     }
   };
 
@@ -351,7 +351,7 @@ export const CourseReview = ({
           <button
             type='button'
             onClick={copyReviewLink}
-            className='inline-flex size-6 items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
+            className='inline-flex size-6 cursor-pointer items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
             aria-label={`Copy review link for ${review.courseId}`}
             disabled={copied}
           >

@@ -1,3 +1,4 @@
+import type { AddOrUpdateReviewBody } from '../lib/types';
 import type { CourseAverage } from '../lib/types';
 import type { CourseFilter } from '../lib/types';
 import type { GetCourseByIdPayload } from '../lib/types';
@@ -150,23 +151,17 @@ export const api = {
     return client.deserialize<GetReviewsPayload>('GET', '/reviews/liked');
   },
 
-  async addReview(courseId: string, values: any): Promise<Response> {
+  async addReview(values: AddOrUpdateReviewBody): Promise<Response> {
     return client.post(`/reviews`, {
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        course_id: courseId,
-        ...values,
-      }),
+      body: JSON.stringify(values),
     });
   },
 
-  async updateReview(courseId: string, values: any): Promise<Response> {
+  async updateReview(values: AddOrUpdateReviewBody): Promise<Response> {
     return client.put(`/reviews`, {
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        course_id: courseId,
-        ...values,
-      }),
+      body: JSON.stringify(values),
     });
   },
 
