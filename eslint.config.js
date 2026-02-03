@@ -2,7 +2,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -23,19 +23,19 @@ export default tseslint.config(
   },
   {
     ignores: [
-      'client/dist/*',
+      '**/*.spec.*',
+      '**/*.test.*',
+      '**/.venv/**',
       'client/coverage/*',
+      'client/dist/*',
+      'coverage/*',
       'cypress.config.js',
       'cypress/*',
+      'eslint.config.js',
+      'tools/*',
       'vite.config.ts',
       'vitest.config.ts',
       'vitest.setup.ts',
-      '**/*.test.*',
-      '**/*.spec.*',
-      'coverage/*',
-      'eslint.config.js',
-      'tools/*',
-      '**/.venv/**',
     ],
-  }
-);
+  },
+];
