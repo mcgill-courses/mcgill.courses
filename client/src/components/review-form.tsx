@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { PropsWithChildren } from 'react';
 import * as Yup from 'yup';
 
-import type { Course } from '../lib/types';
+import type { AddOrUpdateReviewBody, Course } from '../lib/types';
 import { BirdIcon } from './bird-icon';
 import { IconRatingInput } from './icon-rating-input';
 import { MultiSelect } from './multi-select';
@@ -50,12 +50,7 @@ const FieldLabel = ({
   </label>
 );
 
-export type ReviewFormInitialValues = {
-  content: string;
-  instructors: string[];
-  rating: number;
-  difficulty: number;
-};
+export type ReviewFormInitialValues = Omit<AddOrUpdateReviewBody, 'course_id'>;
 
 const FormikPersist = ({ name }: { name: string }) => {
   const { values, setValues } = useFormikContext<ReviewFormInitialValues>();

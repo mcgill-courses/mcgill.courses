@@ -30,9 +30,9 @@ export const AddReviewForm = ({
 
   const initialValues: ReviewFormInitialValues = {
     content: '',
+    difficulty: 0,
     instructors: [],
     rating: 0,
-    difficulty: 0,
   };
 
   const handleClose = () => {
@@ -83,7 +83,7 @@ export const AddReviewForm = ({
                   onSubmit={async (values, actions) => {
                     const res = await api.addReview({
                       ...values,
-                      courseId: course._id,
+                      course_id: course._id,
                     });
                     actions.setSubmitting(false);
                     onClose();

@@ -6,9 +6,12 @@ import { twMerge } from 'tailwind-merge';
 
 import { useDarkMode } from '../hooks/use-dark-mode';
 import { api } from '../lib/api';
-import type { Review } from '../lib/types';
-import type { Course } from '../lib/types';
-import { ReviewForm, ReviewSchema } from './review-form';
+import type { Course, Review } from '../lib/types';
+import {
+  ReviewForm,
+  ReviewFormInitialValues,
+  ReviewSchema,
+} from './review-form';
 
 type EditReviewFormProps = {
   course: Course;
@@ -27,11 +30,11 @@ export const EditReviewForm = ({
 }: EditReviewFormProps) => {
   const [darkMode] = useDarkMode();
 
-  const initialValues = {
+  const initialValues: ReviewFormInitialValues = {
     content: review.content,
+    difficulty: review.difficulty,
     instructors: review.instructors,
     rating: review.rating,
-    difficulty: review.difficulty,
   };
 
   const handleClose = () => {
@@ -83,7 +86,7 @@ export const EditReviewForm = ({
                   onSubmit={async (values, actions) => {
                     const res = await api.updateReview({
                       ...values,
-                      courseId: course._id,
+                      course_id: course._id,
                     });
                     actions.setSubmitting(false);
                     onClose();

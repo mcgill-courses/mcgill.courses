@@ -84,7 +84,6 @@ pub(crate) async fn get_user_interactions_for_course(
 }
 
 #[derive(Debug, Deserialize, ToSchema)]
-#[serde(rename_all = "camelCase")]
 pub(crate) struct AddInteractionBody {
   /// Kind of interaction to record.
   pub(crate) kind: InteractionKind,
@@ -132,7 +131,6 @@ pub(crate) async fn add_interaction(
 }
 
 #[derive(Debug, Deserialize, ToSchema)]
-#[serde(rename_all = "camelCase")]
 pub(crate) struct DeleteInteractionBody {
   /// Course ID the interaction belongs to.
   pub(crate) course_id: String,

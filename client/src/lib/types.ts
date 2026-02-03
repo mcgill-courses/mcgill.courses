@@ -6,7 +6,7 @@ export interface AddOrUpdateReviewBody {
   /** The review content/text. */
   content: string;
   /** Course ID this review is for. */
-  courseId: string;
+  course_id: string;
   /** List of instructor names for this review. */
   instructors: string[];
   /** Rating out of 5 (1-5). */

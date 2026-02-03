@@ -46,7 +46,6 @@ pub(crate) async fn get_subscription(
 }
 
 #[derive(Debug, Deserialize, ToSchema)]
-#[serde(rename_all = "camelCase")]
 pub(crate) struct AddOrDeleteSubscriptionBody {
   /// Course ID to subscribe to or unsubscribe from.
   course_id: String,
