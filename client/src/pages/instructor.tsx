@@ -48,7 +48,7 @@ export const Instructor = () => {
         setCourses(data.courses);
       })
       .catch(() => {
-        toast.error('Failed to fetch instructor.');
+        toast.error('Failed to fetch instructor');
       });
   }, [params.name]);
 
@@ -107,7 +107,7 @@ export const Instructor = () => {
         );
 
         if (r === undefined) {
-          toast.error("Can't update likes for review that doesn't exist.");
+          toast.error("Can't update likes for review that doesn't exist");
           return;
         }
 

@@ -94,7 +94,7 @@ export const CoursePage = () => {
         firstFetch.current = false;
       } catch {
         toast.error(
-          'An error occurred while trying to fetch course information.'
+          'An error occurred while trying to fetch course information'
         );
       }
     };
@@ -189,7 +189,7 @@ export const CoursePage = () => {
         setAddReviewOpen(false);
         refetch();
       } else {
-        toast.error('An error occurred.');
+        toast.error('An error occurred');
       }
     };
   };
@@ -208,7 +208,7 @@ export const CoursePage = () => {
       );
     }
 
-    handleSubmit('Review deleted successfully.')(res);
+    handleSubmit('Review deleted successfully')(res);
 
     localStorage.removeItem(course._id);
   };
@@ -222,7 +222,7 @@ export const CoursePage = () => {
         );
 
         if (r === undefined) {
-          toast.error("Can't update likes for review that doesn't exist.");
+          toast.error("Can't update likes for review that doesn't exist");
           return;
         }
 
@@ -475,7 +475,7 @@ export const CoursePage = () => {
           course={course}
           open={addReviewOpen}
           onClose={() => setAddReviewOpen(false)}
-          handleSubmit={handleSubmit('Review added successfully.')}
+          handleSubmit={handleSubmit('Review added successfully')}
         />
         {userReview && (
           <EditReviewForm
@@ -483,7 +483,7 @@ export const CoursePage = () => {
             open={editReviewOpen}
             onClose={() => setEditReviewOpen(false)}
             review={userReview}
-            handleSubmit={handleSubmit('Review edited successfully.')}
+            handleSubmit={handleSubmit('Review edited successfully')}
           />
         )}
       </div>

@@ -125,7 +125,7 @@ const ReviewInteractions = ({
         `Successfully ${interactionKind}d review for ${spliceCourseCode(
           courseId,
           ' '
-        )}.`
+        )}`
       );
     } catch (err: unknown) {
       toast.error(String(err));
@@ -146,7 +146,7 @@ const ReviewInteractions = ({
         `Successfully removed interaction for ${spliceCourseCode(
           courseId,
           ' '
-        )}.`
+        )}`
       );
     } catch (err: unknown) {
       toast.error(String(err));
@@ -279,7 +279,7 @@ export const CourseReview = ({
       typeof navigator === 'undefined' ||
       !navigator?.clipboard
     ) {
-      toast.error('Copy to clipboard is not supported in this browser.');
+      toast.error('Copy to clipboard is not supported in this browser');
       return;
     }
 
@@ -290,9 +290,8 @@ export const CourseReview = ({
 
     toast.promise(copyPromise, {
       loading: 'Copying link…',
-      success: 'Copied review link to clipboard.',
-      error:
-        'Something went wrong while copying the review link. Please try again.',
+      success: 'Copied review link to clipboard',
+      error: 'Something went wrong while copying the review link',
     });
 
     copyPromise

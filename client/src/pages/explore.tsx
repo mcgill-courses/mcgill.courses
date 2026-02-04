@@ -86,7 +86,7 @@ export const Explore = () => {
         setCourseCount(data.courseCount);
       })
       .catch(() => {
-        toast.error('Failed to fetch courses. Please try again later.');
+        toast.error('Failed to fetch courses, please try again later');
       });
     setHasMore(true);
     setOffset(COURSE_LIMIT);

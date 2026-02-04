@@ -19,7 +19,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         setUser(data.user);
         setLoading(false);
       })
-      .catch(() => toast.error('Failed to fetch user.'));
+      .catch(() => toast.error('Failed to fetch user'));
   }, []);
 
   return (

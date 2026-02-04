@@ -72,7 +72,7 @@ export const NotificationDropdown = ({
       );
       seen.add(notification.review.courseId);
     } catch {
-      toast.error('Failed to update notification.');
+      toast.error('Failed to update notification');
     }
   };
 
@@ -86,9 +86,9 @@ export const NotificationDropdown = ({
             notification.review.userId !== userId
         )
       );
-      toast.success('Successfully deleted notification.');
+      toast.success('Successfully deleted notification');
     } catch {
-      toast.error('Failed to delete notification.');
+      toast.error('Failed to delete notification');
     }
   };
 

@@ -56,12 +56,12 @@ export const Profile = () => {
         (old) => old?.filter((sub) => sub.courseId !== courseId) ?? []
       );
       toast.success(
-        `Subscription for course ${spliceCourseCode(courseId, ' ')} removed successfully.`
+        `Subscription for course ${spliceCourseCode(courseId, ' ')} removed successfully`
       );
     },
     onError: () => {
       toast.error(
-        'An error occurred while removing your subscription, please try again later.'
+        'An error occurred while removing your subscription, please try again later'
       );
     },
   });
@@ -69,7 +69,7 @@ export const Profile = () => {
   useEffect(() => {
     if (isReviewsError) {
       toast.error(
-        'An error occurred while fetching your reviews, please try again later.'
+        'An error occurred while fetching your reviews, please try again later'
       );
     }
   }, [isReviewsError]);
@@ -77,7 +77,7 @@ export const Profile = () => {
   useEffect(() => {
     if (isLikedReviewsError) {
       toast.error(
-        'An error occurred while fetching your liked reviews, please try again later.'
+        'An error occurred while fetching your liked reviews, please try again later'
       );
     }
   }, [isLikedReviewsError]);
@@ -85,7 +85,7 @@ export const Profile = () => {
   useEffect(() => {
     if (isSubscriptionsError) {
       toast.error(
-        'An error occurred while fetching your subscriptions, please try again later.'
+        'An error occurred while fetching your subscriptions, please try again later'
       );
     }
   }, [isSubscriptionsError]);

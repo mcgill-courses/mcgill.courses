@@ -365,10 +365,9 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
     if (!block.crn) return;
 
     toast.promise(navigator.clipboard.writeText(block.crn), {
-      success: `Copied CRN for ${block.display} to clipboard.`,
+      success: `Copied CRN for ${block.display} to clipboard`,
       loading: undefined,
-      error:
-        'Something went wrong when trying to copy section CRN, please try again!',
+      error: 'Something went wrong when trying to copy section CRN',
     });
   };
 

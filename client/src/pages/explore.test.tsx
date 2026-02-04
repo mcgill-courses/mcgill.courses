@@ -124,7 +124,7 @@ describe('Explore page', () => {
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(
-        'Failed to fetch courses. Please try again later.'
+        'Failed to fetch courses, please try again later'
       );
     });
   });
