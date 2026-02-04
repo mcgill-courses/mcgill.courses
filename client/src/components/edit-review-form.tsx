@@ -39,7 +39,7 @@ export const EditReviewForm = ({
 
   const handleClose = () => {
     onClose();
-    toast.success('Review draft saved.');
+    toast.success('Review draft saved');
   };
 
   return (

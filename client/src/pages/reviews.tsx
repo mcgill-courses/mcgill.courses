@@ -31,7 +31,7 @@ export const Reviews = () => {
         setUniqueUserCount(data.uniqueUserCount);
       })
       .catch(() => {
-        toast.error('Failed to fetch reviews. Please try again later.');
+        toast.error('Failed to fetch reviews, please try again later');
       });
     setHasMore(true);
     setOffset(limit);

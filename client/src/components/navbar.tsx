@@ -47,7 +47,7 @@ export const Navbar = () => {
     api
       .getNotifications()
       .then((data) => setNotifications(data))
-      .catch(() => toast.error('Failed to get notifications.'));
+      .catch(() => toast.error('Failed to get notifications'));
   }, []);
 
   const handleInputChange = (query: string) => {

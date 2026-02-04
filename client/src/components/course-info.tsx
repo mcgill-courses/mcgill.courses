@@ -54,11 +54,11 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
         userId: user.id,
       });
 
-      toast.success(`Subscribed to course ${course.subject} ${course.code}.`);
+      toast.success(`Subscribed to course ${course.subject} ${course.code}`);
     },
     onError: () => {
       toast.error(
-        `Failed to subscribe to course ${course.subject} ${course.code}.`
+        `Failed to subscribe to course ${course.subject} ${course.code}`
       );
     },
   });

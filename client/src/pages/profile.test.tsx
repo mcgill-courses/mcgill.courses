@@ -236,7 +236,7 @@ describe('Profile page', () => {
 
     await waitFor(() => {
       expect(toastErrorMock).toHaveBeenCalledWith(
-        'An error occurred while fetching your reviews, please try again later.'
+        'An error occurred while fetching your reviews, please try again later'
       );
     });
   });
@@ -250,7 +250,7 @@ describe('Profile page', () => {
 
     await waitFor(() => {
       expect(toastErrorMock).toHaveBeenCalledWith(
-        'An error occurred while fetching your liked reviews, please try again later.'
+        'An error occurred while fetching your liked reviews, please try again later'
       );
     });
   });
@@ -264,7 +264,7 @@ describe('Profile page', () => {
 
     await waitFor(() => {
       expect(toastErrorMock).toHaveBeenCalledWith(
-        'An error occurred while fetching your subscriptions, please try again later.'
+        'An error occurred while fetching your subscriptions, please try again later'
       );
     });
   });
