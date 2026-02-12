@@ -1,6 +1,6 @@
 {
   "term": "Winter 2026",
-  "url": "https://www.mcgill.ca/exams/files/exams/april_2026_tentative_schedule_0.pdf",
+  "url": "https://www.mcgill.ca/exams/files/exams/april_2026_final_schedule.pdf",
   "exams": [
     {
       "id": "ACCT351",
@@ -118,6 +118,15 @@
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-27T14:00:00",
       "endTime": "2026-04-27T17:00:00"
+    },
+    {
+      "id": "AEBI211",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "MAC CAMPUS",
+      "startTime": "2026-04-23T09:00:00",
+      "endTime": "2026-04-23T12:00:00"
     },
     {
       "id": "AECH111",
@@ -283,7 +292,7 @@
     },
     {
       "id": "ANAT314",
-      "section": "001",
+      "section": "001L",
       "format": "IN-PERSON",
       "type": "LAB EXAM",
       "location": "D.T. CAMPUS",
@@ -301,7 +310,7 @@
     },
     {
       "id": "ANAT316",
-      "section": "001",
+      "section": "001L",
       "format": "IN-PERSON",
       "type": "LAB EXAM",
       "location": "D.T. CAMPUS",
@@ -334,6 +343,15 @@
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-27T18:30:00",
       "endTime": "2026-04-27T21:30:00"
+    },
+    {
+      "id": "ANAT514",
+      "section": "001L",
+      "format": "IN-PERSON",
+      "type": "LAB EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-22T09:00:00",
+      "endTime": "2026-04-22T12:00:00"
     },
     {
       "id": "ANAT542",
@@ -408,15 +426,6 @@
       "endTime": "2026-04-22T21:30:00"
     },
     {
-      "id": "ANTH212",
-      "section": "001",
-      "format": "IN-PERSON",
-      "type": "FORMAL EXAM",
-      "location": "D.T. CAMPUS",
-      "startTime": "2026-04-30T09:00:00",
-      "endTime": "2026-04-30T12:00:00"
-    },
-    {
       "id": "ANTH222",
       "section": "001",
       "format": "IN-PERSON",
@@ -471,6 +480,24 @@
       "endTime": "2026-04-29T17:00:00"
     },
     {
+      "id": "ARCH251",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-17T09:00:00",
+      "endTime": "2026-04-17T12:00:00"
+    },
+    {
+      "id": "ARCH251",
+      "section": "002",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-17T09:00:00",
+      "endTime": "2026-04-17T12:00:00"
+    },
+    {
       "id": "ARCH304",
       "section": "001",
       "format": "IN-PERSON",
@@ -512,8 +539,8 @@
       "format": "ONLINE",
       "type": "TAKE-HOME",
       "location": "72 HOURS",
-      "startTime": "2026-04-20T14:00:00",
-      "endTime": "2026-04-23T14:00:00"
+      "startTime": "2026-04-21T09:00:00",
+      "endTime": "2026-04-24T09:00:00"
     },
     {
       "id": "ARTH205",
@@ -521,8 +548,8 @@
       "format": "ONLINE",
       "type": "TAKE-HOME",
       "location": "72 HOURS",
-      "startTime": "2026-04-20T09:00:00",
-      "endTime": "2026-04-23T09:00:00"
+      "startTime": "2026-04-17T09:00:00",
+      "endTime": "2026-04-20T09:00:00"
     },
     {
       "id": "ARTH207",
@@ -548,8 +575,8 @@
       "format": "ONLINE",
       "type": "TAKE-HOME",
       "location": "72 HOURS",
-      "startTime": "2026-04-20T09:00:00",
-      "endTime": "2026-04-23T09:00:00"
+      "startTime": "2026-04-27T09:00:00",
+      "endTime": "2026-04-30T09:00:00"
     },
     {
       "id": "ATOC183",
@@ -953,8 +980,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-29T14:00:00",
-      "endTime": "2026-04-29T17:00:00"
+      "startTime": "2026-04-22T18:30:00",
+      "endTime": "2026-04-22T21:30:00"
     },
     {
       "id": "CHEE315",
@@ -987,10 +1014,10 @@
       "id": "CHEE456D2",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "ORAL EXAM",
+      "type": "2 DAY ORAL",
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-27T09:00:00",
-      "endTime": "2026-04-27T12:00:00"
+      "endTime": "2026-04-28T17:00:00"
     },
     {
       "id": "CHEE474",
@@ -1016,8 +1043,8 @@
       "format": "IN-PERSON",
       "type": "IN DEPARTMENT EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-24T09:00:00",
-      "endTime": "2026-04-24T12:00:00"
+      "startTime": "2026-04-17T14:00:00",
+      "endTime": "2026-04-17T17:00:00"
     },
     {
       "id": "CHEM120",
@@ -1142,8 +1169,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-27T18:30:00",
-      "endTime": "2026-04-27T21:30:00"
+      "startTime": "2026-04-28T09:00:00",
+      "endTime": "2026-04-28T12:00:00"
     },
     {
       "id": "CHEM334",
@@ -1160,8 +1187,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-17T14:00:00",
-      "endTime": "2026-04-17T17:00:00"
+      "startTime": "2026-04-17T09:00:00",
+      "endTime": "2026-04-17T12:00:00"
     },
     {
       "id": "CHEM377",
@@ -1187,8 +1214,8 @@
       "format": "IN-PERSON",
       "type": "IN DEPARTMENT EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-27T09:00:00",
-      "endTime": "2026-04-27T12:00:00"
+      "startTime": "2026-04-17T14:00:00",
+      "endTime": "2026-04-17T17:00:00"
     },
     {
       "id": "CHEM503",
@@ -1295,8 +1322,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-22T18:30:00",
-      "endTime": "2026-04-22T21:30:00"
+      "startTime": "2026-04-24T09:00:00",
+      "endTime": "2026-04-24T12:00:00"
     },
     {
       "id": "CIVE319",
@@ -1313,8 +1340,17 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-29T09:00:00",
-      "endTime": "2026-04-29T12:00:00"
+      "startTime": "2026-04-21T14:00:00",
+      "endTime": "2026-04-21T17:00:00"
+    },
+    {
+      "id": "CIVE416",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-29T18:30:00",
+      "endTime": "2026-04-29T21:30:00"
     },
     {
       "id": "CIVE460",
@@ -1362,33 +1398,6 @@
       "endTime": "2026-04-28T12:00:00"
     },
     {
-      "id": "CIVE546",
-      "section": "001",
-      "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
-      "location": "D.T. CAMPUS",
-      "startTime": "2026-04-24T09:00:00",
-      "endTime": "2026-04-24T12:00:00"
-    },
-    {
-      "id": "CIVE546",
-      "section": "002",
-      "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
-      "location": "D.T. CAMPUS",
-      "startTime": "2026-04-24T09:00:00",
-      "endTime": "2026-04-24T12:00:00"
-    },
-    {
-      "id": "CIVE546",
-      "section": "003",
-      "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
-      "location": "D.T. CAMPUS",
-      "startTime": "2026-04-24T09:00:00",
-      "endTime": "2026-04-24T12:00:00"
-    },
-    {
       "id": "CIVE555",
       "section": "001",
       "format": "IN-PERSON",
@@ -1396,6 +1405,15 @@
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-23T14:00:00",
       "endTime": "2026-04-23T17:00:00"
+    },
+    {
+      "id": "CLAS199",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-23T09:00:00",
+      "endTime": "2026-04-23T12:00:00"
     },
     {
       "id": "CLAS203",
@@ -1527,7 +1545,7 @@
       "id": "COMP206",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
+      "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-29T14:00:00",
       "endTime": "2026-04-29T17:00:00"
@@ -1572,7 +1590,7 @@
       "id": "COMP273",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
+      "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-29T09:00:00",
       "endTime": "2026-04-29T12:00:00"
@@ -1581,7 +1599,7 @@
       "id": "COMP302",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
+      "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-27T09:00:00",
       "endTime": "2026-04-27T12:00:00"
@@ -1608,7 +1626,7 @@
       "id": "COMP330",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
+      "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-16T14:00:00",
       "endTime": "2026-04-16T17:00:00"
@@ -1712,6 +1730,42 @@
       "endTime": "2026-04-24T12:00:00"
     },
     {
+      "id": "EAST220D2",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-17T14:00:00",
+      "endTime": "2026-04-17T17:00:00"
+    },
+    {
+      "id": "EAST220D2",
+      "section": "002",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-17T14:00:00",
+      "endTime": "2026-04-17T17:00:00"
+    },
+    {
+      "id": "EAST230D2",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-28T14:00:00",
+      "endTime": "2026-04-28T17:00:00"
+    },
+    {
+      "id": "EAST230D2",
+      "section": "002",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-28T14:00:00",
+      "endTime": "2026-04-28T17:00:00"
+    },
+    {
       "id": "EAST240D2",
       "section": "001",
       "format": "IN-PERSON",
@@ -1748,6 +1802,15 @@
       "endTime": "2026-04-22T12:00:00"
     },
     {
+      "id": "EAST320D2",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-23T09:00:00",
+      "endTime": "2026-04-23T12:00:00"
+    },
+    {
       "id": "EAST340D2",
       "section": "001",
       "format": "IN-PERSON",
@@ -1773,6 +1836,15 @@
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-24T14:00:00",
       "endTime": "2026-04-24T17:00:00"
+    },
+    {
+      "id": "EAST430D2",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-27T14:00:00",
+      "endTime": "2026-04-27T17:00:00"
     },
     {
       "id": "EAST440D2",
@@ -2176,8 +2248,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-22T14:00:00",
-      "endTime": "2026-04-22T17:00:00"
+      "startTime": "2026-04-16T14:00:00",
+      "endTime": "2026-04-16T17:00:00"
     },
     {
       "id": "ECSE362",
@@ -2428,8 +2500,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-16T14:00:00",
-      "endTime": "2026-04-16T17:00:00"
+      "startTime": "2026-04-16T09:00:00",
+      "endTime": "2026-04-16T12:00:00"
     },
     {
       "id": "EDKP391",
@@ -2468,6 +2540,15 @@
       "endTime": "2026-04-22T17:00:00"
     },
     {
+      "id": "EDPE575",
+      "section": "001",
+      "format": "ONLINE",
+      "type": "TIMED EXAM",
+      "location": "24 HOURS",
+      "startTime": "2026-04-27T09:00:00",
+      "endTime": "2026-04-28T09:00:00"
+    },
+    {
       "id": "ENGL203",
       "section": "001",
       "format": "IN-PERSON",
@@ -2491,8 +2572,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-28T09:00:00",
-      "endTime": "2026-04-28T12:00:00"
+      "startTime": "2026-04-27T18:30:00",
+      "endTime": "2026-04-27T21:30:00"
     },
     {
       "id": "ENGL279",
@@ -2536,8 +2617,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-24T09:00:00",
-      "endTime": "2026-04-24T12:00:00"
+      "startTime": "2026-04-22T18:30:00",
+      "endTime": "2026-04-22T21:30:00"
     },
     {
       "id": "ENGL336",
@@ -2549,15 +2630,6 @@
       "endTime": "2026-04-21T17:00:00"
     },
     {
-      "id": "ENGL407",
-      "section": "001",
-      "format": "IN-PERSON",
-      "type": "ORAL EXAM",
-      "location": "D.T. CAMPUS",
-      "startTime": "2026-04-28T14:00:00",
-      "endTime": "2026-04-28T17:00:00"
-    },
-    {
       "id": "ENVB305",
       "section": "001",
       "format": "IN-PERSON",
@@ -2567,13 +2639,22 @@
       "endTime": "2026-04-17T12:00:00"
     },
     {
+      "id": "ENVB437",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "MAC CAMPUS",
+      "startTime": "2026-04-21T09:00:00",
+      "endTime": "2026-04-21T12:00:00"
+    },
+    {
       "id": "ENVR200",
       "section": "051",
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
-      "location": "D.T. CAMPUS",
-      "startTime": "2026-04-23T18:30:00",
-      "endTime": "2026-04-23T21:30:00"
+      "location": "MAC CAMPUS",
+      "startTime": "2026-04-17T09:00:00",
+      "endTime": "2026-04-17T12:00:00"
     },
     {
       "id": "ENVR202",
@@ -2589,9 +2670,9 @@
       "section": "051",
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
-      "location": "D.T. CAMPUS",
-      "startTime": "2026-04-23T14:00:00",
-      "endTime": "2026-04-23T17:00:00"
+      "location": "MAC CAMPUS",
+      "startTime": "2026-04-21T09:00:00",
+      "endTime": "2026-04-21T12:00:00"
     },
     {
       "id": "ENVR203",
@@ -2653,8 +2734,8 @@
       "format": "IN-PERSON",
       "type": "IN DEPARTMENT EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-20T09:00:00",
-      "endTime": "2026-04-20T12:00:00"
+      "startTime": "2026-04-16T09:00:00",
+      "endTime": "2026-04-16T12:00:00"
     },
     {
       "id": "EPSC334",
@@ -2864,6 +2945,15 @@
       "endTime": "2026-04-28T17:00:00"
     },
     {
+      "id": "FDSC536",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "MAC CAMPUS",
+      "startTime": "2026-04-20T09:00:00",
+      "endTime": "2026-04-20T12:00:00"
+    },
+    {
       "id": "FDSC634",
       "section": "001",
       "format": "IN-PERSON",
@@ -2952,6 +3042,24 @@
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-23T09:00:00",
       "endTime": "2026-04-23T12:00:00"
+    },
+    {
+      "id": "FINE442",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-20T18:30:00",
+      "endTime": "2026-04-20T21:30:00"
+    },
+    {
+      "id": "FINE442",
+      "section": "002",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-20T18:30:00",
+      "endTime": "2026-04-20T21:30:00"
     },
     {
       "id": "FINE443",
@@ -3251,6 +3359,24 @@
       "endTime": "2026-04-22T17:00:00"
     },
     {
+      "id": "FREN336",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-27T09:00:00",
+      "endTime": "2026-04-27T12:00:00"
+    },
+    {
+      "id": "FREN355",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-23T14:00:00",
+      "endTime": "2026-04-23T17:00:00"
+    },
+    {
       "id": "FREN444",
       "section": "001",
       "format": "IN-PERSON",
@@ -3535,8 +3661,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-21T09:00:00",
-      "endTime": "2026-04-21T12:00:00"
+      "startTime": "2026-04-22T14:00:00",
+      "endTime": "2026-04-22T17:00:00"
     },
     {
       "id": "INTD398AB",
@@ -3580,8 +3706,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-24T09:00:00",
-      "endTime": "2026-04-24T12:00:00"
+      "startTime": "2026-04-24T14:00:00",
+      "endTime": "2026-04-24T17:00:00"
     },
     {
       "id": "ISLA322D2",
@@ -3706,8 +3832,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-16T14:00:00",
-      "endTime": "2026-04-16T17:00:00"
+      "startTime": "2026-04-28T09:00:00",
+      "endTime": "2026-04-28T12:00:00"
     },
     {
       "id": "LING371",
@@ -4199,10 +4325,10 @@
       "id": "MATH523",
       "section": "001",
       "format": "ONLINE",
-      "type": "TIMED EXAM",
-      "location": "3 HOURS",
-      "startTime": "2026-04-22T09:00:00",
-      "endTime": "2026-04-22T12:00:00"
+      "type": "TAKE-HOME",
+      "location": "72 HOURS",
+      "startTime": "2026-04-21T09:00:00",
+      "endTime": "2026-04-24T09:00:00"
     },
     {
       "id": "MATH525",
@@ -4354,8 +4480,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-21T09:00:00",
-      "endTime": "2026-04-21T12:00:00"
+      "startTime": "2026-04-23T14:00:00",
+      "endTime": "2026-04-23T17:00:00"
     },
     {
       "id": "MECH331",
@@ -4453,8 +4579,8 @@
       "format": "IN-PERSON",
       "type": "IN DEPARTMENT EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-20T09:00:00",
-      "endTime": "2026-04-20T12:00:00"
+      "startTime": "2026-04-23T09:00:00",
+      "endTime": "2026-04-23T12:00:00"
     },
     {
       "id": "MECH532",
@@ -4462,8 +4588,8 @@
       "format": "IN-PERSON",
       "type": "IN DEPARTMENT EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-20T09:00:00",
-      "endTime": "2026-04-20T12:00:00"
+      "startTime": "2026-04-23T09:00:00",
+      "endTime": "2026-04-23T12:00:00"
     },
     {
       "id": "MECH532",
@@ -4471,35 +4597,35 @@
       "format": "IN-PERSON",
       "type": "IN DEPARTMENT EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-20T09:00:00",
-      "endTime": "2026-04-20T12:00:00"
+      "startTime": "2026-04-23T09:00:00",
+      "endTime": "2026-04-23T12:00:00"
     },
     {
       "id": "MECH563",
       "section": "001",
       "format": "ONLINE",
       "type": "TAKE-HOME",
-      "location": "72 HOURS",
-      "startTime": "2026-04-27T09:00:00",
-      "endTime": "2026-04-30T09:00:00"
+      "location": "1 WEEK",
+      "startTime": "2026-04-20T09:00:00",
+      "endTime": "2026-04-27T09:00:00"
     },
     {
       "id": "MECH563",
       "section": "002",
       "format": "ONLINE",
       "type": "TAKE-HOME",
-      "location": "72 HOURS",
-      "startTime": "2026-04-27T09:00:00",
-      "endTime": "2026-04-30T09:00:00"
+      "location": "1 WEEK",
+      "startTime": "2026-04-20T09:00:00",
+      "endTime": "2026-04-27T09:00:00"
     },
     {
       "id": "MECH563",
       "section": "003",
       "format": "ONLINE",
       "type": "TAKE-HOME",
-      "location": "72 HOURS",
-      "startTime": "2026-04-27T09:00:00",
-      "endTime": "2026-04-30T09:00:00"
+      "location": "1 WEEK",
+      "startTime": "2026-04-20T09:00:00",
+      "endTime": "2026-04-27T09:00:00"
     },
     {
       "id": "MGCR211",
@@ -5083,8 +5209,8 @@
       "format": "IN-PERSON",
       "type": "ORAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-16T14:00:00",
-      "endTime": "2026-04-16T17:00:00"
+      "startTime": "2026-04-24T14:00:00",
+      "endTime": "2026-04-24T17:00:00"
     },
     {
       "id": "MIME526",
@@ -5272,8 +5398,8 @@
       "format": "ONLINE",
       "type": "TIMED EXAM",
       "location": "3 HOURS",
-      "startTime": "2026-04-23T09:00:00",
-      "endTime": "2026-04-23T12:00:00"
+      "startTime": "2026-04-23T14:00:00",
+      "endTime": "2026-04-23T17:00:00"
     },
     {
       "id": "NUR1210",
@@ -5281,8 +5407,8 @@
       "format": "ONLINE",
       "type": "TIMED EXAM",
       "location": "3 HOURS",
-      "startTime": "2026-04-23T09:00:00",
-      "endTime": "2026-04-23T12:00:00"
+      "startTime": "2026-04-23T14:00:00",
+      "endTime": "2026-04-23T17:00:00"
     },
     {
       "id": "NUR1236",
@@ -5299,8 +5425,8 @@
       "format": "ONLINE",
       "type": "TIMED EXAM",
       "location": "3 HOURS",
-      "startTime": "2026-04-28T14:00:00",
-      "endTime": "2026-04-28T17:00:00"
+      "startTime": "2026-04-23T09:00:00",
+      "endTime": "2026-04-23T12:00:00"
     },
     {
       "id": "NUR1301",
@@ -5308,8 +5434,8 @@
       "format": "ONLINE",
       "type": "TIMED EXAM",
       "location": "3 HOURS",
-      "startTime": "2026-04-28T14:00:00",
-      "endTime": "2026-04-28T17:00:00"
+      "startTime": "2026-04-23T09:00:00",
+      "endTime": "2026-04-23T12:00:00"
     },
     {
       "id": "NUR1311",
@@ -5326,8 +5452,8 @@
       "format": "ONLINE",
       "type": "TAKE-HOME",
       "location": "72 HOURS",
-      "startTime": "2026-04-20T14:00:00",
-      "endTime": "2026-04-23T14:00:00"
+      "startTime": "2026-04-20T09:00:00",
+      "endTime": "2026-04-23T09:00:00"
     },
     {
       "id": "NUR1320",
@@ -5335,8 +5461,8 @@
       "format": "ONLINE",
       "type": "TAKE-HOME",
       "location": "72 HOURS",
-      "startTime": "2026-04-20T14:00:00",
-      "endTime": "2026-04-23T14:00:00"
+      "startTime": "2026-04-20T09:00:00",
+      "endTime": "2026-04-23T09:00:00"
     },
     {
       "id": "NUR1324",
@@ -5384,10 +5510,64 @@
       "endTime": "2026-04-16T12:00:00"
     },
     {
+      "id": "NUR3644",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-20T09:30:00",
+      "endTime": "2026-04-20T12:30:00"
+    },
+    {
+      "id": "NUR3647",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-17T09:00:00",
+      "endTime": "2026-04-17T12:00:00"
+    },
+    {
+      "id": "NUR3652",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "LAB EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-21T08:00:00",
+      "endTime": "2026-04-21T17:00:00"
+    },
+    {
       "id": "NUR3671",
       "section": "001",
       "format": "IN-PERSON",
       "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-16T09:00:00",
+      "endTime": "2026-04-16T12:00:00"
+    },
+    {
+      "id": "NUR3690",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-22T09:30:00",
+      "endTime": "2026-04-22T12:00:00"
+    },
+    {
+      "id": "NUR3693",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-23T09:00:00",
+      "endTime": "2026-04-23T12:00:00"
+    },
+    {
+      "id": "NUR3693",
+      "section": "001L",
+      "format": "IN-PERSON",
+      "type": "LAB EXAM",
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-16T09:00:00",
       "endTime": "2026-04-16T12:00:00"
@@ -5612,10 +5792,10 @@
       "id": "PHIL475",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "ORAL EXAM",
+      "type": "2 DAY ORAL",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-16T14:00:00",
-      "endTime": "2026-04-16T17:00:00"
+      "startTime": "2026-04-16T09:00:00",
+      "endTime": "2026-04-17T12:00:00"
     },
     {
       "id": "PHYS102",
@@ -5776,8 +5956,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-20T14:00:00",
-      "endTime": "2026-04-20T17:00:00"
+      "startTime": "2026-04-28T14:00:00",
+      "endTime": "2026-04-28T17:00:00"
     },
     {
       "id": "PHYS514",
@@ -6001,8 +6181,8 @@
       "format": "IN-PERSON",
       "type": "ORAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-16T14:00:00",
-      "endTime": "2026-04-16T17:00:00"
+      "startTime": "2026-04-16T09:00:00",
+      "endTime": "2026-04-16T12:00:00"
     },
     {
       "id": "POLI435",
@@ -6010,8 +6190,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-24T09:00:00",
-      "endTime": "2026-04-24T12:00:00"
+      "startTime": "2026-04-17T14:00:00",
+      "endTime": "2026-04-17T17:00:00"
     },
     {
       "id": "POLI441",
@@ -6062,9 +6242,9 @@
       "id": "POLI614",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "ORAL EXAM",
+      "type": "ALL DAY ORAL",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-16T14:00:00",
+      "startTime": "2026-04-16T09:00:00",
       "endTime": "2026-04-16T17:00:00"
     },
     {
@@ -6271,8 +6451,8 @@
       "format": "IN-PERSON",
       "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
-      "startTime": "2026-04-28T09:00:00",
-      "endTime": "2026-04-28T12:00:00"
+      "startTime": "2026-04-17T09:00:00",
+      "endTime": "2026-04-17T12:00:00"
     },
     {
       "id": "RELG254",
@@ -6291,6 +6471,15 @@
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-21T09:00:00",
       "endTime": "2026-04-21T12:00:00"
+    },
+    {
+      "id": "RELG336",
+      "section": "001",
+      "format": "IN-PERSON",
+      "type": "IN DEPARTMENT EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-24T14:00:00",
+      "endTime": "2026-04-24T17:00:00"
     },
     {
       "id": "RELG411",
@@ -6417,6 +6606,33 @@
       "location": "D.T. CAMPUS",
       "startTime": "2026-04-23T09:00:00",
       "endTime": "2026-04-23T12:00:00"
+    },
+    {
+      "id": "WCOM250",
+      "section": "702",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-24T09:00:00",
+      "endTime": "2026-04-24T12:00:00"
+    },
+    {
+      "id": "WCOM250",
+      "section": "704",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-24T09:00:00",
+      "endTime": "2026-04-24T12:00:00"
+    },
+    {
+      "id": "WCOM250",
+      "section": "705",
+      "format": "IN-PERSON",
+      "type": "FORMAL EXAM",
+      "location": "D.T. CAMPUS",
+      "startTime": "2026-04-24T09:00:00",
+      "endTime": "2026-04-24T12:00:00"
     },
     {
       "id": "WILD350",
