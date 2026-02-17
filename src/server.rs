@@ -1640,7 +1640,7 @@ mod tests {
         name_ngrams: Some(
           "Adr Adri Adria Adrian Ros Rosh Rosha Roshan Vet Vett Vetta".into()
         ),
-        term: "Fall 2022".into(),
+        term: "Fall 2022".parse().unwrap(),
       })
     );
 
@@ -2576,7 +2576,7 @@ mod tests {
 
     db.add_course_average(model::CourseAverage {
       course_id: "COMP202".into(),
-      term: "Fall 2024".into(),
+      term: "Fall 2024".parse().unwrap(),
       average: Grade::BPlus,
     })
     .await
@@ -2584,7 +2584,7 @@ mod tests {
 
     db.add_course_average(model::CourseAverage {
       course_id: "COMP202".into(),
-      term: "Winter 2024".into(),
+      term: "Winter 2024".parse().unwrap(),
       average: Grade::B,
     })
     .await
@@ -2592,7 +2592,7 @@ mod tests {
 
     db.add_course_average(model::CourseAverage {
       course_id: "MATH240".into(),
-      term: "Fall 2024".into(),
+      term: "Fall 2024".parse().unwrap(),
       average: Grade::AMinus,
     })
     .await
@@ -2620,7 +2620,7 @@ mod tests {
 
     db.add_course_average(model::CourseAverage {
       course_id: "COMP202".into(),
-      term: "Fall 2024".into(),
+      term: "Fall 2024".parse().unwrap(),
       average: Grade::BPlus,
     })
     .await
@@ -2628,7 +2628,7 @@ mod tests {
 
     db.add_course_average(model::CourseAverage {
       course_id: "MATH240".into(),
-      term: "Fall 2024".into(),
+      term: "Fall 2024".parse().unwrap(),
       average: Grade::AMinus,
     })
     .await
