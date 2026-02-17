@@ -57,7 +57,7 @@ pub fn extract_course_page(text: &str) -> Result<CoursePage> {
       elem
         .inner_html()
         .split(",")
-        .map(|term| term.trim().to_owned())
+        .filter_map(|term| term.trim().parse::<Term>().ok())
         .collect::<Vec<_>>()
     })
     .unwrap_or_default();
@@ -266,7 +266,10 @@ mod tests {
         credits: "0".into(),
         subject: "AAAA".into(),
         code: "100".into(),
-        terms: vec!["Fall 2025".into(), "Winter 2026".into()],
+        terms: vec![
+          "Fall 2025".parse().unwrap(),
+          "Winter 2026".parse().unwrap()
+        ],
         department: Some("Student Services".into()),
         faculty: Some("No College Designated".into()),
         description: "".into(),

@@ -23,6 +23,7 @@ import {
   spliceCourseCode,
   stripColonPrefix,
   sum,
+  term,
   timeSince,
   uniq,
   uniqBy,
@@ -146,9 +147,9 @@ describe('getCurrentTerms', () => {
     vi.setSystemTime(new Date('2024-06-15'));
 
     expect(getCurrentTerms()).toEqual([
-      'Summer 2024',
-      'Fall 2024',
-      'Winter 2025',
+      term('Summer', 2024),
+      term('Fall', 2024),
+      term('Winter', 2025),
     ]);
   });
 
@@ -156,9 +157,9 @@ describe('getCurrentTerms', () => {
     vi.setSystemTime(new Date('2024-09-15'));
 
     expect(getCurrentTerms()).toEqual([
-      'Fall 2024',
-      'Winter 2025',
-      'Summer 2025',
+      term('Fall', 2024),
+      term('Winter', 2025),
+      term('Summer', 2025),
     ]);
   });
 
@@ -166,9 +167,9 @@ describe('getCurrentTerms', () => {
     vi.setSystemTime(new Date('2024-03-15'));
 
     expect(getCurrentTerms()).toEqual([
-      'Fall 2023',
-      'Winter 2024',
-      'Summer 2024',
+      term('Fall', 2023),
+      term('Winter', 2024),
+      term('Summer', 2024),
     ]);
   });
 
@@ -176,25 +177,25 @@ describe('getCurrentTerms', () => {
     vi.setSystemTime(new Date('2024-05-01T12:00:00Z'));
 
     expect(getCurrentTerms()).toEqual([
-      'Summer 2024',
-      'Fall 2024',
-      'Winter 2025',
+      term('Summer', 2024),
+      term('Fall', 2024),
+      term('Winter', 2025),
     ]);
 
     vi.setSystemTime(new Date('2024-08-01T12:00:00Z'));
 
     expect(getCurrentTerms()).toEqual([
-      'Fall 2024',
-      'Winter 2025',
-      'Summer 2025',
+      term('Fall', 2024),
+      term('Winter', 2025),
+      term('Summer', 2025),
     ]);
 
     vi.setSystemTime(new Date('2024-01-01T12:00:00Z'));
 
     expect(getCurrentTerms()).toEqual([
-      'Fall 2023',
-      'Winter 2024',
-      'Summer 2024',
+      term('Fall', 2023),
+      term('Winter', 2024),
+      term('Summer', 2024),
     ]);
   });
 });

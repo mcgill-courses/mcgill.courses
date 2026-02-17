@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 
 import type { CourseAverage, Grade, Instructor } from '../lib/types';
-import { compareTerms } from '../lib/utils';
+import { compareTerms, parseTerm } from '../lib/utils';
 
 const gradeToGPA: Record<Grade, number> = {
   A: 4.0,
@@ -39,11 +39,9 @@ type DataPoint = {
   instructors: string[];
 };
 
-const formatShortTerm = (term: string): string => {
-  const [season, year] = term.split(' ');
-  const seasonAbbrev = season[0];
-  const yearAbbrev = year?.slice(-2) ?? '';
-  return `${seasonAbbrev}${yearAbbrev}`;
+const formatShortTerm = (termStr: string): string => {
+  const { season, year } = parseTerm(termStr);
+  return `${season[0]}${String(year).slice(-2)}`;
 };
 
 const calculateTrendLine = (

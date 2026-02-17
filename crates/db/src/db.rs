@@ -89,6 +89,12 @@ impl Db {
       if let Some(query) = query.clone() {
         let current_terms = current_terms();
 
+        let current_terms_pattern = current_terms
+          .iter()
+          .map(ToString::to_string)
+          .collect::<Vec<_>>()
+          .join("|");
+
         let id = doc! {
           "_id": doc! {
             "$regex": format!(".*{}.*", query.replace(' ', "")),
@@ -104,7 +110,7 @@ impl Db {
                 "$options": "i"
               },
               "term": doc! {
-                "$regex": format!(".*({}).*", current_terms.join("|")),
+                "$regex": format!(".*({}).*", current_terms_pattern),
                 "$options": "i"
               }
             }
@@ -225,18 +231,20 @@ impl Db {
   }
 
   pub async fn add_course_average(&self, average: CourseAverage) -> Result {
+    let term_str = average.term.to_string();
+
     self
       .database
       .collection::<CourseAverage>(Self::COURSE_AVERAGE_COLLECTION)
       .update_one(
         doc! {
           "courseId": &average.course_id,
-          "term": &average.term,
+          "term": &term_str,
         },
         doc! {
           "$setOnInsert": {
             "courseId": &average.course_id,
-            "term": &average.term,
+            "term": &term_str,
             "average": average.average.to_string(),
           }
         },
@@ -2174,7 +2182,7 @@ mod tests {
         course
           .terms
           .iter()
-          .any(|term| term.starts_with(&"Winter".to_string()))
+          .any(|term| term.to_string().starts_with("Winter"))
       );
     }
   }
@@ -2186,17 +2194,17 @@ mod tests {
     let instructors = vec![
       Instructor {
         name: "foo".into(),
-        term: "Summer 2023".into(),
+        term: "Summer 2023".parse().unwrap(),
         ..Default::default()
       },
       Instructor {
         name: "bar".into(),
-        term: "Summer 2023".into(),
+        term: "Summer 2023".parse().unwrap(),
         ..Default::default()
       },
       Instructor {
         name: "bar".into(),
-        term: "Winter 2023".into(),
+        term: "Winter 2023".parse().unwrap(),
         ..Default::default()
       },
     ];
@@ -2752,7 +2760,7 @@ mod tests {
       instructors: vec![Instructor {
         name: "Lili Wei".into(),
         name_ngrams: None,
-        term: "Fall 2024".into(),
+        term: "Fall 2024".parse().unwrap(),
       }],
       ..Default::default()
     })
@@ -2765,7 +2773,7 @@ mod tests {
       instructors: vec![Instructor {
         name: "Giulia Alberini".into(),
         name_ngrams: None,
-        term: "Fall 2024".into(),
+        term: "Fall 2024".parse().unwrap(),
       }],
       ..Default::default()
     })

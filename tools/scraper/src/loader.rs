@@ -319,7 +319,7 @@ impl Loader {
     let schedule_info = schedule.clone().map(|schedules| {
       let mut terms = schedules
         .iter()
-        .filter_map(|schedule| schedule.term.clone())
+        .filter_map(|schedule| schedule.term)
         .collect::<Vec<_>>();
 
       utils::dedup(&mut terms);
@@ -334,12 +334,17 @@ impl Loader {
                 "[{}] Extracted instructor: '{}' (term: {})",
                 course_id,
                 instructor,
-                schedule.term.as_deref().unwrap_or("unknown")
+                schedule
+                  .term
+                  .as_ref()
+                  .map(ToString::to_string)
+                  .as_deref()
+                  .unwrap_or("unknown")
               );
 
               instructors.push(Instructor {
                 name: instructor,
-                term: schedule.term.clone().unwrap_or_default(),
+                term: schedule.term.unwrap_or_default(),
                 ..Default::default()
               });
             }

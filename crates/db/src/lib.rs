@@ -7,7 +7,7 @@ use {
   model::{
     Course, CourseAverage, CourseFilter, CourseSortType, InitializeOptions,
     Instructor, Interaction, InteractionKind, Notification, Review,
-    ReviewFilter, SearchResults, Subscription,
+    ReviewFilter, SearchResults, Season, Subscription, Term,
   },
   mongodb::{
     Client, Cursor, Database, IndexModel,

@@ -1,4 +1,11 @@
-import type { Course, Instructor, Review, Schedule } from './types';
+import type {
+  Course,
+  Instructor,
+  Review,
+  Schedule,
+  Season,
+  Term,
+} from './types';
 
 /**
  * Regex pattern for validating McGill course codes.
@@ -12,7 +19,31 @@ const COURSE_CODE_REGEX = /^(([A-Z0-9]){4} [0-9]{3}(D1|D2|N1|N2|J1|J2|J3)?)$/;
 /**
  * Order of terms within an academic year for sorting purposes.
  */
-const TERM_ORDER = ['Winter', 'Summer', 'Fall'];
+const TERM_ORDER: Season[] = ['Winter', 'Summer', 'Fall'];
+
+/**
+ * Creates a Term object from a season and year.
+ */
+export const term = (season: Season, year: number): Term => ({ season, year });
+
+/**
+ * Parses a term string like "Fall 2025" into a Term object.
+ *
+ * @param {string} s - Term string to parse
+ * @returns {Term} Parsed term
+ */
+export const parseTerm = (s: string): Term => {
+  const [season, yearStr] = s.split(' ');
+  return { season: season as Season, year: parseInt(yearStr, 10) };
+};
+
+/**
+ * Formats a Term object into a string like "Fall 2025".
+ *
+ * @param {Term} t - Term to format
+ * @returns {string} Formatted term string
+ */
+export const formatTerm = (t: Term): string => `${t.season} ${t.year}`;
 
 /**
  * Custom error class for date-related errors.
@@ -39,15 +70,19 @@ export const capitalize = (s: string): string =>
  * Compares two academic terms for sorting.
  *
  * Terms are compared first by year, then by season according to TERM_ORDER.
+ * Accepts either Term objects or term strings.
  *
- * @param {string} a - First term string (e.g., "Fall 2023")
- * @param {string} b - Second term string (e.g., "Winter 2024")
+ * @param {string | Term} a - First term
+ * @param {string | Term} b - Second term
  * @returns {number} Negative if a comes before b, positive if b comes before a, 0 if equal
  */
-export const compareTerms = (a: string, b: string): number => {
-  return a.split(' ')[1] === b.split(' ')[1]
-    ? TERM_ORDER.indexOf(a.split(' ')[0]) - TERM_ORDER.indexOf(b.split(' ')[0])
-    : parseInt(a.split(' ')[1], 10) - parseInt(b.split(' ')[1], 10);
+export const compareTerms = (a: string | Term, b: string | Term): number => {
+  const pa = typeof a === 'string' ? parseTerm(a) : a;
+  const pb = typeof b === 'string' ? parseTerm(b) : b;
+
+  return pa.year === pb.year
+    ? TERM_ORDER.indexOf(pa.season) - TERM_ORDER.indexOf(pb.season)
+    : pa.year - pb.year;
 };
 
 /**
@@ -111,22 +146,22 @@ export const formatDisplayTime = (time: string): string => {
  * - August-December: Fall <year>
  * - January-April: Winter <year>
  *
- * @returns {string} The current term
+ * @returns {Term} The current term
  */
-export const getCurrentTerm = (): string => {
+export const getCurrentTerm = (): Term => {
   const now = new Date();
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
 
   if (month >= 5 && month < 8) {
-    return `Summer ${year}`;
+    return term('Summer', year);
   }
 
   if (month >= 8) {
-    return `Fall ${year}`;
+    return term('Fall', year);
   }
 
-  return `Winter ${year}`;
+  return term('Winter', year);
 };
 
 /**
@@ -136,23 +171,27 @@ export const getCurrentTerm = (): string => {
  * - August-December: Returns [Fall current, Winter next, Summer next]
  * - January-April: Returns [Fall previous, Winter current, Summer current]
  *
- * @returns {[string, string, string]} Array of three consecutive terms
+ * @returns {[Term, Term, Term]} Array of three consecutive terms
  */
-export const getCurrentTerms = (): [string, string, string] => {
+export const getCurrentTerms = (): [Term, Term, Term] => {
   const now = new Date();
 
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
 
   if (month >= 5 && month < 8) {
-    return [`Summer ${year}`, `Fall ${year}`, `Winter ${year + 1}`];
+    return [term('Summer', year), term('Fall', year), term('Winter', year + 1)];
   }
 
   if (month >= 8) {
-    return [`Fall ${year}`, `Winter ${year + 1}`, `Summer ${year + 1}`];
+    return [
+      term('Fall', year),
+      term('Winter', year + 1),
+      term('Summer', year + 1),
+    ];
   }
 
-  return [`Fall ${year - 1}`, `Winter ${year}`, `Summer ${year}`];
+  return [term('Fall', year - 1), term('Winter', year), term('Summer', year)];
 };
 
 /**
@@ -198,17 +237,17 @@ export const groupBy = <T>(
 export const groupCurrentCourseTermInstructors = (
   course: Course
 ): Record<string, Instructor[]> => {
-  const currentTerms = getCurrentTerms();
+  const currentTermStrings = getCurrentTerms().map(formatTerm);
 
   const currentInstructors = course.instructors.filter((i) =>
-    currentTerms.includes(i.term)
+    currentTermStrings.includes(i.term)
   );
 
   const termGroups = groupBy(currentInstructors, (i: Instructor) => i.term);
 
-  for (const term of course.terms) {
-    if (term in termGroups || !currentTerms.includes(term)) continue;
-    termGroups[term] = [];
+  for (const t of course.terms) {
+    if (t in termGroups || !currentTermStrings.includes(t)) continue;
+    termGroups[t] = [];
   }
 
   return termGroups;

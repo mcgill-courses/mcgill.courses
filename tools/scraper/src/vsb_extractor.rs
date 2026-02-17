@@ -13,13 +13,13 @@ pub(crate) fn extract_course_schedules(text: &str) -> Result<Vec<Schedule>> {
       .root_element()
       .select_single("term")?
       .attr("v")
-      .map(String::from);
+      .and_then(|v| v.parse::<Term>().ok());
 
     html
       .root_element()
       .select_many("uselection")?
       .into_iter()
-      .map(|elem| extract_course_schedule(elem, term.clone()))
+      .map(|elem| extract_course_schedule(elem, term))
       .collect::<Result<Vec<Schedule>>>()?
   } else {
     Vec::new()
@@ -28,7 +28,7 @@ pub(crate) fn extract_course_schedules(text: &str) -> Result<Vec<Schedule>> {
 
 fn extract_course_schedule(
   element: ElementRef,
-  term: Option<String>,
+  term: Option<Term>,
 ) -> Result<Schedule> {
   let timeblocks = element.select_many("timeblock")?;
 
@@ -125,7 +125,7 @@ mod tests {
           crn: Some("2411".into()),
           instructors: vec!["Mona Elsaadawy".into(), "Jacob Errington".into()]
         }]),
-        term: Some("Fall 2025".into())
+        term: Some("Fall 2025".parse().unwrap())
       }]
     );
   }

@@ -29,7 +29,7 @@ pub struct Course {
   /// Faculty offering the course.
   pub faculty: String,
   /// Terms when the course is offered.
-  pub terms: Vec<String>,
+  pub terms: Vec<Term>,
   /// Course description.
   pub description: String,
   /// Instructors associated with the course.
@@ -128,13 +128,13 @@ mod tests {
     Instructor {
       name: name.to_string(),
       name_ngrams: None,
-      term: term.to_string(),
+      term: term.parse().unwrap(),
     }
   }
 
   fn schedule(term: &str) -> Schedule {
     Schedule {
-      term: Some(term.to_string()),
+      term: Some(term.parse().unwrap()),
       blocks: None,
     }
   }
@@ -328,12 +328,12 @@ mod tests {
   #[test]
   fn merge_terms_combines_unique() {
     let course1 = Course {
-      terms: vec!["Fall 2023".to_string(), "Winter 2024".to_string()],
+      terms: vec!["Fall 2023".parse().unwrap(), "Winter 2024".parse().unwrap()],
       ..course()
     };
 
     let course2 = Course {
-      terms: vec!["Winter 2024".to_string(), "Fall 2024".to_string()],
+      terms: vec!["Winter 2024".parse().unwrap(), "Fall 2024".parse().unwrap()],
       ..course()
     };
 
@@ -342,9 +342,9 @@ mod tests {
     assert_eq!(
       merged.terms,
       vec![
-        "Fall 2023".to_string(),
-        "Winter 2024".to_string(),
-        "Fall 2024".to_string(),
+        "Fall 2023".parse::<Term>().unwrap(),
+        "Winter 2024".parse::<Term>().unwrap(),
+        "Fall 2024".parse::<Term>().unwrap(),
       ]
     );
   }

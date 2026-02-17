@@ -14,8 +14,10 @@ import { Course, type Instructor as InstructorType } from '../lib/types';
 import type { Review } from '../lib/types';
 import {
   courseIdToUrlParam,
+  formatTerm,
   getCurrentTerm,
   getCurrentTerms,
+  parseTerm,
 } from '../lib/utils';
 import { Loading } from './loading';
 import { NotFound } from './not-found';
@@ -33,7 +35,8 @@ export const Instructor = () => {
   const [courses, setCourses] = useState<Course[]>([]);
 
   const currentTerm = getCurrentTerm();
-  const [activeTab, setActiveTab] = useState<string>(currentTerm);
+  const currentTermStr = formatTerm(currentTerm);
+  const [activeTab, setActiveTab] = useState<string>(currentTermStr);
 
   const user = useAuth();
 
@@ -52,12 +55,12 @@ export const Instructor = () => {
       });
   }, [params.name]);
 
-  const academicTerms = getCurrentTerms();
+  const academicTerms = getCurrentTerms().map(formatTerm);
 
   // Reorder terms so current term is first
   const orderedTerms = [
-    currentTerm,
-    ...academicTerms.filter((t) => t !== currentTerm),
+    currentTermStr,
+    ...academicTerms.filter((t) => t !== currentTermStr),
   ];
 
   const getCoursesForTerm = (term: string) => {
@@ -69,12 +72,12 @@ export const Instructor = () => {
     );
   };
 
-  const currentTermHasCourses = getCoursesForTerm(currentTerm).length > 0;
+  const currentTermHasCourses = getCoursesForTerm(currentTermStr).length > 0;
 
   useEffect(() => {
     if (instructor) {
       if (currentTermHasCourses) {
-        setActiveTab(currentTerm);
+        setActiveTab(currentTermStr);
       } else {
         setActiveTab('all');
       }
@@ -164,7 +167,7 @@ export const Instructor = () => {
                   const termCourses = getCoursesForTerm(term);
                   if (termCourses.length === 0) return null;
 
-                  const season = term.split(' ')[0].toLowerCase();
+                  const season = parseTerm(term).season.toLowerCase();
                   const icon =
                     season === 'fall' ? (
                       <Leaf size={14} color='brown' />

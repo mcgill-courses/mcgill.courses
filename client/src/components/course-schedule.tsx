@@ -6,13 +6,15 @@ import { twMerge } from 'tailwind-merge';
 import * as buildingCodes from '../assets/building-codes.json';
 import * as buildingCoordinates from '../assets/building-coordinates.json';
 import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
-import type { Block, Schedule, TimeBlock } from '../lib/types';
+import type { Block, Schedule, Season, TimeBlock } from '../lib/types';
 import type { Course } from '../lib/types';
 import {
   formatDisplayTime,
+  formatTerm,
   getCurrentTerm,
   groupBy,
   mapValues,
+  parseTerm,
   sortBy,
   sortTerms,
   uniq,
@@ -36,11 +38,14 @@ const DAY_ORDER = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
 const DEFAULT_MEETING_COUNT = 13;
 
-const TERM_START_CONFIG = {
+const TERM_START_CONFIG: Record<
+  Season,
+  { startMonth: number; offsetDays: number }
+> = {
   Winter: { startMonth: 1, offsetDays: 6 },
   Summer: { startMonth: 5, offsetDays: 6 },
   Fall: { startMonth: 9, offsetDays: 6 },
-} as const;
+};
 
 type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
   location: string;
@@ -53,8 +58,6 @@ type RepeatingBlock = {
   startTime: string;
   endTime: string;
 };
-
-type TermSeason = keyof typeof TERM_START_CONFIG;
 
 const VSBtimeToDisplay = (time: string) => {
   const totalMinutes = parseInt(time, 10);
@@ -69,18 +72,6 @@ const VSBtimeToDisplay = (time: string) => {
   return `${hour.toString().padStart(2, '0')}:${minute
     .toString()
     .padStart(2, '0')}`;
-};
-
-const parseTermSeason = (
-  term: string
-): { season: TermSeason; year: number } | null => {
-  const match = term.match(/^(Winter|Summer|Fall)\s+(\d{4})$/);
-
-  if (!match) return null;
-
-  const [, season, year] = match;
-
-  return { season: season as TermSeason, year: parseInt(year, 10) };
 };
 
 const vsbDayToJsDay = (day: string): number | null => {
@@ -99,10 +90,10 @@ const getFirstOccurrenceForTermDay = (
   term: string,
   day: string
 ): Date | null => {
-  const termInfo = parseTermSeason(term);
+  const termInfo = parseTerm(term);
   const jsDay = vsbDayToJsDay(day);
 
-  if (!termInfo || jsDay === null) return null;
+  if (jsDay === null || Number.isNaN(termInfo.year)) return null;
 
   const { season, year } = termInfo;
   const { startMonth, offsetDays } = TERM_START_CONFIG[season];
@@ -452,8 +443,10 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
 };
 
 const getDefaultTerm = (offeredTerms: string[]) => {
-  const currentTerm = getCurrentTerm();
-  return offeredTerms.includes(currentTerm) ? currentTerm : offeredTerms.at(0);
+  const currentTermStr = formatTerm(getCurrentTerm());
+  return offeredTerms.includes(currentTermStr)
+    ? currentTermStr
+    : offeredTerms.at(0);
 };
 
 type CourseScheduleProps = {

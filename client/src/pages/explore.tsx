@@ -16,7 +16,7 @@ import { useExploreFilterState } from '../hooks/use-explore-filter-state';
 import { api } from '../lib/api';
 import type { Course, CourseFilter } from '../lib/types';
 import { CourseSortType } from '../lib/types';
-import { getCurrentTerms } from '../lib/utils';
+import { formatTerm, getCurrentTerms } from '../lib/utils';
 
 const COURSE_LIMIT = 20;
 
@@ -28,7 +28,7 @@ export const Explore = () => {
   const [query, setQuery] = useState<string>('');
   const [searchSelected, setSearchSelected] = useState<boolean>(false);
 
-  const currentTerms = getCurrentTerms();
+  const currentTerms = getCurrentTerms().map(formatTerm);
   const debouncedQuery = useDebouncedValue(query, 250);
 
   const { selectedSubjects, selectedLevels, selectedTerms, sortBy } =

@@ -21,7 +21,7 @@ pub struct Instructor {
   /// Search n-grams for the instructor name.
   pub name_ngrams: Option<String>,
   /// Term identifier for the instructor record.
-  pub term: String,
+  pub term: Term,
 }
 
 impl Into<Bson> for Instructor {
@@ -46,10 +46,7 @@ impl Instructor {
     }
   }
 
-  pub fn set_term(self, term: &str) -> Self {
-    Self {
-      term: term.to_owned(),
-      ..self
-    }
+  pub fn set_term(self, term: Term) -> Self {
+    Self { term, ..self }
   }
 }

@@ -7,8 +7,10 @@ import { twMerge } from 'tailwind-merge';
 import type { Course } from '../lib/types';
 import {
   compareTerms,
+  formatTerm,
   getCurrentTerms,
   groupCurrentCourseTermInstructors,
+  parseTerm,
 } from '../lib/utils';
 import { Highlight } from './highlight';
 import { Tooltip } from './tooltip';
@@ -25,7 +27,7 @@ type SeasonIconProps = {
 const SeasonIcon = ({ variant, term }: SeasonIconProps) => {
   const size = variantToSize(variant);
 
-  const season = term.split(' ')[0].toLowerCase();
+  const season = parseTerm(term).season.toLowerCase();
 
   const icons: Record<string, JSX.Element> = {
     fall: <Leaf size={size} color='brown' />,
@@ -74,8 +76,9 @@ export const CourseTerms = ({ course, variant, query }: CourseTermsProps) => {
     setExpandedState(initialExpandedState());
   }, [course]);
 
+  const currentTermStrings = getCurrentTerms().map(formatTerm);
   const currentlyOfferedTerms = course.terms.filter((c) =>
-    getCurrentTerms().includes(c)
+    currentTermStrings.includes(c)
   );
 
   if (currentlyOfferedTerms.length === 0)
@@ -100,7 +103,7 @@ export const CourseTerms = ({ course, variant, query }: CourseTermsProps) => {
       {Object.entries(instructorGroups)
         .sort((a, b) => compareTerms(a[0], b[0]))
         .map(([term, instructors], i) => {
-          const season = term.split(' ')[0].toLowerCase();
+          const season = parseTerm(term).season.toLowerCase();
           return (
             <div className='relative' key={term}>
               <div

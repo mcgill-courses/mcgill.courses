@@ -96,7 +96,7 @@ pub struct Schedule {
   /// Schedule blocks for the term.
   pub blocks: Option<Vec<Block>>,
   /// Term identifier for the schedule.
-  pub term: Option<String>,
+  pub term: Option<Term>,
 }
 
 impl Into<Bson> for Schedule {

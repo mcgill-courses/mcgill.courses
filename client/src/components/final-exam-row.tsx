@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 import finalExamsData from '../assets/final-exams.json';
 import { sanitizeForFilename } from '../lib/calendar';
 import type { Course, FinalExam, FinalExamGroup } from '../lib/types';
-import { getCurrentTerm } from '../lib/utils';
+import { formatTerm, getCurrentTerm } from '../lib/utils';
 import { AddToCalendarButton } from './add-to-calendar-button';
 
 const finalExams = finalExamsData as FinalExamGroup;
@@ -117,9 +117,9 @@ type FinalExamRowProps = {
 };
 
 export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
-  const currentTerm = getCurrentTerm();
+  const currentTermStr = formatTerm(getCurrentTerm());
 
-  if (finalExams.term !== currentTerm) {
+  if (finalExams.term !== currentTermStr) {
     return null;
   }
 
@@ -148,7 +148,7 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
             Final Exam
           </p>
           <p className='text-lg font-semibold text-gray-900 dark:text-gray-100'>
-            {currentTerm}
+            {currentTermStr}
           </p>
         </div>
         <p className='text-sm text-gray-600 dark:text-gray-300'>
@@ -180,9 +180,9 @@ export const FinalExamRow = ({ course, className }: FinalExamRowProps) => {
             .filter(Boolean)
             .join('\n');
 
-          const filename = `${sanitizeForFilename(`${examId}-final-exam-${currentTerm}`)}.ics`;
+          const filename = `${sanitizeForFilename(`${examId}-final-exam-${currentTermStr}`)}.ics`;
 
-          const uid = `${sanitizeForFilename(`${course._id}-${exam.startTime}-${exam.endTime}-${currentTerm}`).slice(0, 64)}@mcgill.courses`;
+          const uid = `${sanitizeForFilename(`${course._id}-${exam.startTime}-${exam.endTime}-${currentTermStr}`).slice(0, 64)}@mcgill.courses`;
 
           const calendarPayload = {
             filename,

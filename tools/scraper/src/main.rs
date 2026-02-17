@@ -5,7 +5,7 @@ use {
   clap::Parser,
   model::{
     Block, Course, CoursePage, Instructor, Requirement, Requirements, Schedule,
-    TimeBlock,
+    Term, TimeBlock,
   },
   rayon::iter::{IntoParallelRefIterator, ParallelIterator},
   regex::Regex,

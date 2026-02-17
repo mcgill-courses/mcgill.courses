@@ -19,11 +19,11 @@ import { ReviewFilter, ReviewSortType } from '../components/review-filter';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
 import type { Course, CourseAverage, Interaction, Review } from '../lib/types';
-import { getCurrentTerms, getReviewAnchorId } from '../lib/utils';
+import { formatTerm, getCurrentTerms, getReviewAnchorId } from '../lib/utils';
 import { Loading } from './loading';
 
 export const CoursePage = () => {
-  const currentTerms = getCurrentTerms();
+  const currentTermStrings = getCurrentTerms().map(formatTerm);
   const firstFetch = useRef(true);
   const hasAttemptedScroll = useRef(false);
   const highlightTimeoutRef = useRef<number | null>(null);
@@ -169,10 +169,10 @@ export const CoursePage = () => {
     return <Loading />;
   }
 
-  if (course.terms.some((term) => !currentTerms.includes(term))) {
+  if (course.terms.some((term) => !currentTermStrings.includes(term))) {
     setCourse({
       ...course,
-      terms: course.terms.filter((term) => currentTerms.includes(term)),
+      terms: course.terms.filter((term) => currentTermStrings.includes(term)),
     });
   }
 
