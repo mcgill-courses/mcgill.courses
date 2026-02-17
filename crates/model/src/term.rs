@@ -18,15 +18,15 @@ impl Display for Season {
   }
 }
 
-impl std::str::FromStr for Season {
+impl FromStr for Season {
   type Err = String;
 
-  fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-    match s {
+  fn from_str(value: &str) -> Result<Self, Self::Err> {
+    match value {
       "Fall" | "fall" => Ok(Season::Fall),
       "Winter" | "winter" => Ok(Season::Winter),
       "Summer" | "summer" => Ok(Season::Summer),
-      _ => Err(format!("invalid season: {s}")),
+      _ => Err(format!("invalid season: {value}")),
     }
   }
 }
@@ -38,38 +38,32 @@ pub struct Term {
   pub season: Season,
 }
 
-impl Term {
-  pub fn new(season: Season, year: u16) -> Self {
-    Self { season, year }
-  }
-}
-
 impl Display for Term {
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
     write!(f, "{} {}", self.season, self.year)
   }
 }
 
-impl std::str::FromStr for Term {
+impl FromStr for Term {
   type Err = String;
 
-  fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-    let (season_str, year_str) = s
+  fn from_str(value: &str) -> Result<Self, Self::Err> {
+    let (season_str, year_str) = value
       .split_once(' ')
-      .ok_or_else(|| format!("invalid term format: {s}"))?;
+      .ok_or_else(|| format!("invalid term format: {value}"))?;
 
     let season = season_str.parse()?;
 
     let year = year_str
       .parse()
-      .map_err(|_| format!("invalid year in term: {s}"))?;
+      .map_err(|_| format!("invalid year in term: {value}"))?;
 
     Ok(Term { season, year })
   }
 }
 
 impl Serialize for Term {
-  fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
   where
     S: Serializer,
   {
@@ -78,12 +72,13 @@ impl Serialize for Term {
 }
 
 impl<'de> Deserialize<'de> for Term {
-  fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+  fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
   where
     D: Deserializer<'de>,
   {
-    let s = String::deserialize(deserializer)?;
-    s.parse().map_err(D::Error::custom)
+    String::deserialize(deserializer)?
+      .parse()
+      .map_err(D::Error::custom)
   }
 }
 
@@ -109,15 +104,22 @@ impl PartialSchema for Term {
   }
 }
 
+impl Term {
+  pub fn new(season: Season, year: u16) -> Self {
+    Self { season, year }
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
 
   #[test]
   fn parse_valid_term() {
-    let term: Term = "Fall 2025".parse().unwrap();
-    assert_eq!(term.season, Season::Fall);
-    assert_eq!(term.year, 2025);
+    assert_eq!(
+      "Fall 2025".parse::<Term>().unwrap(),
+      Term::new(Season::Fall, 2025)
+    )
   }
 
   #[test]
@@ -126,10 +128,12 @@ mod tests {
       "Winter 2024".parse::<Term>().unwrap(),
       Term::new(Season::Winter, 2024)
     );
+
     assert_eq!(
       "Summer 2024".parse::<Term>().unwrap(),
       Term::new(Season::Summer, 2024)
     );
+
     assert_eq!(
       "Fall 2024".parse::<Term>().unwrap(),
       Term::new(Season::Fall, 2024)
@@ -138,17 +142,17 @@ mod tests {
 
   #[test]
   fn display_term() {
-    let term = Term::new(Season::Fall, 2025);
-    assert_eq!(term.to_string(), "Fall 2025");
+    assert_eq!(Term::new(Season::Fall, 2025).to_string(), "Fall 2025");
   }
 
   #[test]
   fn roundtrip_serde() {
     let term = Term::new(Season::Winter, 2026);
+
     let json = serde_json::to_string(&term).unwrap();
     assert_eq!(json, "\"Winter 2026\"");
-    let parsed: Term = serde_json::from_str(&json).unwrap();
-    assert_eq!(parsed, term);
+
+    assert_eq!(serde_json::from_str::<Term>(&json).unwrap(), term);
   }
 
   #[test]

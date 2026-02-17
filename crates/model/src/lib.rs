@@ -12,6 +12,7 @@ use {
     collections::HashSet,
     fmt::{self, Display, Formatter},
     path::PathBuf,
+    str::FromStr,
   },
   typeshare::typeshare,
   utoipa::{
