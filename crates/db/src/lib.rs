@@ -30,7 +30,6 @@ use {
   include_dir::{Dir, include_dir},
   model::DateTime,
   std::sync::atomic::{AtomicUsize, Ordering},
-  tempdir::TempDir,
 };
 
 pub type Result<T = ()> = std::result::Result<T, Error>;
