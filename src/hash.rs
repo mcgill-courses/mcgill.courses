@@ -42,9 +42,7 @@ impl Hash for PathBuf {
 
 #[cfg(test)]
 mod tests {
-  use super::*;
-  use std::io::Write;
-  use tempfile::tempdir;
+  use {super::*, std::io::Write, tempfile::tempdir};
 
   #[test]
   fn hash_file() {
