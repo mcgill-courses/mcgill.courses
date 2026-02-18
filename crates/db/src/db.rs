@@ -1224,7 +1224,7 @@ mod tests {
   async fn course_seeding_is_accurate() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -1244,7 +1244,7 @@ mod tests {
   async fn course_seeding_does_not_insert_duplicates() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -1271,7 +1271,7 @@ mod tests {
   async fn courses_get_updated_when_seeding() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -1317,7 +1317,7 @@ mod tests {
   async fn course_terms_update_properly_when_seeding() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -1362,7 +1362,7 @@ mod tests {
   async fn search_is_accurate() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -1391,7 +1391,7 @@ mod tests {
   async fn get_course_by_id() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -1420,7 +1420,7 @@ mod tests {
   async fn search_course_by_id_exact() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -1449,7 +1449,7 @@ mod tests {
   async fn fuzzy_search_course_by_title() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -1478,7 +1478,7 @@ mod tests {
   async fn get_courses_with_limit() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -1498,7 +1498,7 @@ mod tests {
   async fn get_courses_with_sort_filter() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -2055,7 +2055,7 @@ mod tests {
   async fn filter_courses_by_subject() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -2096,7 +2096,7 @@ mod tests {
   async fn filter_courses_by_level() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -2137,7 +2137,7 @@ mod tests {
   async fn filter_courses_by_term() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -2212,7 +2212,7 @@ mod tests {
   async fn search_instructor_by_name_exact() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
@@ -2602,7 +2602,7 @@ mod tests {
   async fn filter_courses_by_query() {
     let TestContext { db, db_name } = TestContext::new().await;
 
-    let tempdir = tempfile::TempDir::with_prefix(&db_name).unwrap();
+    let tempdir = TempDir::with_prefix(&db_name).unwrap();
 
     let source = tempdir.path().join("courses.json");
 
