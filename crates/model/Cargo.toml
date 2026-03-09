@@ -11,6 +11,6 @@ combine = { path = "../combine" }
 derivative = "2.2.0"
 serde = { workspace = true }
 serde_json = { workspace = true }
-serde_with = "3.16.1"
+serde_with = "3.17.0"
 typeshare = { workspace = true }
 utoipa = { workspace = true }
