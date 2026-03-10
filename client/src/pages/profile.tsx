@@ -191,9 +191,9 @@ export const Profile = () => {
                     <Spinner />
                   </div>
                 ) : userReviews.length ? (
-                  userReviews.map((review, i) => {
+                  userReviews.map((review) => {
                     return (
-                      <div key={i}>
+                      <div key={`${review.userId}-${review.timestamp}`}>
                         <div className='flex'>
                           <Link
                             to={`/course/${courseIdToUrlParam(
@@ -237,9 +237,9 @@ export const Profile = () => {
                     <Spinner />
                   </div>
                 ) : likedReviews.length ? (
-                  likedReviews.map((review, i) => {
+                  likedReviews.map((review) => {
                     return (
-                      <div key={i}>
+                      <div key={`${review.userId}-${review.timestamp}`}>
                         <div className='flex'>
                           <Link
                             to={`/course/${courseIdToUrlParam(
@@ -279,9 +279,9 @@ export const Profile = () => {
             <Tab.Panel>
               <div>
                 {userSubscriptions?.length !== 0 ? (
-                  userSubscriptions?.map((subscription, i) => (
+                  userSubscriptions?.map((subscription) => (
                     <div
-                      key={i}
+                      key={subscription.courseId}
                       className='m-4 flex items-center rounded-lg border-gray-800 bg-white p-4 duration-300 ease-in-out dark:bg-neutral-800'
                     >
                       <Link

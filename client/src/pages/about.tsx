@@ -109,7 +109,7 @@ const Person = ({
         <Paragraph className='font-semibold'>{name}</Paragraph>
         <div className='flex gap-x-2'>
           {links?.map((link: PersonLink, i) => (
-            <React.Fragment key={i}>
+            <React.Fragment key={link.url}>
               <a target='_blank' rel='noopener noreferrer' href={link.url}>
                 <Paragraph className='hover:text-mcgill-red underline transition-colors duration-200'>
                   {link.title}

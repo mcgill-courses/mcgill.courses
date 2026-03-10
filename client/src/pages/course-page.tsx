@@ -321,7 +321,7 @@ export const CoursePage = () => {
                       user ? review.userId !== user.id : true
                     )
                     .slice(0, showAllReviews ? showingReviews.length : 8)
-                    .map((review, i) => {
+                    .map((review) => {
                       const desktopAnchorId = `desktop-${getReviewAnchorId(review)}`;
 
                       return (
@@ -331,7 +331,7 @@ export const CoursePage = () => {
                           canModify={Boolean(user && review.userId === user.id)}
                           interactions={interactions}
                           handleDelete={() => handleDelete(review)}
-                          key={i}
+                          key={desktopAnchorId}
                           openEditReview={() => setEditReviewOpen(true)}
                           review={review}
                           attachment={ReviewAttachment.CopyButton}
@@ -430,7 +430,7 @@ export const CoursePage = () => {
                         user ? review.userId !== user.id : true
                       )
                       .slice(0, showAllReviews ? showingReviews.length : 8)
-                      .map((review, i) => {
+                      .map((review) => {
                         const mobileAnchorId = `mobile-${getReviewAnchorId(review)}`;
 
                         return (
@@ -441,7 +441,7 @@ export const CoursePage = () => {
                               user && review.userId === user.id
                             )}
                             handleDelete={() => handleDelete(review)}
-                            key={i}
+                            key={mobileAnchorId}
                             openEditReview={() => setEditReviewOpen(true)}
                             review={review}
                             interactions={interactions}

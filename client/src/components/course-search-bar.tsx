@@ -55,7 +55,6 @@ const SearchResult = ({
           'flex border-gray-200 p-3 text-left transition-all duration-75 dark:border-neutral-700',
           toHighlight ? highlightResultStyle : 'bg-gray-100 dark:bg-neutral-800'
         )}
-        key={index}
       >
         <div className='mr-2 w-6'>{icon}</div>
         <Highlight

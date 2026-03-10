@@ -157,9 +157,9 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
       </h1>
       <div className='py-1' />
       <div className='flex flex-wrap gap-2 py-1'>
-        {LEVEL_OPTIONS.map((level, i) => (
+        {LEVEL_OPTIONS.map((level) => (
           <FilterButton
-            key={i}
+            key={level}
             name={level}
             isSelected={selectedLevels.includes(level)}
             selections={selectedLevels}
@@ -173,9 +173,9 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
       </h1>
       <div className='py-1' />
       <div className='flex flex-wrap gap-2'>
-        {TERM_OPTIONS.map((term, i) => (
+        {TERM_OPTIONS.map((term) => (
           <FilterButton
-            key={i}
+            key={term}
             icon={termToIcon(term as CourseTerm)}
             selectedClass={termColorMap[term.toLowerCase()]}
             name={term}

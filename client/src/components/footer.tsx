@@ -58,8 +58,8 @@ export const Footer = () => {
       )}
     >
       <div className='ml-10 flex flex-row'>
-        {navigationItems.map((item, i) => (
-          <div key={i} className='mx-3'>
+        {navigationItems.map((item) => (
+          <div key={item.name} className='mx-3'>
             <NavItem name={item.name} href={item.href} key={item.name} />
           </div>
         ))}
