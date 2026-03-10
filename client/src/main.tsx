@@ -39,7 +39,7 @@ const Root = () => {
             <LazyMotion features={domAnimation}>
               <ErrorBoundary
                 FallbackComponent={ErrorPage}
-                onReset={() => setKey(key + 1)}
+                onReset={() => setKey((prev) => prev + 1)}
               >
                 <QueryProvider>
                   <AuthProvider>
