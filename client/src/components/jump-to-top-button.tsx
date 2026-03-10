@@ -1,11 +1,9 @@
 import { ArrowUp } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export const JumpToTopButton = () => {
   const [visible, setVisible] = useState(false);
-
-  const toggleVisible = () => setVisible(window.scrollY > 300);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -14,7 +12,11 @@ export const JumpToTopButton = () => {
     });
   };
 
-  window.addEventListener('scroll', toggleVisible);
+  useEffect(() => {
+    const toggleVisible = () => setVisible(window.scrollY > 300);
+    window.addEventListener('scroll', toggleVisible, { passive: true });
+    return () => window.removeEventListener('scroll', toggleVisible);
+  }, []);
 
   return (
     <button
