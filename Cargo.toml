@@ -8,21 +8,21 @@ publish = false
 members = ["crates/*", "tools/changelog-generator", "tools/final-exam-schedule-parser", "tools/scraper"]
 
 [workspace.dependencies]
-anyhow = "1.0.100"
+anyhow = "1.0.102"
 bson = { version = "3.1.0", features = ["chrono-0_4", "serde"] }
-chrono = "0.4.43"
-clap = { version = "4.5.59", features = ["derive"] }
+chrono = "0.4.44"
+clap = { version = "4.5.60", features = ["derive"] }
 dotenv = "0.15.0"
-futures = "0.3.31"
+futures = "0.3.32"
 include_dir = "0.7.4"
 itertools = "0.14.0"
 mockito = "1.7.2"
 pretty_assertions = "1.4.1"
 rayon = "1.11.0"
-regex = "1.12.2"
+regex = "1.12.3"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
-tempfile = "3.25.0"
+tempfile = "3.26.0"
 tokio = { version = "1.49.0", features = ["rt-multi-thread", "macros"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }
