@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { ChevronDown, LineChart, List } from 'lucide-react';
 import {
   Fragment,
@@ -139,7 +139,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
                               )}
                               <AnimatePresence initial={false}>
                                 {expandedState[average.term] && (
-                                  <motion.div
+                                  <m.div
                                     className='flex flex-col gap-y-0.5 overflow-hidden'
                                     initial={{ height: 0, opacity: 0 }}
                                     animate={{ height: 'auto', opacity: 1 }}
@@ -155,7 +155,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
                                         instructor={ins}
                                       />
                                     ))}
-                                  </motion.div>
+                                  </m.div>
                                 )}
                               </AnimatePresence>
                             </div>
@@ -179,7 +179,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
                 {firstSix.map(renderAverageItem)}
                 <AnimatePresence initial={false}>
                   {showAll && remaining.length > 0 && (
-                    <motion.div
+                    <m.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
@@ -187,7 +187,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
                       className='overflow-hidden'
                     >
                       {remaining.map(renderAverageItem)}
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </>
@@ -204,13 +204,13 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
               <p className='my-auto ml-auto text-base font-medium'>
                 {showAll ? 'Show less' : 'Show all'}
               </p>
-              <motion.div
+              <m.div
                 className='my-auto mr-auto'
                 animate={{ rotate: showAll ? 180 : 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <ChevronDown className='font-extrabold' />
-              </motion.div>
+              </m.div>
             </button>
           )}
         </>

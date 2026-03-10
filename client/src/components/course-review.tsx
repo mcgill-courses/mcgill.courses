@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
   ArrowUpRight,
   Check,
@@ -409,7 +409,7 @@ export const CourseReview = ({
   );
 
   return (
-    <motion.div
+    <m.div
       id={anchorId}
       className={twMerge(
         'relative flex w-full flex-col gap-4 border-b border-b-gray-300 bg-slate-50 px-6 py-3 first:rounded-t-md last:rounded-b-md last:border-b-0 dark:border-b-gray-600 dark:bg-neutral-800',
@@ -537,6 +537,6 @@ export const CourseReview = ({
           )}
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
