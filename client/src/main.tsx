@@ -1,6 +1,7 @@
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/700.css';
+import { LazyMotion, domAnimation } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -35,19 +36,21 @@ const Root = () => {
       <HelmetProvider>
         <BrowserRouter future={routerFutureConfig}>
           <DarkModeProvider>
-            <ErrorBoundary
-              FallbackComponent={ErrorPage}
-              onReset={() => setKey(key + 1)}
-            >
-              <QueryProvider>
-                <AuthProvider>
-                  <ExploreFilterStateProvider>
-                    <Toaster richColors />
-                    <App key={key} />
-                  </ExploreFilterStateProvider>
-                </AuthProvider>
-              </QueryProvider>
-            </ErrorBoundary>
+            <LazyMotion features={domAnimation}>
+              <ErrorBoundary
+                FallbackComponent={ErrorPage}
+                onReset={() => setKey(key + 1)}
+              >
+                <QueryProvider>
+                  <AuthProvider>
+                    <ExploreFilterStateProvider>
+                      <Toaster richColors />
+                      <App key={key} />
+                    </ExploreFilterStateProvider>
+                  </AuthProvider>
+                </QueryProvider>
+              </ErrorBoundary>
+            </LazyMotion>
           </DarkModeProvider>
         </BrowserRouter>
       </HelmetProvider>
