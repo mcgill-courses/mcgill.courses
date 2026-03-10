@@ -16,7 +16,7 @@ scraper = "0.25.0"
 serde_json = { workspace = true }
 thirtyfour = "0.36.1"
 tokio = { workspace = true }
-totp-rs = "5.7.0"
+totp-rs = "5.7.1"
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 
