@@ -1,12 +1,23 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, LineChart, List } from 'lucide-react';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import {
+  Fragment,
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
 import type { Course, CourseAverage, Instructor } from '../lib/types';
 import { compareTerms, groupBy, mapValues } from '../lib/utils';
-import { GPAChart } from './gpa-chart';
+import { Spinner } from './spinner';
+
+const GPAChart = lazy(() =>
+  import('./gpa-chart').then((m) => ({ default: m.GPAChart }))
+);
 
 type InstructorLinkProps = {
   instructor: Instructor;
@@ -74,7 +85,15 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
 
       {showGraph ? (
         <div className='py-2'>
-          <GPAChart averages={averages} termInstructors={termInstructors} />
+          <Suspense
+            fallback={
+              <div className='flex h-[220px] items-center justify-center'>
+                <Spinner />
+              </div>
+            }
+          >
+            <GPAChart averages={averages} termInstructors={termInstructors} />
+          </Suspense>
         </div>
       ) : (
         <>
