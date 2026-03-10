@@ -23,7 +23,11 @@ const App = () => {
       <Route path='/privacy' element={<PrivacyPolicy />} />
       <Route
         path='/profile'
-        element={<PrivateRoute children={<Profile />} />}
+        element={
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        }
       />
       <Route path='/reviews' element={<Reviews />} />
       <Route path='/tos' element={<TermsAndConditions />} />
