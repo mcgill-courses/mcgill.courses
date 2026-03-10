@@ -1,11 +1,15 @@
 import { List, Network } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { Suspense, lazy, useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
 import type { Course } from '../lib/types';
 import { capitalize, punctuate, stripColonPrefix } from '../lib/utils';
-import { CourseGraph } from './course-graph';
+import { Spinner } from './spinner';
+
+const CourseGraph = lazy(() =>
+  import('./course-graph').then((m) => ({ default: m.CourseGraph }))
+);
 
 type RequirementTextProps = {
   text: string;
@@ -122,7 +126,15 @@ export const CourseRequirements = ({
           <RequirementBlock title='Restrictions' text={course.restrictions} />
         </div>
       ) : (
-        <CourseGraph course={course} />
+        <Suspense
+          fallback={
+            <div className='flex h-[288px] items-center justify-center'>
+              <Spinner />
+            </div>
+          }
+        >
+          <CourseGraph course={course} />
+        </Suspense>
       )}
     </div>
   );
