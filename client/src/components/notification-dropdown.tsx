@@ -129,7 +129,9 @@ export const NotificationDropdown = ({
                   <div className='p-2'>
                     {notifications.length !== 0 ? (
                       notifications.map((notification, i) => (
-                        <Menu.Item key={i}>
+                        <Menu.Item
+                          key={`${notification.review.userId}-${notification.review.timestamp}`}
+                        >
                           {() => (
                             <div
                               className='m-2'

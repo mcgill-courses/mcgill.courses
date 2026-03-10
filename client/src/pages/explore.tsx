@@ -178,11 +178,11 @@ export const Explore = () => {
                       searchSelected={searchSelected}
                       setSearchSelected={setSearchSelected}
                     />
-                    {courses.map((course, i) => (
+                    {courses.map((course) => (
                       <CourseCard
                         className='my-1.5'
                         course={course}
-                        key={i}
+                        key={course._id}
                         query={query}
                       />
                     ))}

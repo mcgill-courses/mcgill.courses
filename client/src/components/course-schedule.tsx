@@ -383,8 +383,8 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
       <td className='py-2 text-gray-700 dark:text-gray-300'>
         <div className='flex flex-col items-start pl-1 text-center font-medium'>
           {locationEntries.length > 0 ? (
-            locationEntries.map((location, index) => (
-              <span key={`${location}-${index}`}>
+            locationEntries.map((location) => (
+              <span key={location}>
                 <BlockLocation location={location} />
               </span>
             ))
@@ -400,7 +400,7 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
       </td>
       <td className='xs:text-sm py-2 text-xs font-medium whitespace-nowrap sm:text-base lg:text-sm xl:text-base'>
         {timeRanges.length > 0 ? (
-          timeRanges.map((range, index) => <div key={index}>{range}</div>)
+          timeRanges.map((range) => <div key={range}>{range}</div>)
         ) : (
           <span aria-hidden className='invisible font-medium select-none'>
             Placeholder
@@ -409,8 +409,8 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
       </td>
       <td className='xs:pr-0 p-2'>
         {daySets.length > 0 ? (
-          daySets.map((days, index) => (
-            <TimeblockDays days={days} key={index} />
+          daySets.map((days) => (
+            <TimeblockDays days={days} key={days.join(',')} />
           ))
         ) : (
           <div
@@ -512,7 +512,7 @@ export const CourseSchedule = ({ course, className }: CourseScheduleProps) => {
       <div className='flex'>
         {offeredTerms.map((term, i) => (
           <button
-            key={i}
+            key={term}
             className={twMerge(
               `flex-1 cursor-pointer border-b-neutral-200 p-2 text-center text-sm font-medium transition duration-300 ease-in-out sm:text-base dark:border-b-neutral-600 dark:text-gray-200`,
               term === selectedTerm
@@ -534,9 +534,9 @@ export const CourseSchedule = ({ course, className }: CourseScheduleProps) => {
         <table className='w-full'>
           <tbody>
             {blocks.length <= 5 || showAll
-              ? blocks.map((s, i) => (
+              ? blocks.map((s) => (
                   <ScheduleRow
-                    key={i}
+                    key={s.display}
                     block={s}
                     course={course}
                     term={selectedTerm}
@@ -544,9 +544,9 @@ export const CourseSchedule = ({ course, className }: CourseScheduleProps) => {
                 ))
               : blocks
                   .slice(0, 5)
-                  .map((s, i) => (
+                  .map((s) => (
                     <ScheduleRow
-                      key={i}
+                      key={s.display}
                       block={s}
                       course={course}
                       term={selectedTerm}

@@ -55,9 +55,9 @@ export const Autocomplete = <T extends string>({
             leaveTo='transform scale-95 opacity-0'
           >
             <Combobox.Options className='styled-scrollbar absolute max-h-80 w-full max-w-[240px] overflow-scroll rounded-md text-sm shadow-md'>
-              {filtered.map((val, i) => (
+              {filtered.map((val) => (
                 <Combobox.Option
-                  key={i}
+                  key={val}
                   value={val}
                   className={({ active }) =>
                     twMerge(

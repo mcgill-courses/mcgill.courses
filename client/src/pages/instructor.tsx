@@ -264,12 +264,12 @@ export const Instructor = () => {
             reviews
               .filter((review) => (user ? review.userId !== user.id : true))
               .slice(0, showAllReviews ? reviews.length : 8)
-              .map((review, i) => (
+              .map((review) => (
                 <CourseReview
                   canModify={false}
                   handleDelete={() => undefined}
                   includeTaughtBy={false}
-                  key={i}
+                  key={`${review.userId}-${review.timestamp}`}
                   openEditReview={() => undefined}
                   review={review}
                   attachment={ReviewAttachment.ScrollButton}
