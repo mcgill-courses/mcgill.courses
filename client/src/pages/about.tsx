@@ -1,5 +1,5 @@
 import { Disclosure } from '@headlessui/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { ChevronDown, Github, Mail, MessageCircle } from 'lucide-react';
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -31,16 +31,16 @@ const Questions = ({ input }: QuestionsProps) => {
             <>
               <Disclosure.Button className='focus-visible:ring-mcgill-red/75 mx-auto flex w-full cursor-pointer justify-between rounded-lg bg-gray-200 px-4 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus-visible:ring dark:bg-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-600'>
                 <span>{item.title}</span>
-                <motion.div
+                <m.div
                   animate={{ rotate: open ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
                 >
                   <ChevronDown className='size-5 text-gray-900 dark:text-gray-300' />
-                </motion.div>
+                </m.div>
               </Disclosure.Button>
               <AnimatePresence initial={false}>
                 {open && (
-                  <motion.div
+                  <m.div
                     initial='collapsed'
                     animate='open'
                     exit='collapsed'
@@ -59,7 +59,7 @@ const Questions = ({ input }: QuestionsProps) => {
                     >
                       {item.content}
                     </Disclosure.Panel>
-                  </motion.div>
+                  </m.div>
                 )}
               </AnimatePresence>
             </>
@@ -203,7 +203,7 @@ const fadeInUp = {
 export const About = () => {
   return (
     <Layout>
-      <motion.div
+      <m.div
         initial='hidden'
         animate='visible'
         variants={{
@@ -224,7 +224,7 @@ export const About = () => {
           <meta property='twitter:title' content='About - mcgill.courses' />
         </Helmet>
 
-        <motion.div variants={fadeInUp}>
+        <m.div variants={fadeInUp}>
           <Title>
             Welcome to <span className='text-mcgill-red'>mcgill.courses</span>!
           </Title>
@@ -249,9 +249,9 @@ export const About = () => {
             <span className='font-bold'>Disclaimer</span>: mcgill.courses is an
             independent initiative and is not affiliated with McGill University.
           </Paragraph>
-        </motion.div>
+        </m.div>
 
-        <motion.div variants={fadeInUp}>
+        <m.div variants={fadeInUp}>
           <Title>Our Story</Title>
           <Paragraph>
             <Link className='hover:text-mcgill-red underline' to='/'>
@@ -271,27 +271,27 @@ export const About = () => {
             blossomed into a robust platform, thanks to our dedicated team of
             developers and designers.
           </Paragraph>
-        </motion.div>
+        </m.div>
 
-        <motion.div variants={fadeInUp}>
+        <m.div variants={fadeInUp}>
           <Title>Meet the Team</Title>
-          <motion.ul
+          <m.ul
             variants={fadeInUp}
             className='mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2'
           >
             {people.map((person) => (
-              <motion.li
+              <m.li
                 key={person.name}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Person {...person} />
-              </motion.li>
+              </m.li>
             ))}
-          </motion.ul>
-        </motion.div>
+          </m.ul>
+        </m.div>
 
-        <motion.div variants={fadeInUp}>
+        <m.div variants={fadeInUp}>
           <Paragraph className='mt-8'>
             Curious about our latest updates? Check out our{' '}
             <Link className='hover:text-mcgill-red underline' to='/changelog'>
@@ -299,11 +299,11 @@ export const About = () => {
             </Link>{' '}
             to see what we've been working on!
           </Paragraph>
-        </motion.div>
+        </m.div>
 
-        <motion.div variants={fadeInUp}>
+        <m.div variants={fadeInUp}>
           <Title>Contributors</Title>
-          <motion.ul variants={fadeInUp} className='mt-8'>
+          <m.ul variants={fadeInUp} className='mt-8'>
             <div className='flex gap-4'>
               <a
                 href='https://www.instagram.com/mcgilldesignconsultancy'
@@ -335,15 +335,15 @@ export const About = () => {
                 for their amazing work on our logo design.
               </Paragraph>
             </div>
-          </motion.ul>
-        </motion.div>
+          </m.ul>
+        </m.div>
 
-        <motion.div variants={fadeInUp}>
+        <m.div variants={fadeInUp}>
           <Title>Frequently Asked Questions</Title>
           <Questions input={questions} />
-        </motion.div>
+        </m.div>
 
-        <motion.div variants={fadeInUp}>
+        <m.div variants={fadeInUp}>
           <Title>Get in Touch</Title>
           <Paragraph>
             We value your feedback and contributions. Whether you have
@@ -351,7 +351,7 @@ export const About = () => {
             here to listen. Reach out through our GitHub repository, join our
             community Discord server, or send us an email.
           </Paragraph>
-          <motion.div
+          <m.div
             className='mt-6 flex gap-x-4'
             variants={{
               visible: {
@@ -378,7 +378,7 @@ export const About = () => {
                 label: 'Email',
               },
             ].map(({ icon: Icon, href, label }) => (
-              <motion.a
+              <m.a
                 key={label}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -391,11 +391,11 @@ export const About = () => {
                   className='hover:text-mcgill-red dark:hover:text-mcgill-red text-gray-500 transition-colors duration-300 dark:text-gray-300'
                   size={40}
                 />
-              </motion.a>
+              </m.a>
             ))}
-          </motion.div>
-        </motion.div>
-      </motion.div>
+          </m.div>
+        </m.div>
+      </m.div>
     </Layout>
   );
 };
