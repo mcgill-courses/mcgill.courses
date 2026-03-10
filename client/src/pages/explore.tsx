@@ -102,7 +102,7 @@ export const Explore = () => {
         ? courses.concat(batch.courses)
         : batch.courses;
       setCourses(newCourses);
-      setOffset(offset + COURSE_LIMIT);
+      setOffset((prev) => prev + COURSE_LIMIT);
     }
   };
 

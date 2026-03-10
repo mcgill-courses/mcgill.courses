@@ -43,7 +43,7 @@ export const Reviews = () => {
     if (batch.reviews.length === 0) setHasMore(false);
     else {
       setReviews(reviews?.concat(batch.reviews));
-      setOffset(offset + limit);
+      setOffset((prev) => prev + limit);
     }
   };
 
