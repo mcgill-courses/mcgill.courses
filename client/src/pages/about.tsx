@@ -309,7 +309,11 @@ export const About = () => {
                 href='https://www.instagram.com/mcgilldesignconsultancy'
                 className='m-auto size-fit flex-none'
               >
-                <img src={McGillDesignConsultancyLogoUrl} className='size-16' />
+                <img
+                  src={McGillDesignConsultancyLogoUrl}
+                  className='size-16'
+                  alt='McGill Design Consultancy'
+                />
               </a>
               <Paragraph>
                 A heartfelt thank you to{' '}
