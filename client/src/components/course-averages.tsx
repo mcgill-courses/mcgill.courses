@@ -119,8 +119,10 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
                             <div>
                               <InstructorLink instructor={instructors[0]} />
                               {instructors.length > 1 && (
-                                <span
+                                <button
+                                  type='button'
                                   className='ml-1 cursor-pointer font-semibold dark:text-gray-200'
+                                  aria-expanded={expandedState[average.term]}
                                   onClick={() =>
                                     handleInstructorToggle(average.term)
                                   }
@@ -135,7 +137,7 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
                                     )}
                                     size={16}
                                   />
-                                </span>
+                                </button>
                               )}
                               <AnimatePresence initial={false}>
                                 {expandedState[average.term] && (

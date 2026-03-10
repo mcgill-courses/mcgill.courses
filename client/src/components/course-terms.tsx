@@ -142,8 +142,10 @@ export const CourseTerms = ({ course, variant, query }: CourseTermsProps) => {
                   </div>
                 )}
                 {instructors.length > 1 && (
-                  <span
+                  <button
+                    type='button'
                     className='cursor-pointer font-semibold dark:text-gray-200'
+                    aria-expanded={expandedState[i]}
                     onClick={() => handleToggle(i)}
                   >
                     +{instructors.length - 1}
@@ -156,7 +158,7 @@ export const CourseTerms = ({ course, variant, query }: CourseTermsProps) => {
                         size={16}
                       />
                     )}
-                  </span>
+                  </button>
                 )}
               </div>
             </div>

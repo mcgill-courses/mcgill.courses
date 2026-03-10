@@ -135,6 +135,7 @@ export const NotificationDropdown = ({
                               className='m-2'
                               ref={refs[i]}
                               onClick={(e) => e.preventDefault()}
+                              role='none'
                             >
                               <div className='mb-2 flex items-center'>
                                 <div className='flex items-center gap-x-1'>

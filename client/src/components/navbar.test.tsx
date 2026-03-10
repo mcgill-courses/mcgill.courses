@@ -67,7 +67,7 @@ vi.mock('./notification-dropdown', () => ({
   }) => {
     notificationRenderMock(props);
     return (
-      <div
+      <button
         data-testid='notification-dropdown'
         data-count={props.notifications.length}
         onClick={() => props.setNotifications(props.notifications)}
@@ -84,7 +84,7 @@ vi.mock('./side-nav', () => ({
   SideNav: (props: { open: boolean; onClose: (open: boolean) => void }) => {
     sideNavRenderMock(props);
     return (
-      <div
+      <button
         data-testid='side-nav'
         data-open={props.open}
         onClick={() => props.onClose(false)}
