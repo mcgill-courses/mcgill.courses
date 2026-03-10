@@ -264,23 +264,27 @@ const BlockLocation = ({ location }: { location: string }) => {
 
   return (
     <Fragment>
-      <span
-        className='relative whitespace-nowrap'
-        onClick={() => {
-          if (coordinates !== null) setIsLocationOpen(true);
-        }}
-      >
-        <Tooltip text={buildingCodes[code as keyof typeof buildingCodes]}>
-          <p
-            className={twMerge(
-              'xs:text-sm inline-block text-xs leading-7 sm:text-base lg:text-sm xl:text-base',
-              coordinates !== null && 'cursor-pointer'
-            )}
-          >
-            {location}
-          </p>
-        </Tooltip>
-      </span>
+      {coordinates !== null ? (
+        <button
+          type='button'
+          className='relative whitespace-nowrap'
+          onClick={() => setIsLocationOpen(true)}
+        >
+          <Tooltip text={buildingCodes[code as keyof typeof buildingCodes]}>
+            <p className='xs:text-sm inline-block cursor-pointer text-xs leading-7 sm:text-base lg:text-sm xl:text-base'>
+              {location}
+            </p>
+          </Tooltip>
+        </button>
+      ) : (
+        <span className='relative whitespace-nowrap'>
+          <Tooltip text={buildingCodes[code as keyof typeof buildingCodes]}>
+            <p className='xs:text-sm inline-block text-xs leading-7 sm:text-base lg:text-sm xl:text-base'>
+              {location}
+            </p>
+          </Tooltip>
+        </span>
+      )}
       <BuildingLocation
         title={buildingCodes[code as keyof typeof buildingCodes]}
         code={code}

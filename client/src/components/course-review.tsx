@@ -512,12 +512,12 @@ export const CourseReview = ({
           <div className='mb-1 flex'>
             {canModify && (
               <div className='mr-1 ml-2 flex h-fit space-x-2'>
-                <div onClick={openEditReview}>
+                <button type='button' onClick={openEditReview}>
                   <Edit
                     className='cursor-pointer stroke-gray-500 transition duration-200 hover:stroke-gray-800 dark:stroke-gray-400 dark:hover:stroke-gray-200'
                     size={20}
                   />
-                </div>
+                </button>
                 <DeleteButton
                   title='Delete Review'
                   text={`Are you sure you want to delete your review of ${review.courseId}? `}

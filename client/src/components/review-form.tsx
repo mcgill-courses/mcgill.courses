@@ -145,12 +145,13 @@ export const ReviewForm = ({
         />
         <FieldError name='content' />
         <div className='mt-8 flex justify-end space-x-4'>
-          <div
+          <button
+            type='button'
             onClick={() => resetForm()}
             className='w-fit cursor-pointer rounded-md bg-gray-100 px-4 py-2 font-medium text-gray-700 duration-200 hover:bg-gray-200 dark:bg-neutral-700 dark:text-gray-200 dark:hover:bg-neutral-600'
           >
             Discard
-          </div>
+          </button>
           <button
             type='submit'
             className='ml-auto w-fit cursor-pointer rounded-md bg-red-600 px-4 py-2 font-medium text-white transition duration-300 hover:bg-red-800'
