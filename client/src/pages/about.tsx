@@ -181,12 +181,9 @@ const people = [
     ],
   },
   {
-    name: "Sam Zhang (CS & Stats '2026)",
+    name: "Sam Zhang (CS '2026)",
     imageUrl: samImageUrl,
-    links: [
-      { title: 'Github', url: 'https://github.com/samzhang02' },
-      { title: 'Linkedin', url: 'https://www.linkedin.com/in/zhang-sam/' },
-    ],
+    links: [{ title: 'Github', url: 'https://github.com/samzhang02' }],
   },
   {
     name: "Joey Yu (CS '2026)",
