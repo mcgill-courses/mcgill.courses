@@ -9,7 +9,7 @@ async-openai = { version = "0.34.0", features = ["chat-completion"] }
 chrono = { workspace = true }
 clap = { workspace = true }
 dotenv = { workspace = true }
-octocrab = "0.49.6"
+octocrab = "0.49.7"
 serde = { workspace = true }
 serde_json = { workspace = true }
 tokio = { workspace = true }
