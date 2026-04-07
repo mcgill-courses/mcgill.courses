@@ -142,7 +142,7 @@ async fn main() {
   if let Err(error) = Server::parse().run().await {
     eprintln!("error: {error}");
 
-    if let error::Error::Internal(error) = error {
+    if let Error::Internal(error) = error {
       for (i, cause) in error.chain().skip(1).enumerate() {
         if i == 0 {
           eprintln!();
