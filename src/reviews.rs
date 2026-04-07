@@ -443,7 +443,7 @@ async fn validate_instructors(
   let course = db
     .find_course_by_id(course_id)
     .await?
-    .ok_or(anyhow!("Failed to find course with id: {}", course_id))?;
+    .ok_or_else(|| Error::not_found(format!("course {course_id} not found")))?;
 
   let mut valid_instructors = course
     .instructors
@@ -457,7 +457,7 @@ async fn validate_instructors(
     .iter()
     .all(|instructor| valid_instructors.contains(instructor))
   {
-    return Err(anyhow!("Invalid instructor(s)").into());
+    return Err(Error::bad_request("invalid instructor(s)"));
   }
 
   Ok(())

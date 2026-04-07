@@ -142,20 +142,22 @@ async fn main() {
   if let Err(error) = Server::parse().run().await {
     eprintln!("error: {error}");
 
-    for (i, error) in error.0.chain().skip(1).enumerate() {
-      if i == 0 {
-        eprintln!();
-        eprintln!("because:");
+    if let error::Error::Internal(error) = error {
+      for (i, cause) in error.chain().skip(1).enumerate() {
+        if i == 0 {
+          eprintln!();
+          eprintln!("because:");
+        }
+
+        eprintln!("- {cause}");
       }
 
-      eprintln!("- {error}");
-    }
+      let backtrace = error.backtrace();
 
-    let backtrace = error.0.backtrace();
-
-    if backtrace.status() == BacktraceStatus::Captured {
-      eprintln!("backtrace:");
-      eprintln!("{backtrace}");
+      if backtrace.status() == BacktraceStatus::Captured {
+        eprintln!("backtrace:");
+        eprintln!("{backtrace}");
+      }
     }
 
     process::exit(1);
