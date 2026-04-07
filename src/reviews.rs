@@ -279,6 +279,8 @@ pub(crate) async fn add_review(
   user: User,
   body: Json<AddOrUpdateReviewBody>,
 ) -> Result<impl IntoResponse> {
+  body.validate()?;
+
   let AddOrUpdateReviewBody {
     content,
     course_id,
@@ -350,6 +352,8 @@ pub(crate) async fn update_review(
   user: User,
   body: Json<AddOrUpdateReviewBody>,
 ) -> Result<impl IntoResponse> {
+  body.validate()?;
+
   let AddOrUpdateReviewBody {
     content,
     course_id,
@@ -433,6 +437,43 @@ pub(crate) async fn delete_review(
   db.delete_notifications(&user_id, &body.course_id).await?;
 
   Ok(StatusCode::OK)
+}
+
+const MAX_CONTENT_LENGTH: usize = 10_000;
+const MAX_INSTRUCTORS: usize = 20;
+
+impl AddOrUpdateReviewBody {
+  fn validate(&self) -> Result {
+    if !(1..=5).contains(&self.rating) {
+      return Err(Error::bad_request("rating must be between 1 and 5"));
+    }
+
+    if !(1..=5).contains(&self.difficulty) {
+      return Err(Error::bad_request("difficulty must be between 1 and 5"));
+    }
+
+    if self.content.trim().is_empty() {
+      return Err(Error::bad_request("content must not be empty"));
+    }
+
+    if self.content.len() > MAX_CONTENT_LENGTH {
+      return Err(Error::bad_request(format!(
+        "content must be at most {MAX_CONTENT_LENGTH} characters"
+      )));
+    }
+
+    if self.instructors.is_empty() {
+      return Err(Error::bad_request("at least one instructor is required"));
+    }
+
+    if self.instructors.len() > MAX_INSTRUCTORS {
+      return Err(Error::bad_request(format!(
+        "at most {MAX_INSTRUCTORS} instructors allowed"
+      )));
+    }
+
+    Ok(())
+  }
 }
 
 async fn validate_instructors(
