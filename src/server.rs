@@ -2678,4 +2678,368 @@ mod tests {
     assert_eq!(averages[0].course_id, "COMP202");
     assert_eq!(averages[0].average, Grade::BPlus);
   }
+
+  #[tokio::test]
+  async fn add_review_rejects_invalid_rating_and_difficulty() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let cookie = mock_login(session_store, "test", "test@mail.mcgill.ca").await;
+
+    async fn case(app: &mut Router, cookie: &str, body: serde_json::Value) {
+      let response = app
+        .call(
+          Request::builder()
+            .method(http::Method::POST)
+            .header("Cookie", cookie)
+            .header("Content-Type", "application/json")
+            .uri("/api/reviews")
+            .body(Body::from(body.to_string()))
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    }
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "foo",
+        "course_id": "MATH240",
+        "instructors": ["Adrian Roshan Vetta"],
+        "rating": 0,
+        "difficulty": 3,
+      }),
+    )
+    .await;
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "foo",
+        "course_id": "MATH240",
+        "instructors": ["Adrian Roshan Vetta"],
+        "rating": 6,
+        "difficulty": 3,
+      }),
+    )
+    .await;
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "foo",
+        "course_id": "MATH240",
+        "instructors": ["Adrian Roshan Vetta"],
+        "rating": 3,
+        "difficulty": 0,
+      }),
+    )
+    .await;
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "foo",
+        "course_id": "MATH240",
+        "instructors": ["Adrian Roshan Vetta"],
+        "rating": 3,
+        "difficulty": 6,
+      }),
+    )
+    .await;
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "   ",
+        "course_id": "MATH240",
+        "instructors": ["Adrian Roshan Vetta"],
+        "rating": 3,
+        "difficulty": 3,
+      }),
+    )
+    .await;
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "foo",
+        "course_id": "MATH240",
+        "instructors": [],
+        "rating": 3,
+        "difficulty": 3,
+      }),
+    )
+    .await;
+
+    assert_eq!(db.find_reviews_by_user_id("test").await.unwrap().len(), 0);
+  }
+
+  #[tokio::test]
+  async fn add_review_for_unknown_course_returns_not_found() {
+    let TestContext {
+      db,
+      app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .method(http::Method::POST)
+          .header(
+            "Cookie",
+            mock_login(session_store, "test", "test@mail.mcgill.ca").await,
+          )
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(
+            json!({
+              "content": "foo",
+              "course_id": "BAR999",
+              "instructors": ["Adrian Roshan Vetta"],
+              "rating": 3,
+              "difficulty": 3,
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+  }
+
+  #[tokio::test]
+  async fn unauthenticated_cant_update_or_delete_review() {
+    let TestContext { db, mut app, .. } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::PUT)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(
+            json!({
+              "content": "foo",
+              "course_id": "MATH240",
+              "instructors": ["Adrian Roshan Vetta"],
+              "rating": 3,
+              "difficulty": 3,
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::TEMPORARY_REDIRECT);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::DELETE)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(json!({"course_id": "MATH240"}).to_string()))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::TEMPORARY_REDIRECT);
+  }
+
+  #[tokio::test]
+  async fn duplicate_review_upserts_in_place() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let cookie = mock_login(session_store, "test", "test@mail.mcgill.ca").await;
+
+    for (content, rating) in [("foo", 1u32), ("bar", 5u32)] {
+      let response = app
+        .call(
+          Request::builder()
+            .method(http::Method::POST)
+            .header("Cookie", cookie.clone())
+            .header("Content-Type", "application/json")
+            .uri("/api/reviews")
+            .body(Body::from(
+              json!({
+                "content": content,
+                "course_id": "MATH240",
+                "instructors": ["Adrian Roshan Vetta"],
+                "rating": rating,
+                "difficulty": 3,
+              })
+              .to_string(),
+            ))
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::OK);
+    }
+
+    let reviews = db.find_reviews_by_user_id("test").await.unwrap();
+    assert_eq!(reviews.len(), 1);
+    assert_eq!(reviews[0].content, "bar");
+    assert_eq!(reviews[0].rating, 5);
+  }
+
+  #[tokio::test]
+  async fn delete_review_is_scoped_to_authenticated_user() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let a_cookie =
+      mock_login(session_store.clone(), "a", "a@mail.mcgill.ca").await;
+    let b_cookie = mock_login(session_store, "b", "b@mail.mcgill.ca").await;
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", a_cookie)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(
+            json!({
+              "content": "foo",
+              "course_id": "MATH240",
+              "instructors": ["Adrian Roshan Vetta"],
+              "rating": 5,
+              "difficulty": 5,
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let _ = app
+      .call(
+        Request::builder()
+          .method(http::Method::DELETE)
+          .header("Cookie", b_cookie)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(json!({"course_id": "MATH240"}).to_string()))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(db.find_reviews_by_user_id("a").await.unwrap().len(), 1);
+    assert_eq!(db.find_reviews_by_user_id("b").await.unwrap().len(), 0);
+  }
+
+  #[tokio::test]
+  async fn rate_limit_returns_429_with_retry_after() {
+    let TestContext {
+      db, session_store, ..
+    } = TestContext::new().await;
+
+    let app = Server::app(AppConfig {
+      db,
+      assets: None,
+      session_store,
+      rate_limit: true,
+    })
+    .await
+    .unwrap();
+
+    let mut last = None;
+
+    for _ in 0..120 {
+      let response = app
+        .clone()
+        .oneshot(
+          Request::builder()
+            .method(http::Method::GET)
+            .header("X-Forwarded-For", "1.2.3.4")
+            .uri("/api/courses")
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      if response.status() == StatusCode::TOO_MANY_REQUESTS {
+        last = Some(response);
+        break;
+      }
+    }
+
+    let response = last.expect("expected to be rate limited");
+
+    assert_eq!(response.status(), StatusCode::TOO_MANY_REQUESTS);
+    assert!(response.headers().get(http::header::RETRY_AFTER).is_some());
+    assert!(response.headers().get("x-ratelimit-after").is_some());
+  }
 }
