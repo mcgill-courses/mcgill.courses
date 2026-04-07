@@ -29,7 +29,7 @@ impl Hash for PathBuf {
         hasher.update(read(self)?);
       }
       _ => {
-        return Err(Error(anyhow!(
+        return Err(Error::Internal(anyhow!(
           "{} is neither a file nor a directory",
           self.display()
         )));
