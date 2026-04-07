@@ -240,6 +240,45 @@ pub struct AddOrUpdateReviewBody {
   pub(crate) difficulty: u32,
 }
 
+impl AddOrUpdateReviewBody {
+  const MAX_CONTENT_LENGTH: usize = 10_000;
+  const MAX_INSTRUCTORS: usize = 20;
+
+  fn validate(&self) -> Result {
+    if !(1..=5).contains(&self.rating) {
+      return Err(Error::bad_request("rating must be between 1 and 5"));
+    }
+
+    if !(1..=5).contains(&self.difficulty) {
+      return Err(Error::bad_request("difficulty must be between 1 and 5"));
+    }
+
+    if self.content.trim().is_empty() {
+      return Err(Error::bad_request("content must not be empty"));
+    }
+
+    if self.content.len() > Self::MAX_CONTENT_LENGTH {
+      return Err(Error::bad_request(format!(
+        "content must be at most {} characters",
+        Self::MAX_CONTENT_LENGTH
+      )));
+    }
+
+    if self.instructors.is_empty() {
+      return Err(Error::bad_request("at least one instructor is required"));
+    }
+
+    if self.instructors.len() > Self::MAX_INSTRUCTORS {
+      return Err(Error::bad_request(format!(
+        "at most {} instructors allowed",
+        Self::MAX_INSTRUCTORS
+      )));
+    }
+
+    Ok(())
+  }
+}
+
 #[utoipa::path(
   post,
   path = "/reviews",
@@ -279,6 +318,8 @@ pub(crate) async fn add_review(
   user: User,
   body: Json<AddOrUpdateReviewBody>,
 ) -> Result<impl IntoResponse> {
+  body.validate()?;
+
   let AddOrUpdateReviewBody {
     content,
     course_id,
@@ -350,6 +391,8 @@ pub(crate) async fn update_review(
   user: User,
   body: Json<AddOrUpdateReviewBody>,
 ) -> Result<impl IntoResponse> {
+  body.validate()?;
+
   let AddOrUpdateReviewBody {
     content,
     course_id,
