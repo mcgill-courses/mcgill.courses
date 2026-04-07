@@ -2933,9 +2933,20 @@ mod tests {
     }
 
     let reviews = db.find_reviews_by_user_id("test").await.unwrap();
-    assert_eq!(reviews.len(), 1);
-    assert_eq!(reviews[0].content, "bar");
-    assert_eq!(reviews[0].rating, 5);
+
+    assert_eq!(
+      reviews,
+      vec![Review {
+        content: "bar".into(),
+        course_id: "MATH240".into(),
+        difficulty: 3,
+        instructors: vec!["Adrian Roshan Vetta".into()],
+        likes: 0,
+        rating: 5,
+        timestamp: reviews[0].timestamp.clone(),
+        user_id: "test".into(),
+      }]
+    );
   }
 
   #[tokio::test]
@@ -2982,7 +2993,7 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let _ = app
+    let response = app
       .call(
         Request::builder()
           .method(http::Method::DELETE)
@@ -2995,6 +3006,7 @@ mod tests {
       .await
       .unwrap();
 
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
     assert_eq!(db.find_reviews_by_user_id("a").await.unwrap().len(), 1);
     assert_eq!(db.find_reviews_by_user_id("b").await.unwrap().len(), 0);
   }
