@@ -146,9 +146,13 @@ impl Server {
       .route("/api/search", get(search::search))
       .route(
         "/api/subscriptions",
-        get(subscriptions::get_subscription)
+        get(subscriptions::get_subscriptions)
           .post(subscriptions::add_subscription)
           .delete(subscriptions::delete_subscription),
+      )
+      .route(
+        "/api/subscriptions/{course_id}",
+        get(subscriptions::get_subscription),
       )
       .route("/api/user", get(user::get_user))
       .merge(
@@ -342,7 +346,6 @@ mod tests {
       collections::HashSet,
       sync::atomic::{AtomicUsize, Ordering},
     },
-    subscriptions::SubscriptionResponse,
     tower::{Service, ServiceExt},
   };
 
@@ -1976,31 +1979,26 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let payload = response.convert::<SubscriptionResponse>().await;
+    let subscriptions = response.convert::<Vec<Subscription>>().await;
 
-    match payload {
-      SubscriptionResponse::Multiple(subscriptions) => {
-        assert_eq!(subscriptions.len(), 2);
+    assert_eq!(subscriptions.len(), 2);
 
-        let course_ids = subscriptions
-          .iter()
-          .map(|subscription| subscription.course_id.as_str())
-          .collect::<HashSet<&str>>();
+    let course_ids = subscriptions
+      .iter()
+      .map(|subscription| subscription.course_id.as_str())
+      .collect::<HashSet<&str>>();
 
-        let expected = ["MATH240", "COMP202"]
-          .into_iter()
-          .collect::<HashSet<&str>>();
+    let expected = ["MATH240", "COMP202"]
+      .into_iter()
+      .collect::<HashSet<&str>>();
 
-        assert_eq!(course_ids, expected);
+    assert_eq!(course_ids, expected);
 
-        assert!(
-          subscriptions
-            .iter()
-            .all(|subscription| subscription.user_id == "subscriber")
-        );
-      }
-      other => panic!("expected multiple subscriptions, got {:?}", other),
-    }
+    assert!(
+      subscriptions
+        .iter()
+        .all(|subscription| subscription.user_id == "subscriber")
+    );
   }
 
   #[tokio::test]
@@ -2052,7 +2050,7 @@ mod tests {
           .method(http::Method::GET)
           .header("Cookie", cookie.clone())
           .header("Content-Type", "application/json")
-          .uri("/api/subscriptions?course_id=MATH240")
+          .uri("/api/subscriptions/MATH240")
           .body(Body::empty())
           .unwrap(),
       )
@@ -2062,11 +2060,11 @@ mod tests {
     assert_eq!(response.status(), StatusCode::OK);
 
     assert_matches!(
-      response.convert::<SubscriptionResponse>().await,
-      SubscriptionResponse::Single(Some(Subscription {
+      response.convert::<Option<Subscription>>().await,
+      Some(Subscription {
         course_id,
         user_id,
-      })) if course_id == "MATH240" && user_id == "subscriber"
+      }) if course_id == "MATH240" && user_id == "subscriber"
     );
   }
 
@@ -2099,7 +2097,7 @@ mod tests {
           .method(http::Method::GET)
           .header("Cookie", cookie)
           .header("Content-Type", "application/json")
-          .uri("/api/subscriptions?course_id=MATH240")
+          .uri("/api/subscriptions/MATH240")
           .body(Body::empty())
           .unwrap(),
       )
@@ -2108,9 +2106,7 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let payload = response.convert::<SubscriptionResponse>().await;
-
-    assert_matches!(payload, SubscriptionResponse::Single(None));
+    assert_matches!(response.convert::<Option<Subscription>>().await, None);
   }
 
   #[tokio::test]
