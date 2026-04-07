@@ -1,8 +1,5 @@
 use super::*;
 
-const MAX_CONTENT_LENGTH: usize = 10_000;
-const MAX_INSTRUCTORS: usize = 20;
-
 #[derive(Debug, Deserialize, ToSchema)]
 pub(crate) struct GetReviewsParams {
   /// Course ID to filter reviews by.
@@ -244,6 +241,9 @@ pub struct AddOrUpdateReviewBody {
 }
 
 impl AddOrUpdateReviewBody {
+  const MAX_CONTENT_LENGTH: usize = 10_000;
+  const MAX_INSTRUCTORS: usize = 20;
+
   fn validate(&self) -> Result {
     if !(1..=5).contains(&self.rating) {
       return Err(Error::bad_request("rating must be between 1 and 5"));
@@ -257,9 +257,10 @@ impl AddOrUpdateReviewBody {
       return Err(Error::bad_request("content must not be empty"));
     }
 
-    if self.content.len() > MAX_CONTENT_LENGTH {
+    if self.content.len() > Self::MAX_CONTENT_LENGTH {
       return Err(Error::bad_request(format!(
-        "content must be at most {MAX_CONTENT_LENGTH} characters"
+        "content must be at most {} characters",
+        Self::MAX_CONTENT_LENGTH
       )));
     }
 
@@ -267,9 +268,10 @@ impl AddOrUpdateReviewBody {
       return Err(Error::bad_request("at least one instructor is required"));
     }
 
-    if self.instructors.len() > MAX_INSTRUCTORS {
+    if self.instructors.len() > Self::MAX_INSTRUCTORS {
       return Err(Error::bad_request(format!(
-        "at most {MAX_INSTRUCTORS} instructors allowed"
+        "at most {} instructors allowed",
+        Self::MAX_INSTRUCTORS
       )));
     }
 
