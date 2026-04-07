@@ -259,6 +259,16 @@ impl Loader {
       let mut retry_count = 0;
 
       while course_page.is_err() {
+        if retry_count >= self.retries {
+          warn!(
+            "Failed to parse course page after {} retries, skipping: {} - {:?}",
+            self.retries,
+            url,
+            course_page.as_ref().err()
+          );
+          return Ok(None);
+        }
+
         retry_count += 1;
 
         warn!(
