@@ -68,7 +68,10 @@ use {
   },
   tokio::net::TcpListener,
   tower::{ServiceBuilder, timeout::TimeoutLayer},
-  tower_governor::{GovernorLayer, governor::GovernorConfigBuilder},
+  tower_governor::{
+    GovernorError, GovernorLayer, governor::GovernorConfigBuilder,
+    key_extractor::SmartIpKeyExtractor,
+  },
   tower_http::{
     catch_panic::CatchPanicLayer,
     compression::CompressionLayer,

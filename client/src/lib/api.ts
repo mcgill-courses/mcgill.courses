@@ -69,7 +69,17 @@ const client = {
   ): Promise<T> {
     const run = async (
       fn: (endpoint: string, init?: RequestInit) => Promise<Response>
-    ): Promise<T> => (await (await fn(endpoint, init)).json()) as T;
+    ): Promise<T> => {
+      const response = await fn(endpoint, init);
+
+      if (!response.ok) {
+        throw new Error(
+          `request to ${endpoint} failed with status ${response.status}`
+        );
+      }
+
+      return (await response.json()) as T;
+    };
 
     switch (method) {
       case 'GET':

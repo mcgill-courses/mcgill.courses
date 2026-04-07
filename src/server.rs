@@ -210,8 +210,9 @@ impl Server {
     }
 
     let governor_config = GovernorConfigBuilder::default()
-      .per_millisecond(10)
-      .burst_size(100)
+      .key_extractor(SmartIpKeyExtractor)
+      .per_second(1)
+      .burst_size(60)
       .finish()
       .ok_or(anyhow!("Failed to create governor configuration"))?;
 
@@ -283,11 +284,39 @@ impl Server {
             .layer(TimeoutLayer::new(Duration::from_secs(30)))
             .layer(CompressionLayer::new())
             .layer(trace_layer)
-            .layer(tower::util::option_layer(
-              config
-                .rate_limit
-                .then(|| GovernorLayer::new(governor_config)),
-            ))
+            .layer(tower::util::option_layer(config.rate_limit.then(|| {
+              GovernorLayer::new(governor_config).error_handler(
+                |error: GovernorError| {
+                  let (status, retry_after) = match &error {
+                    GovernorError::TooManyRequests { wait_time, .. } => {
+                      (StatusCode::TOO_MANY_REQUESTS, Some(*wait_time))
+                    }
+                    GovernorError::UnableToExtractKey => {
+                      (StatusCode::TOO_MANY_REQUESTS, Some(1))
+                    }
+                    GovernorError::Other { code, .. } => (*code, None),
+                  };
+
+                  let body = serde_json::json!({
+                    "error": "too many requests",
+                    "status": status.as_u16(),
+                  })
+                  .to_string();
+
+                  let mut response = Response::builder()
+                    .status(status)
+                    .header(http::header::CONTENT_TYPE, "application/json");
+
+                  if let Some(wait_time) = retry_after {
+                    response = response
+                      .header(http::header::RETRY_AFTER, wait_time)
+                      .header("x-ratelimit-after", wait_time);
+                  }
+
+                  response.body(Body::from(body)).unwrap()
+                },
+              )
+            })))
             .layer(CorsLayer::very_permissive()),
         ),
     )
