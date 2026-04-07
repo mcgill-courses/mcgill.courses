@@ -266,6 +266,7 @@ impl Loader {
             url,
             course_page.as_ref().err()
           );
+
           return Ok(None);
         }
 
