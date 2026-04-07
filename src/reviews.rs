@@ -1,5 +1,8 @@
 use super::*;
 
+const MAX_CONTENT_LENGTH: usize = 10_000;
+const MAX_INSTRUCTORS: usize = 20;
+
 #[derive(Debug, Deserialize, ToSchema)]
 pub(crate) struct GetReviewsParams {
   /// Course ID to filter reviews by.
@@ -240,6 +243,40 @@ pub struct AddOrUpdateReviewBody {
   pub(crate) difficulty: u32,
 }
 
+impl AddOrUpdateReviewBody {
+  fn validate(&self) -> Result {
+    if !(1..=5).contains(&self.rating) {
+      return Err(Error::bad_request("rating must be between 1 and 5"));
+    }
+
+    if !(1..=5).contains(&self.difficulty) {
+      return Err(Error::bad_request("difficulty must be between 1 and 5"));
+    }
+
+    if self.content.trim().is_empty() {
+      return Err(Error::bad_request("content must not be empty"));
+    }
+
+    if self.content.len() > MAX_CONTENT_LENGTH {
+      return Err(Error::bad_request(format!(
+        "content must be at most {MAX_CONTENT_LENGTH} characters"
+      )));
+    }
+
+    if self.instructors.is_empty() {
+      return Err(Error::bad_request("at least one instructor is required"));
+    }
+
+    if self.instructors.len() > MAX_INSTRUCTORS {
+      return Err(Error::bad_request(format!(
+        "at most {MAX_INSTRUCTORS} instructors allowed"
+      )));
+    }
+
+    Ok(())
+  }
+}
+
 #[utoipa::path(
   post,
   path = "/reviews",
@@ -437,43 +474,6 @@ pub(crate) async fn delete_review(
   db.delete_notifications(&user_id, &body.course_id).await?;
 
   Ok(StatusCode::OK)
-}
-
-const MAX_CONTENT_LENGTH: usize = 10_000;
-const MAX_INSTRUCTORS: usize = 20;
-
-impl AddOrUpdateReviewBody {
-  fn validate(&self) -> Result {
-    if !(1..=5).contains(&self.rating) {
-      return Err(Error::bad_request("rating must be between 1 and 5"));
-    }
-
-    if !(1..=5).contains(&self.difficulty) {
-      return Err(Error::bad_request("difficulty must be between 1 and 5"));
-    }
-
-    if self.content.trim().is_empty() {
-      return Err(Error::bad_request("content must not be empty"));
-    }
-
-    if self.content.len() > MAX_CONTENT_LENGTH {
-      return Err(Error::bad_request(format!(
-        "content must be at most {MAX_CONTENT_LENGTH} characters"
-      )));
-    }
-
-    if self.instructors.is_empty() {
-      return Err(Error::bad_request("at least one instructor is required"));
-    }
-
-    if self.instructors.len() > MAX_INSTRUCTORS {
-      return Err(Error::bad_request(format!(
-        "at most {MAX_INSTRUCTORS} instructors allowed"
-      )));
-    }
-
-    Ok(())
-  }
 }
 
 async fn validate_instructors(
