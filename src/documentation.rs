@@ -68,6 +68,7 @@ impl Modify for MicrosoftOAuthSecurity {
     subscriptions::add_subscription,
     subscriptions::delete_subscription,
     subscriptions::get_subscription,
+    subscriptions::get_subscriptions,
     user::get_user
   ),
   components(
@@ -91,8 +92,6 @@ impl Modify for MicrosoftOAuthSecurity {
       reviews::GetReviewsPayload,
       search::SearchParams,
       subscriptions::AddOrDeleteSubscriptionBody,
-      subscriptions::GetSubscriptionParams,
-      subscriptions::SubscriptionResponse,
       user::User,
       user::UserResponse,
     )
