@@ -107,7 +107,7 @@ export const api = {
   async getSubscription(courseId: string): Promise<Subscription | null> {
     return client.deserialize<Subscription | null>(
       'GET',
-      `/subscriptions?course_id=${courseId}`,
+      `/subscriptions/${encodeURIComponent(courseId)}`,
       {
         headers: { 'Content-Type': 'application/json' },
       }

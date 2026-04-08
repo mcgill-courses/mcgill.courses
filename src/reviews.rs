@@ -471,7 +471,13 @@ pub(crate) async fn delete_review(
 
   let user_id = user.id();
 
-  db.delete_review(&body.course_id, &user_id).await?;
+  db.delete_review(&body.course_id, &user_id).await.map_err(
+    |error| match error {
+      db::Error::ReviewNotFound => Error::not_found("review not found"),
+      other => other.into(),
+    },
+  )?;
+
   db.delete_interactions(&body.course_id, &user_id).await?;
   db.delete_notifications(&user_id, &body.course_id).await?;
 
