@@ -15,8 +15,8 @@ importers:
         specifier: ^1.7.19
         version: 1.7.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/react-query':
-        specifier: ^5.90.5
-        version: 5.90.5(react@18.3.1)
+        specifier: ^5.99.2
+        version: 5.99.2(react@18.3.1)
       '@vis.gl/react-google-maps':
         specifier: ^1.5.5
         version: 1.5.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -934,11 +934,11 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
-  '@tanstack/query-core@5.90.5':
-    resolution: {integrity: sha512-wLamYp7FaDq6ZnNehypKI5fNvxHPfTYylE0m/ZpuuzJfJqhR5Pxg9gvGBHZx4n7J+V5Rg5mZxHHTlv25Zt5u+w==}
+  '@tanstack/query-core@5.99.2':
+    resolution: {integrity: sha512-1HunU0bXVsR1ZJMZbcOPE6VtaBJxsW809RE9xPe4Gz7MlB0GWwQvuTPhMoEmQ/hIzFKJ/DWAuttIe7BOaWx0tA==}
 
-  '@tanstack/react-query@5.90.5':
-    resolution: {integrity: sha512-pN+8UWpxZkEJ/Rnnj2v2Sxpx1WFlaa9L6a4UO89p6tTQbeo+m0MS8oYDjbggrR8QcTyjKoYWKS3xJQGr3ExT8Q==}
+  '@tanstack/react-query@5.99.2':
+    resolution: {integrity: sha512-vM91UEe45QUS9ED6OklsVL15i8qKcRqNwpWzPTVWvRPRSEgDudDgHpvyTjcdlwHcrKNa80T+xXYcchT2noPnZA==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -3921,11 +3921,11 @@ snapshots:
       tailwindcss: 4.2.2
       vite: 7.3.2(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.3)
 
-  '@tanstack/query-core@5.90.5': {}
+  '@tanstack/query-core@5.99.2': {}
 
-  '@tanstack/react-query@5.90.5(react@18.3.1)':
+  '@tanstack/react-query@5.99.2(react@18.3.1)':
     dependencies:
-      '@tanstack/query-core': 5.90.5
+      '@tanstack/query-core': 5.99.2
       react: 18.3.1
 
   '@tanstack/react-virtual@3.13.12(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
