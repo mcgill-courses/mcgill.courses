@@ -23,7 +23,7 @@
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "@headlessui/react": "^1.7.19",
-    "@tanstack/react-query": "^5.90.5",
+    "@tanstack/react-query": "^5.99.2",
     "@vis.gl/react-google-maps": "^1.5.5",
     "flexsearch": "^0.8.212",
     "formik": "^2.4.9",
@@ -59,7 +59,7 @@
     "husky": "^9.1.7",
     "jsdom": "^27.4.0",
     "knip": "^5.78.0",
-    "lint-staged": "^16.2.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "start-server-and-test": "^2.1.0",
