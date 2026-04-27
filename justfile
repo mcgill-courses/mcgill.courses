@@ -65,7 +65,7 @@ forbid:
   ./bin/forbid
 
 [group: 'tools']
-[working-directory: 'tools/changelog-genetator']
+[working-directory: 'tools/changelog-generator']
 generate-changelog *args:
   cargo run -- --output client/src/assets/changelog.json {{ args }}
 
