@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 anyhow = { workspace = true }
-async-openai = { version = "0.36.1", features = ["chat-completion"] }
+async-openai = { version = "0.38.1", features = ["chat-completion"] }
 chrono = { workspace = true }
 clap = { workspace = true }
 dotenv = { workspace = true }
