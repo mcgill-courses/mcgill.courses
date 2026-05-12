@@ -12,7 +12,7 @@ rand = "0.10.1"
 rayon = { workspace = true }
 regex = { workspace = true }
 reqwest = { version = "0.13.3", default-features = false, features = [ "blocking", "json", "rustls" ] }
-scraper = "0.26.0"
+scraper = "0.27.0"
 serde_json = { workspace = true }
 thirtyfour = "0.37.0"
 tokio = { workspace = true }
