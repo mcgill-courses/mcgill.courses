@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
-    "@headlessui/react": "^1.7.19",
+    "@headlessui/react": "^2.2.10",
     "@tanstack/react-query": "^5.99.2",
     "@vis.gl/react-google-maps": "^1.5.5",
     "flexsearch": "^0.8.212",
