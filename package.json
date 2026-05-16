@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "pnpm@11.1.2",
   "scripts": {
     "build": "tsc && vite build",
     "cy:e2e": "start-server-and-test dev http-get://localhost:5173 cy:run-e2e",
