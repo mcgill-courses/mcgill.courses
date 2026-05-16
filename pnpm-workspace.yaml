@@ -1,0 +1,12 @@
+packages:
+  - .
+
+onlyBuiltDependencies:
+  - esbuild
+
+ignoredBuiltDependencies:
+  - cypress
+
+allowBuilds:
+  cypress: false
+  esbuild: true
