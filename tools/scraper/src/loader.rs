@@ -16,7 +16,7 @@ pub(crate) struct Loader {
   course_delay: u64,
   #[clap(
     long,
-    default_values = ["2025-2026",],
+    default_values = ["2026-2027",],
     help = "The mcgill terms to scrape"
   )]
   mcgill_terms: Vec<String>,
@@ -34,7 +34,7 @@ pub(crate) struct Loader {
   user_agent: String,
   #[clap(
     long,
-    default_values = ["202505", "202509", "202601"],
+    default_values = ["202605", "202609", "202701"],
     help = "The schedule builder terms to scrape"
   )]
   vsb_terms: Vec<usize>,
