@@ -10,7 +10,7 @@ chrono = { workspace = true }
 futures = { workspace = true }
 itertools = { workspace = true }
 model = { path = "../model" }
-mongodb = { version = "3.6.0", features = ["bson-3"] }
+mongodb = { version = "3.7.0", features = ["bson-3"] }
 serde = { workspace = true }
 serde_json = { workspace = true }
 stop-words = "0.10.0"
