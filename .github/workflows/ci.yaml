@@ -41,7 +41,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v6
 
       - name: Info
         run: |
@@ -87,7 +87,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v6
 
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
