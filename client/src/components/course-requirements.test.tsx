@@ -114,7 +114,7 @@ describe('CourseRequirements', () => {
 
     await userEvent.click(toggle);
 
-    expect(screen.getByTestId('course-graph')).toBeInTheDocument();
+    expect(await screen.findByTestId('course-graph')).toBeInTheDocument();
 
     expect(
       screen.queryByRole('heading', { name: 'Prerequisites' })

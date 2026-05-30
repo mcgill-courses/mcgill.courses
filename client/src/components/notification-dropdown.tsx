@@ -16,7 +16,9 @@ export const NotificationDropdown = ({
   notifications: Notification[];
   setNotifications: (notifications: Notification[]) => void;
 }) => {
-  const [refs, setRefs] = useState<React.RefObject<HTMLDivElement>[]>([]);
+  const [refs, setRefs] = useState<React.RefObject<HTMLDivElement | null>[]>(
+    []
+  );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [seen, setSeen] = useState<Set<string>>(new Set());
 
