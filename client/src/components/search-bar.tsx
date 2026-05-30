@@ -25,7 +25,7 @@ export const SearchBar = ({
   searchSelected: boolean;
   setSearchSelected: (value: boolean) => void;
   value?: string;
-  inputRef?: RefObject<HTMLInputElement>;
+  inputRef?: RefObject<HTMLInputElement | null>;
 }) => {
   return (
     <div className='relative w-full'>

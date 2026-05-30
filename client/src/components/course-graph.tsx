@@ -106,7 +106,7 @@ export const CourseGraph = memo(({ course }: CourseGraphProps) => {
   const navigate = useNavigate();
 
   const [darkMode] = useDarkMode();
-  const networkRef = useRef<Network>();
+  const networkRef = useRef<Network | null>(null);
 
   const { graph, graphNodes } = useMemo(() => {
     const {

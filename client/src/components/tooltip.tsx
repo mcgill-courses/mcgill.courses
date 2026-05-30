@@ -1,4 +1,5 @@
 import { Transition } from '@headlessui/react';
+import type { HTMLAttributes } from 'react';
 import {
   Children,
   PropsWithChildren,
@@ -14,6 +15,11 @@ type TooltipProps = {
   className?: string;
 };
 
+type TooltipChildProps = Pick<
+  HTMLAttributes<HTMLElement>,
+  'onMouseEnter' | 'onMouseLeave'
+>;
+
 export const Tooltip = ({
   text,
   offset = { x: 0, y: -8 },
@@ -24,7 +30,7 @@ export const Tooltip = ({
 
   const element = Children.only(children);
 
-  if (!isValidElement(element)) {
+  if (!isValidElement<TooltipChildProps>(element)) {
     throw new Error('Tooltip must have a single child that is a React Element');
   }
 
@@ -50,12 +56,12 @@ export const Tooltip = ({
         <div>{text}</div>
       </Transition>
       {cloneElement(element, {
-        onMouseEnter: () => {
-          element.props.onMouseEnter?.();
+        onMouseEnter: (event) => {
+          element.props.onMouseEnter?.(event);
           setShow(true);
         },
-        onMouseLeave: () => {
-          element.props.onMouseLeave?.();
+        onMouseLeave: (event) => {
+          element.props.onMouseLeave?.(event);
           setShow(false);
         },
       })}

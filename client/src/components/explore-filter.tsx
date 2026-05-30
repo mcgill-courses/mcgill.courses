@@ -1,4 +1,5 @@
 import { Leaf, Snowflake, Sun } from 'lucide-react';
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -30,7 +31,7 @@ type ExploreFilterProp = {
 };
 
 type FilterButtonProp = {
-  icon?: JSX.Element;
+  icon?: ReactElement;
   className?: string;
   selectedClass?: string;
   isSelected: boolean;
