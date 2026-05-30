@@ -1,6 +1,7 @@
 import { AnimatePresence, m } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { Leaf, Snowflake, Sun, X } from 'lucide-react';
+import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
@@ -28,7 +29,7 @@ const SeasonIcon = ({ variant, term }: SeasonIconProps) => {
 
   const season = term.split(' ')[0].toLowerCase();
 
-  const icons: Record<string, JSX.Element> = {
+  const icons: Record<string, ReactElement> = {
     fall: <Leaf size={size} color='brown' />,
     winter: <Snowflake size={size} color='skyblue' />,
     summer: <Sun size={size} color='orange' />,

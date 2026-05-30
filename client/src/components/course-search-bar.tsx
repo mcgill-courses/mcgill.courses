@@ -94,7 +94,7 @@ type CourseSearchBarProps = {
   results: SearchResults;
   handleInputChange: (query: string) => void;
   onResultClick?: () => void;
-  inputRef?: RefObject<HTMLInputElement>;
+  inputRef?: RefObject<HTMLInputElement | null>;
 };
 
 export const CourseSearchBar = ({
