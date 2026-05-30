@@ -67,7 +67,7 @@ forbid:
 [group: 'tools']
 [working-directory: 'tools/changelog-generator']
 generate-changelog *args:
-  cargo run -- --output client/src/assets/changelog.json {{ args }}
+  cargo run -- --output ../../client/src/assets/changelog.json {{ args }}
 
 [group: 'setup']
 initialize *args: restart-services
@@ -97,7 +97,7 @@ load *args:
 [group: 'tools']
 readme:
   present --in-place README.md
-  @prettier --write README.md
+  @pnpm exec prettier --write README.md
 
 [group: 'setup']
 restart-services:
@@ -133,7 +133,7 @@ test *filter:
 [group: 'dev']
 typeshare:
   RUST_LOG=warn typeshare -l typescript -o client/src/lib/types.ts .
-  prettier --write client/src/lib/types.ts
+  pnpm exec prettier --write client/src/lib/types.ts
 
 [group: 'dev']
 watch +COMMAND='test':

@@ -3,7 +3,6 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [react()],
-  root: './client',
   test: {
     coverage: {
       provider: 'v8',
@@ -15,6 +14,6 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     include: ['**/*.test.{ts,tsx}'],
-    setupFiles: ['../vitest.setup.ts'],
+    setupFiles: ['vitest.setup.ts'],
   },
 });
