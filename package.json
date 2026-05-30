@@ -11,20 +11,12 @@
     "cy:run-e2e": "pnpm --dir client run cy:run-e2e",
     "cy:run-unit": "pnpm --dir client run cy:run-unit",
     "dev": "pnpm --dir client run dev",
-    "format": "prettier --write .",
-    "format-check": "prettier --check .",
+    "format": "pnpm --dir client run format",
+    "format-check": "pnpm --dir client run format-check",
     "knip": "pnpm --dir client run knip",
     "lint": "pnpm --dir client run lint",
-    "prepare": "husky",
     "preview": "pnpm --dir client run preview",
     "test": "pnpm --dir client run test",
     "test:watch": "pnpm --dir client run test:watch"
-  },
-  "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.7.2"
   }
 }
