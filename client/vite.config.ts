@@ -4,7 +4,6 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(({ mode }) => {
   return {
-    root: './client',
     base: mode === 'production' ? '/assets' : '/',
     build: { assetsDir: '.' },
     plugins: [react(), tailwindcss()],

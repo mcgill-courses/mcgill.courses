@@ -67,7 +67,7 @@ jobs:
         run: pnpm run test --reporter verbose
 
       - name: Install Cypress
-        run: pnpm exec cypress install
+        run: pnpm --dir client exec cypress install
 
       - name: Test (e2e)
         run: pnpm run cy:e2e

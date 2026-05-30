@@ -17,9 +17,9 @@ dist-ssr/
 coverage/
 
 # Cypress
-/cypress/downloads
-/cypress/screenshots
-/cypress/videos
+/client/cypress/downloads
+/client/cypress/screenshots
+/client/cypress/videos
 
 # Logs
 logs/
