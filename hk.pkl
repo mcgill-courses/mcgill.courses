@@ -4,19 +4,19 @@ local hook_steps = new Mapping<String, Step> {
   ["cargo-fmt"] {
     check = "cargo fmt --check -- {{files}}"
     fix = "cargo fmt -- {{files}}"
-    glob = List("**/*.rs")
+    glob = "**/*.rs"
   }
   ["eslint"] {
-    check = "cd {{workspace}} && pnpm exec eslint --no-warn-ignored {{workspace_files}}"
-    depends = List("prettier")
-    glob = List("client/**/*.ts", "client/**/*.tsx")
-    workspace_indicator = "package.json"
+    check = "pnpm exec eslint --no-warn-ignored {{files}}"
+    depends = "prettier"
+    dir = "client"
+    glob = "**/*.{ts,tsx}"
   }
   ["prettier"] {
-    check = "cd {{workspace}} && pnpm exec prettier --check {{workspace_files}}"
-    fix = "cd {{workspace}} && pnpm exec prettier --write {{workspace_files}}"
-    glob = List("client/**/*.js", "client/**/*.json", "client/**/*.ts", "client/**/*.tsx")
-    workspace_indicator = "package.json"
+    check = "pnpm exec prettier --check {{files}}"
+    dir = "client"
+    fix = "pnpm exec prettier --write {{files}}"
+    glob = "**/*.{js,json,ts,tsx}"
   }
 }
 
