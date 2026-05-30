@@ -1,7 +1,7 @@
 use {
   crate::{
     assets::Assets,
-    auth::{AuthRedirect, COOKIE_NAME},
+    auth::{AuthRedirect, COOKIE_NAME, MCGILL_TENANT_ID, OAuthClient},
     documentation::Documentation,
     error::Error,
     hash::Hash,
@@ -14,14 +14,15 @@ use {
   async_mongodb_session::MongodbSessionStore,
   async_session::{Session, SessionStore, async_trait},
   axum::{
-    Json, RequestPartsExt,
+    BoxError, Json, RequestPartsExt,
     body::Body,
+    error_handling::HandleErrorLayer,
     extract::{
       FromRef, FromRequestParts, OptionalFromRequestParts, Path, Query,
       State as AppState,
     },
     response::{IntoResponse, Redirect, Response},
-    routing::{Router, get, post},
+    routing::{Router, get},
   },
   axum_extra::{
     TypedHeader, headers::Cookie, typed_header::TypedHeaderRejectionReason,
@@ -35,14 +36,15 @@ use {
   http::{
     HeaderMap, Request, StatusCode, header, header::SET_COOKIE, request::Parts,
   },
+  indoc::indoc,
   model::{
-    Course, CourseFilter, InitializeOptions, Instructor, Interaction,
-    InteractionKind, Notification, Review, ReviewFilter, SearchResults,
-    Subscription,
+    Course, CourseAverage, CourseFilter, CourseSortType, InitializeOptions,
+    Instructor, Interaction, InteractionKind, Notification, Review,
+    ReviewFilter, SearchResults, Subscription,
   },
   oauth2::{
-    AuthType, AuthUrl, ClientId, ClientSecret, CsrfToken, RedirectUrl, Scope,
-    TokenUrl, basic::BasicClient,
+    AuthUrl, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet,
+    RedirectUrl, Scope, TokenUrl, basic::BasicClient,
   },
   rusoto_core::Region,
   rusoto_s3::S3Client,
@@ -65,15 +67,20 @@ use {
     time::Duration,
   },
   tokio::net::TcpListener,
-  tower::ServiceBuilder,
-  tower_governor::{GovernorLayer, governor::GovernorConfigBuilder},
+  tower::{ServiceBuilder, timeout::TimeoutLayer},
+  tower_governor::{
+    GovernorError, GovernorLayer, governor::GovernorConfigBuilder,
+    key_extractor::SmartIpKeyExtractor,
+  },
   tower_http::{
+    catch_panic::CatchPanicLayer,
+    compression::CompressionLayer,
     cors::CorsLayer,
     services::{ServeDir, ServeFile},
     trace::TraceLayer,
   },
   tracing::Span,
-  tracing::{debug, error, info, trace},
+  tracing::{debug, error, info, info_span, trace},
   tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt},
   typeshare::typeshare,
   url::Url,
@@ -85,11 +92,13 @@ use {
     },
   },
   utoipa_scalar::{Scalar, Servable},
+  uuid::Uuid,
   walkdir::WalkDir,
 };
 
 mod assets;
 mod auth;
+mod course_averages;
 mod courses;
 mod documentation;
 mod error;
@@ -136,20 +145,22 @@ async fn main() {
   if let Err(error) = Server::parse().run().await {
     eprintln!("error: {error}");
 
-    for (i, error) in error.0.chain().skip(1).enumerate() {
-      if i == 0 {
-        eprintln!();
-        eprintln!("because:");
+    if let Error::Internal(error) = error {
+      for (i, cause) in error.chain().skip(1).enumerate() {
+        if i == 0 {
+          eprintln!();
+          eprintln!("because:");
+        }
+
+        eprintln!("- {cause}");
       }
 
-      eprintln!("- {error}");
-    }
+      let backtrace = error.backtrace();
 
-    let backtrace = error.0.backtrace();
-
-    if backtrace.status() == BacktraceStatus::Captured {
-      eprintln!("backtrace:");
-      eprintln!("{backtrace}");
+      if backtrace.status() == BacktraceStatus::Captured {
+        eprintln!("backtrace:");
+        eprintln!("{backtrace}");
+      }
     }
 
     process::exit(1);

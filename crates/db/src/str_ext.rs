@@ -1,9 +1,12 @@
 use super::*;
 
-lazy_static! {
-  static ref STOP_WORDS: HashSet<String> =
-    HashSet::from_iter(stop_words::get(stop_words::LANGUAGE::English));
-}
+static STOP_WORDS: LazyLock<HashSet<String>> = LazyLock::new(|| {
+  HashSet::from_iter(
+    stop_words::get(stop_words::LANGUAGE::English)
+      .iter()
+      .map(|word| word.to_string()),
+  )
+});
 
 pub(crate) trait StrExt {
   fn filter_stopwords(self) -> String;
@@ -14,9 +17,7 @@ impl StrExt for &str {
   fn filter_stopwords(self) -> String {
     self
       .split(' ')
-      .filter(|w| {
-        !STOP_WORDS.contains(&format!("\"{}\"", w.trim().to_lowercase()))
-      })
+      .filter(|word| !STOP_WORDS.contains(&word.trim().to_lowercase()))
       .join(" ")
   }
 
@@ -25,7 +26,7 @@ impl StrExt for &str {
       .split(' ')
       .map(|word| {
         (3..=word.len())
-          .map(|x| word.get(..x).unwrap_or(word))
+          .map(|index| word.get(..index).unwrap_or(word))
           .join(" ")
       })
       .join(" ")

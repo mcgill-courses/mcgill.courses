@@ -5,11 +5,12 @@ edition = "2024"
 publish = false
 
 [dependencies]
-bson = { version = "2.15.0", features = ["chrono-0_4"] }
+bson = { workspace = true }
 chrono = { workspace = true }
 combine = { path = "../combine" }
 derivative = "2.2.0"
 serde = { workspace = true }
 serde_json = { workspace = true }
+serde_with = "3.20.0"
 typeshare = { workspace = true }
 utoipa = { workspace = true }

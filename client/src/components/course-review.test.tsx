@@ -40,7 +40,7 @@ const originalClipboardDescriptor = Object.getOwnPropertyDescriptor(
   'clipboard'
 );
 
-let writeTextMock: MockInstance<any, any>;
+let writeTextMock: MockInstance<(text: string) => Promise<void>>;
 
 beforeAll(() => {
   if (
@@ -51,7 +51,7 @@ beforeAll(() => {
       .spyOn(navigator.clipboard, 'writeText')
       .mockImplementation(() => Promise.resolve());
   } else {
-    const mockFn = vi.fn<[text: string], Promise<void>>(() =>
+    const mockFn = vi.fn<(text: string) => Promise<void>>(() =>
       Promise.resolve()
     );
     Object.defineProperty(navigator, 'clipboard', {
@@ -128,6 +128,23 @@ describe('CourseReview', () => {
       screen.queryByRole('button', { name: /show more/i })
     ).not.toBeInTheDocument();
     expect(screen.getByText(longContent)).toBeInTheDocument();
+  });
+
+  it('renders bold and italic formatting in content', () => {
+    renderWithRouter(
+      <CourseReview
+        canModify={false}
+        handleDelete={vi.fn()}
+        openEditReview={vi.fn()}
+        review={{
+          ...baseReview,
+          content: 'A *small* **test** of emphasis.',
+        }}
+      />
+    );
+
+    expect(screen.getByText('small').tagName).toBe('EM');
+    expect(screen.getByText('test').tagName).toBe('STRONG');
   });
 
   it('renders scroll attachment when requested', () => {

@@ -31,7 +31,7 @@ export const Autocomplete = <T extends string>({
     <div className={className}>
       <Combobox value={value} onChange={(val) => setValue(val)}>
         <div className='w-full'>
-          <div className='relative max-w-[240px] rounded-md border bg-slate-200 p-2 dark:border-neutral-600 dark:bg-neutral-700'>
+          <div className='relative max-w-[240px] rounded-md border border-neutral-200 bg-slate-200 p-2 dark:border-neutral-600 dark:bg-neutral-700'>
             <Combobox.Input
               className={twMerge(
                 'w-[87.5%] bg-slate-200 text-sm outline-none dark:bg-neutral-700 dark:text-gray-200 dark:caret-white',
@@ -39,9 +39,9 @@ export const Autocomplete = <T extends string>({
               )}
               onChange={(event) => setQuery(event.target.value)}
             />
-            <Combobox.Button className='absolute inset-y-0 flex w-full items-center'>
+            <Combobox.Button className='absolute inset-y-0 flex w-full cursor-pointer items-center'>
               <ChevronDown
-                className='ml-auto mr-4 size-5 text-gray-400'
+                className='mr-4 ml-auto size-5 text-gray-400'
                 aria-hidden='true'
               />
             </Combobox.Button>
@@ -54,10 +54,10 @@ export const Autocomplete = <T extends string>({
             leaveFrom='transform scale-100 opacity-100'
             leaveTo='transform scale-95 opacity-0'
           >
-            <Combobox.Options className='autocomplete absolute max-h-80 w-full max-w-[240px] overflow-scroll rounded-md text-sm shadow-md'>
-              {filtered.map((val, i) => (
+            <Combobox.Options className='styled-scrollbar absolute max-h-80 w-full max-w-[240px] overflow-scroll rounded-md text-sm shadow-md'>
+              {filtered.map((val) => (
                 <Combobox.Option
-                  key={i}
+                  key={val}
                   value={val}
                   className={({ active }) =>
                     twMerge(

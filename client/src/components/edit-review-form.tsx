@@ -6,9 +6,12 @@ import { twMerge } from 'tailwind-merge';
 
 import { useDarkMode } from '../hooks/use-dark-mode';
 import { api } from '../lib/api';
-import type { Review } from '../lib/types';
-import type { Course } from '../model/course';
-import { ReviewForm, ReviewSchema } from './review-form';
+import type { Course, Review } from '../lib/types';
+import {
+  ReviewForm,
+  ReviewFormInitialValues,
+  ReviewSchema,
+} from './review-form';
 
 type EditReviewFormProps = {
   course: Course;
@@ -27,16 +30,16 @@ export const EditReviewForm = ({
 }: EditReviewFormProps) => {
   const [darkMode] = useDarkMode();
 
-  const initialValues = {
+  const initialValues: ReviewFormInitialValues = {
     content: review.content,
+    difficulty: review.difficulty,
     instructors: review.instructors,
     rating: review.rating,
-    difficulty: review.difficulty,
   };
 
   const handleClose = () => {
     onClose();
-    toast.success('Review draft saved.');
+    toast.success('Review draft saved');
   };
 
   return (
@@ -72,7 +75,7 @@ export const EditReviewForm = ({
               <Dialog.Panel className='w-[448px] overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-neutral-800'>
                 <Dialog.Title
                   as='h3'
-                  className='mb-4 text-lg font-medium leading-6 text-gray-900 dark:text-gray-200'
+                  className='mb-4 text-lg leading-6 font-medium text-gray-900 dark:text-gray-200'
                 >
                   {`Editing review of ${course.subject} ${course.code} - ${course.title}`}
                 </Dialog.Title>
@@ -81,7 +84,10 @@ export const EditReviewForm = ({
                   initialValues={initialValues}
                   validationSchema={ReviewSchema}
                   onSubmit={async (values, actions) => {
-                    const res = await api.updateReview(course._id, values);
+                    const res = await api.updateReview({
+                      ...values,
+                      course_id: course._id,
+                    });
                     actions.setSubmitting(false);
                     onClose();
                     handleSubmit(res);

@@ -84,10 +84,10 @@ export const BuildingLocation = ({
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'
             >
-              <Dialog.Panel className='h-[600px] w-[600px] overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-neutral-800'>
+              <Dialog.Panel className='size-[600px] overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-neutral-800'>
                 <Dialog.Title
                   as='h3'
-                  className='mb-4 text-lg font-medium leading-6 text-gray-900 dark:text-gray-200'
+                  className='mb-4 text-lg leading-6 font-medium text-gray-900 dark:text-gray-200'
                 >
                   {title}
                 </Dialog.Title>

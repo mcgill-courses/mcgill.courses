@@ -7,6 +7,7 @@ use {
   octocrab::{models, params},
   serde::{Deserialize, Serialize},
   std::{
+    cmp::Reverse,
     collections::HashMap,
     fmt::Display,
     fs::{self, File},
@@ -155,10 +156,8 @@ impl Arguments {
     let existing_items = serde_json::from_str::<Entry>(&content)
       .map(|entry| {
         entry
-          .into_iter()
-          .flat_map(|(_, value)| {
-            value.into_iter().map(|item| (item.number, item))
-          })
+          .into_values()
+          .flat_map(|value| value.into_iter().map(|item| (item.number, item)))
           .collect::<HashMap<u32, ChangelogItem>>()
       })
       .unwrap_or_else(|_| HashMap::<u32, ChangelogItem>::new());
@@ -205,7 +204,7 @@ impl Arguments {
       info!("Writing to {}", self.output.display());
 
       for items in grouped.values_mut() {
-        items.sort_by(|a, b| b.merged_at.cmp(&a.merged_at));
+        items.sort_by_key(|item| Reverse(item.merged_at));
       }
 
       fs::write(&self.output, serde_json::to_string_pretty(&grouped)?)?;

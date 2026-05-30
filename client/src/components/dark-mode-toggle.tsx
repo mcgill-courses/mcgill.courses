@@ -12,7 +12,7 @@ export const DarkModeToggle = () => {
   return (
     <button
       onClick={toggleDarkMode}
-      className='rounded-2xl p-1.5 hover:bg-gray-50 dark:hover:bg-neutral-700'
+      className='cursor-pointer rounded-2xl p-1.5 hover:bg-gray-50 dark:hover:bg-neutral-700'
     >
       {darkMode ? (
         <Sun className='size-6 fill-gray-400 stroke-gray-400 stroke-2' />

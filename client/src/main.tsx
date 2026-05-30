@@ -1,6 +1,7 @@
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/700.css';
+import { LazyMotion, domAnimation } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -16,6 +17,11 @@ import { DarkModeProvider } from './providers/dark-mode-provider';
 import ExploreFilterStateProvider from './providers/explore-filter-state-provider';
 import QueryProvider from './providers/query-provider';
 
+const routerFutureConfig = {
+  v7_startTransition: true,
+  v7_relativeSplatPath: true,
+};
+
 const Root = () => {
   // When an error occurs, we want all of the state in the app
   // to reset to prevent further errors
@@ -28,21 +34,23 @@ const Root = () => {
   return (
     <React.StrictMode>
       <HelmetProvider>
-        <BrowserRouter>
+        <BrowserRouter future={routerFutureConfig}>
           <DarkModeProvider>
-            <ErrorBoundary
-              FallbackComponent={ErrorPage}
-              onReset={() => setKey(key + 1)}
-            >
-              <QueryProvider>
-                <AuthProvider>
-                  <ExploreFilterStateProvider>
-                    <Toaster richColors />
-                    <App key={key} />
-                  </ExploreFilterStateProvider>
-                </AuthProvider>
-              </QueryProvider>
-            </ErrorBoundary>
+            <LazyMotion features={domAnimation}>
+              <ErrorBoundary
+                FallbackComponent={ErrorPage}
+                onReset={() => setKey((prev) => prev + 1)}
+              >
+                <QueryProvider>
+                  <AuthProvider>
+                    <ExploreFilterStateProvider>
+                      <Toaster richColors />
+                      <App key={key} />
+                    </ExploreFilterStateProvider>
+                  </AuthProvider>
+                </QueryProvider>
+              </ErrorBoundary>
+            </LazyMotion>
           </DarkModeProvider>
         </BrowserRouter>
       </HelmetProvider>

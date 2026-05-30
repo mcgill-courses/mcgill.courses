@@ -1,8 +1,3 @@
-import groupBy from 'lodash/groupBy';
-import mapValues from 'lodash/mapValues';
-import sortBy from 'lodash/sortBy';
-import uniq from 'lodash/uniq';
-import uniqBy from 'lodash/uniqBy';
 import { ChevronDown } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -11,60 +6,21 @@ import { twMerge } from 'tailwind-merge';
 import * as buildingCodes from '../assets/building-codes.json';
 import * as buildingCoordinates from '../assets/building-coordinates.json';
 import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
-import { getCurrentTerm, sortTerms } from '../lib/utils';
-import type { Course } from '../model/course';
-import type { Block, Schedule } from '../model/schedule';
+import type { Block, Schedule, TimeBlock } from '../lib/types';
+import type { Course } from '../lib/types';
+import {
+  formatDisplayTime,
+  getCurrentTerm,
+  groupBy,
+  mapValues,
+  sortBy,
+  sortTerms,
+  uniq,
+  uniqBy,
+} from '../lib/utils';
 import { AddToCalendarButton } from './add-to-calendar-button';
 import { BuildingLocation } from './building-location';
 import { Tooltip } from './tooltip';
-
-const VSBtimeToDisplay = (time: string) => {
-  const totalMinutes = parseInt(time, 10);
-
-  if (Number.isNaN(totalMinutes)) {
-    return time;
-  }
-
-  const hour = Math.floor(totalMinutes / 60);
-  const minute = totalMinutes % 60;
-
-  return `${hour.toString().padStart(2, '0')}:${minute
-    .toString()
-    .padStart(2, '0')}`;
-};
-
-type ScheduleBlock = Omit<Block, 'timeblocks'> & {
-  timeblocks: RepeatingBlock[];
-};
-
-type RepeatingBlock = {
-  days: string[];
-  startTime: string;
-  endTime: string;
-};
-
-const formatDisplayTime = (time: string) => {
-  const [hourString, minuteString] = time.split(':');
-  const hour = parseInt(hourString, 10);
-  const minute = parseInt(minuteString, 10);
-
-  if (Number.isNaN(hour) || Number.isNaN(minute)) {
-    return time;
-  }
-
-  const period = hour >= 12 ? 'PM' : 'AM';
-  const normalizedHour = hour % 12 || 12;
-  const minutePart =
-    minute === 0 ? '' : `:${minute.toString().padStart(2, '0')}`;
-
-  return `${normalizedHour}${minutePart}${period}`;
-};
-
-const formatTimeRange = (start: string, end: string) => {
-  const startDisplay = formatDisplayTime(start);
-  const endDisplay = formatDisplayTime(end);
-  return `${startDisplay} - ${endDisplay}`;
-};
 
 const DAY_CODE_MAP: Record<string, string> = {
   '1': 'SU',
@@ -86,12 +42,40 @@ const TERM_START_CONFIG = {
   Fall: { startMonth: 9, offsetDays: 6 },
 } as const;
 
+type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
+  location: string;
+  display: string;
+  timeblocks: RepeatingBlock[];
+};
+
+type RepeatingBlock = {
+  days: string[];
+  startTime: string;
+  endTime: string;
+};
+
 type TermSeason = keyof typeof TERM_START_CONFIG;
+
+const VSBtimeToDisplay = (time: string) => {
+  const totalMinutes = parseInt(time, 10);
+
+  if (Number.isNaN(totalMinutes)) {
+    return time;
+  }
+
+  const hour = Math.floor(totalMinutes / 60);
+  const minute = totalMinutes % 60;
+
+  return `${hour.toString().padStart(2, '0')}:${minute
+    .toString()
+    .padStart(2, '0')}`;
+};
 
 const parseTermSeason = (
   term: string
 ): { season: TermSeason; year: number } | null => {
   const match = term.match(/^(Winter|Summer|Fall)\s+(\d{4})$/);
+
   if (!match) return null;
 
   const [, season, year] = match;
@@ -101,7 +85,9 @@ const parseTermSeason = (
 
 const vsbDayToJsDay = (day: string): number | null => {
   const parsed = parseInt(day, 10);
+
   if (Number.isNaN(parsed)) return null;
+
   const jsDay = parsed - 1;
 
   if (jsDay < 0 || jsDay > 6) return null;
@@ -153,7 +139,9 @@ const buildScheduleEvents = (
   term: string
 ): IcsEventOptions[] => {
   const courseUrl = `https://mcgill.courses/${course._id}`;
+
   const summary = `${course._id} ${block.display}`.trim();
+
   const descriptionParts = [
     course.title,
     `Section: ${block.display}`,
@@ -171,6 +159,7 @@ const buildScheduleEvents = (
     const sortedDays = [...tb.days].sort(
       (a, b) => parseInt(a, 10) - parseInt(b, 10)
     );
+
     const firstDay = sortedDays[0];
     const occurrence = getFirstOccurrenceForTermDay(term, firstDay);
 
@@ -188,9 +177,11 @@ const buildScheduleEvents = (
     const byDayCodes = sortedDays
       .map((day) => DAY_CODE_MAP[day])
       .filter((code): code is string => Boolean(code));
+
     const uniqueByDayCodes = Array.from(new Set(byDayCodes)).sort(
       (a, b) => DAY_ORDER.indexOf(a) - DAY_ORDER.indexOf(b)
     );
+
     const occurrencesPerWeek = Math.max(1, uniqueByDayCodes.length);
 
     const rruleParts = [
@@ -198,6 +189,7 @@ const buildScheduleEvents = (
       'INTERVAL=1',
       `COUNT=${DEFAULT_MEETING_COUNT * occurrencesPerWeek}`,
     ];
+
     if (uniqueByDayCodes.length > 0) {
       rruleParts.push(`BYDAY=${uniqueByDayCodes.join(',')}`);
     }
@@ -231,10 +223,10 @@ const getSections = (
     (scheds) =>
       sortBy(
         uniqBy(
-          scheds.flatMap((s) => s.blocks),
+          scheds.flatMap((s) => s.blocks ?? []),
           (b) => b.display
         ),
-        (b) => b.display.split(' ', 2)[1]
+        (b) => b.display?.split(' ', 2)[1]
       )
   );
 
@@ -243,12 +235,15 @@ const getSections = (
   const termBlockTimes = mapValues(termBlocks, (blocks) =>
     blocks.map((b) => ({
       ...b,
+      location: b.location ?? '',
+      display: b.display ?? '',
       timeblocks: Object.entries(
-        groupBy(b.timeblocks, (tb) => `${tb.t1}-${tb.t2}`)
+        groupBy(b.timeblocks ?? [], (tb: TimeBlock) => `${tb.t1}-${tb.t2}`)
       ).map(([time, tbs]) => {
         const [t1, t2] = time.split('-', 2);
+
         return {
-          days: tbs.map((tb) => tb.day),
+          days: tbs.map((tb) => tb.day).filter((d): d is string => d != null),
           startTime: VSBtimeToDisplay(t1),
           endTime: VSBtimeToDisplay(t2),
         };
@@ -269,23 +264,27 @@ const BlockLocation = ({ location }: { location: string }) => {
 
   return (
     <Fragment>
-      <span
-        className='relative whitespace-nowrap'
-        onClick={() => {
-          if (coordinates !== null) setIsLocationOpen(true);
-        }}
-      >
-        <Tooltip text={buildingCodes[code as keyof typeof buildingCodes]}>
-          <p
-            className={twMerge(
-              'inline-block text-xs leading-7 xs:text-sm sm:text-base lg:text-sm xl:text-base',
-              coordinates !== null && 'cursor-pointer'
-            )}
-          >
-            {location}
-          </p>
-        </Tooltip>
-      </span>
+      {coordinates !== null ? (
+        <button
+          type='button'
+          className='relative whitespace-nowrap'
+          onClick={() => setIsLocationOpen(true)}
+        >
+          <Tooltip text={buildingCodes[code as keyof typeof buildingCodes]}>
+            <p className='xs:text-sm inline-block cursor-pointer text-xs leading-7 sm:text-base lg:text-sm xl:text-base'>
+              {location}
+            </p>
+          </Tooltip>
+        </button>
+      ) : (
+        <span className='relative whitespace-nowrap'>
+          <Tooltip text={buildingCodes[code as keyof typeof buildingCodes]}>
+            <p className='xs:text-sm inline-block text-xs leading-7 sm:text-base lg:text-sm xl:text-base'>
+              {location}
+            </p>
+          </Tooltip>
+        </span>
+      )}
       <BuildingLocation
         title={buildingCodes[code as keyof typeof buildingCodes]}
         code={code}
@@ -350,12 +349,19 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
     .filter((location) => location.length > 0);
 
   const timeRanges = block.timeblocks
-    .filter((tb) => Boolean(tb.startTime) && Boolean(tb.endTime))
-    .map((tb) => formatTimeRange(tb.startTime, tb.endTime));
+    .filter(
+      (timeblock) => Boolean(timeblock.startTime) && Boolean(timeblock.endTime)
+    )
+    .map(
+      (timeblock) =>
+        `${formatDisplayTime(timeblock.startTime)} - ${formatDisplayTime(timeblock.endTime)}`
+    );
 
   const daySets = block.timeblocks
-    .map((tb) =>
-      tb.days.filter((day) => typeof day === 'string' && day.trim().length > 0)
+    .map((timeblock) =>
+      timeblock.days.filter(
+        (day) => typeof day === 'string' && day.trim().length > 0
+      )
     )
     .filter((days) => days.length > 0);
 
@@ -363,54 +369,53 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
     if (!block.crn) return;
 
     toast.promise(navigator.clipboard.writeText(block.crn), {
-      success: `Copied CRN for ${block.display} to clipboard.`,
+      success: `Copied CRN for ${block.display} to clipboard`,
       loading: undefined,
-      error:
-        'Something went wrong when trying to copy section CRN, please try again!',
+      error: 'Something went wrong when trying to copy section CRN',
     });
   };
 
   return (
     <tr className='p-2 text-left even:bg-slate-100 even:dark:bg-[rgb(48,48,48)]'>
-      <td className='whitespace-nowrap pl-4 text-xs font-semibold xs:text-sm sm:pl-6 sm:text-base lg:pl-4 lg:text-sm xl:text-base'>
+      <td className='xs:text-sm pl-4 text-xs font-semibold whitespace-nowrap sm:pl-6 sm:text-base lg:pl-4 lg:text-sm xl:text-base'>
         {block.display}
       </td>
       <td className='py-2 text-gray-700 dark:text-gray-300'>
         <div className='flex flex-col items-start pl-1 text-center font-medium'>
           {locationEntries.length > 0 ? (
-            locationEntries.map((location, index) => (
-              <span key={`${location}-${index}`}>
+            locationEntries.map((location) => (
+              <span key={location}>
                 <BlockLocation location={location} />
               </span>
             ))
           ) : (
             <span
               aria-hidden
-              className='invisible select-none text-sm font-medium sm:text-base'
+              className='invisible text-sm font-medium select-none sm:text-base'
             >
               Placeholder
             </span>
           )}
         </div>
       </td>
-      <td className='whitespace-nowrap py-2 text-xs font-medium xs:text-sm sm:text-base lg:text-sm xl:text-base'>
+      <td className='xs:text-sm py-2 text-xs font-medium whitespace-nowrap sm:text-base lg:text-sm xl:text-base'>
         {timeRanges.length > 0 ? (
-          timeRanges.map((range, index) => <div key={index}>{range}</div>)
+          timeRanges.map((range) => <div key={range}>{range}</div>)
         ) : (
-          <span aria-hidden className='invisible select-none font-medium'>
+          <span aria-hidden className='invisible font-medium select-none'>
             Placeholder
           </span>
         )}
       </td>
-      <td className='p-2 xs:pr-0'>
+      <td className='xs:pr-0 p-2'>
         {daySets.length > 0 ? (
-          daySets.map((days, index) => (
-            <TimeblockDays days={days} key={index} />
+          daySets.map((days) => (
+            <TimeblockDays days={days} key={days.join(',')} />
           ))
         ) : (
           <div
             aria-hidden
-            className='pointer-events-none opacity-0 [line-height:1]'
+            className='pointer-events-none leading-none opacity-0'
           >
             <TimeblockDays days={['2', '3', '4', '5', '6']} />
           </div>
@@ -434,7 +439,7 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
           'CRN unavailable'
         )}
       </td>
-      <td className='hidden whitespace-nowrap px-2 xs:table-cell'>
+      <td className='xs:table-cell hidden px-2 whitespace-nowrap'>
         <AddToCalendarButton
           payload={calendarPayload}
           ariaLabel={`Add ${block.display} schedule to calendar`}
@@ -455,22 +460,21 @@ const getDefaultTerm = (offeredTerms: string[]) => {
   return offeredTerms.includes(currentTerm) ? currentTerm : offeredTerms.at(0);
 };
 
-type SchedulesDisplayProps = {
+type CourseScheduleProps = {
   course: Course;
   className?: string;
 };
 
-export const SchedulesDisplay = ({
-  course,
-  className,
-}: SchedulesDisplayProps) => {
+export const CourseSchedule = ({ course, className }: CourseScheduleProps) => {
   const schedules = course.schedule;
 
-  if (!schedules) return null;
+  if (!schedules) {
+    return null;
+  }
 
   const offeredTerms = sortTerms(
-    uniq(schedules.map((schedule) => schedule.term)).filter((term) =>
-      course.terms.includes(term)
+    uniq(schedules.map((schedule) => schedule.term)).filter(
+      (term): term is string => term != null && course.terms.includes(term)
     )
   );
 
@@ -508,9 +512,9 @@ export const SchedulesDisplay = ({
       <div className='flex'>
         {offeredTerms.map((term, i) => (
           <button
-            key={i}
+            key={term}
             className={twMerge(
-              `flex-1 cursor-pointer border-b p-2 text-center text-sm font-medium transition duration-300 ease-in-out dark:border-b-neutral-600 dark:text-gray-200 sm:text-base`,
+              `flex-1 cursor-pointer border-b-neutral-200 p-2 text-center text-sm font-medium transition duration-300 ease-in-out sm:text-base dark:border-b-neutral-600 dark:text-gray-200`,
               term === selectedTerm
                 ? 'bg-slate-50 dark:bg-neutral-800'
                 : 'bg-slate-200 hover:bg-slate-100 dark:bg-neutral-600 dark:hover:bg-neutral-700',
@@ -530,9 +534,9 @@ export const SchedulesDisplay = ({
         <table className='w-full'>
           <tbody>
             {blocks.length <= 5 || showAll
-              ? blocks.map((s, i) => (
+              ? blocks.map((s) => (
                   <ScheduleRow
-                    key={i}
+                    key={s.display}
                     block={s}
                     course={course}
                     term={selectedTerm}
@@ -540,9 +544,9 @@ export const SchedulesDisplay = ({
                 ))
               : blocks
                   .slice(0, 5)
-                  .map((s, i) => (
+                  .map((s) => (
                     <ScheduleRow
-                      key={i}
+                      key={s.display}
                       block={s}
                       course={course}
                       term={selectedTerm}

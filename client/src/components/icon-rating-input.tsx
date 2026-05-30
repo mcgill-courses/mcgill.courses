@@ -2,7 +2,7 @@ type IconRatingInputProps = {
   name: string;
   rating: number;
   icon: React.ElementType;
-  setFieldValue: (name: string, value: any) => void;
+  setFieldValue: (name: string, value: number) => void;
 };
 
 export const IconRatingInput = ({
@@ -15,8 +15,9 @@ export const IconRatingInput = ({
 
   for (let i = 0; i < 5; i++) {
     icons.push(
-      <div
-        className='cursor-pointer'
+      <button
+        type='button'
+        aria-label={`Rate ${i + 1} out of 5`}
         onClick={() => setFieldValue(name, i + 1)}
       >
         <Icon
@@ -26,7 +27,7 @@ export const IconRatingInput = ({
           size={22}
           strokeWidth={0}
         />
-      </div>
+      </button>
     );
   }
 

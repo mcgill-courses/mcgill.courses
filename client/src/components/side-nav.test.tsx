@@ -8,6 +8,7 @@ import type { Mock } from 'vitest';
 import { useAuth } from '../hooks/use-auth';
 import { useDarkMode } from '../hooks/use-dark-mode';
 import { env } from '../lib/env';
+import { routerFutureConfig } from '../testing/router-wrapper';
 import { SideNav } from './side-nav';
 
 vi.mock('@headlessui/react', () => {
@@ -66,7 +67,7 @@ describe('SideNav', () => {
 
   const renderSideNav = (onClose: (open: boolean) => void) =>
     render(
-      <MemoryRouter>
+      <MemoryRouter future={routerFutureConfig}>
         <SideNav open onClose={onClose} />
       </MemoryRouter>
     );

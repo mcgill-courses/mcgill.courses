@@ -1,10 +1,10 @@
-import { ErrorMessage, Field, FormikState } from 'formik';
-import { PersistFormikValues } from 'formik-persist-values';
+import { ErrorMessage, Field, FormikState, useFormikContext } from 'formik';
 import { Flame } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { PropsWithChildren } from 'react';
 import * as Yup from 'yup';
 
-import type { Course } from '../model/course';
+import type { AddOrUpdateReviewBody, Course } from '../lib/types';
 import { BirdIcon } from './bird-icon';
 import { IconRatingInput } from './icon-rating-input';
 import { MultiSelect } from './multi-select';
@@ -29,7 +29,7 @@ type FieldErrorProps = {
 };
 
 const FieldError = ({ name }: FieldErrorProps) => (
-  <div className='text-sm italic text-red-400'>
+  <div className='text-sm text-red-400 italic'>
     <ErrorMessage name={name} />
   </div>
 );
@@ -44,24 +44,41 @@ const FieldLabel = ({
 }: PropsWithChildren<FieldLabelProps>) => (
   <label
     htmlFor={htmlFor}
-    className='mb-1 mt-4 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400'
+    className='mt-4 mb-1 text-xs tracking-wider text-gray-500 uppercase dark:text-gray-400'
   >
     {children}
   </label>
 );
 
-export type ReviewFormInitialValues = {
-  content: string;
-  instructors: string[];
-  rating: number;
-  difficulty: number;
+export type ReviewFormInitialValues = Omit<AddOrUpdateReviewBody, 'course_id'>;
+
+const FormikPersist = ({ name }: { name: string }) => {
+  const { values, setValues } = useFormikContext<ReviewFormInitialValues>();
+
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+
+      const saved = localStorage.getItem(name);
+
+      if (saved) {
+        setValues(JSON.parse(saved));
+      }
+    } else {
+      localStorage.setItem(name, JSON.stringify(values));
+    }
+  }, [name, values, setValues]);
+
+  return null;
 };
 
 type ReviewFormProps = {
   course: Course;
   setFieldValue: (
     field: string,
-    value: any,
+    value: string | string[] | number,
     shouldValidate?: boolean | undefined
   ) => void;
   values: ReviewFormInitialValues;
@@ -128,20 +145,21 @@ export const ReviewForm = ({
         />
         <FieldError name='content' />
         <div className='mt-8 flex justify-end space-x-4'>
-          <div
+          <button
+            type='button'
             onClick={() => resetForm()}
             className='w-fit cursor-pointer rounded-md bg-gray-100 px-4 py-2 font-medium text-gray-700 duration-200 hover:bg-gray-200 dark:bg-neutral-700 dark:text-gray-200 dark:hover:bg-neutral-600'
           >
             Discard
-          </div>
+          </button>
           <button
             type='submit'
-            className='ml-auto w-fit rounded-md bg-red-600 px-4 py-2 font-medium text-white transition duration-300 hover:bg-red-800'
+            className='ml-auto w-fit cursor-pointer rounded-md bg-red-600 px-4 py-2 font-medium text-white transition duration-300 hover:bg-red-800'
           >
             Submit
           </button>
         </div>
-        <PersistFormikValues name={course._id} persistInvalid={true} />
+        <FormikPersist name={course._id} />
       </div>
     </>
   );

@@ -8,18 +8,21 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 defaults:
   run:
     shell: bash
 
 jobs:
-  check:
-    name: Check
-
+  check-workflow:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
 
       - name: Download actionlint
         id: actionlint
@@ -31,16 +34,14 @@ jobs:
         run: ${{ steps.actionlint.outputs.executable }} -color
 
   client:
-    name: Client
-
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          version: 9.0.6
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093
 
       - name: Info
         run: |
@@ -56,18 +57,22 @@ jobs:
       - name: Format
         run: pnpm run format-check
 
+      - name: Declutter
+        run: pnpm run knip
+
       - name: Lint
         run: pnpm run lint
 
       - name: Test (unit)
         run: pnpm run test --reporter verbose
 
+      - name: Install Cypress
+        run: pnpm exec cypress install
+
       - name: Test (e2e)
         run: pnpm run cy:e2e
 
   coverage:
-    name: Coverage
-
     runs-on: macos-latest
 
     env:
@@ -78,11 +83,11 @@ jobs:
       MS_REDIRECT_URI: ${{ secrets.MS_REDIRECT_URI }}
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          version: 9.0.6
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093
 
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
@@ -119,13 +124,11 @@ jobs:
         run: ./bin/coverage release
 
       - name: Upload to codecov.io
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354
         with:
           files: coverage/*.lcov
 
   server:
-    name: Server
-
     runs-on: macos-latest
 
     env:
@@ -135,7 +138,9 @@ jobs:
       MS_REDIRECT_URI: ${{ secrets.MS_REDIRECT_URI }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
 
       - name: Install rust toolchain components
         uses: dtolnay/rust-toolchain@stable
@@ -164,6 +169,9 @@ jobs:
           brew install ripgrep
           ./bin/forbid
 
+      - name: Unused dependencies
+        uses: bnjbvr/cargo-machete@main
+
       - name: Build
         run: cargo build --workspace --all-features --all-targets
 
@@ -178,3 +186,18 @@ jobs:
 
       - name: Test
         run: cargo test --workspace --all-features --all-targets
+
+  zizmor:
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - uses: zizmorcore/zizmor-action@5f14fd08f7cf1cb1609c1e344975f152c7ee938d

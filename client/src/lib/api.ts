@@ -1,14 +1,17 @@
-import type { Subscription } from '../lib/types';
-import type { UserResponse } from '../lib/types';
-import type { Notification } from '../lib/types';
-import { InteractionKind } from '../lib/types';
+import type { AddOrUpdateReviewBody } from '../lib/types';
+import type { CourseAverage } from '../lib/types';
+import type { CourseFilter } from '../lib/types';
+import type { GetCourseByIdPayload } from '../lib/types';
+import type { GetCoursesPayload } from '../lib/types';
+import type { GetInstructorPayload } from '../lib/types';
+import type { GetInteractionKindPayload } from '../lib/types';
 import type { GetReviewsPayload } from '../lib/types';
 import type { GetUserInteractionForCoursePayload } from '../lib/types';
-import type { GetInteractionKindPayload } from '../lib/types';
-import type { GetInstructorPayload } from '../lib/types';
-import type { GetCourseWithReviewsPayload } from '../model/get-course-with-reviews-payload';
-import { GetCoursesPayload } from '../model/get-courses-payload';
-import type { SearchResults } from '../model/search-results';
+import type { InteractionKind } from '../lib/types';
+import type { Notification } from '../lib/types';
+import type { Subscription } from '../lib/types';
+import type { UserResponse } from '../lib/types';
+import type { SearchResults } from './search-index';
 
 const prefix = '/api';
 
@@ -66,7 +69,17 @@ const client = {
   ): Promise<T> {
     const run = async (
       fn: (endpoint: string, init?: RequestInit) => Promise<Response>
-    ): Promise<T> => (await (await fn(endpoint, init)).json()) as T;
+    ): Promise<T> => {
+      const response = await fn(endpoint, init);
+
+      if (!response.ok) {
+        throw new Error(
+          `request to ${endpoint} failed with status ${response.status}`
+        );
+      }
+
+      return (await response.json()) as T;
+    };
 
     switch (method) {
       case 'GET':
@@ -82,10 +95,19 @@ const client = {
 };
 
 export const api = {
+  async getCourseAverages(courseId?: string): Promise<CourseAverage[]> {
+    return client.deserialize<CourseAverage[]>(
+      'GET',
+      client.buildQuery('/course-averages', {
+        course_id: courseId,
+      })
+    );
+  },
+
   async getSubscription(courseId: string): Promise<Subscription | null> {
     return client.deserialize<Subscription | null>(
       'GET',
-      `/subscriptions?course_id=${courseId}`,
+      `/subscriptions/${encodeURIComponent(courseId)}`,
       {
         headers: { 'Content-Type': 'application/json' },
       }
@@ -135,23 +157,21 @@ export const api = {
     );
   },
 
-  async addReview(courseId: string, values: any): Promise<Response> {
+  async getLikedReviews(): Promise<GetReviewsPayload> {
+    return client.deserialize<GetReviewsPayload>('GET', '/reviews/liked');
+  },
+
+  async addReview(values: AddOrUpdateReviewBody): Promise<Response> {
     return client.post(`/reviews`, {
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        course_id: courseId,
-        ...values,
-      }),
+      body: JSON.stringify(values),
     });
   },
 
-  async updateReview(courseId: string, values: any): Promise<Response> {
+  async updateReview(values: AddOrUpdateReviewBody): Promise<Response> {
     return client.put(`/reviews`, {
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        course_id: courseId,
-        ...values,
-      }),
+      body: JSON.stringify(values),
     });
   },
 
@@ -234,10 +254,13 @@ export const api = {
     });
   },
 
-  async deleteNotification(courseId: string): Promise<Response> {
+  async deleteNotification(
+    courseId: string,
+    userId: string
+  ): Promise<Response> {
     return client.delete('/notifications', {
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ course_id: courseId }),
+      body: JSON.stringify({ course_id: courseId, user_id: userId }),
     });
   },
 
@@ -248,12 +271,12 @@ export const api = {
     );
   },
 
-  async getCourseWithReviews(
+  async getCourseById(
     id: string | undefined
-  ): Promise<GetCourseWithReviewsPayload | null> {
-    return client.deserialize<GetCourseWithReviewsPayload | null>(
+  ): Promise<GetCourseByIdPayload | null> {
+    return client.deserialize<GetCourseByIdPayload | null>(
       'GET',
-      `/courses/${id}?with_reviews=true`
+      `/courses/${id}?with_reviews=true&with_averages=true`
     );
   },
 
@@ -261,21 +284,21 @@ export const api = {
     limit: number,
     offset: number,
     withCourseCount?: boolean,
-    filters?: any
+    filters?: CourseFilter
   ): Promise<GetCoursesPayload> {
     return client.deserialize<GetCoursesPayload>(
-      'POST',
+      'GET',
       client.buildQuery(`/courses`, {
+        levels: filters?.levels?.join(','),
         limit,
         offset,
+        query: filters?.query,
+        sortReverse: filters?.sortReverse,
+        sortType: filters?.sortType,
+        subjects: filters?.subjects?.join(','),
+        terms: filters?.terms?.join(','),
         with_course_count: withCourseCount,
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(filters),
-      }
+      })
     );
   },
 

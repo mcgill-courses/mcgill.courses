@@ -7,9 +7,11 @@ publish = false
 [dependencies]
 anyhow = { workspace = true }
 chrono = { workspace = true }
-clap = { version = "4.5.49", features = ["derive"] }
-lopdf = "0.38.0"
-rayon = "1.11.0"
-regex = "1.12.2"
-serde = { workspace = true, features = ["derive"] }
+clap = { workspace = true }
+lopdf = "0.40.0"
+rayon = { workspace = true }
+regex = { workspace = true }
+reqwest = { version = "0.13.3", default-features = false, features = ["blocking", "rustls"] }
+serde = { workspace = true }
 serde_json = { workspace = true }
+typeshare = { workspace = true }

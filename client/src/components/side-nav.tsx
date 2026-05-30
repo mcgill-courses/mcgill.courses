@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { X } from 'lucide-react';
 import { Fragment } from 'react';
 import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
@@ -57,7 +57,11 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
             leaveFrom='opacity-100'
             leaveTo='opacity-0'
           >
-            <div className='fixed inset-0' onClick={() => onClose(false)}>
+            <div
+              className='fixed inset-0'
+              onClick={() => onClose(false)}
+              role='none'
+            >
               <div className='absolute inset-0 bg-black opacity-60'></div>
             </div>
           </Transition.Child>
@@ -70,7 +74,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
             leaveFrom='translate-x-0'
             leaveTo='translate-x-full'
           >
-            <div className='z-[999] h-screen w-full overflow-y-auto bg-white p-6 dark:bg-neutral-800 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10'>
+            <div className='z-999 h-screen w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-neutral-800'>
               <div className='mt-1 flex items-center justify-between'>
                 <div className='flex items-center'>
                   <Link to='/'>
@@ -86,7 +90,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
                   onClick={() => onClose(false)}
                 >
                   <span className='sr-only'>Close menu</span>
-                  <XMarkIcon className='size-6' aria-hidden='true' />
+                  <X className='size-6' aria-hidden='true' />
                 </button>
               </div>
               <div className='mt-6 flow-root'>
@@ -96,7 +100,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
                       <Link
                         key={item.name}
                         to={item.href}
-                        className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
+                        className='-mx-3 block rounded-lg px-3 py-2 text-base leading-7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
                         onClick={() => onClose(false)}
                       >
                         {item.name}
@@ -105,14 +109,14 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
                     <Link
                       key={'privacy'}
                       to={'/privacy'}
-                      className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
+                      className='-mx-3 block rounded-lg px-3 py-2 text-base leading-7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
                     >
                       Privacy Policy
                     </Link>
                     <Link
                       key={'tos'}
                       to={'/tos'}
-                      className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
+                      className='-mx-3 block rounded-lg px-3 py-2 text-base leading-7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
                     >
                       Terms and Conditions
                     </Link>
@@ -122,7 +126,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
                       <>
                         <Link
                           to='/profile'
-                          className='-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
+                          className='-mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
                         >
                           Profile
                         </Link>
@@ -130,7 +134,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
                           href={`${env.VITE_API_URL}/api/auth/logout?redirect=${
                             window.location.origin
                           }`}
-                          className='-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 dark:text-gray-200  dark:hover:bg-neutral-700'
+                          className='-mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
                         >
                           Log out
                         </a>
@@ -140,7 +144,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
                         href={`${env.VITE_API_URL}/api/auth/login?redirect=${
                           window.location.href
                         }`}
-                        className='-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 dark:text-gray-200  dark:hover:bg-neutral-700'
+                        className='-mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
                       >
                         Log in
                       </a>

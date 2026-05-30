@@ -33,8 +33,10 @@ impl From<&str> for Requirement {
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub enum Operator {
+  /// All requirements must be satisfied.
   #[serde(rename = "AND")]
   And,
+  /// Any requirement may be satisfied.
   #[serde(rename = "OR")]
   Or,
 }
@@ -55,10 +57,14 @@ impl Into<Bson> for Operator {
 #[serde(rename_all = "camelCase")]
 #[typeshare]
 pub enum ReqNode {
+  /// A single course code requirement.
   Course(String),
   #[schema(no_recursion)]
+  /// A group of requirement nodes combined by an operator.
   Group {
+    /// Operator used to combine the child nodes.
     operator: Operator,
+    /// Child requirement nodes in the group.
     groups: Vec<ReqNode>,
   },
 }
@@ -151,7 +157,6 @@ impl Default for ReqNode {
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-#[typeshare]
 pub struct Requirements {
   pub prerequisites_text: Option<String>,
   pub corequisites_text: Option<String>,

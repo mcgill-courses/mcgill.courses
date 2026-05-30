@@ -1,60 +1,53 @@
 import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import courseAverageData from '../assets/course-averages-data.json';
 import { AddReviewForm } from '../components/add-review-form';
 import { CourseAverages } from '../components/course-averages';
 import { CourseInfo } from '../components/course-info';
 import { CourseRequirements } from '../components/course-requirements';
 import { CourseReview, ReviewAttachment } from '../components/course-review';
 import { CourseReviewPrompt } from '../components/course-review-prompt';
+import { CourseSchedule } from '../components/course-schedule';
 import { EditReviewForm } from '../components/edit-review-form';
 import { FinalExamRow } from '../components/final-exam-row';
 import { Layout } from '../components/layout';
 import { NotFound } from '../components/not-found';
 import { ReviewEmptyPrompt } from '../components/review-empty-prompt';
 import { ReviewFilter, ReviewSortType } from '../components/review-filter';
-import { SchedulesDisplay } from '../components/schedules-display';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
-import type { Review } from '../lib/types';
-import { Interaction } from '../lib/types';
+import type { Course, CourseAverage, Interaction, Review } from '../lib/types';
 import { getCurrentTerms, getReviewAnchorId } from '../lib/utils';
-import type { Course } from '../model/course';
-import { TermAverage } from '../model/term-average';
 import { Loading } from './loading';
 
 export const CoursePage = () => {
-  const params = useParams<{ id: string }>();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const user = useAuth();
   const currentTerms = getCurrentTerms();
-
   const firstFetch = useRef(true);
-  const scrollToReviewId = useRef<string | null>(null);
   const hasAttemptedScroll = useRef(false);
   const highlightTimeoutRef = useRef<number | null>(null);
   const lastScrollTarget = useRef<string | null>(null);
+  const location = useLocation();
+  const params = useParams<{ id: string }>();
+  const scrollToReviewId = useRef<string | null>(null);
+  const user = useAuth();
 
   const [addReviewOpen, setAddReviewOpen] = useState(false);
   const [allReviews, setAllReviews] = useState<Review[] | undefined>(undefined);
-  const [userInteractions, setUserInteractions] = useState<
-    Interaction[] | undefined
-  >([]);
   const [course, setCourse] = useState<Course | null | undefined>(undefined);
+  const [courseAverages, setCourseAverages] = useState<CourseAverage[]>([]);
   const [editReviewOpen, setEditReviewOpen] = useState(false);
-  const [showAllReviews, setShowAllReviews] = useState(false);
-  const [showingReviews, setShowingReviews] = useState<Review[]>([]);
   const [highlightedReviewId, setHighlightedReviewId] = useState<string | null>(
     null
   );
-
-  const [sortBy, setSortBy] = useState<ReviewSortType>('Most Recent');
+  const [interactions, setInteractions] = useState<Interaction[] | undefined>(
+    []
+  );
   const [selectedInstructor, setSelectedInstructor] = useState('');
+  const [showAllReviews, setShowAllReviews] = useState(false);
+  const [showingReviews, setShowingReviews] = useState<Review[]>([]);
+  const [sortBy, setSortBy] = useState<ReviewSortType>('Most Recent');
 
   useEffect(() => {
     firstFetch.current = true;
@@ -63,65 +56,22 @@ export const CoursePage = () => {
   }, [params.id]);
 
   useEffect(() => {
-    const state = location.state as { scrollToReview?: string } | null;
-
     const searchParams = new URLSearchParams(location.search);
     const reviewParam = searchParams.get('review');
-    const searchTarget = searchParams.get('scrollToReview');
 
-    const hashTarget =
-      typeof location.hash === 'string' && location.hash.length > 1
-        ? location.hash.slice(1)
-        : null;
-
-    const normalizeAnchor = (anchor: string) => {
-      const withoutPrefix = anchor.replace(/^(desktop|mobile)-/, '');
-
-      if (!withoutPrefix.startsWith('review-')) {
-        return withoutPrefix;
-      }
-
-      const remainder = withoutPrefix.slice('review-'.length);
-      const lastDashIndex = remainder.lastIndexOf('-');
-      const firstDashIndex = remainder.indexOf('-');
-
-      const hasLegacyPattern =
-        firstDashIndex !== -1 &&
-        lastDashIndex !== -1 &&
-        lastDashIndex > firstDashIndex &&
-        /^\d+$/.test(remainder.slice(lastDashIndex + 1));
-
-      if (hasLegacyPattern) {
-        const userId = remainder.slice(firstDashIndex + 1, lastDashIndex);
-        return `review-${userId}`;
-      }
-
-      return withoutPrefix;
-    };
-
-    const resolvedTarget = state?.scrollToReview
-      ? normalizeAnchor(state.scrollToReview)
-      : reviewParam
-        ? normalizeAnchor(`review-${reviewParam}`)
-        : searchTarget
-          ? normalizeAnchor(searchTarget)
-          : hashTarget
-            ? normalizeAnchor(hashTarget)
-            : null;
-
-    if (resolvedTarget && lastScrollTarget.current !== resolvedTarget) {
-      scrollToReviewId.current = resolvedTarget;
+    if (reviewParam && lastScrollTarget.current !== reviewParam) {
+      scrollToReviewId.current = `review-${reviewParam}`;
       hasAttemptedScroll.current = false;
-      lastScrollTarget.current = resolvedTarget;
+      lastScrollTarget.current = reviewParam;
     }
-  }, [location.hash, location.search, location.state]);
+  }, [location.search]);
 
   const refetch = () => {
     const id = params.id?.replace('-', '').toUpperCase();
 
     const inner = async () => {
       try {
-        const payload = await api.getCourseWithReviews(id);
+        const payload = await api.getCourseById(id);
 
         if (payload === null) {
           setCourse(null);
@@ -132,18 +82,19 @@ export const CoursePage = () => {
 
         setShowingReviews(payload.reviews);
         setAllReviews(payload.reviews);
+        setCourseAverages(payload.courseAverages);
 
         if (user && id) {
           const courseInteractionsPayload =
             await api.getUserInteractionsForCourse(id, user.id);
 
-          setUserInteractions(courseInteractionsPayload.interactions);
+          setInteractions(courseInteractionsPayload.interactions);
         }
 
         firstFetch.current = false;
-      } catch (err) {
+      } catch {
         toast.error(
-          'An error occurred while trying to fetch course information.'
+          'An error occurred while trying to fetch course information'
         );
       }
     };
@@ -176,11 +127,6 @@ export const CoursePage = () => {
       hasAttemptedScroll.current = true;
       scrollToReviewId.current = null;
 
-      navigate(
-        { pathname: location.pathname, search: location.search },
-        { replace: true, state: null }
-      );
-
       return;
     }
 
@@ -201,19 +147,7 @@ export const CoursePage = () => {
         highlightTimeoutRef.current = null;
       }, 1600);
     });
-
-    navigate(
-      { pathname: location.pathname, search: location.search },
-      { replace: true, state: null }
-    );
-  }, [
-    allReviews,
-    location.pathname,
-    location.search,
-    location.state,
-    navigate,
-    showAllReviews,
-  ]);
+  }, [allReviews, showAllReviews]);
 
   useEffect(() => {
     return () => {
@@ -248,11 +182,6 @@ export const CoursePage = () => {
     user && !allReviews?.find((r) => r.userId === user?.id)
   );
 
-  const allCourseAverages: Record<string, TermAverage[]> =
-    courseAverageData as Record<string, TermAverage[]>;
-
-  const courseAverages: TermAverage[] = allCourseAverages[course._id];
-
   const handleSubmit = (successMessage: string) => {
     return (res: Response) => {
       if (res.ok) {
@@ -260,7 +189,7 @@ export const CoursePage = () => {
         setAddReviewOpen(false);
         refetch();
       } else {
-        toast.error('An error occurred.');
+        toast.error('An error occurred');
       }
     };
   };
@@ -279,7 +208,7 @@ export const CoursePage = () => {
       );
     }
 
-    handleSubmit('Review deleted successfully.')(res);
+    handleSubmit('Review deleted successfully')(res);
 
     localStorage.removeItem(course._id);
   };
@@ -293,7 +222,7 @@ export const CoursePage = () => {
         );
 
         if (r === undefined) {
-          toast.error("Can't update likes for review that doesn't exist.");
+          toast.error("Can't update likes for review that doesn't exist");
           return;
         }
 
@@ -339,7 +268,7 @@ export const CoursePage = () => {
         <div className='hidden gap-x-6 lg:grid lg:grid-cols-5'>
           <div className='col-span-3'>
             <FinalExamRow course={course} className='mb-4' />
-            <SchedulesDisplay
+            <CourseSchedule
               course={course}
               className={canReview ? 'mb-4' : ''}
             />
@@ -380,7 +309,7 @@ export const CoursePage = () => {
                       handleDelete={() => handleDelete(userReview)}
                       openEditReview={() => setEditReviewOpen(true)}
                       review={userReview}
-                      interactions={userInteractions}
+                      interactions={interactions}
                       attachment={ReviewAttachment.CopyButton}
                       updateLikes={updateLikes(userReview)}
                     />
@@ -392,7 +321,7 @@ export const CoursePage = () => {
                       user ? review.userId !== user.id : true
                     )
                     .slice(0, showAllReviews ? showingReviews.length : 8)
-                    .map((review, i) => {
+                    .map((review) => {
                       const desktopAnchorId = `desktop-${getReviewAnchorId(review)}`;
 
                       return (
@@ -400,9 +329,9 @@ export const CoursePage = () => {
                           anchorId={desktopAnchorId}
                           highlighted={highlightedReviewId === desktopAnchorId}
                           canModify={Boolean(user && review.userId === user.id)}
-                          interactions={userInteractions}
+                          interactions={interactions}
                           handleDelete={() => handleDelete(review)}
-                          key={i}
+                          key={desktopAnchorId}
                           openEditReview={() => setEditReviewOpen(true)}
                           review={review}
                           attachment={ReviewAttachment.CopyButton}
@@ -448,7 +377,7 @@ export const CoursePage = () => {
             )}
           </div>
           <FinalExamRow course={course} className='mb-4' />
-          <SchedulesDisplay course={course} />
+          <CourseSchedule course={course} />
           <div className='mt-4 flex w-full flex-row justify-between'>
             <div className='w-full'>
               {canReview && (
@@ -489,7 +418,7 @@ export const CoursePage = () => {
                         handleDelete={() => handleDelete(userReview)}
                         openEditReview={() => setEditReviewOpen(true)}
                         review={userReview}
-                        interactions={userInteractions}
+                        interactions={interactions}
                         attachment={ReviewAttachment.CopyButton}
                         updateLikes={updateLikes(userReview)}
                       />
@@ -501,7 +430,7 @@ export const CoursePage = () => {
                         user ? review.userId !== user.id : true
                       )
                       .slice(0, showAllReviews ? showingReviews.length : 8)
-                      .map((review, i) => {
+                      .map((review) => {
                         const mobileAnchorId = `mobile-${getReviewAnchorId(review)}`;
 
                         return (
@@ -512,10 +441,10 @@ export const CoursePage = () => {
                               user && review.userId === user.id
                             )}
                             handleDelete={() => handleDelete(review)}
-                            key={i}
+                            key={mobileAnchorId}
                             openEditReview={() => setEditReviewOpen(true)}
                             review={review}
-                            interactions={userInteractions}
+                            interactions={interactions}
                             attachment={ReviewAttachment.CopyButton}
                             updateLikes={updateLikes(review)}
                           />
@@ -546,7 +475,7 @@ export const CoursePage = () => {
           course={course}
           open={addReviewOpen}
           onClose={() => setAddReviewOpen(false)}
-          handleSubmit={handleSubmit('Review added successfully.')}
+          handleSubmit={handleSubmit('Review added successfully')}
         />
         {userReview && (
           <EditReviewForm
@@ -554,7 +483,7 @@ export const CoursePage = () => {
             open={editReviewOpen}
             onClose={() => setEditReviewOpen(false)}
             review={userReview}
-            handleSubmit={handleSubmit('Review edited successfully.')}
+            handleSubmit={handleSubmit('Review edited successfully')}
           />
         )}
       </div>

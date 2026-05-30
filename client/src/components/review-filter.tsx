@@ -1,8 +1,8 @@
-import uniq from 'lodash/uniq';
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from 'react';
 
 import type { Review } from '../lib/types';
-import type { Course } from '../model/course';
+import type { Course } from '../lib/types';
+import { uniq } from '../lib/utils';
 import { Autocomplete } from './autocomplete';
 import { ResetButton } from './reset-button';
 
@@ -102,11 +102,11 @@ export const ReviewFilter = ({
 
   return (
     <div className='rounded-lg dark:bg-neutral-900 dark:text-gray-200'>
-      <div className='relative mt-6 xs:mt-0 xs:flex xs:items-center'>
+      <div className='xs:mt-0 xs:flex xs:items-center relative mt-6'>
         <div className='p-1'>
           <div className='flex max-w-sm gap-x-2'>
-            <div className='w-2/5 xs:max-w-56'>
-              <h2 className='mb-2 text-sm font-medium text-gray-600 dark:text-gray-400'>
+            <div className='xs:max-w-56 w-2/5'>
+              <h2 className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
                 Sort By
               </h2>
               <div className='relative z-10'>
@@ -117,8 +117,8 @@ export const ReviewFilter = ({
                 />
               </div>
             </div>
-            <div className='w-3/5 xs:w-auto'>
-              <h2 className='mb-2 text-sm font-medium text-gray-600 dark:text-gray-400'>
+            <div className='xs:w-auto w-3/5'>
+              <h2 className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
                 Instructor
               </h2>
               <div className='relative z-10'>
@@ -132,7 +132,7 @@ export const ReviewFilter = ({
           </div>
         </div>
         <ResetButton
-          className='absolute -top-2 right-2 xs:static xs:mt-6 '
+          className='xs:static xs:mt-6 absolute -top-2 right-2'
           onClear={reset}
         />
       </div>

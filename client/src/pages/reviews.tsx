@@ -31,7 +31,7 @@ export const Reviews = () => {
         setUniqueUserCount(data.uniqueUserCount);
       })
       .catch(() => {
-        toast.error('Failed to fetch reviews. Please try again later.');
+        toast.error('Failed to fetch reviews, please try again later');
       });
     setHasMore(true);
     setOffset(limit);
@@ -43,7 +43,7 @@ export const Reviews = () => {
     if (batch.reviews.length === 0) setHasMore(false);
     else {
       setReviews(reviews?.concat(batch.reviews));
-      setOffset(offset + limit);
+      setOffset((prev) => prev + limit);
     }
   };
 
@@ -81,7 +81,7 @@ export const Reviews = () => {
 
       <div className='flex flex-col items-center py-8'>
         <div className='mb-16'>
-          <h1 className='text-center text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-200 sm:text-5xl'>
+          <h1 className='text-center text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-gray-200'>
             What people are saying
           </h1>
           <p className='mt-2 text-center text-gray-600 dark:text-gray-400'>

@@ -9,12 +9,7 @@ import { termColorMap } from './course-terms';
 import { MultiSelect } from './multi-select';
 import { ResetButton } from './reset-button';
 
-const termsOptions = ['Fall', 'Winter', 'Summer'] as const;
-type CourseTerm = (typeof termsOptions)[number];
-
-const levelsOptions = ['1XX', '2XX', '3XX', '4XX', '5XX', '6XX', '7XX'];
-
-const sortByOptions = [
+const SORT_BY_OPTIONS = [
   '',
   'Highest Rating',
   'Lowest Rating',
@@ -23,7 +18,12 @@ const sortByOptions = [
   'Most Reviews',
   'Least Reviews',
 ] as const;
-export type SortByType = (typeof sortByOptions)[number];
+const LEVEL_OPTIONS = ['1XX', '2XX', '3XX', '4XX', '5XX', '6XX', '7XX'];
+const TERM_OPTIONS = ['Fall', 'Winter', 'Summer'] as const;
+
+export type SortByType = (typeof SORT_BY_OPTIONS)[number];
+
+type CourseTerm = (typeof TERM_OPTIONS)[number];
 
 type ExploreFilterProp = {
   variant: 'mobile' | 'desktop';
@@ -60,7 +60,7 @@ const FilterButton = ({
   return (
     <button
       className={twMerge(
-        'rounded-full px-2 py-1 text-sm font-medium tracking-wider transition duration-150 ease-in-out',
+        'cursor-pointer rounded-full px-2 py-1 text-sm font-medium tracking-wider transition duration-150 ease-in-out',
         selected ? selectedColor : unselectedColor,
         className
       )}
@@ -93,6 +93,12 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
     setSortBy,
   } = useExploreFilterState();
 
+  const hasActiveFilters =
+    selectedSubjects.length > 0 ||
+    selectedLevels.length > 0 ||
+    selectedTerms.length > 0 ||
+    sortBy !== '';
+
   const termToIcon = (term: CourseTerm) => {
     switch (term) {
       case 'Fall':
@@ -108,31 +114,33 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
     <div
       className={twMerge(
         variant === 'mobile' ? 'w-full' : 'w-[340px]',
-        'relative flex h-fit flex-col flex-wrap rounded-lg bg-slate-50 px-8 py-6 dark:bg-neutral-800 dark:text-gray-200'
+        'relative flex h-fit flex-col flex-wrap rounded-lg bg-slate-50 px-6 py-4 lg:px-8 lg:py-6 dark:bg-neutral-800 dark:text-gray-200'
       )}
     >
-      <ResetButton
-        className='absolute right-4 top-4'
-        onClear={() => {
-          setSelectedSubjects([]);
-          setSelectedLevels([]);
-          setSelectedTerms([]);
-          setSortBy('');
-        }}
-      />
-      <h1 className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
+      {hasActiveFilters && (
+        <ResetButton
+          className='absolute top-2 right-2 lg:top-4 lg:right-4'
+          onClear={() => {
+            setSelectedSubjects([]);
+            setSelectedLevels([]);
+            setSelectedTerms([]);
+            setSortBy('');
+          }}
+        />
+      )}
+      <h1 className='text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
         Sort By
       </h1>
       <div className='py-1' />
       <div className='relative z-20'>
         <Autocomplete
-          options={sortByOptions}
+          options={SORT_BY_OPTIONS}
           value={sortBy}
           setValue={setSortBy}
         />
       </div>
       <div className='py-2.5' />
-      <h1 className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
+      <h1 className='text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
         Subject
       </h1>
       <div className='py-1' />
@@ -144,14 +152,14 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
         />
       </div>
       <div className='py-2.5' />
-      <h1 className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
+      <h1 className='text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
         Level
       </h1>
       <div className='py-1' />
       <div className='flex flex-wrap gap-2 py-1'>
-        {levelsOptions.map((level, i) => (
+        {LEVEL_OPTIONS.map((level) => (
           <FilterButton
-            key={i}
+            key={level}
             name={level}
             isSelected={selectedLevels.includes(level)}
             selections={selectedLevels}
@@ -160,14 +168,14 @@ export const ExploreFilter = ({ variant }: ExploreFilterProp) => {
         ))}
       </div>
       <div className='py-2.5' />
-      <h1 className='text-sm font-semibold text-gray-600 dark:text-gray-400'>
+      <h1 className='text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
         Term
       </h1>
       <div className='py-1' />
       <div className='flex flex-wrap gap-2'>
-        {termsOptions.map((term, i) => (
+        {TERM_OPTIONS.map((term) => (
           <FilterButton
-            key={i}
+            key={term}
             icon={termToIcon(term as CourseTerm)}
             selectedClass={termColorMap[term.toLowerCase()]}
             name={term}

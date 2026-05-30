@@ -1,4 +1,4 @@
-import { Bars3Icon } from '@heroicons/react/24/outline';
+import { Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -6,9 +6,12 @@ import { toast } from 'sonner';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
 import { env } from '../lib/env';
-import { getSearchIndex, updateSearchResults } from '../lib/search-index';
+import {
+  type SearchResults,
+  getSearchIndex,
+  updateSearchResults,
+} from '../lib/search-index';
 import type { Notification } from '../lib/types';
-import type { SearchResults } from '../model/search-results';
 import { CourseSearchBar } from './course-search-bar';
 import { DarkModeToggle } from './dark-mode-toggle';
 import { Logo } from './logo';
@@ -44,7 +47,7 @@ export const Navbar = () => {
     api
       .getNotifications()
       .then((data) => setNotifications(data))
-      .catch(() => toast.error('Failed to get notifications.'));
+      .catch(() => toast.error('Failed to get notifications'));
   }, []);
 
   const handleInputChange = (query: string) => {
@@ -101,8 +104,9 @@ export const Navbar = () => {
             onClick={() => setMobileMenuOpen(true)}
           >
             <span className='sr-only'>Open main menu</span>
-            <Bars3Icon
-              className='size-6 stroke-2 text-gray-400'
+            <Menu
+              className='size-6 text-gray-400'
+              strokeWidth={2}
               aria-hidden='true'
             />
           </button>
@@ -125,7 +129,7 @@ export const Navbar = () => {
                 href={`${env.VITE_API_URL}/api/auth/login?redirect=${
                   window.location.href
                 }`}
-                className='my-auto text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200'
+                className='my-auto text-sm leading-6 font-semibold text-gray-900 dark:text-gray-200'
                 onMouseEnter={() => setArrowColor('text-red-600')}
                 onMouseLeave={() =>
                   setArrowColor('text-gray-900 dark:text-gray-200')

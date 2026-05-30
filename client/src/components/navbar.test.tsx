@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { env } from '../lib/env';
+import { routerFutureConfig } from '../testing/router-wrapper';
 import { Navbar } from './navbar';
 
 const getNotificationsMock = vi.hoisted(() => vi.fn());
@@ -66,7 +67,7 @@ vi.mock('./notification-dropdown', () => ({
   }) => {
     notificationRenderMock(props);
     return (
-      <div
+      <button
         data-testid='notification-dropdown'
         data-count={props.notifications.length}
         onClick={() => props.setNotifications(props.notifications)}
@@ -83,7 +84,7 @@ vi.mock('./side-nav', () => ({
   SideNav: (props: { open: boolean; onClose: (open: boolean) => void }) => {
     sideNavRenderMock(props);
     return (
-      <div
+      <button
         data-testid='side-nav'
         data-open={props.open}
         onClick={() => props.onClose(false)}
@@ -117,7 +118,7 @@ describe('Navbar', () => {
 
   const renderNavbar = (initialPath: string) =>
     render(
-      <MemoryRouter initialEntries={[initialPath]}>
+      <MemoryRouter initialEntries={[initialPath]} future={routerFutureConfig}>
         <Navbar />
       </MemoryRouter>
     );

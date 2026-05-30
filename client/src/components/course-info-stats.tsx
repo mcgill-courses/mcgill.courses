@@ -1,11 +1,10 @@
-import sum from 'lodash/sum';
 import { Flame, LucideIcon } from 'lucide-react';
 import { ComponentType, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { useMediaQuery } from '../hooks/use-media-query';
 import type { Review } from '../lib/types';
-import { round2Decimals } from '../lib/utils';
+import { round2Decimals, sum } from '../lib/utils';
 import { BirdIcon } from './bird-icon';
 import { Histogram } from './histogram';
 
@@ -46,7 +45,7 @@ const FillBar = ({ width, percentage, text, variant }: FillBarProps) => {
         )}
         style={{ width: !loaded ? 0 : (percentage / 100) * width }}
       />
-      <div className='absolute inset-y-0 flex w-full justify-center text-sm font-bold leading-4 text-white'>
+      <div className='absolute inset-y-0 flex w-full justify-center text-sm leading-4 font-bold text-white'>
         {text}
       </div>
     </div>
@@ -56,7 +55,7 @@ const FillBar = ({ width, percentage, text, variant }: FillBarProps) => {
 type StatProps = {
   title: string;
   value: number;
-  icon: LucideIcon | ComponentType<any>;
+  icon: LucideIcon | ComponentType<{ className?: string; size?: number }>;
   variant: Size;
 };
 
@@ -67,7 +66,7 @@ const Stat = ({ title, value, icon: Icon, variant }: StatProps) => {
         <Icon className='-mt-0.5 stroke-red-600' size={18} />
         <div
           className={twMerge(
-            'mb-0.5 text-xs font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400'
+            'mb-0.5 text-xs font-medium tracking-wider text-gray-600 uppercase dark:text-gray-400'
           )}
         >
           {title}
@@ -103,15 +102,7 @@ export const CourseInfoStats = ({
   const averageDifficulty = sum(difficulties) / reviews.length;
 
   return (
-    <div
-      className={twMerge(
-        'flex gap-x-4 bg-transparent',
-        variant === 'large'
-          ? 'flex-col gap-y-1 lg:flex-row lg:gap-x-2'
-          : 'flex-row',
-        className
-      )}
-    >
+    <div className={twMerge('flex gap-x-4 bg-transparent', className)}>
       <div className='md:rounded-xl md:p-2'>
         <Stat
           title='Rating'

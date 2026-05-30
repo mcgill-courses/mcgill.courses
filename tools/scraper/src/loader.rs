@@ -16,7 +16,7 @@ pub(crate) struct Loader {
   course_delay: u64,
   #[clap(
     long,
-    default_values = ["2025-2026",],
+    default_values = ["2026-2027",],
     help = "The mcgill terms to scrape"
   )]
   mcgill_terms: Vec<String>,
@@ -34,7 +34,7 @@ pub(crate) struct Loader {
   user_agent: String,
   #[clap(
     long,
-    default_values = ["202505", "202509", "202601"],
+    default_values = ["202605", "202609", "202701"],
     help = "The schedule builder terms to scrape"
   )]
   vsb_terms: Vec<usize>,
@@ -44,16 +44,41 @@ impl Loader {
   const BASE_URL: &str = "https://coursecatalogue.mcgill.ca";
 
   pub(crate) fn run(&self, cookie: &str) -> Result<()> {
-    info!("Running extractor...");
+    info!(
+      "Starting loader: batch_size={}, terms={:?}, vsb_enabled={}, vsb_terms={:?}",
+      self.batch_size, self.mcgill_terms, self.scrape_vsb, self.vsb_terms
+    );
 
     for (index, term) in self.mcgill_terms.iter().enumerate() {
+      info!(
+        "Processing term {} ({}/{})",
+        term,
+        index + 1,
+        self.mcgill_terms.len()
+      );
+
       let scrape_vsb = self.scrape_vsb && index == self.mcgill_terms.len() - 1;
+
+      if scrape_vsb {
+        info!("VSB scraping enabled for this term");
+      }
 
       let urls = self.get_course_urls()?;
 
+      info!("Found {} course URLs to scrape", urls.len());
+
       let mut courses = Vec::new();
 
-      for chunk in urls.chunks(self.batch_size) {
+      let total_batches = urls.len().div_ceil(self.batch_size);
+
+      for (batch_index, chunk) in urls.chunks(self.batch_size).enumerate() {
+        info!(
+          "Processing batch {}/{} ({} courses)",
+          batch_index + 1,
+          total_batches,
+          chunk.len()
+        );
+
         let chunk = chunk
           .par_iter()
           .map(|url| {
@@ -65,8 +90,22 @@ impl Loader {
           })
           .collect::<Result<Vec<Option<Course>>, _>>()?;
 
+        let parsed_count = chunk.iter().filter(|c| c.is_some()).count();
+
+        let skipped_count = chunk.len() - parsed_count;
+
+        info!(
+          "Batch {}/{} complete: {} parsed, {} skipped",
+          batch_index + 1,
+          total_batches,
+          parsed_count,
+          skipped_count
+        );
+
         courses.extend(chunk.into_iter().flatten());
       }
+
+      let pre_dedup_count = courses.len();
 
       let mut courses = courses
         .into_iter()
@@ -77,6 +116,21 @@ impl Loader {
 
       courses.sort();
 
+      let empty_title_count = pre_dedup_count - courses.len();
+
+      if empty_title_count > 0 {
+        warn!(
+          "Filtered out {} courses with empty titles",
+          empty_title_count
+        );
+      }
+
+      info!(
+        "Deduplication complete: {} unique courses (removed {} duplicates)",
+        courses.len(),
+        pre_dedup_count.saturating_sub(courses.len())
+      );
+
       let source = if self.source.is_dir() {
         self.source.join(format!("courses-{term}.json"))
       } else {
@@ -84,10 +138,15 @@ impl Loader {
       };
 
       if source.exists() {
-        info!("Merging with existing courses...");
-
         let sourced =
           serde_json::from_str::<Vec<Course>>(&fs::read_to_string(&source)?)?;
+
+        info!(
+          "Merging with existing file {:?}: {} existing courses + {} new courses",
+          source,
+          sourced.len(),
+          courses.len()
+        );
 
         let mut merged = courses
           .iter()
@@ -103,19 +162,29 @@ impl Loader {
         let courses = &self.post_process(&mut merged)?;
 
         fs::write(&source, serde_json::to_string_pretty(&courses)?)?;
+
+        info!("Wrote {} courses to {:?}", courses.len(), source);
       } else {
-        fs::write(
-          &source,
-          serde_json::to_string_pretty(&self.post_process(&mut courses)?)?,
-        )?;
+        info!("Creating new file {:?}", source);
+
+        let processed = self.post_process(&mut courses)?;
+
+        fs::write(&source, serde_json::to_string_pretty(&processed)?)?;
+
+        info!("Wrote {} courses to {:?}", processed.len(), source);
       }
     }
+
+    info!("Loader finished successfully");
 
     Ok(())
   }
 
   fn post_process(&self, courses: &mut [Course]) -> Result<Vec<Course>> {
-    info!("Post processing courses...");
+    info!(
+      "Post processing {} courses: computing leading_to relationships",
+      courses.len()
+    );
 
     let mapping = courses
       .iter()
@@ -138,10 +207,22 @@ impl Loader {
       courses[i].leading_to = leading_to;
     }
 
+    let courses_with_leading_to = courses
+      .iter()
+      .filter(|course| !course.leading_to.is_empty())
+      .count();
+
+    info!(
+      "Post processing complete: {} courses have leading_to relationships",
+      courses_with_leading_to
+    );
+
     Ok(courses.to_vec())
   }
 
   fn get_course_urls(&self) -> Result<Vec<String>> {
+    info!("Fetching course catalog from {}/courses", Self::BASE_URL);
+
     let client = Client::builder().user_agent(&self.user_agent).build()?;
 
     let page = client
@@ -149,7 +230,11 @@ impl Loader {
       .retry(self.retries)?
       .text()?;
 
-    course_extractor::extract_course_urls(&page)
+    let urls = course_extractor::extract_course_urls(&page)?;
+
+    info!("Extracted {} course URLs from catalog", urls.len());
+
+    Ok(urls)
   }
 
   fn parse_course(
@@ -158,30 +243,49 @@ impl Loader {
     cookie: &str,
     scrape_vsb: bool,
   ) -> Result<Option<Course>> {
-    info!("{url}");
-
     let client = Client::builder().user_agent(&self.user_agent).build()?;
 
     let course_page = {
       let response = client.get(url).retry(self.retries)?;
 
       if response.status() == reqwest::StatusCode::NOT_FOUND {
-        info!("Page for {url} not found, skipping...");
+        warn!("Course page not found (404): {}", url);
         return Ok(None);
       }
 
       let mut course_page =
         course_extractor::extract_course_page(&response.text()?);
 
+      let mut retry_count = 0;
+
       while course_page.is_err() {
-        warn!("Retrying course page: {url}");
+        if retry_count >= self.retries {
+          warn!(
+            "Failed to parse course page after {} retries, skipping: {} - {:?}",
+            self.retries,
+            url,
+            course_page.as_ref().err()
+          );
+
+          return Ok(None);
+        }
+
+        retry_count += 1;
+
+        warn!(
+          "Failed to parse course page, retrying ({}/{}): {} - {:?}",
+          retry_count,
+          self.retries,
+          url,
+          course_page.as_ref().err()
+        );
 
         thread::sleep(Duration::from_millis(500));
 
         let response = client.get(url).retry(self.retries)?;
 
         if response.status() == reqwest::StatusCode::NOT_FOUND {
-          info!("Page for {url} not found, skipping...");
+          warn!("Course page not found (404) on retry: {}", url);
           return Ok(None);
         };
 
@@ -192,19 +296,31 @@ impl Loader {
     };
 
     info!(
-      "Parsed course {}{}",
-      &course_page.subject, &course_page.code
+      "Parsed {}{}: \"{}\" ({} credits)",
+      &course_page.subject,
+      &course_page.code,
+      &course_page.title,
+      &course_page.credits
     );
 
     thread::sleep(Duration::from_millis(self.course_delay));
 
+    let course_id = format!("{}-{}", course_page.subject, course_page.code);
+
     let schedule = if scrape_vsb {
-      Some(
-        VsbClient::new(&self.user_agent, cookie, self.retries)?.schedule(
-          &format!("{}-{}", course_page.subject, course_page.code),
-          self.vsb_terms.clone(),
-        )?,
-      )
+      info!("Fetching VSB schedule for {}", course_id);
+
+      let vsb_schedule =
+        VsbClient::new(&self.user_agent, cookie, self.retries)?
+          .schedule(&course_id, self.vsb_terms.clone())?;
+
+      info!(
+        "Retrieved {} schedule entries from VSB for {}",
+        vsb_schedule.len(),
+        course_id
+      );
+
+      Some(vsb_schedule)
     } else {
       None
     };
@@ -214,7 +330,7 @@ impl Loader {
     let schedule_info = schedule.clone().map(|schedules| {
       let mut terms = schedules
         .iter()
-        .filter_map(|s| s.term.clone())
+        .filter_map(|schedule| schedule.term.clone())
         .collect::<Vec<_>>();
 
       utils::dedup(&mut terms);
@@ -225,6 +341,13 @@ impl Loader {
         if let Some(blocks) = schedule.blocks {
           for block in blocks {
             for instructor in block.instructors {
+              info!(
+                "[{}] Extracted instructor: '{}' (term: {})",
+                course_id,
+                instructor,
+                schedule.term.as_deref().unwrap_or("unknown")
+              );
+
               instructors.push(Instructor {
                 name: instructor,
                 term: schedule.term.clone().unwrap_or_default(),
@@ -235,7 +358,19 @@ impl Loader {
         }
       }
 
+      let pre_dedup_instructors = instructors.len();
+
       utils::dedup(&mut instructors);
+
+      if !instructors.is_empty() {
+        info!(
+          "[{}] Found {} unique instructors for {} terms (removed {} duplicates)",
+          course_id,
+          instructors.len(),
+          terms.len(),
+          pre_dedup_instructors - instructors.len()
+        );
+      }
 
       (terms, instructors)
     });

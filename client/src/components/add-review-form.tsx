@@ -6,7 +6,7 @@ import { twMerge } from 'tailwind-merge';
 
 import { useDarkMode } from '../hooks/use-dark-mode';
 import { api } from '../lib/api';
-import type { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import {
   ReviewForm,
   ReviewFormInitialValues,
@@ -30,14 +30,14 @@ export const AddReviewForm = ({
 
   const initialValues: ReviewFormInitialValues = {
     content: '',
+    difficulty: 0,
     instructors: [],
     rating: 0,
-    difficulty: 0,
   };
 
   const handleClose = () => {
     onClose();
-    toast.success('Review draft saved.');
+    toast.success('Review draft saved');
   };
 
   return (
@@ -73,7 +73,7 @@ export const AddReviewForm = ({
               <Dialog.Panel className='w-[448px] overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-neutral-800'>
                 <Dialog.Title
                   as='h3'
-                  className='mb-4 text-lg font-medium leading-6 text-gray-900 dark:text-gray-200'
+                  className='mb-4 text-lg leading-6 font-medium text-gray-900 dark:text-gray-200'
                 >
                   {`Reviewing ${course.subject} ${course.code} - ${course.title}`}
                 </Dialog.Title>
@@ -81,7 +81,10 @@ export const AddReviewForm = ({
                   initialValues={initialValues}
                   validationSchema={ReviewSchema}
                   onSubmit={async (values, actions) => {
-                    const res = await api.addReview(course._id, values);
+                    const res = await api.addReview({
+                      ...values,
+                      course_id: course._id,
+                    });
                     actions.setSubmitting(false);
                     onClose();
                     handleSubmit(res);

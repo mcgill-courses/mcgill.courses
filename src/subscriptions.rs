@@ -1,48 +1,45 @@
 use super::*;
 
-#[derive(Debug, Deserialize, ToSchema)]
-pub(crate) struct GetSubscriptionParams {
-  /// Course ID to fetch a subscription for.
-  course_id: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
-#[serde(untagged)]
-pub(crate) enum SubscriptionResponse {
-  /// Single subscription (or `null` if not found).
-  Single(Option<Subscription>),
-  /// List of subscriptions for the authenticated user.
-  Multiple(Vec<Subscription>),
+#[utoipa::path(
+  get,
+  path = "/subscriptions",
+  description = "Get all subscriptions for the authenticated user.",
+  security(
+    ("microsoftOAuth" = ["User.Read"])
+  ),
+  responses(
+    (status = StatusCode::OK, description = "List of subscriptions for the user.", body = Vec<Subscription>),
+    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
+  )
+)]
+pub(crate) async fn get_subscriptions(
+  user: User,
+  AppState(db): AppState<Arc<Db>>,
+) -> Result<impl IntoResponse> {
+  Ok(Json(db.get_subscriptions(&user.id()).await?))
 }
 
 #[utoipa::path(
   get,
-  path = "/subscriptions",
-  description = "Get subscriptions for the authenticated user.",
+  path = "/subscriptions/{course_id}",
+  description = "Get a specific subscription for the authenticated user.",
   params(
-    ("course_id" = Option<String>, Query, description = "Course ID to fetch a specific subscription for.")
+    ("course_id" = String, Path, description = "Course ID to fetch a subscription for.")
   ),
   security(
     ("microsoftOAuth" = ["User.Read"])
   ),
   responses(
-    (status = StatusCode::OK, description = "Subscription information for the user.", body = SubscriptionResponse),
+    (status = StatusCode::OK, description = "The requested subscription, or `null` if not found.", body = Option<Subscription>),
     (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
   )
 )]
 pub(crate) async fn get_subscription(
   user: User,
+  Path(course_id): Path<String>,
   AppState(db): AppState<Arc<Db>>,
-  params: Query<GetSubscriptionParams>,
 ) -> Result<impl IntoResponse> {
-  Ok(Json(match &params.course_id {
-    Some(course_id) => SubscriptionResponse::Single(
-      db.get_subscription(&user.id(), course_id).await?,
-    ),
-    None => {
-      SubscriptionResponse::Multiple(db.get_subscriptions(&user.id()).await?)
-    }
-  }))
+  Ok(Json(db.get_subscription(&user.id(), &course_id).await?))
 }
 
 #[derive(Debug, Deserialize, ToSchema)]

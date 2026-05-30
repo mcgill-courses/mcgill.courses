@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
 import type { Review, Subscription } from '../lib/types';
-import type { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import { CourseDescription } from './course-description';
 import { CourseInfoStats } from './course-info-stats';
 import { CourseTerms } from './course-terms';
@@ -54,11 +54,11 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
         userId: user.id,
       });
 
-      toast.success(`Subscribed to course ${course.subject} ${course.code}.`);
+      toast.success(`Subscribed to course ${course.subject} ${course.code}`);
     },
     onError: () => {
       toast.error(
-        `Failed to subscribe to course ${course.subject} ${course.code}.`
+        `Failed to subscribe to course ${course.subject} ${course.code}`
       );
     },
   });
@@ -85,14 +85,14 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
   const reviewLabel = reviewCount === 1 ? 'review' : 'reviews';
 
   return (
-    <div className='relative flex w-full flex-row rounded-md bg-slate-50 px-6 pt-8 shadow-sm dark:bg-neutral-800 md:mt-10'>
+    <div className='relative flex w-full flex-row rounded-md bg-slate-50 px-6 pt-8 shadow-sm md:mt-10 dark:bg-neutral-800'>
       <div className='flex w-full flex-col md:w-7/12'>
         <div className='flex flex-row space-x-2 align-middle'>
           <div className='flex items-center space-x-2'>
             <h1 className='text-3xl font-semibold text-gray-800 dark:text-gray-200'>
               {course.subject} {course.code}
             </h1>
-            <div className='flex h-6 items-center rounded-full bg-slate-200 px-2 text-xs font-medium dark:bg-neutral-700 dark:text-gray-300 '>
+            <div className='flex h-6 items-center rounded-full bg-slate-200 px-2 text-xs font-medium dark:bg-neutral-700 dark:text-gray-300'>
               {course.credits} {course.credits === '1' ? 'Credit' : 'Credits'}
             </div>
           </div>
@@ -133,13 +133,16 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
         </h2>
         <CourseTerms course={course} variant='large' />
         <div className='py-1' />
-        <p className='break-words text-gray-500 dark:text-gray-400'>
+        <p className='wrap-break-word text-gray-500 dark:text-gray-400'>
           <CourseDescription description={course.description} />
         </p>
         <div className='grow py-3' />
-        <CourseInfoStats className='mb-4 sm:hidden' reviews={reviews} />
         <CourseInfoStats
-          className='hidden gap-x-6 sm:mb-6 sm:flex md:mb-0 md:hidden'
+          className='mb-4 flex-row sm:hidden'
+          reviews={reviews}
+        />
+        <CourseInfoStats
+          className='hidden flex-row gap-x-6 sm:mb-6 sm:flex md:mb-0 md:hidden'
           variant='medium'
           reviews={reviews}
         />
@@ -147,11 +150,11 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
           {reviewCount} {reviewLabel}
         </p>
       </div>
-      <div className='hidden w-5/12 justify-center rounded-md bg-neutral-50 py-4 dark:bg-neutral-800 md:mx-5 md:flex lg:ml-12 lg:mt-6 xl:justify-start'>
+      <div className='hidden w-5/12 justify-center rounded-md bg-neutral-50 py-4 md:mx-5 md:flex lg:mt-6 lg:ml-12 xl:justify-start dark:bg-neutral-800'>
         <CourseInfoStats
           variant='large'
           reviews={reviews}
-          className='lg:mr-8'
+          className='flex-col gap-y-1 lg:mr-8 lg:flex-row lg:gap-x-2'
         />
       </div>
     </div>

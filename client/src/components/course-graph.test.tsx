@@ -2,7 +2,7 @@ import { cleanup, render } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Operator } from '../lib/types';
-import type { Course } from '../model/course';
+import type { Course } from '../lib/types';
 import { CourseGraph } from './course-graph';
 
 const navigateMock = vi.fn();
@@ -84,6 +84,9 @@ const baseCourse: Course = {
   leadingTo: ['COMP303'],
   restrictions: '',
   schedule: [],
+  avgRating: 0,
+  avgDifficulty: 0,
+  reviewCount: 0,
 };
 
 describe('CourseGraph', () => {

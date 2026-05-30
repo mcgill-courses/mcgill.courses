@@ -1,27 +1,25 @@
 use {
   bson::Bson,
   chrono::{Datelike, TimeZone, Utc},
-  combine::Combine,
   futures::Future,
-  futures::FutureExt,
   futures::{TryStreamExt, future::join_all},
   itertools::Itertools,
-  lazy_static::lazy_static,
   model::{
-    Course, CourseFilter, CourseSortType, InitializeOptions, Instructor,
-    Interaction, InteractionKind, Notification, Review, ReviewFilter,
-    SearchResults, Subscription,
+    Course, CourseAverage, CourseFilter, CourseSortType, InitializeOptions,
+    Instructor, Interaction, InteractionKind, Notification, Review,
+    ReviewFilter, SearchResults, Subscription,
   },
   mongodb::{
     Client, Cursor, Database, IndexModel,
     bson::{Document, doc},
-    options::UpdateModifications,
-    options::{ClientOptions, FindOptions, IndexOptions, UpdateOptions},
+    options::{ClientOptions, IndexOptions},
     results::{CreateIndexResult, DeleteResult, InsertOneResult, UpdateResult},
   },
-  mongodb::{ClientSession, Collection, options::FindOneAndUpdateOptions},
   serde::{Serialize, de::DeserializeOwned},
-  std::{collections::HashSet, env, fs, num::TryFromIntError, path::PathBuf},
+  std::{
+    collections::HashSet, env, fs, num::TryFromIntError, path::PathBuf,
+    sync::LazyLock,
+  },
   tokio::task::JoinError,
   tracing::{info, warn},
   {initializer::Initializer, seed::Seed, str_ext::StrExt, utils::*},
@@ -30,9 +28,9 @@ use {
 #[cfg(test)]
 use {
   include_dir::{Dir, include_dir},
-  model::{CourseSort, DateTime},
+  model::DateTime,
   std::sync::atomic::{AtomicUsize, Ordering},
-  tempdir::TempDir,
+  tempfile::TempDir,
 };
 
 pub type Result<T = ()> = std::result::Result<T, Error>;

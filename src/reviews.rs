@@ -42,19 +42,65 @@ pub(crate) struct GetReviewsPayload {
 #[utoipa::path(
   get,
   path = "/reviews",
-  description = "Get a list of reviews with optional filtering.",
+  description = "Get a list of reviews with optional filtering by course, instructor, or user.",
   params(
-    ("course_id" = Option<String>, Query, description = "Course ID to filter reviews by."),
-    ("instructor_name" = Option<String>, Query, description = "Instructor name to filter reviews by."),
-    ("limit" = Option<i64>, Query, description = "Maximum number of reviews to return."),
-    ("offset" = Option<u64>, Query, description = "Number of reviews to skip."),
-    ("sorted" = Option<bool>, Query, description = "Whether to sort reviews by timestamp (newest first)."),
-    ("user_id" = Option<String>, Query, description = "User ID to filter reviews by."),
-    ("with_user_count" = Option<bool>, Query, description = "Whether to include the unique user count in the response."),
+    (
+      "course_id" = Option<String>,
+      Query,
+      description = "Course ID to filter reviews by (e.g., COMP202).",
+      example = "COMP202"
+    ),
+    (
+      "instructor_name" = Option<String>,
+      Query,
+      description = "Instructor name to filter reviews by. Must match exactly.",
+      example = "Jonathan Campbell"
+    ),
+    (
+      "limit" = Option<i64>,
+      Query,
+      description = "Maximum number of reviews to return.",
+      minimum = 0,
+      example = 20
+    ),
+    (
+      "offset" = Option<u64>,
+      Query,
+      description = "Number of reviews to skip for pagination.",
+      minimum = 0,
+      example = 0
+    ),
+    (
+      "sorted" = Option<bool>,
+      Query,
+      description = "Whether to sort reviews by timestamp (newest first).",
+      example = true
+    ),
+    (
+      "user_id" = Option<String>,
+      Query,
+      description = "User ID to filter reviews by."
+    ),
+    (
+      "with_user_count" = Option<bool>,
+      Query,
+      description = "Whether to include the count of unique users who have submitted reviews.",
+      example = true
+    ),
   ),
   responses(
-    (status = StatusCode::OK, description = "List of reviews with optional metadata.", body = GetReviewsPayload),
-    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
+    (
+      status = StatusCode::OK,
+      description = "Reviews matching the filter criteria.",
+      body = GetReviewsPayload,
+      content_type = "application/json"
+    ),
+    (
+      status = StatusCode::INTERNAL_SERVER_ERROR,
+      description = "Internal server error.",
+      body = String,
+      content_type = "text/plain"
+    )
   )
 )]
 #[tracing::instrument(name = "api_get_reviews", skip(db), fields(
@@ -92,18 +138,84 @@ pub(crate) async fn get_reviews(
 
 #[utoipa::path(
   get,
+  path = "/reviews/liked",
+  tag = "reviews",
+  description = "Get all reviews that the authenticated user has liked. Returns a list of full review objects. Requires authentication.",
+  security(
+    ("microsoftOAuth" = ["User.Read"])
+  ),
+  responses(
+    (
+      status = StatusCode::OK,
+      description = "Reviews liked by the authenticated user. The unique_user_count field is always null for this endpoint.",
+      body = GetReviewsPayload,
+      content_type = "application/json"
+    ),
+    (
+      status = StatusCode::UNAUTHORIZED,
+      description = "User is not authenticated.",
+      content_type = "text/plain"
+    ),
+    (
+      status = StatusCode::INTERNAL_SERVER_ERROR,
+      description = "Internal server error.",
+      body = String,
+      content_type = "text/plain"
+    )
+  )
+)]
+pub(crate) async fn get_liked_reviews(
+  user: User,
+  AppState(db): AppState<Arc<Db>>,
+) -> Result<impl IntoResponse> {
+  Ok((
+    StatusCode::OK,
+    Json(GetReviewsPayload {
+      reviews: db.liked_reviews_for_user(&user.id()).await?,
+      unique_user_count: None,
+    }),
+  ))
+}
+
+#[utoipa::path(
+  get,
   path = "/reviews/{id}",
-  description = "Get a specific review by its ID.",
+  description = "Get a specific review by its unique identifier. The review includes interaction data (likes) specific to the authenticated user.",
   params(
-    ("id" = String, Path, description = "Review ID to get review information for.")
+    (
+      "id" = String,
+      Path,
+      description = "Unique review identifier. This is a MongoDB ObjectId string.",
+      example = "507f1f77bcf86cd799439011"
+    )
   ),
   security(
     ("microsoftOAuth" = ["User.Read"])
   ),
   responses(
-    (status = StatusCode::OK, description = "Information about a specific review.", body = Review),
-    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
-  ),
+    (
+      status = StatusCode::OK,
+      description = "The requested review with user-specific interaction data.",
+      body = Review,
+      content_type = "application/json"
+    ),
+    (
+      status = StatusCode::NOT_FOUND,
+      description = "Review with the specified ID was not found.",
+      content_type = "text/plain"
+    ),
+    (
+      status = StatusCode::UNAUTHORIZED,
+      description = "User is not authenticated.",
+      content_type = "text/plain"
+    ),
+    (
+      status = StatusCode::INTERNAL_SERVER_ERROR,
+      description = "Internal server error.",
+      body = String,
+      content_type = "text/plain"
+    )
+  )
 )]
 pub(crate) async fn get_review(
   user: User,
@@ -114,7 +226,8 @@ pub(crate) async fn get_review(
 }
 
 #[derive(Debug, Deserialize, ToSchema)]
-pub(crate) struct AddOrUpdateReviewBody {
+#[typeshare]
+pub struct AddOrUpdateReviewBody {
   /// The review content/text.
   pub(crate) content: String,
   /// Course ID this review is for.
@@ -127,18 +240,74 @@ pub(crate) struct AddOrUpdateReviewBody {
   pub(crate) difficulty: u32,
 }
 
+impl AddOrUpdateReviewBody {
+  const MAX_CONTENT_LENGTH: usize = 10_000;
+  const MAX_INSTRUCTORS: usize = 20;
+
+  fn validate(&self) -> Result {
+    if !(1..=5).contains(&self.rating) {
+      return Err(Error::bad_request("rating must be between 1 and 5"));
+    }
+
+    if !(1..=5).contains(&self.difficulty) {
+      return Err(Error::bad_request("difficulty must be between 1 and 5"));
+    }
+
+    if self.content.trim().is_empty() {
+      return Err(Error::bad_request("content must not be empty"));
+    }
+
+    if self.content.len() > Self::MAX_CONTENT_LENGTH {
+      return Err(Error::bad_request(format!(
+        "content must be at most {} characters",
+        Self::MAX_CONTENT_LENGTH
+      )));
+    }
+
+    if self.instructors.is_empty() {
+      return Err(Error::bad_request("at least one instructor is required"));
+    }
+
+    if self.instructors.len() > Self::MAX_INSTRUCTORS {
+      return Err(Error::bad_request(format!(
+        "at most {} instructors allowed",
+        Self::MAX_INSTRUCTORS
+      )));
+    }
+
+    Ok(())
+  }
+}
+
 #[utoipa::path(
   post,
   path = "/reviews",
-  description = "Add a new review for a course.",
+  description = "Add a new review for a course. A user can only have one review per course. Instructors must be valid for the course or 'Other'. Creates notifications for users subscribed to the course.",
   security(
     ("microsoftOAuth" = ["User.Read"])
   ),
-  request_body = AddOrUpdateReviewBody,
-  responses(
-    (status = StatusCode::OK, description = "Review added successfully."),
-    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
+  request_body(
+    content = AddOrUpdateReviewBody,
+    description = "Review data including course ID, rating, difficulty, instructors, and content.",
+    content_type = "application/json"
   ),
+  responses(
+    (
+      status = StatusCode::OK,
+      description = "Review added successfully."
+    ),
+    (
+      status = StatusCode::UNAUTHORIZED,
+      description = "User is not authenticated.",
+      content_type = "text/plain"
+    ),
+    (
+      status = StatusCode::INTERNAL_SERVER_ERROR,
+      description = "Internal server error.",
+      body = String,
+      content_type = "text/plain"
+    )
+  )
 )]
 #[tracing::instrument(name = "api_add_review", skip_all, fields(
   course_id = %body.course_id,
@@ -149,6 +318,8 @@ pub(crate) async fn add_review(
   user: User,
   body: Json<AddOrUpdateReviewBody>,
 ) -> Result<impl IntoResponse> {
+  body.validate()?;
+
   let AddOrUpdateReviewBody {
     content,
     course_id,
@@ -188,21 +359,40 @@ pub(crate) async fn add_review(
 #[utoipa::path(
   put,
   path = "/reviews",
-  description = "Update an existing review for a course.",
+  description = "Update an existing review for a course. The review is identified by the authenticated user's ID and the course ID. Updates the timestamp and associated notifications.",
   security(
     ("microsoftOAuth" = ["User.Read"])
   ),
-  request_body = AddOrUpdateReviewBody,
-  responses(
-    (status = StatusCode::OK, description = "Review updated successfully."),
-    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
+  request_body(
+    content = AddOrUpdateReviewBody,
+    description = "Updated review data. All fields are required even if unchanged.",
+    content_type = "application/json"
   ),
+  responses(
+    (
+      status = StatusCode::OK,
+      description = "Review updated successfully."
+    ),
+    (
+      status = StatusCode::UNAUTHORIZED,
+      description = "User is not authenticated.",
+      content_type = "text/plain"
+    ),
+    (
+      status = StatusCode::INTERNAL_SERVER_ERROR,
+      description = "Internal server error.",
+      body = String,
+      content_type = "text/plain"
+    )
+  )
 )]
 pub(crate) async fn update_review(
   AppState(db): AppState<Arc<Db>>,
   user: User,
   body: Json<AddOrUpdateReviewBody>,
 ) -> Result<impl IntoResponse> {
+  body.validate()?;
+
   let AddOrUpdateReviewBody {
     content,
     course_id,
@@ -245,15 +435,32 @@ pub(crate) struct DeleteReviewBody {
 #[utoipa::path(
   delete,
   path = "/reviews",
-  description = "Delete a review for a specific course.",
+  description = "Delete a review for a specific course. Also removes all associated interactions (likes) and notifications. The review is identified by the authenticated user's ID and the course ID.",
   security(
     ("microsoftOAuth" = ["User.Read"])
   ),
-  request_body = DeleteReviewBody,
-  responses(
-    (status = StatusCode::OK, description = "Review deleted successfully."),
-    (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
+  request_body(
+    content = DeleteReviewBody,
+    description = "The course ID of the review to delete.",
+    content_type = "application/json"
   ),
+  responses(
+    (
+      status = StatusCode::OK,
+      description = "Review and associated data deleted successfully."
+    ),
+    (
+      status = StatusCode::UNAUTHORIZED,
+      description = "User is not authenticated.",
+      content_type = "text/plain"
+    ),
+    (
+      status = StatusCode::INTERNAL_SERVER_ERROR,
+      description = "Internal server error.",
+      body = String,
+      content_type = "text/plain"
+    )
+  )
 )]
 pub(crate) async fn delete_review(
   AppState(db): AppState<Arc<Db>>,
@@ -264,7 +471,13 @@ pub(crate) async fn delete_review(
 
   let user_id = user.id();
 
-  db.delete_review(&body.course_id, &user_id).await?;
+  db.delete_review(&body.course_id, &user_id).await.map_err(
+    |error| match error {
+      db::Error::ReviewNotFound => Error::not_found("review not found"),
+      other => other.into(),
+    },
+  )?;
+
   db.delete_interactions(&body.course_id, &user_id).await?;
   db.delete_notifications(&user_id, &body.course_id).await?;
 
@@ -279,21 +492,21 @@ async fn validate_instructors(
   let course = db
     .find_course_by_id(course_id)
     .await?
-    .ok_or(anyhow!("Failed to find course with id: {}", course_id))?;
+    .ok_or_else(|| Error::not_found(format!("course {course_id} not found")))?;
 
   let mut valid_instructors = course
     .instructors
     .into_iter()
-    .map(|ins| ins.name)
+    .map(|instructor| instructor.name)
     .collect::<Vec<String>>();
 
   valid_instructors.push("Other".into());
 
   if !instructors
     .iter()
-    .all(|ins| valid_instructors.contains(ins))
+    .all(|instructor| valid_instructors.contains(instructor))
   {
-    return Err(anyhow!("Invalid instructor(s)").into());
+    return Err(Error::bad_request("invalid instructor(s)"));
   }
 
   Ok(())

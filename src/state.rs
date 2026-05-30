@@ -4,7 +4,7 @@ use super::*;
 pub(crate) struct State {
   pub(crate) client_secret: String,
   pub(crate) db: Arc<Db>,
-  pub(crate) oauth_client: BasicClient,
+  pub(crate) oauth_client: OAuthClient,
   pub(crate) request_client: reqwest::Client,
   pub(crate) session_store: MongodbSessionStore,
 }
@@ -15,7 +15,7 @@ impl FromRef<State> for Arc<Db> {
   }
 }
 
-impl FromRef<State> for BasicClient {
+impl FromRef<State> for OAuthClient {
   fn from_ref(state: &State) -> Self {
     state.oauth_client.clone()
   }
@@ -44,26 +44,23 @@ impl State {
     Ok(Self {
       client_secret: client_secret.clone(),
       db: db.clone(),
-      oauth_client: BasicClient::new(
-        ClientId::new(
-          env::var("MS_CLIENT_ID")
-            .expect("Missing the MS_CLIENT_ID environment variable"),
-        ),
-        Some(ClientSecret::new(client_secret)),
-        AuthUrl::new(
-          "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
-            .to_string(),
-        )
+      oauth_client: BasicClient::new(ClientId::new(
+        env::var("MS_CLIENT_ID")
+          .expect("Missing the MS_CLIENT_ID environment variable"),
+      ))
+      .set_client_secret(ClientSecret::new(client_secret))
+      .set_auth_uri(
+        AuthUrl::new(format!(
+          "https://login.microsoftonline.com/{MCGILL_TENANT_ID}/oauth2/v2.0/authorize",
+        ))
         .expect("Invalid authorization URL"),
-        Some(
-          TokenUrl::new(
-            "https://login.microsoftonline.com/common/oauth2/v2.0/token"
-              .to_string(),
-          )
-          .expect("Invalid token endpoint URL"),
-        ),
       )
-      .set_auth_type(AuthType::RequestBody)
+      .set_token_uri(
+        TokenUrl::new(format!(
+          "https://login.microsoftonline.com/{MCGILL_TENANT_ID}/oauth2/v2.0/token",
+        ))
+        .expect("Invalid token endpoint URL"),
+      )
       .set_redirect_uri(
         RedirectUrl::new(
           env::var("MS_REDIRECT_URI")

@@ -3,8 +3,8 @@ import { RefObject, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
+import type { SearchResults } from '../lib/search-index';
 import { courseIdToUrlParam, spliceCourseCode } from '../lib/utils';
-import type { SearchResults } from '../model/search-results';
 import { Highlight } from './highlight';
 import { SearchBar } from './search-bar';
 
@@ -55,7 +55,6 @@ const SearchResult = ({
           'flex border-gray-200 p-3 text-left transition-all duration-75 dark:border-neutral-700',
           toHighlight ? highlightResultStyle : 'bg-gray-100 dark:bg-neutral-800'
         )}
-        key={index}
       >
         <div className='mr-2 w-6'>{icon}</div>
         <Highlight
@@ -146,11 +145,11 @@ export const CourseSearchBar = ({
         value={results.query}
         handleInputChange={handleInputChange}
         inputStyle={twMerge(
-          'block w-full bg-gray-100 border border-gray-300 shadow-sm p-3 pl-10 text-sm text-black outline-none dark:border-neutral-50 dark:bg-neutral-800 dark:text-gray-200 dark:placeholder:text-neutral-500 lg:min-w-[570px] dark:border-gray-700 rounded-sm',
-          searchSelected ? 'border-b-1' : ''
+          'block w-full bg-gray-100 border border-gray-300 shadow-sm p-3 pl-10 text-sm text-black outline-none dark:border-neutral-50 dark:bg-neutral-800 dark:text-gray-200 dark:placeholder:text-neutral-500 lg:min-w-[570px] dark:border-gray-700 rounded-xs',
+          searchSelected ? 'border-b' : ''
         )}
         onKeyDown={handleKeyDown}
-        placeholder='Search for courses, subjects or professors'
+        placeholder='Search by course, subject, or professor'
         searchSelected={searchSelected}
         setSearchSelected={setSearchSelected}
         inputRef={inputRef}

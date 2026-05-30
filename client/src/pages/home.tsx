@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useSearchParams } from 'react-router-dom';
-import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 import { CourseSearchBar } from '../components/course-search-bar';
 import { Layout } from '../components/layout';
-import { getSearchIndex, updateSearchResults } from '../lib/search-index';
-import type { SearchResults } from '../model/search-results';
-
-const alerts: Map<string, string> = new Map([
-  ['invalidMail', 'Please use a McGill email address to authenticate.'],
-]);
+import {
+  type SearchResults,
+  getSearchIndex,
+  updateSearchResults,
+} from '../lib/search-index';
 
 const { courses, instructors, coursesIndex, instructorsIndex } =
   getSearchIndex();
@@ -18,7 +16,6 @@ const { courses, instructors, coursesIndex, instructorsIndex } =
 export const Home = () => {
   const searchBarInputRef = useRef<HTMLInputElement>(null);
 
-  const [searchParams] = useSearchParams();
   const [results, setResults] = useState<SearchResults>({
     query: '',
     courses: [],
@@ -27,13 +24,10 @@ export const Home = () => {
 
   useEffect(() => {
     const isDesktopScreen = window.innerWidth >= 1024;
-    if (isDesktopScreen) searchBarInputRef.current?.focus();
-  }, []);
 
-  useEffect(() => {
-    const err = searchParams.get('err');
-    if (err === null) return;
-    toast.error(alerts.get(err));
+    if (isDesktopScreen) {
+      searchBarInputRef.current?.focus();
+    }
   }, []);
 
   const handleInputChange = (query: string) => {
@@ -61,7 +55,7 @@ export const Home = () => {
         <div className='mx-auto max-w-2xl py-8'>
           <div className='hidden sm:mb-8 sm:flex sm:justify-center'></div>
           <div className='flex flex-col gap-10 text-center'>
-            <h1 className='text-left text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-200 md:text-5xl'>
+            <h1 className='text-left text-3xl font-bold tracking-tight text-gray-900 md:text-5xl dark:text-gray-200'>
               Explore thousands of course and professor reviews from McGill
               students
             </h1>
@@ -73,7 +67,7 @@ export const Home = () => {
               />
               <Link
                 to={`/explore`}
-                className='mx-auto cursor-pointer text-sm text-gray-500 underline underline-offset-4 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-500 md:text-base'
+                className='mx-auto cursor-pointer text-sm text-gray-500 underline underline-offset-4 hover:text-gray-400 md:text-base dark:text-gray-400 dark:hover:text-gray-500'
               >
                 or explore all courses{' '}
                 <span aria-hidden='true'>&rarr;</span>{' '}

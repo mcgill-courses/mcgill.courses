@@ -2,67 +2,53 @@ use {
   anyhow::{Error, anyhow, bail},
   chrono::NaiveDateTime,
   clap::Parser,
-  lopdf::{Document, Object},
+  lopdf::Document,
   rayon::prelude::*,
   regex::Regex,
+  reqwest::blocking::Client,
   serde::{Deserialize, Serialize},
   std::{collections::BTreeMap, fs, path::PathBuf, process},
+  typeshare::typeshare,
 };
 
-static IGNORE: &[&[u8]] = &[
-  b"Length",
-  b"BBox",
-  b"FormType",
-  b"Matrix",
-  b"Type",
-  b"XObject",
-  b"Subtype",
-  b"Filter",
-  b"ColorSpace",
-  b"Width",
-  b"Height",
-  b"BitsPerComponent",
-  b"Length1",
-  b"Length2",
-  b"Length3",
-  b"PTEX.FileName",
-  b"PTEX.PageNumber",
-  b"PTEX.InfoDict",
-  b"FontDescriptor",
-  b"ExtGState",
-  b"MediaBox",
-  b"Annot",
-];
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
+pub struct FinalExam {
+  /// Course identifier (e.g., "COMP202").
+  pub id: String,
+  /// Section number (e.g., "001").
+  pub section: String,
+  /// Exam format (e.g., "IN-PERSON", "ONLINE").
+  pub format: String,
+  /// Exam type (e.g., "FORMAL EXAM").
+  #[serde(rename = "type")]
+  pub exam_type: String,
+  /// Location where the exam is held.
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub location: Option<String>,
+  /// Exam start time in ISO 8601 format.
+  pub start_time: String,
+  /// Exam end time in ISO 8601 format.
+  pub end_time: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+#[typeshare]
+pub struct FinalExamGroup {
+  /// Term name (e.g., "Fall 2025", "Winter 2026").
+  pub term: String,
+  /// URL to the official exam schedule PDF.
+  pub url: String,
+  /// List of final exams for this group.
+  pub exams: Vec<FinalExam>,
+}
 
 #[derive(Debug, Deserialize, Serialize)]
 struct PdfText {
   text: BTreeMap<u32, Vec<String>>,
   errors: Vec<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct ExamDetails {
-  format: String,
-  #[serde(rename = "type")]
-  exam_type: String,
-  #[serde(skip_serializing_if = "Option::is_none")]
-  location: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct CourseExam {
-  id: String,
-  section: String,
-  exam: ExamDetails,
-  start_time: String,
-  end_time: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct Term {
-  term: String,
-  url: String,
-  exams: Vec<CourseExam>,
 }
 
 #[derive(Parser, Debug)]
@@ -72,8 +58,9 @@ struct Term {
   about = "Extract exam schedule data from a PDF file."
 )]
 struct Arguments {
-  /// Path to the source PDF file.
-  source: PathBuf,
+  /// Path to a local PDF file. If not provided, fetches from the URL.
+  #[clap(short, long)]
+  source: Option<PathBuf>,
   /// Term to namespace exams for (e.g. 'Fall 2025', 'Winter 2026')
   #[clap(short, long)]
   term: String,
@@ -87,58 +74,35 @@ struct Arguments {
 
 impl Arguments {
   fn run(self) -> Result {
-    let text = extract_pdf_text(&self.source)?;
-
-    let parsed_exams = parse_exam_schedule(&text)?;
-
-    let mut terms: Vec<Term> = if self.output.exists() {
-      serde_json::from_str(&fs::read_to_string(&self.output)?)?
+    let text = if let Some(source) = &self.source {
+      extract_pdf_text(source)?
     } else {
-      Vec::new()
+      extract_pdf_bytes(&fetch_pdf(&self.url)?)?
     };
 
-    if let Some(existing_term) = terms.iter_mut().find(|t| t.term == self.term)
-    {
-      existing_term.url = self.url;
-      existing_term.exams = parsed_exams;
-    } else {
-      terms.push(Term {
-        exams: parsed_exams,
-        term: self.term.clone(),
-        url: self.url.clone(),
-      });
-    }
-
-    fs::write(self.output, serde_json::to_string_pretty(&terms)?)?;
+    fs::write(
+      self.output,
+      serde_json::to_string_pretty(&FinalExamGroup {
+        exams: parse_exam_schedule(&text)?,
+        term: self.term,
+        url: self.url,
+      })?,
+    )?;
 
     Ok(())
   }
 }
 
-fn filter_func(
-  object_id: (u32, u16),
-  object: &mut Object,
-) -> Option<((u32, u16), Object)> {
-  if IGNORE.contains(&object.type_name().unwrap_or_default()) {
-    return None;
+fn fetch_pdf(url: &str) -> Result<Vec<u8>> {
+  eprintln!("Fetching PDF from {url}");
+
+  let response = Client::new().get(url).send()?;
+
+  if !response.status().is_success() {
+    bail!("failed to fetch pdf: http {}", response.status());
   }
 
-  if let Ok(dictionary) = object.as_dict_mut() {
-    dictionary.remove(b"Producer");
-    dictionary.remove(b"ModDate");
-    dictionary.remove(b"Creator");
-    dictionary.remove(b"ProcSet");
-    dictionary.remove(b"Procset");
-    dictionary.remove(b"XObject");
-    dictionary.remove(b"MediaBox");
-    dictionary.remove(b"Annots");
-
-    if dictionary.is_empty() {
-      return None;
-    }
-  }
-
-  Some((object_id, object.to_owned()))
+  Ok(response.bytes()?.to_vec())
 }
 
 fn get_pdf_text(doc: &Document) -> Result<PdfText, Error> {
@@ -181,7 +145,7 @@ fn get_pdf_text(doc: &Document) -> Result<PdfText, Error> {
 }
 
 fn extract_pdf_text(source: &PathBuf) -> Result<PdfText> {
-  let doc = Document::load_filtered(source, filter_func)?;
+  let doc = Document::load(source)?;
 
   let text = get_pdf_text(&doc)?;
 
@@ -200,7 +164,23 @@ fn extract_pdf_text(source: &PathBuf) -> Result<PdfText> {
   Ok(text)
 }
 
-fn parse_exam_schedule(text: &PdfText) -> Result<Vec<CourseExam>> {
+fn extract_pdf_bytes(data: &[u8]) -> Result<PdfText> {
+  let doc = Document::load_mem(data)?;
+
+  let text = get_pdf_text(&doc)?;
+
+  if !text.errors.is_empty() {
+    eprintln!("document produced {} errors:", text.errors.len());
+
+    for error in text.errors.iter().take(10) {
+      eprintln!("- {error}");
+    }
+  }
+
+  Ok(text)
+}
+
+fn parse_exam_schedule(text: &PdfText) -> Result<Vec<FinalExam>> {
   let course_pattern = Regex::new(r"^[A-Z0-9]{3,5}\s+[0-9]{3}[A-Z0-9]*$")?;
 
   let section_pattern = Regex::new(r"^[0-9]{3}[A-Z0-9]*$")?;
@@ -268,7 +248,7 @@ fn parse_exam_schedule(text: &PdfText) -> Result<Vec<CourseExam>> {
       .get(title_index + 2)
       .ok_or_else(|| anyhow!("Missing end time for {course_id}"))?;
 
-    let exam = parse_exam_details(exam_line)?;
+    let (format, exam_type, location) = parse_exam_details(exam_line)?;
 
     let start_time = parse_datetime(start_line).ok_or_else(|| {
       anyhow!("Unrecognized start time \"{start_line}\" for {course_id}")
@@ -278,10 +258,12 @@ fn parse_exam_schedule(text: &PdfText) -> Result<Vec<CourseExam>> {
       anyhow!("Unrecognized end time \"{end_line}\" for {course_id}")
     })?;
 
-    exams.push(CourseExam {
+    exams.push(FinalExam {
       id: course_id,
       section: section_line.trim().to_string(),
-      exam,
+      format,
+      exam_type,
+      location,
       start_time,
       end_time,
     });
@@ -292,7 +274,9 @@ fn parse_exam_schedule(text: &PdfText) -> Result<Vec<CourseExam>> {
   Ok(exams)
 }
 
-fn parse_exam_details(line: &str) -> Result<ExamDetails, Error> {
+fn parse_exam_details(
+  line: &str,
+) -> Result<(String, String, Option<String>), Error> {
   let parts = line.split(" - ").map(str::trim).collect::<Vec<_>>();
 
   if parts.len() < 2 {
@@ -315,17 +299,13 @@ fn parse_exam_details(line: &str) -> Result<ExamDetails, Error> {
     None
   };
 
-  Ok(ExamDetails {
-    format,
-    exam_type,
-    location,
-  })
+  Ok((format, exam_type, location))
 }
 
 fn parse_datetime(value: &str) -> Option<String> {
   NaiveDateTime::parse_from_str(value.trim(), "%d-%b-%Y at %I:%M %p")
     .ok()
-    .map(|dt| dt.format("%Y-%m-%dT%H:%M:%S").to_string())
+    .map(|datetime| datetime.format("%Y-%m-%dT%H:%M:%S").to_string())
 }
 
 type Result<T = (), E = Error> = std::result::Result<T, E>;
