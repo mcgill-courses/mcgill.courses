@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 anyhow = { workspace = true }
-async-openai = { version = "0.40.1", features = ["responses"] }
+async-openai = { version = "0.40.1", default-features = false, features = ["responses", "rustls-no-provider"] }
 chrono = { workspace = true }
 clap = { workspace = true }
 dotenv = { workspace = true }
