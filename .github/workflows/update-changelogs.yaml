@@ -19,19 +19,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install toolchain
         id: toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
         with:
           toolchain: stable
           target: x86_64-unknown-linux-musl
           components: llvm-tools-preview
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
 
       - name: Update changelogs
         env:
@@ -61,17 +62,19 @@ jobs:
 
       - name: Create branch + commit changes
         if: steps.diff.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH="changelog-update-$(date +%s)"
           git switch -c "$BRANCH"
           git add client/src/assets/changelog.json
           git commit -m "Auto update from cronjob"
-          git push origin "$BRANCH"
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$BRANCH"
           echo "branch=$BRANCH" >> "$GITHUB_ENV"
 
       - name: Open PR
         if: steps.diff.outputs.changed == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b
         with:
           script: |
             const branch = process.env.branch;
