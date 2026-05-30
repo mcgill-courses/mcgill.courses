@@ -75,11 +75,9 @@ initialize *args: restart-services
 
 [group: 'setup']
 install-dev-deps:
-  cargo install hk
+  cargo install hk present typeshare-cli
   brew install pkl
   hk install
-  cargo install present
-  cargo install typeshare-cli
   brew install --cask chromedriver
   curl -LsSf https://astral.sh/uv/install.sh | sh
 
