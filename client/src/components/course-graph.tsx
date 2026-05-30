@@ -11,12 +11,12 @@ import type {
 
 import { useDarkMode } from '../hooks/use-dark-mode';
 import type { ReqNode } from '../lib/types';
+import type { Course } from '../lib/types';
 import {
   courseIdToUrlParam,
   isValidCourseCode,
   spliceCourseCode,
 } from '../lib/utils';
-import type { Course } from '../model/course';
 
 const BASE_GRAPH_OPTIONS: Options = {
   height: '288px',

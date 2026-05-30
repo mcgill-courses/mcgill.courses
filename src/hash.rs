@@ -29,7 +29,7 @@ impl Hash for PathBuf {
         hasher.update(read(self)?);
       }
       _ => {
-        return Err(Error(anyhow!(
+        return Err(Error::Internal(anyhow!(
           "{} is neither a file nor a directory",
           self.display()
         )));
@@ -42,9 +42,7 @@ impl Hash for PathBuf {
 
 #[cfg(test)]
 mod tests {
-  use super::*;
-  use std::io::Write;
-  use tempfile::tempdir;
+  use {super::*, std::io::Write, tempfile::tempdir};
 
   #[test]
   fn hash_file() {

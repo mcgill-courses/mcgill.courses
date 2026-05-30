@@ -1,6 +1,6 @@
 /client/dist
 /coverage
-/crates/extractor/test-samples
+/tools/scraper/fixtures
 /mocks
 /node_modules
 /seed

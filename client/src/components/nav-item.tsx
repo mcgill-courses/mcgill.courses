@@ -14,7 +14,7 @@ export const NavItem = ({ name, href }: NavItemProps) => {
     <Link
       to={href}
       className={twMerge(
-        'relative text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200',
+        'relative text-sm leading-6 font-semibold text-gray-900 dark:text-gray-200',
         redUnderlineStyle,
         location.pathname !== href
           ? 'before:origin-top-left before:scale-x-0 before:transition before:duration-300 before:ease-in-out before:hover:scale-x-100'

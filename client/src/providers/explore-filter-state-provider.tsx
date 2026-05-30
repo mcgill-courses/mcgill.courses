@@ -24,7 +24,7 @@ export const ExploreFilterContext = createContext<ExploreFilterState>({
   setSortBy: () => undefined,
 });
 
-const ExploreFilterStateProvider = ({ children }: PropsWithChildren<any>) => {
+const ExploreFilterStateProvider = ({ children }: PropsWithChildren) => {
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [selectedTerms, setSelectedTerms] = useState<string[]>([]);

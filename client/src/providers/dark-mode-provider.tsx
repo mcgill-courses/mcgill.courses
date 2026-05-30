@@ -1,15 +1,10 @@
 import { PropsWithChildren, createContext, useState } from 'react';
 
-export interface Theme {
-  darkMode: boolean;
-  setDarkMode: (darkMode: boolean) => void;
-}
-
 export const DarkModeContext = createContext<
   [boolean, (darkMode: boolean) => void] | undefined
 >(undefined);
 
-export const DarkModeProvider = ({ children }: PropsWithChildren<any>) => {
+export const DarkModeProvider = ({ children }: PropsWithChildren) => {
   const [darkMode, setDark] = useState(
     localStorage.getItem('theme') === 'dark'
   );

@@ -8,21 +8,9 @@
     "url": "https://www.mcgill.ca/study/2023-2024/courses/comp-251",
     "department": "Computer Science",
     "faculty": "Faculty of Science",
-    "terms": ["Fall 2023", "Winter 2024", "Fall 2022", "Winter 2023"],
+    "terms": ["Fall 2022", "Winter 2023", "Fall 2023", "Winter 2024"],
     "description": "Introduction to algorithm design and analysis. Graph algorithms, greedy algorithms, data structures, dynamic programming, maximum flows.",
     "instructors": [
-      {
-        "name": "Jérôme Waldispuhl",
-        "term": "Fall 2023"
-      },
-      {
-        "name": "Giulia Alberini",
-        "term": "Fall 2023"
-      },
-      {
-        "name": "David Becerra",
-        "term": "Winter 2024"
-      },
       {
         "name": "Jérôme Waldispuhl",
         "term": "Fall 2022"
@@ -34,6 +22,18 @@
       {
         "name": "David Becerra",
         "term": "Winter 2023"
+      },
+      {
+        "name": "Jérôme Waldispuhl",
+        "term": "Fall 2023"
+      },
+      {
+        "name": "Giulia Alberini",
+        "term": "Fall 2023"
+      },
+      {
+        "name": "David Becerra",
+        "term": "Winter 2024"
       }
     ],
     "prerequisites": ["COMP 250"],

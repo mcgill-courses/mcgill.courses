@@ -61,7 +61,7 @@ export const MultiSelect = ({
         <div className='relative max-w-[240px]'>
           <div
             className={twMerge(
-              'relative rounded-md border bg-slate-200 p-2 dark:border-neutral-600 dark:bg-neutral-700',
+              'relative rounded-md border border-neutral-200 bg-slate-200 p-2 dark:border-neutral-600 dark:bg-neutral-700',
               inputClassName
             )}
           >
@@ -73,9 +73,9 @@ export const MultiSelect = ({
               onChange={(event) => setQuery(event.target.value)}
               onBlur={handleInputBlur}
             />
-            <Combobox.Button className='absolute inset-y-0 flex w-full items-center'>
+            <Combobox.Button className='absolute inset-y-0 flex w-full cursor-pointer items-center'>
               <ChevronDown
-                className='ml-auto mr-4 size-5 text-gray-400'
+                className='mr-4 ml-auto size-5 text-gray-400'
                 aria-hidden='true'
               />
             </Combobox.Button>
@@ -88,10 +88,10 @@ export const MultiSelect = ({
             leaveFrom='transform scale-100 opacity-100'
             leaveTo='transform scale-95 opacity-0'
           >
-            <Combobox.Options className='autocomplete absolute max-h-80 w-full overflow-scroll rounded-b-md text-sm shadow-md'>
-              {filtered.map((val, i) => (
+            <Combobox.Options className='styled-scrollbar absolute max-h-80 w-full overflow-scroll rounded-b-md text-sm shadow-md'>
+              {filtered.map((val) => (
                 <Combobox.Option
-                  key={i}
+                  key={val}
                   value={val}
                   className={({ active }) =>
                     twMerge(
@@ -117,13 +117,17 @@ export const MultiSelect = ({
         </div>
       </Combobox>
       <div className='mt-2 flex w-full flex-wrap gap-1'>
-        {values.map((val, i) => (
+        {values.map((val) => (
           <div
-            key={i}
+            key={val}
             className='flex space-x-1 rounded-3xl bg-gray-100 px-2.5 py-1 text-sm font-medium text-gray-800 dark:bg-neutral-700 dark:text-gray-200'
           >
             <div>{val}</div>
-            <button type='button' onClick={() => removeVal(val)}>
+            <button
+              type='button'
+              className='cursor-pointer'
+              onClick={() => removeVal(val)}
+            >
               <X
                 size={18}
                 className='transition duration-75 hover:stroke-red-600'

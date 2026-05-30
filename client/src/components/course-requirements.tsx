@@ -1,11 +1,15 @@
 import { List, Network } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { Suspense, lazy, useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
+import type { Course } from '../lib/types';
 import { capitalize, punctuate, stripColonPrefix } from '../lib/utils';
-import type { Course } from '../model/course';
-import { CourseGraph } from './course-graph';
+import { Spinner } from './spinner';
+
+const CourseGraph = lazy(() =>
+  import('./course-graph').then((m) => ({ default: m.CourseGraph }))
+);
 
 type RequirementTextProps = {
   text: string;
@@ -57,7 +61,7 @@ type RequirementBlockProps = {
 const RequirementBlock = ({ title, text }: RequirementBlockProps) => {
   return (
     <div>
-      <h2 className='mb-2 mt-1 text-xl font-bold leading-none text-gray-700 dark:text-gray-200'>
+      <h2 className='mt-1 mb-2 text-xl leading-none font-bold text-gray-700 dark:text-gray-200'>
         {title}
       </h2>
       {text ? (
@@ -101,11 +105,11 @@ export const CourseRequirements = ({
       )}
     >
       <button
-        className='absolute right-4 top-4 z-10 cursor-pointer rounded-full bg-gray-200 p-2 transition duration-150 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
+        className='absolute top-4 right-4 z-10 cursor-pointer rounded-full bg-gray-200 p-2 transition duration-150 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
         onClick={handleGraphToggle}
       >
         <ToggleButtonIcon
-          size={28}
+          size={20}
           className='stroke-gray-700 dark:stroke-gray-400'
         />
       </button>
@@ -122,7 +126,15 @@ export const CourseRequirements = ({
           <RequirementBlock title='Restrictions' text={course.restrictions} />
         </div>
       ) : (
-        <CourseGraph course={course} />
+        <Suspense
+          fallback={
+            <div className='flex h-[288px] items-center justify-center'>
+              <Spinner />
+            </div>
+          }
+        >
+          <CourseGraph course={course} />
+        </Suspense>
       )}
     </div>
   );

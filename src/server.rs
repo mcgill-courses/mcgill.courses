@@ -114,7 +114,8 @@ impl Server {
       .route("/api/auth/authorized", get(auth::login_authorized))
       .route("/api/auth/login", get(auth::microsoft_auth))
       .route("/api/auth/logout", get(auth::logout))
-      .route("/api/courses", post(courses::get_courses))
+      .route("/api/course-averages", get(course_averages::get_course_averages))
+      .route("/api/courses", get(courses::get_courses))
       .route("/api/courses/{id}", get(courses::get_course_by_id))
       .route("/api/instructors/{name}", get(instructors::get_instructor))
       .route(
@@ -140,16 +141,56 @@ impl Server {
           .post(reviews::add_review)
           .put(reviews::update_review),
       )
+      .route("/api/reviews/liked", get(reviews::get_liked_reviews))
       .route("/api/reviews/{id}", get(reviews::get_review))
       .route("/api/search", get(search::search))
       .route(
         "/api/subscriptions",
-        get(subscriptions::get_subscription)
+        get(subscriptions::get_subscriptions)
           .post(subscriptions::add_subscription)
           .delete(subscriptions::delete_subscription),
       )
+      .route(
+        "/api/subscriptions/{course_id}",
+        get(subscriptions::get_subscription),
+      )
       .route("/api/user", get(user::get_user))
-      .merge(Scalar::with_url("/api/docs", Documentation::openapi()));
+      .merge(
+        Scalar::with_url("/api/docs", Documentation::openapi()).custom_html(indoc! {
+          r##"
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8"/>
+            <link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96"/>
+            <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"/>
+            <link rel="shortcut icon" href="/assets/favicon.ico"/>
+            <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"/>
+            <meta name="apple-mobile-web-app-title" content="mcgill.courses"/>
+            <link rel="manifest" href="/assets/site.webmanifest"/>
+            <meta name="msapplication-TileColor" content="#da532c"/>
+            <meta name="theme-color" content="#ffffff"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <meta name="description" content="API documentation for mcgill.courses."/>
+            <title>API - mcgill.courses</title>
+          </head>
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-XJYTRP283X"></script>
+          <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag("js", new Date());
+            gtag("config", "G-XJYTRP283X");
+          </script>
+          <body>
+            <script id="api-reference" type="application/json">
+              $spec
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+          </body>
+          </html>
+          "##
+        }),
+      );
 
     // Serve microsoft identity association file
     router = router.route(
@@ -172,54 +213,10 @@ impl Server {
         .fallback_service(assets.index)
     }
 
-    let router = router
-      .with_state(State::new(config.db, config.session_store).await?)
-      .layer(
-        TraceLayer::new_for_http()
-          .make_span_with(|request: &Request<Body>| {
-            let request_id = uuid::Uuid::new_v4().to_string();
-
-            tracing::info_span!(
-              "http_request",
-              method = %request.method(),
-              uri = %request.uri(),
-              path = %request.uri().path(),
-              query = %request.uri().query().unwrap_or(""),
-              request_id = %request_id,
-              user_agent = %request.headers()
-                .get("user-agent")
-                .and_then(|h| h.to_str().ok())
-                .unwrap_or("unknown"),
-            )
-          })
-          .on_request(|_request: &Request<Body>, span: &Span| {
-            tracing::info!(parent: span, "request started");
-          })
-          .on_response(|response: &Response, latency: Duration, span: &Span| {
-            tracing::info!(
-              parent: span,
-              status = %response.status(),
-              latency_ms = %latency.as_millis(),
-              "request completed"
-            );
-          })
-          .on_failure(
-            |error: tower_http::classify::ServerErrorsFailureClass,
-             latency: Duration,
-             span: &Span| {
-              tracing::error!(
-                parent: span,
-                error = %error,
-                latency_ms = %latency.as_millis(),
-                "request failed"
-              );
-            },
-          ),
-      );
-
     let governor_config = GovernorConfigBuilder::default()
-      .per_millisecond(10)
-      .burst_size(100)
+      .key_extractor(SmartIpKeyExtractor)
+      .per_second(1)
+      .burst_size(60)
       .finish()
       .ok_or(anyhow!("Failed to create governor configuration"))?;
 
@@ -234,15 +231,99 @@ impl Server {
       }
     });
 
-    Ok(if config.rate_limit {
-      router.layer(
-        ServiceBuilder::new()
-          .layer(GovernorLayer::new(governor_config))
-          .layer(CorsLayer::very_permissive()),
-      )
-    } else {
-      router.layer(CorsLayer::very_permissive())
-    })
+    let trace_layer = TraceLayer::new_for_http()
+      .make_span_with(|request: &Request<Body>| {
+        let request_id = Uuid::new_v4().to_string();
+
+        info_span!(
+          "http_request",
+          method = %request.method(),
+          uri = %request.uri(),
+          path = %request.uri().path(),
+          query = %request.uri().query().unwrap_or(""),
+          request_id = %request_id,
+          user_agent = %request.headers()
+            .get("user-agent")
+            .and_then(|header| header.to_str().ok())
+            .unwrap_or("unknown"),
+        )
+      })
+      .on_request(|_request: &Request<Body>, span: &Span| {
+        info!(parent: span, "request started");
+      })
+      .on_response(|response: &Response, latency: Duration, span: &Span| {
+        info!(
+          parent: span,
+          status = %response.status(),
+          latency_ms = %latency.as_millis(),
+          "request completed"
+        );
+      })
+      .on_failure(
+        |error: tower_http::classify::ServerErrorsFailureClass,
+         latency: Duration,
+         span: &Span| {
+          error!(
+            parent: span,
+            error = %error,
+            latency_ms = %latency.as_millis(),
+            "request failed"
+          );
+        },
+      );
+
+    Ok(
+      router
+        .with_state(State::new(config.db, config.session_store).await?)
+        .layer(
+          ServiceBuilder::new()
+            .layer(CatchPanicLayer::new())
+            .layer(HandleErrorLayer::new(|error: BoxError| async move {
+              if error.is::<tower::timeout::error::Elapsed>() {
+                StatusCode::REQUEST_TIMEOUT
+              } else {
+                StatusCode::INTERNAL_SERVER_ERROR
+              }
+            }))
+            .layer(TimeoutLayer::new(Duration::from_secs(30)))
+            .layer(CompressionLayer::new())
+            .layer(trace_layer)
+            .layer(tower::util::option_layer(config.rate_limit.then(|| {
+              GovernorLayer::new(governor_config).error_handler(
+                |error: GovernorError| {
+                  let (status, retry_after) = match &error {
+                    GovernorError::TooManyRequests { wait_time, .. } => {
+                      (StatusCode::TOO_MANY_REQUESTS, Some(*wait_time))
+                    }
+                    GovernorError::UnableToExtractKey => {
+                      (StatusCode::TOO_MANY_REQUESTS, Some(1))
+                    }
+                    GovernorError::Other { code, .. } => (*code, None),
+                  };
+
+                  let body = serde_json::json!({
+                    "error": "too many requests",
+                    "status": status.as_u16(),
+                  })
+                  .to_string();
+
+                  let mut response = Response::builder()
+                    .status(status)
+                    .header(http::header::CONTENT_TYPE, "application/json");
+
+                  if let Some(wait_time) = retry_after {
+                    response = response
+                      .header(http::header::RETRY_AFTER, wait_time)
+                      .header("x-ratelimit-after", wait_time);
+                  }
+
+                  response.body(Body::from(body)).unwrap()
+                },
+              )
+            })))
+            .layer(CorsLayer::very_permissive()),
+        ),
+    )
   }
 }
 
@@ -250,16 +331,13 @@ impl Server {
 mod tests {
   use {
     super::*,
-    crate::{
-      instructors::GetInstructorPayload,
-      interactions::GetUserInteractionForCoursePayload,
-      subscriptions::SubscriptionResponse,
-    },
     axum::body::Body,
     courses::{GetCourseByIdPayload, GetCoursesPayload},
     http::{Method, Request},
+    instructors::GetInstructorPayload,
     interactions::GetInteractionKindPayload,
-    model::{Notification, Subscription},
+    interactions::GetUserInteractionForCoursePayload,
+    model::{Grade, Notification, Subscription},
     pretty_assertions::assert_eq,
     reviews::GetReviewsPayload,
     serde::de::DeserializeOwned,
@@ -372,12 +450,6 @@ mod tests {
     }
   }
 
-  #[derive(Debug, Deserialize, Serialize)]
-  pub(crate) struct GetCourseWithReviewsPayload {
-    pub(crate) course: Course,
-    pub(crate) reviews: Vec<Review>,
-  }
-
   #[tokio::test]
   async fn courses_route_works() {
     let TestContext { db, app, .. } = TestContext::new().await;
@@ -389,19 +461,12 @@ mod tests {
     .await
     .unwrap();
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
@@ -426,19 +491,12 @@ mod tests {
     .await
     .unwrap();
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses?limit=10&offset=40")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
@@ -458,26 +516,127 @@ mod tests {
   async fn courses_route_disallows_negative_limit_or_offset() {
     let TestContext { app, .. } = TestContext::new().await;
 
-    let body = json!({
-      "subjects": None::<Vec<String>>,
-      "levels": None::<Vec<String>>,
-      "terms": None::<Vec<String>>,
-    });
-
     let response = app
       .clone()
       .oneshot(
         Request::builder()
-          .method(Method::POST)
+          .method(Method::GET)
           .uri("/api/courses?limit=-10&offset=-10")
-          .header("Content-Type", "application/json")
-          .body(Body::from(body.to_string()))
+          .body(Body::empty())
           .unwrap(),
       )
       .await
       .unwrap();
 
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+  }
+
+  #[tokio::test]
+  async fn courses_route_with_filters() {
+    let TestContext { db, app, .. } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "COMP202".into(),
+      user_id: "1".into(),
+      rating: 3,
+      difficulty: 2,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "COMP252".into(),
+      user_id: "1".into(),
+      rating: 5,
+      difficulty: 4,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "MATH240".into(),
+      user_id: "1".into(),
+      rating: 4,
+      difficulty: 3,
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    async fn case(app: Router, uri: &str, expected_ids: &[&str]) {
+      let response = app
+        .oneshot(
+          Request::builder()
+            .method(Method::GET)
+            .uri(uri)
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::OK);
+
+      let payload = response.convert::<GetCoursesPayload>().await;
+
+      let ids = payload
+        .courses
+        .iter()
+        .map(|course| course.id.as_str())
+        .collect::<Vec<&str>>();
+
+      assert_eq!(ids, expected_ids);
+    }
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP&sortType=rating&sortReverse=true",
+      &["COMP252", "COMP202"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP&sortType=rating&sortReverse=false",
+      &["COMP202", "COMP252"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?sortType=difficulty&sortReverse=true",
+      &["COMP252", "MATH240", "COMP202"],
+    )
+    .await;
+
+    case(
+      app.clone(),
+      "/api/courses?levels=2&sortType=reviewCount&sortReverse=true",
+      &["COMP202", "COMP252", "MATH240"],
+    )
+    .await;
+
+    case(app.clone(), "/api/courses?query=Honours", &["COMP252"]).await;
+
+    case(
+      app.clone(),
+      "/api/courses?subjects=COMP,MATH&levels=2",
+      &["COMP202", "COMP252", "MATH240"],
+    )
+    .await;
+
+    case(app.clone(), "/api/courses?subjects=PHYS", &[]).await;
+
+    case(app.clone(), "/api/courses?levels=1", &[]).await;
   }
 
   #[tokio::test]
@@ -507,6 +666,33 @@ mod tests {
       response.convert::<GetCourseByIdPayload>().await.course,
       db.find_course_by_id("COMP202").await.unwrap().unwrap()
     );
+  }
+
+  #[tokio::test]
+  async fn course_by_id_is_case_insensitive() {
+    let TestContext { db, app, .. } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    for id in ["comp202", "Comp202", "COMP202", "cOmP202"] {
+      let response = app
+        .clone()
+        .oneshot(
+          Request::builder()
+            .uri(format!("/api/courses/{id}"))
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::OK, "failed for id: {id}");
+    }
   }
 
   #[tokio::test]
@@ -564,7 +750,7 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let payload = response.convert::<GetCourseWithReviewsPayload>().await;
+    let payload = response.convert::<GetCourseByIdPayload>().await;
 
     assert_eq!(
       payload.course,
@@ -714,7 +900,7 @@ mod tests {
       .await
       .unwrap();
 
-    assert_eq!(response.status(), StatusCode::INTERNAL_SERVER_ERROR);
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
   }
 
   #[tokio::test]
@@ -1180,6 +1366,219 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn can_get_liked_reviews() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let author_cookie =
+      mock_login(session_store.clone(), "author1", "author1@mail.mcgill.ca")
+        .await;
+    let author_two_cookie =
+      mock_login(session_store.clone(), "author2", "author2@mail.mcgill.ca")
+        .await;
+
+    let reviews = vec![
+      (
+        author_cookie,
+        json!({
+          "content": "test",
+          "course_id": "COMP202",
+          "instructors": ["Jonathan Campbell"],
+          "rating": 5,
+          "difficulty": 4
+        }),
+      ),
+      (
+        author_two_cookie,
+        json!({
+          "content": "test2",
+          "course_id": "MATH240",
+          "instructors": ["Adrian Roshan Vetta"],
+          "rating": 4,
+          "difficulty": 3
+        }),
+      ),
+    ];
+
+    for (cookie, review) in reviews {
+      app
+        .call(
+          Request::builder()
+            .method(http::Method::POST)
+            .header("Cookie", cookie)
+            .header("Content-Type", "application/json")
+            .uri("/api/reviews")
+            .body(Body::from(review.to_string()))
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+    }
+
+    let liker_cookie =
+      mock_login(session_store.clone(), "liker", "liker@mail.mcgill.ca").await;
+
+    let like = json!({
+      "kind": "like",
+      "course_id": "COMP202",
+      "user_id": "author1",
+      "referrer": "liker"
+    })
+    .to_string();
+
+    app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", liker_cookie.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/interactions")
+          .body(Body::from(like))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    let dislike = json!({
+      "kind": "dislike",
+      "course_id": "MATH240",
+      "user_id": "author2",
+      "referrer": "liker"
+    })
+    .to_string();
+
+    app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", liker_cookie.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/interactions")
+          .body(Body::from(dislike))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    let other_cookie =
+      mock_login(session_store, "other", "other@mail.mcgill.ca").await;
+    let other_like = json!({
+      "kind": "like",
+      "course_id": "MATH240",
+      "user_id": "author2",
+      "referrer": "other"
+    })
+    .to_string();
+
+    app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", other_cookie)
+          .header("Content-Type", "application/json")
+          .uri("/api/interactions")
+          .body(Body::from(other_like))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", liker_cookie)
+          .uri("/api/reviews/liked")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let payload = response.convert::<GetReviewsPayload>().await;
+
+    assert_eq!(payload.reviews.len(), 1);
+    assert_eq!(payload.reviews[0].course_id, "COMP202");
+    assert_eq!(payload.reviews[0].user_id, "author1");
+  }
+
+  #[tokio::test]
+  async fn returns_empty_liked_reviews() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let author_cookie =
+      mock_login(session_store.clone(), "author1", "author1@mail.mcgill.ca")
+        .await;
+    let review = json!({
+      "content": "test",
+      "course_id": "COMP202",
+      "instructors": ["Jonathan Campbell"],
+      "rating": 5,
+      "difficulty": 4
+    })
+    .to_string();
+
+    app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", author_cookie)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(review))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    let liker_cookie =
+      mock_login(session_store, "liker", "liker@mail.mcgill.ca").await;
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", liker_cookie)
+          .uri("/api/reviews/liked")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let payload = response.convert::<GetReviewsPayload>().await;
+
+    assert_eq!(payload.reviews.len(), 0);
+  }
+
+  #[tokio::test]
   async fn get_invalid_instructor() {
     let TestContext { db, mut app, .. } = TestContext::new().await;
 
@@ -1580,31 +1979,26 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let payload = response.convert::<SubscriptionResponse>().await;
+    let subscriptions = response.convert::<Vec<Subscription>>().await;
 
-    match payload {
-      SubscriptionResponse::Multiple(subscriptions) => {
-        assert_eq!(subscriptions.len(), 2);
+    assert_eq!(subscriptions.len(), 2);
 
-        let course_ids = subscriptions
-          .iter()
-          .map(|subscription| subscription.course_id.as_str())
-          .collect::<HashSet<&str>>();
+    let course_ids = subscriptions
+      .iter()
+      .map(|subscription| subscription.course_id.as_str())
+      .collect::<HashSet<&str>>();
 
-        let expected = ["MATH240", "COMP202"]
-          .into_iter()
-          .collect::<HashSet<&str>>();
+    let expected = ["MATH240", "COMP202"]
+      .into_iter()
+      .collect::<HashSet<&str>>();
 
-        assert_eq!(course_ids, expected);
+    assert_eq!(course_ids, expected);
 
-        assert!(
-          subscriptions
-            .iter()
-            .all(|subscription| subscription.user_id == "subscriber")
-        );
-      }
-      other => panic!("expected multiple subscriptions, got {:?}", other),
-    }
+    assert!(
+      subscriptions
+        .iter()
+        .all(|subscription| subscription.user_id == "subscriber")
+    );
   }
 
   #[tokio::test]
@@ -1656,7 +2050,7 @@ mod tests {
           .method(http::Method::GET)
           .header("Cookie", cookie.clone())
           .header("Content-Type", "application/json")
-          .uri("/api/subscriptions?course_id=MATH240")
+          .uri("/api/subscriptions/MATH240")
           .body(Body::empty())
           .unwrap(),
       )
@@ -1666,11 +2060,11 @@ mod tests {
     assert_eq!(response.status(), StatusCode::OK);
 
     assert_matches!(
-      response.convert::<SubscriptionResponse>().await,
-      SubscriptionResponse::Single(Some(Subscription {
+      response.convert::<Option<Subscription>>().await,
+      Some(Subscription {
         course_id,
         user_id,
-      })) if course_id == "MATH240" && user_id == "subscriber"
+      }) if course_id == "MATH240" && user_id == "subscriber"
     );
   }
 
@@ -1703,7 +2097,7 @@ mod tests {
           .method(http::Method::GET)
           .header("Cookie", cookie)
           .header("Content-Type", "application/json")
-          .uri("/api/subscriptions?course_id=MATH240")
+          .uri("/api/subscriptions/MATH240")
           .body(Body::empty())
           .unwrap(),
       )
@@ -1712,9 +2106,7 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let payload = response.convert::<SubscriptionResponse>().await;
-
-    assert_matches!(payload, SubscriptionResponse::Single(None));
+    assert_matches!(response.convert::<Option<Subscription>>().await, None);
   }
 
   #[tokio::test]
@@ -1991,7 +2383,13 @@ mod tests {
           .header("Cookie", a.clone())
           .header("Content-Type", "application/json")
           .uri("/api/notifications")
-          .body(Body::from(json!({"course_id": "MATH240"}).to_string()))
+          .body(Body::from(
+            json!({
+              "course_id": "MATH240",
+              "user_id": "b"
+            })
+            .to_string(),
+          ))
           .unwrap(),
       )
       .await
@@ -2014,5 +2412,646 @@ mod tests {
 
     assert_eq!(response.status(), StatusCode::OK);
     assert_eq!(response.convert::<Vec<Notification>>().await.len(), 0);
+  }
+
+  #[tokio::test]
+  async fn delete_notification_scopes_to_review_user() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let (a, b, c) = (
+      mock_login(session_store.clone(), "a", "a@mail.mcgill.ca").await,
+      mock_login(session_store.clone(), "b", "b@mail.mcgill.ca").await,
+      mock_login(session_store, "c", "c@mail.mcgill.ca").await,
+    );
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", a.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/subscriptions")
+          .body(Body::from(json!({ "course_id": "MATH240" }).to_string()))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    assert!(db.get_subscription("a", "MATH240").await.unwrap().is_some());
+
+    let review_b = json!({
+      "content": "test",
+      "course_id": "MATH240",
+      "instructors": ["Adrian Roshan Vetta"],
+      "rating": 5,
+      "difficulty": 5
+    })
+    .to_string();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", b)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(review_b))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let review_c = json!({
+      "content": "another",
+      "course_id": "MATH240",
+      "instructors": ["Adrian Roshan Vetta"],
+      "rating": 4,
+      "difficulty": 3
+    })
+    .to_string();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", c)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(review_c))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", a.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/notifications")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(response.convert::<Vec<Notification>>().await.len(), 2);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::DELETE)
+          .header("Cookie", a.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/notifications")
+          .body(Body::from(
+            json!({
+              "course_id": "MATH240",
+              "user_id": "missing"
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", a.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/notifications")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(response.convert::<Vec<Notification>>().await.len(), 2);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::DELETE)
+          .header("Cookie", a.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/notifications")
+          .body(Body::from(
+            json!({
+              "course_id": "MATH240",
+              "user_id": "b"
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", a)
+          .header("Content-Type", "application/json")
+          .uri("/api/notifications")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let notifications = response.convert::<Vec<Notification>>().await;
+
+    assert_eq!(notifications.len(), 1);
+    assert_eq!(notifications[0].review.user_id, "c");
+  }
+
+  #[tokio::test]
+  async fn course_averages_route_works() {
+    let TestContext { db, mut app, .. } = TestContext::new().await;
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Fall 2024".into(),
+      average: Grade::BPlus,
+    })
+    .await
+    .unwrap();
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Winter 2024".into(),
+      average: Grade::B,
+    })
+    .await
+    .unwrap();
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "MATH240".into(),
+      term: "Fall 2024".into(),
+      average: Grade::AMinus,
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .uri("/api/course-averages")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    assert_eq!(response.convert::<Vec<CourseAverage>>().await.len(), 3);
+  }
+
+  #[tokio::test]
+  async fn course_averages_route_filters_by_course_id() {
+    let TestContext { db, mut app, .. } = TestContext::new().await;
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "COMP202".into(),
+      term: "Fall 2024".into(),
+      average: Grade::BPlus,
+    })
+    .await
+    .unwrap();
+
+    db.add_course_average(model::CourseAverage {
+      course_id: "MATH240".into(),
+      term: "Fall 2024".into(),
+      average: Grade::AMinus,
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .uri("/api/course-averages?course_id=COMP202")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let averages = response.convert::<Vec<CourseAverage>>().await;
+
+    assert_eq!(averages.len(), 1);
+    assert_eq!(averages[0].course_id, "COMP202");
+    assert_eq!(averages[0].average, Grade::BPlus);
+  }
+
+  #[tokio::test]
+  async fn add_review_rejects_invalid_rating_and_difficulty() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let cookie = mock_login(session_store, "test", "test@mail.mcgill.ca").await;
+
+    async fn case(app: &mut Router, cookie: &str, body: serde_json::Value) {
+      let response = app
+        .call(
+          Request::builder()
+            .method(http::Method::POST)
+            .header("Cookie", cookie)
+            .header("Content-Type", "application/json")
+            .uri("/api/reviews")
+            .body(Body::from(body.to_string()))
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    }
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "foo",
+        "course_id": "MATH240",
+        "instructors": ["Adrian Roshan Vetta"],
+        "rating": 0,
+        "difficulty": 3,
+      }),
+    )
+    .await;
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "foo",
+        "course_id": "MATH240",
+        "instructors": ["Adrian Roshan Vetta"],
+        "rating": 6,
+        "difficulty": 3,
+      }),
+    )
+    .await;
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "foo",
+        "course_id": "MATH240",
+        "instructors": ["Adrian Roshan Vetta"],
+        "rating": 3,
+        "difficulty": 0,
+      }),
+    )
+    .await;
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "foo",
+        "course_id": "MATH240",
+        "instructors": ["Adrian Roshan Vetta"],
+        "rating": 3,
+        "difficulty": 6,
+      }),
+    )
+    .await;
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "   ",
+        "course_id": "MATH240",
+        "instructors": ["Adrian Roshan Vetta"],
+        "rating": 3,
+        "difficulty": 3,
+      }),
+    )
+    .await;
+
+    case(
+      &mut app,
+      &cookie,
+      json!({
+        "content": "foo",
+        "course_id": "MATH240",
+        "instructors": [],
+        "rating": 3,
+        "difficulty": 3,
+      }),
+    )
+    .await;
+
+    assert_eq!(db.find_reviews_by_user_id("test").await.unwrap().len(), 0);
+  }
+
+  #[tokio::test]
+  async fn add_review_for_unknown_course_returns_not_found() {
+    let TestContext {
+      db,
+      app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .method(http::Method::POST)
+          .header(
+            "Cookie",
+            mock_login(session_store, "test", "test@mail.mcgill.ca").await,
+          )
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(
+            json!({
+              "content": "foo",
+              "course_id": "BAR999",
+              "instructors": ["Adrian Roshan Vetta"],
+              "rating": 3,
+              "difficulty": 3,
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+  }
+
+  #[tokio::test]
+  async fn unauthenticated_cant_update_or_delete_review() {
+    let TestContext { db, mut app, .. } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::PUT)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(
+            json!({
+              "content": "foo",
+              "course_id": "MATH240",
+              "instructors": ["Adrian Roshan Vetta"],
+              "rating": 3,
+              "difficulty": 3,
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::TEMPORARY_REDIRECT);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::DELETE)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(json!({"course_id": "MATH240"}).to_string()))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::TEMPORARY_REDIRECT);
+  }
+
+  #[tokio::test]
+  async fn duplicate_review_upserts_in_place() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let cookie = mock_login(session_store, "test", "test@mail.mcgill.ca").await;
+
+    for (content, rating) in [("foo", 1u32), ("bar", 5u32)] {
+      let response = app
+        .call(
+          Request::builder()
+            .method(http::Method::POST)
+            .header("Cookie", cookie.clone())
+            .header("Content-Type", "application/json")
+            .uri("/api/reviews")
+            .body(Body::from(
+              json!({
+                "content": content,
+                "course_id": "MATH240",
+                "instructors": ["Adrian Roshan Vetta"],
+                "rating": rating,
+                "difficulty": 3,
+              })
+              .to_string(),
+            ))
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::OK);
+    }
+
+    let reviews = db.find_reviews_by_user_id("test").await.unwrap();
+
+    assert_eq!(
+      reviews,
+      vec![Review {
+        content: "bar".into(),
+        course_id: "MATH240".into(),
+        difficulty: 3,
+        instructors: vec!["Adrian Roshan Vetta".into()],
+        likes: 0,
+        rating: 5,
+        timestamp: reviews[0].timestamp.clone(),
+        user_id: "test".into(),
+      }]
+    );
+  }
+
+  #[tokio::test]
+  async fn delete_review_is_scoped_to_authenticated_user() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let a_cookie =
+      mock_login(session_store.clone(), "a", "a@mail.mcgill.ca").await;
+    let b_cookie = mock_login(session_store, "b", "b@mail.mcgill.ca").await;
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", a_cookie)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(
+            json!({
+              "content": "foo",
+              "course_id": "MATH240",
+              "instructors": ["Adrian Roshan Vetta"],
+              "rating": 5,
+              "difficulty": 5,
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::DELETE)
+          .header("Cookie", b_cookie)
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(json!({"course_id": "MATH240"}).to_string()))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    assert_eq!(db.find_reviews_by_user_id("a").await.unwrap().len(), 1);
+    assert_eq!(db.find_reviews_by_user_id("b").await.unwrap().len(), 0);
+  }
+
+  #[tokio::test]
+  async fn rate_limit_returns_429_with_retry_after() {
+    let TestContext {
+      db, session_store, ..
+    } = TestContext::new().await;
+
+    let app = Server::app(AppConfig {
+      db,
+      assets: None,
+      session_store,
+      rate_limit: true,
+    })
+    .await
+    .unwrap();
+
+    let mut last = None;
+
+    for _ in 0..120 {
+      let response = app
+        .clone()
+        .oneshot(
+          Request::builder()
+            .method(http::Method::GET)
+            .header("X-Forwarded-For", "1.2.3.4")
+            .uri("/api/courses")
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      if response.status() == StatusCode::TOO_MANY_REQUESTS {
+        last = Some(response);
+        break;
+      }
+    }
+
+    let response = last.expect("expected to be rate limited");
+
+    assert_eq!(response.status(), StatusCode::TOO_MANY_REQUESTS);
+    assert!(response.headers().get(http::header::RETRY_AFTER).is_some());
+    assert!(response.headers().get("x-ratelimit-after").is_some());
   }
 }

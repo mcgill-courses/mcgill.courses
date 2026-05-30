@@ -1,3 +1,5 @@
+## requirement-parser
+
 **requirement-parser** is a tool to generate JSON-based course graph structures for
 course entries used within the application.
 
@@ -10,7 +12,7 @@ course entries used within the application.
 We fine-tune a large language model on labeled examples to achieve high
 accuracy with our output.
 
-### Setup
+## Setup
 
 First, install dependencies:
 
@@ -20,7 +22,7 @@ uv sync
 
 Refer to `.env.example` for what environment variables need to be set.
 
-### Usage
+## Usage
 
 It's a single python script you can run, passing in a file on disk:
 
@@ -49,7 +51,7 @@ options:
                         requirements.
 ```
 
-### Prior Art
+## Prior Art
 
-See [llmbda](https://github.com/SamZhang02/llmbda) - a large language model based
+See [llmbda](https://github.com/SamZhang02/llmbda), a large language model based
 propositional logic deduction assistant, for more context on the problem.

@@ -7,6 +7,8 @@ pub(crate) struct GetInstructorPayload {
   pub(crate) instructor: Option<Instructor>,
   /// Reviews associated with the instructor sorted by newest first.
   pub(crate) reviews: Vec<Review>,
+  /// Courses taught by the instructor.
+  pub(crate) courses: Vec<Course>,
 }
 
 #[utoipa::path(
@@ -31,12 +33,16 @@ pub(crate) async fn get_instructor(
 
   Ok(Json(GetInstructorPayload {
     instructor: instructor.clone(),
-    reviews: match instructor {
+    reviews: match &instructor {
       Some(ins) => {
         let mut reviews = db.find_reviews_by_instructor_name(&ins.name).await?;
         reviews.sort_by(|a, b| b.timestamp.cmp(&a.timestamp));
         reviews
       }
+      None => vec![],
+    },
+    courses: match &instructor {
+      Some(ins) => db.find_courses_by_instructor_name(&ins.name).await?,
       None => vec![],
     },
   }))

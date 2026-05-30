@@ -5,9 +5,11 @@ use {
   derivative::Derivative,
   serde::{Deserialize, Deserializer, Serialize, Serializer, de::Error},
   serde_json::Value,
+  serde_with::DisplayFromStr,
   std::{
     borrow::Cow,
     cmp::Ordering,
+    collections::HashSet,
     fmt::{self, Display, Formatter},
     path::PathBuf,
   },
@@ -22,9 +24,12 @@ use {
 };
 
 mod course;
+mod course_average;
 mod course_filter;
 mod course_page;
+mod course_sort_type;
 mod datetime;
+mod grade;
 mod initialize_options;
 mod instructor;
 mod interaction;
@@ -38,9 +43,12 @@ mod subscription;
 
 pub use crate::{
   course::Course,
-  course_filter::{CourseFilter, CourseSort, CourseSortType},
+  course_average::CourseAverage,
+  course_filter::CourseFilter,
   course_page::CoursePage,
+  course_sort_type::CourseSortType,
   datetime::DateTime,
+  grade::Grade,
   initialize_options::InitializeOptions,
   instructor::Instructor,
   interaction::{Interaction, InteractionKind},

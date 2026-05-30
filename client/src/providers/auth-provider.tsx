@@ -6,7 +6,7 @@ import type { User } from '../lib/types';
 
 export const AuthContext = createContext<User | undefined>(undefined);
 
-const AuthProvider = ({ children }: PropsWithChildren<any>) => {
+const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +19,7 @@ const AuthProvider = ({ children }: PropsWithChildren<any>) => {
         setUser(data.user);
         setLoading(false);
       })
-      .catch(() => toast.error('Failed to fetch user.'));
+      .catch(() => toast.error('Failed to fetch user'));
   }, []);
 
   return (

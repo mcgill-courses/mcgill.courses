@@ -1,4 +1,4 @@
-import escapeRegExp from 'lodash/escapeRegExp';
+import { escapeRegExp } from '../lib/utils';
 
 export const Highlight = ({
   text,

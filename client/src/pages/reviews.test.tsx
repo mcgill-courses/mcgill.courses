@@ -222,7 +222,7 @@ describe('Reviews page', () => {
     await waitFor(() => expect(toastErrorMock).toHaveBeenCalledTimes(1));
 
     expect(toastErrorMock).toHaveBeenCalledWith(
-      'Failed to fetch reviews. Please try again later.'
+      'Failed to fetch reviews, please try again later'
     );
 
     expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();

@@ -1,6 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { format } from 'date-fns';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
   ArrowUpRight,
   Check,
@@ -12,7 +11,7 @@ import {
   ThumbsDown,
   ThumbsUp,
 } from 'lucide-react';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
@@ -22,11 +21,7 @@ import { api } from '../lib/api';
 import type { Review } from '../lib/types';
 import type { Interaction } from '../lib/types';
 import { InteractionKind } from '../lib/types';
-import {
-  courseIdToUrlParam,
-  getReviewAnchorId,
-  spliceCourseCode,
-} from '../lib/utils';
+import { courseIdToUrlParam, spliceCourseCode } from '../lib/utils';
 import { BirdIcon } from './bird-icon';
 import { DeleteButton } from './delete-button';
 import { IconRating } from './icon-rating';
@@ -35,9 +30,25 @@ import { Tooltip } from './tooltip';
 // Timestamp of https://github.com/terror/mcgill.courses/pull/500
 const RMP_SCRAPE_EPOCH = new Date(1713472800 * 1000);
 
+const formatReviewContent = (content: string): ReactNode[] => {
+  const parts = content.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+
+  return parts.filter(Boolean).map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return <em key={i}>{part.slice(1, -1)}</em>;
+    }
+
+    return <Fragment key={i}>{part}</Fragment>;
+  });
+};
+
 const LoginPrompt = () => {
   return (
-    <div className='absolute bottom-20 end-4 h-fit rounded-md border bg-gray-100 px-2 py-1 text-neutral-800 dark:border-0 dark:bg-neutral-700 dark:text-gray-200 sm:bottom-16'>
+    <div className='absolute end-4 bottom-20 h-fit rounded-md border bg-gray-100 px-2 py-1 text-neutral-800 sm:bottom-16 dark:border-0 dark:bg-neutral-700 dark:text-gray-200'>
       You must be logged in
     </div>
   );
@@ -97,8 +108,8 @@ const ReviewInteractions = ({
     try {
       const payload = await api.getInteractions(courseId, userId, user?.id);
       setKind(payload.kind);
-    } catch (err: any) {
-      toast.error(err.toString());
+    } catch (err: unknown) {
+      toast.error(String(err));
     }
   };
 
@@ -114,10 +125,10 @@ const ReviewInteractions = ({
         `Successfully ${interactionKind}d review for ${spliceCourseCode(
           courseId,
           ' '
-        )}.`
+        )}`
       );
-    } catch (err: any) {
-      toast.error(err.toString());
+    } catch (err: unknown) {
+      toast.error(String(err));
     }
   };
 
@@ -135,10 +146,10 @@ const ReviewInteractions = ({
         `Successfully removed interaction for ${spliceCourseCode(
           courseId,
           ' '
-        )}.`
+        )}`
       );
-    } catch (err: any) {
-      toast.error(err.toString());
+    } catch (err: unknown) {
+      toast.error(String(err));
     }
   };
 
@@ -148,19 +159,23 @@ const ReviewInteractions = ({
   };
 
   const handleLike = () => {
-    user
-      ? kind === InteractionKind.Like
-        ? removeInteraction()
-        : addInteraction(InteractionKind.Like)
-      : displayLoginPrompt();
+    if (!user) {
+      displayLoginPrompt();
+    } else if (kind === InteractionKind.Like) {
+      removeInteraction();
+    } else {
+      addInteraction(InteractionKind.Like);
+    }
   };
 
   const handleDislike = () => {
-    user
-      ? kind === InteractionKind.Dislike
-        ? removeInteraction()
-        : addInteraction(InteractionKind.Dislike)
-      : displayLoginPrompt();
+    if (!user) {
+      displayLoginPrompt();
+    } else if (kind === InteractionKind.Dislike) {
+      removeInteraction();
+    } else {
+      addInteraction(InteractionKind.Dislike);
+    }
   };
 
   return (
@@ -233,8 +248,14 @@ export const CourseReview = ({
 
   const date = new Date(parseInt(review.timestamp, 10));
 
-  const shortDate = format(date, 'P'),
-    longDate = format(date, 'EEEE, MMMM d, yyyy');
+  const shortDate = date.toLocaleDateString();
+
+  const longDate = date.toLocaleDateString(undefined, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   const highlightAnimation = { scale: highlighted ? 1.05 : 1 };
 
@@ -258,21 +279,19 @@ export const CourseReview = ({
       typeof navigator === 'undefined' ||
       !navigator?.clipboard
     ) {
-      toast.error('Copy to clipboard is not supported in this browser.');
+      toast.error('Copy to clipboard is not supported in this browser');
       return;
     }
 
     const link = new URL(window.location.href);
-    link.searchParams.delete('scrollToReview');
     link.searchParams.set('review', review.userId);
 
     const copyPromise = navigator.clipboard.writeText(link.toString());
 
     toast.promise(copyPromise, {
       loading: 'Copying link…',
-      success: 'Copied review link to clipboard.',
-      error:
-        'Something went wrong while copying the review link. Please try again.',
+      success: 'Copied review link to clipboard',
+      error: 'Something went wrong while copying the review link',
     });
 
     copyPromise
@@ -301,18 +320,17 @@ export const CourseReview = ({
     attachment === ReviewAttachment.ScrollButton ? (
       <Tooltip text='Scroll to this review' className='w-36'>
         <Link
-          to={`/course/${courseIdToUrlParam(review.courseId)}`}
-          state={{ scrollToReview: getReviewAnchorId(review) }}
+          to={`/course/${courseIdToUrlParam(review.courseId)}?review=${review.userId}`}
           className='inline-flex h-6 items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
           aria-label={`Open ${review.courseId} and scroll to this review`}
         >
-          <ArrowUpRight className='h-4 w-4' />
+          <ArrowUpRight className='size-4' />
         </Link>
       </Tooltip>
     ) : attachment === ReviewAttachment.CopyButton ? (
       (() => {
         const icon = (
-          <span className='relative inline-flex h-4 w-4 items-center justify-center'>
+          <span className='relative inline-flex size-4 items-center justify-center'>
             <Copy
               className={twMerge(
                 'absolute h-4 w-4 transition-opacity duration-150 ease-out',
@@ -332,7 +350,7 @@ export const CourseReview = ({
           <button
             type='button'
             onClick={copyReviewLink}
-            className='inline-flex h-6 w-6 items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
+            className='inline-flex size-6 cursor-pointer items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
             aria-label={`Copy review link for ${review.courseId}`}
             disabled={copied}
           >
@@ -359,8 +377,8 @@ export const CourseReview = ({
   }, []);
 
   const reviewContext = includeTaughtBy ? (
-    <span className='flex flex-wrap items-center gap-x-1 gap-y-1'>
-      <span>Taught by</span>
+    <span>
+      <span>Taught by </span>
       {review.instructors.map((instructor, i) => {
         let separator = null;
 
@@ -378,7 +396,7 @@ export const CourseReview = ({
             >
               {instructor}
             </Link>
-            {separator}
+            <span>{separator}</span>
           </Fragment>
         );
       })}
@@ -391,10 +409,10 @@ export const CourseReview = ({
   );
 
   return (
-    <motion.div
+    <m.div
       id={anchorId}
       className={twMerge(
-        'relative flex w-full flex-col gap-4 border-b-[1px] border-b-gray-300 bg-slate-50 px-6 py-3 first:rounded-t-md last:rounded-b-md last:border-b-0 dark:border-b-gray-600 dark:bg-neutral-800',
+        'relative flex w-full flex-col gap-4 border-b border-b-gray-300 bg-slate-50 px-6 py-3 first:rounded-t-md last:rounded-b-md last:border-b-0 dark:border-b-gray-600 dark:bg-neutral-800',
         className
       )}
       animate={highlightAnimation}
@@ -415,25 +433,25 @@ export const CourseReview = ({
                   text='External review from RateMyProfessors'
                   className='w-36'
                 >
-                  <Tag className='ml-2 mt-1 w-4 text-red-600' />
+                  <Tag className='mt-1 ml-2 w-4 text-red-600' />
                 </Tooltip>
               )}
               {canModify && (
                 <Pin
                   size={15}
-                  className='ml-2 mt-2 fill-rose-600 text-red-600'
+                  className='mt-2 ml-2 fill-rose-600 text-red-600'
                 />
               )}
               <div className='grow' />
               <div className='flex w-64 flex-col items-end rounded-lg p-2'>
                 <div className='flex items-center gap-x-2'>
-                  <div className='text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400'>
+                  <div className='text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400'>
                     Rating
                   </div>
                   <IconRating rating={review.rating} icon={BirdIcon} />
                 </div>
                 <div className='flex items-center gap-x-2'>
-                  <div className='text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400'>
+                  <div className='text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400'>
                     Difficulty
                   </div>
                   <IconRating rating={review.difficulty} icon={Flame} />
@@ -447,19 +465,21 @@ export const CourseReview = ({
 
               if (!shouldTruncate) {
                 return (
-                  <div className='ml-1 mr-4 mt-2 hyphens-auto whitespace-pre-wrap break-words text-left text-gray-800 dark:text-gray-300'>
-                    {review.content}
+                  <div className='mt-2 mr-4 ml-1 text-left wrap-break-word hyphens-auto whitespace-pre-wrap text-gray-800 dark:text-gray-300'>
+                    {formatReviewContent(review.content)}
                   </div>
                 );
               }
 
               return (
                 <>
-                  <div className='ml-1 mr-4 mt-2 hyphens-auto whitespace-pre-wrap break-words text-left text-gray-800 dark:text-gray-300'>
-                    {review.content.substring(0, 300) + '...'}
+                  <div className='mt-2 mr-4 ml-1 text-left wrap-break-word hyphens-auto whitespace-pre-wrap text-gray-800 dark:text-gray-300'>
+                    {formatReviewContent(
+                      review.content.substring(0, 300) + '...'
+                    )}
                   </div>
                   <button
-                    className='ml-1 mr-auto pt-1 text-gray-700 underline transition duration-300 ease-in-out hover:text-red-500 dark:text-gray-300 dark:hover:text-red-500'
+                    className='mr-auto ml-1 pt-1 text-gray-700 underline transition duration-300 ease-in-out hover:text-red-500 dark:text-gray-300 dark:hover:text-red-500'
                     onClick={() => setReadMore(true)}
                   >
                     Show more
@@ -471,7 +491,7 @@ export const CourseReview = ({
         </div>
       </div>
       <div className='flex items-center'>
-        <p className='mb-2 mt-auto flex-1 text-sm italic leading-4 text-gray-700 dark:text-gray-200'>
+        <p className='mt-auto mb-2 flex-1 text-sm leading-4 text-gray-700 italic dark:text-gray-200'>
           <span className='inline-flex flex-wrap items-center gap-1'>
             {reviewContext}
             {attachmentNode}
@@ -491,13 +511,13 @@ export const CourseReview = ({
         <div className='flex items-center'>
           <div className='mb-1 flex'>
             {canModify && (
-              <div className='ml-2 mr-1 flex h-fit space-x-2'>
-                <div onClick={openEditReview}>
+              <div className='mr-1 ml-2 flex h-fit space-x-2'>
+                <button type='button' onClick={openEditReview}>
                   <Edit
                     className='cursor-pointer stroke-gray-500 transition duration-200 hover:stroke-gray-800 dark:stroke-gray-400 dark:hover:stroke-gray-200'
                     size={20}
                   />
-                </div>
+                </button>
                 <DeleteButton
                   title='Delete Review'
                   text={`Are you sure you want to delete your review of ${review.courseId}? `}
@@ -517,6 +537,6 @@ export const CourseReview = ({
           )}
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };

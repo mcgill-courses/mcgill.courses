@@ -54,7 +54,7 @@ export const AddToCalendarButton = ({
       type='button'
       onClick={handleClick}
       disabled={isDisabled}
-      className={twMerge(variantClasses[variant], className)}
+      className={twMerge('cursor-pointer', variantClasses[variant], className)}
       aria-label={ariaLabel}
       title={title}
     >

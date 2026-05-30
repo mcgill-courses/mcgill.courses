@@ -1,7 +1,6 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Skeleton from 'react-loading-skeleton';
 import { toast } from 'sonner';
 
 import { CourseCard } from '../components/course-card';
@@ -10,105 +9,100 @@ import { FilterToggle } from '../components/filter-toggle';
 import { JumpToTopButton } from '../components/jump-to-top-button';
 import { Layout } from '../components/layout';
 import { SearchBar } from '../components/search-bar';
+import { Skeleton } from '../components/skeleton';
 import { Spinner } from '../components/spinner';
-import { useDarkMode } from '../hooks/use-dark-mode';
+import { useDebouncedValue } from '../hooks/use-debounced-value';
 import { useExploreFilterState } from '../hooks/use-explore-filter-state';
 import { api } from '../lib/api';
+import type { Course, CourseFilter } from '../lib/types';
+import { CourseSortType } from '../lib/types';
 import { getCurrentTerms } from '../lib/utils';
-import type { Course } from '../model/course';
 
-const makeSortPayload = (sort: SortByType) => {
-  switch (sort) {
-    case '':
-      return undefined;
-    case 'Highest Rating':
-      return {
-        sortType: 'rating',
-        reverse: true,
-      };
-    case 'Lowest Rating':
-      return {
-        sortType: 'rating',
-        reverse: false,
-      };
-    case 'Hardest':
-      return {
-        sortType: 'difficulty',
-        reverse: true,
-      };
-    case 'Easiest':
-      return {
-        sortType: 'difficulty',
-        reverse: false,
-      };
-    case 'Most Reviews':
-      return {
-        sortType: 'reviewCount',
-        reverse: true,
-      };
-    case 'Least Reviews':
-      return {
-        sortType: 'reviewCount',
-        reverse: false,
-      };
-  }
-};
+const COURSE_LIMIT = 20;
 
 export const Explore = () => {
-  const limit = 20;
-  const currentTerms = getCurrentTerms();
-
-  const [courses, setCourses] = useState<Course[] | undefined>(undefined);
   const [courseCount, setCourseCount] = useState<number | undefined>(undefined);
+  const [courses, setCourses] = useState<Course[] | undefined>(undefined);
   const [hasMore, setHasMore] = useState(true);
-  const [offset, setOffset] = useState(limit);
-
+  const [offset, setOffset] = useState(COURSE_LIMIT);
   const [query, setQuery] = useState<string>('');
   const [searchSelected, setSearchSelected] = useState<boolean>(false);
 
-  const [darkMode] = useDarkMode();
+  const currentTerms = getCurrentTerms();
+  const debouncedQuery = useDebouncedValue(query, 250);
 
   const { selectedSubjects, selectedLevels, selectedTerms, sortBy } =
     useExploreFilterState();
 
-  const nullable = (arr: string[]) => (arr.length === 0 ? null : arr);
+  const orUndefined = (arr: string[]) => (arr.length === 0 ? undefined : arr);
 
-  const filters = {
-    subjects: nullable(selectedSubjects),
-    levels: nullable(selectedLevels.map((l) => l.charAt(0))),
-    terms: nullable(
+  const getSortFields = useCallback(
+    (
+      sort: SortByType
+    ): { sortReverse: boolean; sortType: CourseSortType } | undefined => {
+      switch (sort) {
+        case '':
+          return undefined;
+        case 'Highest Rating':
+          return { sortReverse: true, sortType: CourseSortType.Rating };
+        case 'Lowest Rating':
+          return { sortReverse: false, sortType: CourseSortType.Rating };
+        case 'Hardest':
+          return { sortReverse: true, sortType: CourseSortType.Difficulty };
+        case 'Easiest':
+          return { sortReverse: false, sortType: CourseSortType.Difficulty };
+        case 'Most Reviews':
+          return { sortReverse: true, sortType: CourseSortType.ReviewCount };
+        case 'Least Reviews':
+          return { sortReverse: false, sortType: CourseSortType.ReviewCount };
+      }
+    },
+    [sortBy]
+  );
+
+  const sortFields = getSortFields(sortBy);
+
+  const filters: CourseFilter = {
+    levels: orUndefined(selectedLevels.map((level) => level.charAt(0))),
+    query: debouncedQuery === '' ? undefined : debouncedQuery,
+    sortReverse: sortFields?.sortReverse,
+    sortType: sortFields?.sortType,
+    subjects: orUndefined(selectedSubjects),
+    terms: orUndefined(
       selectedTerms.map(
-        (term) => currentTerms.filter((t) => t.split(' ')[0] === term)[0]
+        (term) =>
+          currentTerms.filter(
+            (currentTerm) => currentTerm.split(' ')[0] === term
+          )[0]
       )
     ),
-    query: query === '' ? null : query,
-    sortBy: makeSortPayload(sortBy),
   };
 
   useEffect(() => {
     api
-      .getCourses(limit, 0, true, filters)
+      .getCourses(COURSE_LIMIT, 0, true, filters)
       .then((data) => {
         setCourses(data.courses);
         setCourseCount(data.courseCount);
       })
       .catch(() => {
-        toast.error('Failed to fetch courses. Please try again later.');
+        toast.error('Failed to fetch courses, please try again later');
       });
     setHasMore(true);
-    setOffset(limit);
-  }, [selectedSubjects, selectedLevels, selectedTerms, sortBy, query]);
+    setOffset(COURSE_LIMIT);
+  }, [selectedSubjects, selectedLevels, selectedTerms, sortBy, debouncedQuery]);
 
   const fetchMore = async () => {
-    const batch = await api.getCourses(limit, offset, false, filters);
+    const batch = await api.getCourses(COURSE_LIMIT, offset, false, filters);
 
-    if (batch.courses.length === 0) setHasMore(false);
-    else {
+    if (batch.courses.length === 0) {
+      setHasMore(false);
+    } else {
       const newCourses = courses
         ? courses.concat(batch.courses)
         : batch.courses;
       setCourses(newCourses);
-      setOffset(offset + limit);
+      setOffset((prev) => prev + COURSE_LIMIT);
     }
   };
 
@@ -142,10 +136,10 @@ export const Explore = () => {
 
       <div className='flex flex-col items-center py-8'>
         <div className='mb-16'>
-          <h1 className='text-center text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-200 sm:text-5xl'>
+          <h1 className='text-center text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-gray-200'>
             Explore all courses
           </h1>
-          <p className='mt-2 text-center text-sm text-gray-600 dark:text-gray-400 md:text-base'>
+          <p className='mt-2 text-center text-sm text-gray-600 md:text-base dark:text-gray-400'>
             Check out information and reviews about all{' '}
             {courseCount?.toLocaleString('en-us')} courses offered by McGill
             University.
@@ -180,15 +174,15 @@ export const Explore = () => {
                       iconStyle='mt-2 lg:mt-0'
                       inputStyle='block rounded-lg w-full bg-slate-200 p-3 pr-5 pl-10 text-sm text-black outline-none dark:border-neutral-50 dark:bg-neutral-800 dark:text-gray-200 dark:placeholder:text-neutral-500'
                       outerInputStyle='my-2 mt-4 lg:mt-2'
-                      placeholder='Search by course code, title, description or instructor name'
+                      placeholder='Search by course, subject, or professor'
                       searchSelected={searchSelected}
                       setSearchSelected={setSearchSelected}
                     />
-                    {courses.map((course, i) => (
+                    {courses.map((course) => (
                       <CourseCard
                         className='my-1.5'
                         course={course}
-                        key={i}
+                        key={course._id}
                         query={query}
                       />
                     ))}
@@ -196,16 +190,9 @@ export const Explore = () => {
                 ) : (
                   <div className='mx-2'>
                     <Skeleton
-                      baseColor={
-                        darkMode ? 'rgb(38 38 38)' : 'rgb(248 250 252)'
-                      }
                       className='mb-2 rounded-lg first:mt-2'
                       count={10}
-                      duration={2}
                       height={256}
-                      highlightColor={
-                        darkMode ? 'rgb(64 64 64)' : 'rgb(226 232 240)'
-                      }
                     />
                   </div>
                 )}

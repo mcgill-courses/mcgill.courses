@@ -78,7 +78,7 @@ pub fn extract_course_page(text: &str) -> Result<CoursePage> {
   //
   // We currently rely on vsb to populate instructors in `Loader`.
   //
-  // We'll also need to update the test samples in `/test-samples/`.
+  // We'll also need to update the fixtures in `/fixtures/`.
   let instructors = Vec::new();
 
   Ok(CoursePage {
@@ -161,7 +161,7 @@ mod tests {
     pretty_assertions::assert_eq,
   };
 
-  static MOCK_DIR: Dir<'_> = include_dir!("tools/scraper/test-samples");
+  static MOCK_DIR: Dir<'_> = include_dir!("tools/scraper/fixtures");
 
   fn get_content(name: &str) -> String {
     MOCK_DIR

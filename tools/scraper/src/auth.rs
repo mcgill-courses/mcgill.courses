@@ -1,6 +1,6 @@
 use super::*;
 
-const CHROMEDRIVER_PORT: usize = 9515;
+const GECKODRIVER_PORT: usize = 4444;
 const MAX_ELEM_RETRIES: usize = 5;
 const VSB_LOGIN_URL: &str = "https://vsb.mcgill.ca/login.jsp";
 
@@ -23,11 +23,11 @@ pub(crate) fn authenticate() -> Result<String> {
   let otp_secret = env::var("VSB_OTP_SECRET")
     .expect("VSB_OTP_SECRET must be specified for scraping");
 
-  info!("Starting chromedriver server");
+  info!("Starting geckodriver server");
 
-  let _chromedriver = Driver(
-    Command::new("chromedriver")
-      .args([format!("--port={CHROMEDRIVER_PORT}")])
+  let _geckodriver = Driver(
+    Command::new("geckodriver")
+      .args(["--port", &GECKODRIVER_PORT.to_string()])
       .spawn()?,
   );
 
@@ -55,11 +55,11 @@ async fn get_vsb_cookie(
   password: String,
   otp_secret: String,
 ) -> Result<String> {
-  let mut caps = DesiredCapabilities::chrome();
+  let mut caps = DesiredCapabilities::firefox();
   caps.set_headless()?;
 
   let driver =
-    WebDriver::new(format!("http://localhost:{CHROMEDRIVER_PORT}"), caps)
+    WebDriver::new(format!("http://localhost:{GECKODRIVER_PORT}"), caps)
       .await?;
 
   // Need to use `new_unchecked` because Microsoft auth secret length is too short.

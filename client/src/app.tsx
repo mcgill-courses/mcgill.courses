@@ -1,4 +1,3 @@
-import 'react-loading-skeleton/dist/skeleton.css';
 import { Route, Routes } from 'react-router-dom';
 
 import { PrivateRoute } from './components/private-route';
@@ -24,7 +23,11 @@ const App = () => {
       <Route path='/privacy' element={<PrivacyPolicy />} />
       <Route
         path='/profile'
-        element={<PrivateRoute children={<Profile />} />}
+        element={
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        }
       />
       <Route path='/reviews' element={<Reviews />} />
       <Route path='/tos' element={<TermsAndConditions />} />

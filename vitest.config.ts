@@ -2,27 +2,19 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  root: './client',
   plugins: [react()],
+  root: './client',
   test: {
-    environment: 'jsdom',
-    setupFiles: ['../vitest.setup.ts'],
-    css: true,
-    globals: true,
-    include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       include: ['src/**/*'],
-      exclude: [
-        '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-        '**/*.config.*',
-      ],
+      exclude: ['**/*.config.*', '**/*.test.{ts,tsx}'],
     },
-  },
-  resolve: {
-    alias: {
-      '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
-    },
+    css: true,
+    environment: 'jsdom',
+    globals: true,
+    include: ['**/*.test.{ts,tsx}'],
+    setupFiles: ['../vitest.setup.ts'],
   },
 });

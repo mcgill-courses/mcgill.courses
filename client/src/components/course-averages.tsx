@@ -1,15 +1,23 @@
-import { produce } from 'immer';
-import groupBy from 'lodash/groupBy';
-import mapValues from 'lodash/mapValues';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Fragment, useEffect, useState } from 'react';
+import { AnimatePresence, m } from 'framer-motion';
+import { ChevronDown, LineChart, List } from 'lucide-react';
+import {
+  Fragment,
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
-import { Instructor } from '../lib/types';
-import { compareTerms } from '../lib/utils';
-import { Course } from '../model/course';
-import { TermAverage } from '../model/term-average';
+import type { Course, CourseAverage, Instructor } from '../lib/types';
+import { compareTerms, groupBy, mapValues } from '../lib/utils';
+import { Spinner } from './spinner';
+
+const GPAChart = lazy(() =>
+  import('./gpa-chart').then((m) => ({ default: m.GPAChart }))
+);
 
 type InstructorLinkProps = {
   instructor: Instructor;
@@ -26,28 +34,34 @@ const InstructorLink = ({ instructor }: InstructorLinkProps) => (
 
 type CourseAveragesProps = {
   course: Course;
-  averages: TermAverage[];
+  averages: CourseAverage[];
 };
 
 export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
   const [showAll, setShowAll] = useState<boolean>(false);
+  const [showGraph, setShowGraph] = useState<boolean>(false);
 
   const termInstructors = groupBy(course.instructors, (i) => i.term);
 
   const initialExpandedState = () => mapValues(termInstructors, () => false);
   const [expandedState, setExpandedState] = useState(initialExpandedState());
 
-  const handleToggle = (term: string) => {
-    setExpandedState(
-      produce(expandedState, (draft) => {
-        draft[term] = !draft[term];
-      })
-    );
+  const handleInstructorToggle = (term: string) => {
+    setExpandedState({ ...expandedState, [term]: !expandedState[term] });
   };
+
+  const handleGraphToggle = useCallback(
+    () => setShowGraph((prev) => !prev),
+    []
+  );
+
   useEffect(() => {
     setExpandedState(initialExpandedState());
     setShowAll(false);
+    setShowGraph(false);
   }, [course]);
+
+  const ToggleButtonIcon = showGraph ? List : LineChart;
 
   return (
     <div
@@ -55,85 +69,155 @@ export const CourseAverages = ({ course, averages }: CourseAveragesProps) => {
         'relative w-full rounded-md bg-slate-50 p-6 shadow-sm dark:bg-neutral-800'
       }
     >
-      <h2 className='mb-2 mt-1 text-lg font-bold leading-none text-gray-700 dark:text-gray-200 md:text-xl'>
+      <button
+        className='absolute top-4 right-4 z-10 cursor-pointer rounded-full bg-gray-200 p-2 transition duration-150 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
+        onClick={handleGraphToggle}
+      >
+        <ToggleButtonIcon
+          size={20}
+          className='stroke-gray-700 dark:stroke-gray-400'
+        />
+      </button>
+
+      <h2 className='mt-1 mb-2 text-lg leading-none font-bold text-gray-700 md:text-xl dark:text-gray-200'>
         Class Averages
       </h2>
-      <div className='py-1' />
 
-      {averages
-        .sort((a, b) => compareTerms(b.term, a.term))
-        .slice(0, showAll ? averages.length : 6)
-        .map((average) => {
-          const instructors = termInstructors[average.term];
-          return (
-            <Fragment key={average.term}>
-              <div className='flex items-center'>
-                <div className='w-11/12 text-gray-500 dark:text-gray-400'>
-                  <div>
-                    <div className='mb-0.5 text-sm'>{average.term}</div>
-                    <div className='flex text-xs'>
-                      {instructors ? (
-                        <div>
-                          <InstructorLink instructor={instructors[0]} />
-                          {instructors.length > 1 && (
-                            <span
-                              className='ml-1 cursor-pointer font-semibold dark:text-gray-200'
-                              onClick={() => handleToggle(average.term)}
-                            >
-                              +{instructors.length - 1}
-                              <ChevronDown
-                                className={twMerge(
-                                  'ml-1 inline-block',
-                                  expandedState[average.term]
-                                    ? 'rotate-180'
-                                    : 'rotate-0'
+      {showGraph ? (
+        <div className='py-2'>
+          <Suspense
+            fallback={
+              <div className='flex h-[220px] items-center justify-center'>
+                <Spinner />
+              </div>
+            }
+          >
+            <GPAChart averages={averages} termInstructors={termInstructors} />
+          </Suspense>
+        </div>
+      ) : (
+        <>
+          <div className='py-1' />
+
+          {(() => {
+            const sortedAverages = averages.sort((a, b) =>
+              compareTerms(b.term, a.term)
+            );
+            const firstSix = sortedAverages.slice(0, 6);
+            const remaining = sortedAverages.slice(6);
+
+            const renderAverageItem = (average: CourseAverage) => {
+              const instructors = termInstructors[average.term];
+              return (
+                <Fragment key={average.term}>
+                  <div className='flex items-center'>
+                    <div className='w-11/12 text-gray-500 dark:text-gray-400'>
+                      <div>
+                        <div className='mb-0.5 text-sm'>{average.term}</div>
+                        <div className='flex text-xs'>
+                          {instructors ? (
+                            <div>
+                              <InstructorLink instructor={instructors[0]} />
+                              {instructors.length > 1 && (
+                                <button
+                                  type='button'
+                                  className='ml-1 cursor-pointer font-semibold dark:text-gray-200'
+                                  aria-expanded={expandedState[average.term]}
+                                  onClick={() =>
+                                    handleInstructorToggle(average.term)
+                                  }
+                                >
+                                  +{instructors.length - 1}
+                                  <ChevronDown
+                                    className={twMerge(
+                                      'ml-1 inline-block transition-transform duration-200',
+                                      expandedState[average.term]
+                                        ? 'rotate-180'
+                                        : 'rotate-0'
+                                    )}
+                                    size={16}
+                                  />
+                                </button>
+                              )}
+                              <AnimatePresence initial={false}>
+                                {expandedState[average.term] && (
+                                  <m.div
+                                    className='flex flex-col gap-y-0.5 overflow-hidden'
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{
+                                      duration: 0.2,
+                                      ease: 'easeInOut',
+                                    }}
+                                  >
+                                    {instructors.slice(1).map((ins) => (
+                                      <InstructorLink
+                                        key={ins.name}
+                                        instructor={ins}
+                                      />
+                                    ))}
+                                  </m.div>
                                 )}
-                                size={16}
-                              />
-                            </span>
+                              </AnimatePresence>
+                            </div>
+                          ) : (
+                            <div>Instructor Unknown</div>
                           )}
-                          <div className='flex flex-col gap-y-0.5'>
-                            {expandedState[average.term] && (
-                              <>
-                                {instructors.slice(1).map((ins) => (
-                                  <InstructorLink instructor={ins} />
-                                ))}
-                              </>
-                            )}
-                          </div>
                         </div>
-                      ) : (
-                        <div>Instructor Unknown</div>
-                      )}
+                      </div>
+                    </div>
+                    <div className='font-medium text-gray-700 dark:text-gray-200'>
+                      {average.average}
                     </div>
                   </div>
-                </div>
-                <div className='font-medium text-gray-700 dark:text-gray-200'>
-                  {average.average}
-                </div>
-              </div>
-              <hr className='my-1 w-full border border-neutral-200 dark:border-neutral-700' />
-            </Fragment>
-          );
-        })}
+                  <hr className='my-1 w-full border border-neutral-200 dark:border-neutral-700' />
+                </Fragment>
+              );
+            };
 
-      <div className='py-1' />
+            return (
+              <>
+                {firstSix.map(renderAverageItem)}
+                <AnimatePresence initial={false}>
+                  {showAll && remaining.length > 0 && (
+                    <m.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className='overflow-hidden'
+                    >
+                      {remaining.map(renderAverageItem)}
+                    </m.div>
+                  )}
+                </AnimatePresence>
+              </>
+            );
+          })()}
 
-      {averages.length > 6 && (
-        <button
-          className='flex w-full items-center gap-2 text-sm text-gray-500 dark:text-gray-400 md:text-lg'
-          onClick={() => setShowAll(!showAll)}
-        >
-          <p className='my-auto ml-auto text-base font-medium'>
-            {showAll ? 'Show less' : 'Show all'}
-          </p>
-          {showAll ? (
-            <ChevronUp className='my-auto mr-auto font-extrabold' />
-          ) : (
-            <ChevronDown className='my-auto mr-auto font-extrabold' />
+          <div className='py-1' />
+
+          {averages.length > 6 && (
+            <button
+              className='flex w-full cursor-pointer items-center gap-2 text-sm text-gray-500 md:text-lg dark:text-gray-400'
+              onClick={() => setShowAll(!showAll)}
+            >
+              <p className='my-auto ml-auto text-base font-medium'>
+                {showAll ? 'Show less' : 'Show all'}
+              </p>
+              <m.div
+                className='my-auto mr-auto'
+                animate={{ rotate: showAll ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ChevronDown className='font-extrabold' />
+              </m.div>
+            </button>
           )}
-        </button>
+        </>
       )}
+
       <p className='mt-5 text-center text-xs text-gray-700 dark:text-gray-200'>
         Powered by{' '}
         <a href='https://demetrios-koziris.github.io/McGillEnhanced/'>

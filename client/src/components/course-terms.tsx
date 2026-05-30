@@ -1,16 +1,16 @@
-import { produce } from 'immer';
+import { AnimatePresence, m } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { Leaf, Snowflake, Sun, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
+import type { Course } from '../lib/types';
 import {
   compareTerms,
   getCurrentTerms,
   groupCurrentCourseTermInstructors,
 } from '../lib/utils';
-import type { Course } from '../model/course';
 import { Highlight } from './highlight';
 import { Tooltip } from './tooltip';
 
@@ -68,11 +68,7 @@ export const CourseTerms = ({ course, variant, query }: CourseTermsProps) => {
   const [expandedState, setExpandedState] = useState(initialExpandedState());
 
   const handleToggle = (i: number) => {
-    setExpandedState(
-      produce(expandedState, (draft) => {
-        draft[i] = !draft[i];
-      })
-    );
+    setExpandedState(expandedState.map((val, idx) => (idx === i ? !val : val)));
   };
 
   useEffect(() => {
@@ -118,25 +114,48 @@ export const CourseTerms = ({ course, variant, query }: CourseTermsProps) => {
               >
                 {instructors.length > 0 ? (
                   <div className='flex flex-col gap-y-1'>
-                    {(expandedState[i]
-                      ? instructors
-                      : instructors.slice(0, 1)
-                    ).map((ins) => (
-                      <Link
-                        key={ins.name}
-                        to={`/instructor/${encodeURIComponent(ins.name)}`}
-                      >
-                        <div className='flex items-center space-x-1.5 whitespace-nowrap'>
-                          <SeasonIcon term={term} variant={variant} />
-                          <div className='pr-1 font-medium dark:text-gray-200'>
-                            <Highlight
-                              text={ins.name}
-                              query={query || undefined}
-                            />
-                          </div>
+                    <Link
+                      key={instructors[0].name}
+                      to={`/instructor/${encodeURIComponent(instructors[0].name)}`}
+                    >
+                      <div className='flex items-center space-x-1.5 whitespace-nowrap'>
+                        <SeasonIcon term={term} variant={variant} />
+                        <div className='pr-1 font-medium dark:text-gray-200'>
+                          <Highlight
+                            text={instructors[0].name}
+                            query={query || undefined}
+                          />
                         </div>
-                      </Link>
-                    ))}
+                      </div>
+                    </Link>
+                    <AnimatePresence initial={false}>
+                      {expandedState[i] && instructors.length > 1 && (
+                        <m.div
+                          className='flex flex-col gap-y-1 overflow-hidden'
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        >
+                          {instructors.slice(1).map((ins) => (
+                            <Link
+                              key={ins.name}
+                              to={`/instructor/${encodeURIComponent(ins.name)}`}
+                            >
+                              <div className='flex items-center space-x-1.5 whitespace-nowrap'>
+                                <SeasonIcon term={term} variant={variant} />
+                                <div className='pr-1 font-medium dark:text-gray-200'>
+                                  <Highlight
+                                    text={ins.name}
+                                    query={query || undefined}
+                                  />
+                                </div>
+                              </div>
+                            </Link>
+                          ))}
+                        </m.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 ) : (
                   <div className='flex items-center space-x-1.5 whitespace-nowrap'>
@@ -147,21 +166,23 @@ export const CourseTerms = ({ course, variant, query }: CourseTermsProps) => {
                   </div>
                 )}
                 {instructors.length > 1 && (
-                  <span
+                  <button
+                    type='button'
                     className='cursor-pointer font-semibold dark:text-gray-200'
+                    aria-expanded={expandedState[i]}
                     onClick={() => handleToggle(i)}
                   >
-                    +{instructors.length - 1}
+                    {!expandedState[i] && `+${instructors.length - 1}`}
                     {variant === 'large' && (
                       <ChevronDown
                         className={twMerge(
-                          'ml-1 inline-block',
+                          'ml-1 inline-block transition-transform duration-200',
                           expandedState[i] ? 'rotate-180' : 'rotate-0'
                         )}
                         size={16}
                       />
                     )}
-                  </span>
+                  </button>
                 )}
               </div>
             </div>

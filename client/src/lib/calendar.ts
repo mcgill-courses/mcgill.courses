@@ -1,4 +1,4 @@
-export const ICS_TIMEZONE = 'America/Toronto';
+const ICS_TIMEZONE = 'America/Toronto';
 
 const padNumber = (value: number) => value.toString().padStart(2, '0');
 
