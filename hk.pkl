@@ -1,0 +1,36 @@
+amends "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Config.pkl"
+
+local hook_steps = new Mapping<String, Step> {
+  ["cargo-fmt"] {
+    check = "cargo fmt --check -- {{files}}"
+    fix = "cargo fmt -- {{files}}"
+    glob = "**/*.rs"
+  }
+  ["eslint"] {
+    check = "pnpm exec eslint --no-warn-ignored {{files}}"
+    depends = "prettier"
+    dir = "client"
+    glob = "**/*.{ts,tsx}"
+  }
+  ["prettier"] {
+    check = "pnpm exec prettier --check {{files}}"
+    dir = "client"
+    fix = "pnpm exec prettier --write {{files}}"
+    glob = "**/*.{js,json,ts,tsx}"
+  }
+}
+
+hooks {
+  ["check"] {
+    steps = hook_steps
+  }
+  ["fix"] {
+    fix = true
+    steps = hook_steps
+  }
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps = hook_steps
+  }
+}

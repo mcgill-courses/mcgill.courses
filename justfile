@@ -75,8 +75,9 @@ initialize *args: restart-services
 
 [group: 'setup']
 install-dev-deps:
-  cargo install present
-  cargo install typeshare-cli
+  cargo install hk present typeshare-cli
+  brew install pkl
+  hk install
   brew install --cask chromedriver
   curl -LsSf https://astral.sh/uv/install.sh | sh
 
@@ -97,7 +98,7 @@ load *args:
 [group: 'tools']
 readme:
   present --in-place README.md
-  @pnpm exec prettier --write README.md
+  @pnpm --dir client exec prettier --write --config .prettierrc ../README.md
 
 [group: 'setup']
 restart-services:
@@ -133,7 +134,7 @@ test *filter:
 [group: 'dev']
 typeshare:
   RUST_LOG=warn typeshare -l typescript -o client/src/lib/types.ts .
-  pnpm exec prettier --write client/src/lib/types.ts
+  pnpm --dir client exec prettier --write src/lib/types.ts
 
 [group: 'dev']
 watch +COMMAND='test':
