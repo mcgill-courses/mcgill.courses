@@ -1,3 +1,4 @@
+import { AnimatePresence, m } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -35,6 +36,11 @@ const DAY_CODE_MAP: Record<string, string> = {
 const DAY_ORDER = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
 const DEFAULT_MEETING_COUNT = 13;
+const SCHEDULE_PREVIEW_COUNT = 5;
+const SCHEDULE_EXPAND_TRANSITION = {
+  duration: 0.35,
+  ease: [0.22, 1, 0.36, 1],
+} as const;
 
 const TERM_START_CONFIG = {
   Winter: { startMonth: 1, offsetDays: 6 },
@@ -323,10 +329,11 @@ const TimeblockDays = ({ days }: TimeblockDaysProps) => {
 type ScheduleRowProps = {
   block: ScheduleBlock;
   course: Course;
+  index: number;
   term: string;
 };
 
-const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
+const ScheduleRow = ({ block, course, index, term }: ScheduleRowProps) => {
   const events = buildScheduleEvents(block, course, term);
 
   const filenameBase =
@@ -375,8 +382,8 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
     });
   };
 
-  return (
-    <tr className='p-2 text-left even:bg-slate-100 even:dark:bg-[rgb(48,48,48)]'>
+  const cells = (
+    <>
       <td className='xs:text-sm pl-4 text-xs font-semibold whitespace-nowrap sm:pl-6 sm:text-base lg:pl-4 lg:text-sm xl:text-base'>
         {block.display}
       </td>
@@ -451,8 +458,15 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
           variant='ghost'
         />
       </td>
-    </tr>
+    </>
   );
+
+  const className = twMerge(
+    'p-2 text-left',
+    index % 2 === 1 && 'bg-slate-100 dark:bg-[rgb(48,48,48)]'
+  );
+
+  return <tr className={className}>{cells}</tr>;
 };
 
 const getDefaultTerm = (offeredTerms: string[]) => {
@@ -502,6 +516,9 @@ export const CourseSchedule = ({ course, className }: CourseScheduleProps) => {
     return null;
   }
 
+  const visibleBlocks = blocks.slice(0, SCHEDULE_PREVIEW_COUNT);
+  const remainingBlocks = blocks.slice(SCHEDULE_PREVIEW_COUNT);
+
   return (
     <div
       className={twMerge(
@@ -533,39 +550,64 @@ export const CourseSchedule = ({ course, className }: CourseScheduleProps) => {
       <div className='flex flex-col rounded-b-lg bg-slate-50 dark:bg-neutral-800 dark:text-gray-200'>
         <table className='w-full'>
           <tbody>
-            {blocks.length <= 5 || showAll
-              ? blocks.map((s) => (
-                  <ScheduleRow
-                    key={s.display}
-                    block={s}
-                    course={course}
-                    term={selectedTerm}
-                  />
-                ))
-              : blocks
-                  .slice(0, 5)
-                  .map((s) => (
-                    <ScheduleRow
-                      key={s.display}
-                      block={s}
-                      course={course}
-                      term={selectedTerm}
-                    />
-                  ))}
+            {visibleBlocks.map((s, index) => (
+              <ScheduleRow
+                key={s.display}
+                block={s}
+                course={course}
+                index={index}
+                term={selectedTerm}
+              />
+            ))}
+            <AnimatePresence initial={false}>
+              {showAll && (
+                <m.tr
+                  key='remaining-schedule-rows'
+                  exit={{ opacity: 1 }}
+                  transition={SCHEDULE_EXPAND_TRANSITION}
+                >
+                  <td colSpan={6} className='p-0'>
+                    <m.div
+                      className='overflow-hidden'
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={SCHEDULE_EXPAND_TRANSITION}
+                    >
+                      <table className='w-full'>
+                        <tbody>
+                          {remainingBlocks.map((s, index) => (
+                            <ScheduleRow
+                              key={s.display}
+                              block={s}
+                              course={course}
+                              index={index + SCHEDULE_PREVIEW_COUNT}
+                              term={selectedTerm}
+                            />
+                          ))}
+                        </tbody>
+                      </table>
+                    </m.div>
+                  </td>
+                </m.tr>
+              )}
+            </AnimatePresence>
           </tbody>
         </table>
-        {blocks.length > 5 && (
+        {remainingBlocks.length > 0 && (
           <div className='flex flex-row justify-center'>
             <button
               className='flex flex-row items-center justify-center py-2 text-center font-medium transition duration-300 ease-in-out hover:cursor-pointer dark:text-gray-200'
               onClick={() => setShowAll(!showAll)}
             >
               {showAll ? 'Show less' : 'Show all'}
-              <ChevronDown
-                className={`${
-                  showAll ? 'rotate-180' : ''
-                } mx-2 size-5 text-gray-900 dark:text-gray-300`}
-              />
+              <m.div
+                className='mx-2 size-5'
+                animate={{ rotate: showAll ? 180 : 0 }}
+                transition={{ duration: 0.25, ease: 'easeInOut' }}
+              >
+                <ChevronDown className='size-5 text-gray-900 dark:text-gray-300' />
+              </m.div>
             </button>
           </div>
         )}
