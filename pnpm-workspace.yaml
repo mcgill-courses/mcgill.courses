@@ -1,12 +1,12 @@
-packages:
-  - client
-
-onlyBuiltDependencies:
-  - esbuild
+allowBuilds:
+  cypress: false
+  esbuild: true
 
 ignoredBuiltDependencies:
   - cypress
 
-allowBuilds:
-  cypress: false
-  esbuild: true
+onlyBuiltDependencies:
+  - esbuild
+
+packages:
+  - client

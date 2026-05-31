@@ -2,21 +2,5 @@
   "name": "mcgill-courses",
   "private": true,
   "version": "0.0.0",
-  "packageManager": "pnpm@11.1.2",
-  "scripts": {
-    "build": "pnpm --dir client run build",
-    "cy:e2e": "pnpm --dir client run cy:e2e",
-    "cy:open-e2e": "pnpm --dir client run cy:open-e2e",
-    "cy:open-unit": "pnpm --dir client run cy:open-unit",
-    "cy:run-e2e": "pnpm --dir client run cy:run-e2e",
-    "cy:run-unit": "pnpm --dir client run cy:run-unit",
-    "dev": "pnpm --dir client run dev",
-    "format": "pnpm --dir client run format",
-    "format-check": "pnpm --dir client run format-check",
-    "knip": "pnpm --dir client run knip",
-    "lint": "pnpm --dir client run lint",
-    "preview": "pnpm --dir client run preview",
-    "test": "pnpm --dir client run test",
-    "test:watch": "pnpm --dir client run test:watch"
-  }
+  "packageManager": "pnpm@11.1.2"
 }

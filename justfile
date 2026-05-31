@@ -16,7 +16,8 @@ all: build clippy e2e fmt-check forbid lint test
 
 [group: 'dev']
 build *mode='development':
-  cargo build && pnpm run build -- --mode {{ mode }}
+  cargo build
+  pnpm -r run build --mode {{ mode }}
 
 [group: 'container']
 build-container:
@@ -44,21 +45,21 @@ dev: services typeshare
     --color \
     -- \
     'just watch run -- --db-name=mcgill-courses' \
-    'pnpm run dev'
+    'pnpm -r run dev'
 
 [group: 'test']
 e2e:
-  pnpm run cy:e2e
+  pnpm -r run cy:e2e
 
 [group: 'format']
 fmt:
   cargo fmt --all
-  pnpm run format
+  pnpm -r run format
 
 [group: 'check']
 fmt-check:
   cargo fmt --all -- --check
-  pnpm run format-check
+  pnpm -r run format-check
 
 [group: 'check']
 forbid:
@@ -83,7 +84,7 @@ install-dev-deps:
 
 [group: 'check']
 lint *args:
-  pnpm run lint {{ args }}
+  pnpm -r run lint {{ args }}
 
 [group: 'tools']
 [working-directory: 'tools/scraper']
@@ -98,7 +99,7 @@ load *args:
 [group: 'tools']
 readme:
   present --in-place README.md
-  @pnpm --dir client exec prettier --write --config .prettierrc ../README.md
+  @cd client && pnpm exec prettier --write --config .prettierrc ../README.md
 
 [group: 'setup']
 restart-services:
@@ -134,7 +135,7 @@ test *filter:
 [group: 'dev']
 typeshare:
   RUST_LOG=warn typeshare -l typescript -o client/src/lib/types.ts .
-  pnpm --dir client exec prettier --write src/lib/types.ts
+  cd client && pnpm exec prettier --write src/lib/types.ts
 
 [group: 'dev']
 watch +COMMAND='test':
