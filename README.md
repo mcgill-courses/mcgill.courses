@@ -54,7 +54,7 @@ Finally, spawn the react frontend:
 
 ```bash
 pnpm install
-pnpm run dev
+pnpm -r run dev
 ```
 
 _n.b._ If you have [just](https://github.com/casey/just) installed, we provide a

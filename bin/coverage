@@ -17,7 +17,7 @@ CARGO_INCREMENTAL=0 \
 
 echo '[~] Running client coverage...'
 
-pnpm run test --coverage
+pnpm --filter client run test --coverage
 
 echo '[~] Generating server coverage report...'
 
