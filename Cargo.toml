@@ -6,6 +6,7 @@ publish = false
 
 [workspace]
 members = ["crates/*", "tools/changelog-generator", "tools/final-exam-schedule-parser", "tools/scraper"]
+resolver = "2"
 
 [workspace.dependencies]
 anyhow = "1.0.102"
