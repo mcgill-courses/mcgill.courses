@@ -11,7 +11,7 @@ clap = { workspace = true }
 lopdf = "0.40.0"
 rayon = { workspace = true }
 regex = { workspace = true }
-reqwest = { version = "0.13.3", default-features = false, features = ["blocking", "rustls"] }
+reqwest = { version = "0.13.4", default-features = false, features = ["blocking", "rustls"] }
 serde = { workspace = true }
 serde_json = { workspace = true }
 typeshare = { workspace = true }
