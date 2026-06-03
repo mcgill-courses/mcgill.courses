@@ -47,8 +47,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0(react@19.2.6)
       react-infinite-scroll-component:
-        specifier: ^6.1.1
-        version: 6.1.1(react@19.2.6)
+        specifier: ^7.2.0
+        version: 7.2.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react-router-dom:
         specifier: ^6.30.1
         version: 6.30.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -2283,10 +2283,12 @@ packages:
     peerDependencies:
       react: ^16.6.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  react-infinite-scroll-component@6.1.1:
-    resolution: {integrity: sha512-R8YoOyiNDynSWmfVme5LHslsKrP+/xcRUWR2ies8UgUab9dtyw5ECnMCVPPmnmjjF4MWQmfVdRwRWcWaDgeyMA==}
+  react-infinite-scroll-component@7.2.0:
+    resolution: {integrity: sha512-oX0jgsm5wM2tT8sIxGUDZIBloXinfHmjWRduPk5AVTQ4KC7FW75wyp03VCUBDT8f9ousFK3vLiIcWoA5y+siOA==}
+    engines: {node: '>=20.0.0'}
     peerDependencies:
-      react: '>=16.0.0'
+      react: '>=17'
+      react-dom: '>=17'
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -2531,10 +2533,6 @@ packages:
   tapable@2.3.2:
     resolution: {integrity: sha512-1MOpMXuhGzGL5TTCZFItxCc0AARf1EZFQkGqMm7ERKj8+Hgr5oLvJOVFcC+lRmR8hCe2S3jC4T5D7Vg/d7/fhA==}
     engines: {node: '>=6'}
-
-  throttle-debounce@2.3.0:
-    resolution: {integrity: sha512-H7oLPV0P7+jgvrk+6mwwwBDmxTaxnu9HMXmloNLXwnNO0ZxZ31Orah2n8lU1eMPvsaowP2CX+USCgyovXfdOFQ==}
-    engines: {node: '>=8'}
 
   throttleit@1.0.1:
     resolution: {integrity: sha512-vDZpf9Chs9mAdfY046mcPt8fg5QSZr37hEH4TXYBnDF+izxgrbRGUAAaBvIk/fJm9aOFCGFd1EsNg5AZCbnQCQ==}
@@ -4869,10 +4867,10 @@ snapshots:
       react-fast-compare: 3.2.2
       shallowequal: 1.1.0
 
-  react-infinite-scroll-component@6.1.1(react@19.2.6):
+  react-infinite-scroll-component@7.2.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
     dependencies:
       react: 19.2.6
-      throttle-debounce: 2.3.0
+      react-dom: 19.2.6(react@19.2.6)
 
   react-is@16.13.1: {}
 
@@ -5144,8 +5142,6 @@ snapshots:
   tailwindcss@4.2.2: {}
 
   tapable@2.3.2: {}
-
-  throttle-debounce@2.3.0: {}
 
   throttleit@1.0.1: {}
 
