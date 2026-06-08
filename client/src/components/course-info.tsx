@@ -49,10 +49,15 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
     onSuccess: () => {
       if (!user) return;
 
-      queryClient.setQueryData<Subscription | null>(subscriptionQueryKey, {
+      const subscription: Subscription = {
         courseId: course._id,
         userId: user.id,
-      });
+      };
+
+      queryClient.setQueryData<Subscription | null>(
+        subscriptionQueryKey,
+        subscription
+      );
 
       toast.success(`Subscribed to course ${course.subject} ${course.code}`);
     },
