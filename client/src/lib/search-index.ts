@@ -6,7 +6,10 @@ import type { Course } from '../lib/types';
 let coursesIndex: Index | null = null;
 let instructorsIndex: Index | null = null;
 
-export type CourseData = Pick<Course, '_id' | 'subject' | 'code' | 'title'>;
+export type CourseData = Pick<
+  Course,
+  '_id' | 'subject' | 'code' | 'terms' | 'title'
+>;
 
 type InstructorName = string;
 
@@ -24,6 +27,7 @@ export const getSearchIndex = () => {
     subject: c.id.substring(0, 4),
     code: c.id.substring(4),
     _id: c.id,
+    terms: c.terms,
     title: c.title,
   }));
 

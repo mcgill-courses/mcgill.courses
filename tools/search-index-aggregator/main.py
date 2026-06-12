@@ -1,36 +1,47 @@
 import json
-import os
 from dataclasses import dataclass
+from pathlib import Path
 
 from arrg import app, argument
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 @dataclass
 class Course:
   id: str
   title: str
+  terms: list[str]
 
 
 @app(description='Aggregate course data from seed files and export to JSON.')
 class App:
   seed_path: str = argument(
-    '-s', '--seed-path', default='seed', help='Path to the directory containing seed files.'
+    '-s',
+    '--seed-path',
+    default=str(REPO_ROOT / 'seed'),
+    help='Path to the directory containing seed files.',
   )
 
   output_path: str = argument(
     '-o',
     '--output-path',
-    default='client/src/assets/search-data.json',
+    default=str(REPO_ROOT / 'client/src/assets/search-data.json'),
     help='Path to the output JSON file.',
   )
 
   def run(self) -> None:
+    seed_path = Path(self.seed_path)
     data_paths = []
 
-    for filename in sorted(os.listdir(self.seed_path)):
-      file_path = os.path.join(self.seed_path, filename)
+    for file_path in sorted(seed_path.iterdir()):
+      filename = file_path.name
 
-      if not os.path.isfile(file_path) or 'course' not in file_path:
+      if (
+        not file_path.is_file()
+        or not filename.startswith('courses-')
+        or not filename.endswith('.json')
+      ):
         continue
 
       data_paths.append(file_path)
@@ -39,13 +50,14 @@ class App:
     unique_instructors = set()
 
     for file_path in data_paths:
-      with open(file_path, 'r') as fobj:
+      with open(file_path) as fobj:
         courses = json.load(fobj)
 
         for course in courses:
           unique_courses[course['_id']] = Course(
             course['_id'],
             course['title'],
+            course.get('terms', []),
           )
 
           for instructor in course['instructors']:
@@ -53,11 +65,11 @@ class App:
 
     output = {
       'courses': [course.__dict__ for course in unique_courses.values()],
-      'instructors': list(unique_instructors),
+      'instructors': sorted(unique_instructors),
     }
 
-    with open(self.output_path, 'w') as f:
-      json.dump(output, f, separators=(',', ':'))
+    with open(self.output_path, 'w') as fobj:
+      json.dump(output, fobj)
 
     print(f'Output written to {self.output_path}')
 
