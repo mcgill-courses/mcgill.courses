@@ -1,4 +1,3 @@
-import { AnimatePresence, m } from 'framer-motion';
 import { ArrowLeft, ArrowRight, RotateCcw, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -52,16 +51,6 @@ const formatDayCount = (count: number) =>
 
 const formatOptionCount = (count: number) =>
   count === 1 ? '1 section' : `${count} sections`;
-
-const quickTransition = { duration: 0.16, ease: 'easeOut' } as const;
-
-const stateTransition = { duration: 0.2, ease: 'easeOut' } as const;
-
-const stateMotion = {
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -4 },
-  initial: { opacity: 0, y: 6 },
-} as const;
 
 export const ScheduleBuilder = () => {
   const currentTerms = useMemo(() => getCurrentTerms(), []);
@@ -296,7 +285,7 @@ export const ScheduleBuilder = () => {
           </div>
           <button
             aria-label='Start over'
-            className='inline-flex size-9 cursor-pointer items-center justify-center rounded-md text-gray-500 ring-1 ring-slate-200 transition-all duration-150 hover:-translate-y-px hover:bg-white hover:text-gray-900 hover:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 active:translate-y-0 active:scale-95 dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
+            className='inline-flex size-9 cursor-pointer items-center justify-center rounded-md text-gray-500 ring-1 ring-slate-200 hover:bg-white hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
             onClick={reset}
             title='Start over'
             type='button'
@@ -315,10 +304,10 @@ export const ScheduleBuilder = () => {
                 {currentTerms.map((term) => (
                   <button
                     className={twMerge(
-                      'cursor-pointer rounded-md px-3 py-2 text-left text-sm font-medium transition-all duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 active:scale-[0.98]',
+                      'cursor-pointer rounded-md px-3 py-2 text-left text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500',
                       selectedTerm === term
-                        ? 'bg-gray-950 text-white shadow-sm dark:bg-gray-100 dark:text-neutral-950'
-                        : 'text-gray-600 hover:-translate-y-px hover:bg-white hover:text-gray-950 hover:shadow-sm dark:text-gray-400 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
+                        ? 'bg-gray-950 text-white dark:bg-gray-100 dark:text-neutral-950'
+                        : 'text-gray-600 hover:bg-white hover:text-gray-950 dark:text-gray-400 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
                     )}
                     key={term}
                     onClick={() => setSelectedTerm(term)}
@@ -360,73 +349,50 @@ export const ScheduleBuilder = () => {
                   {selectedCourses.length}
                 </div>
               </div>
-              <AnimatePresence mode='wait' initial={false}>
-                {selectedCourses.length > 0 ? (
-                  <m.div
-                    className='divide-y divide-slate-200 overflow-hidden rounded-md bg-white/70 shadow-sm ring-1 ring-slate-200 dark:divide-neutral-800 dark:bg-neutral-900/40 dark:ring-neutral-800'
-                    key='courses-populated'
-                    initial={stateMotion.initial}
-                    animate={stateMotion.animate}
-                    exit={stateMotion.exit}
-                    transition={stateTransition}
-                  >
-                    <AnimatePresence initial={false}>
-                      {selectedCourses.map((course) => {
-                        const options = getCourseScheduleOptions(
-                          course,
-                          selectedTerm
-                        );
+              {selectedCourses.length > 0 ? (
+                <div className='divide-y divide-slate-200 overflow-hidden rounded-md bg-white/70 ring-1 ring-slate-200 dark:divide-neutral-800 dark:bg-neutral-900/40 dark:ring-neutral-800'>
+                  {selectedCourses.map((course) => {
+                    const options = getCourseScheduleOptions(
+                      course,
+                      selectedTerm
+                    );
 
-                        return (
-                          <m.div
-                            className='group p-3 transition-colors duration-150 hover:bg-white dark:hover:bg-neutral-900/60'
-                            key={course._id}
-                            layout
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, x: -8 }}
-                            transition={quickTransition}
-                          >
-                            <div className='flex items-start justify-between gap-3'>
-                              <div className='min-w-0'>
-                                <div className='truncate text-sm font-semibold text-gray-950 transition-colors group-hover:text-red-700 dark:text-gray-100 dark:group-hover:text-red-300'>
-                                  {spliceCourseCode(course._id, ' ')}
-                                </div>
-                                <div className='truncate text-xs text-gray-500 dark:text-gray-400'>
-                                  {course.title}
-                                </div>
-                                <div className='mt-2 text-xs font-medium text-gray-500 dark:text-gray-400'>
-                                  {formatOptionCount(options.length)}
-                                </div>
-                              </div>
-                              <button
-                                aria-label={`Remove ${course._id}`}
-                                className='cursor-pointer rounded-md p-1.5 text-gray-400 transition-all duration-150 hover:bg-slate-100 hover:text-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 active:scale-95 dark:hover:bg-neutral-800 dark:hover:text-red-300'
-                                onClick={() => removeCourse(course._id)}
-                                title={`Remove ${course._id}`}
-                                type='button'
-                              >
-                                <Trash2 className='size-4' />
-                              </button>
+                    return (
+                      <div
+                        className='group p-3 hover:bg-white dark:hover:bg-neutral-900/60'
+                        key={course._id}
+                      >
+                        <div className='flex items-start justify-between gap-3'>
+                          <div className='min-w-0'>
+                            <div className='truncate text-sm font-semibold text-gray-950 group-hover:text-red-700 dark:text-gray-100 dark:group-hover:text-red-300'>
+                              {spliceCourseCode(course._id, ' ')}
                             </div>
-                          </m.div>
-                        );
-                      })}
-                    </AnimatePresence>
-                  </m.div>
-                ) : (
-                  <m.div
-                    className='border-t border-slate-200 py-4 text-sm text-gray-500 dark:border-neutral-800 dark:text-gray-400'
-                    key='courses-empty'
-                    initial={stateMotion.initial}
-                    animate={stateMotion.animate}
-                    exit={stateMotion.exit}
-                    transition={stateTransition}
-                  >
-                    No courses selected
-                  </m.div>
-                )}
-              </AnimatePresence>
+                            <div className='truncate text-xs text-gray-500 dark:text-gray-400'>
+                              {course.title}
+                            </div>
+                            <div className='mt-2 text-xs font-medium text-gray-500 dark:text-gray-400'>
+                              {formatOptionCount(options.length)}
+                            </div>
+                          </div>
+                          <button
+                            aria-label={`Remove ${course._id}`}
+                            className='cursor-pointer rounded-md p-1.5 text-gray-400 hover:bg-slate-100 hover:text-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 dark:hover:bg-neutral-800 dark:hover:text-red-300'
+                            onClick={() => removeCourse(course._id)}
+                            title={`Remove ${course._id}`}
+                            type='button'
+                          >
+                            <Trash2 className='size-4' />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className='border-t border-slate-200 py-4 text-sm text-gray-500 dark:border-neutral-800 dark:text-gray-400'>
+                  No courses selected
+                </div>
+              )}
             </div>
           </section>
 
@@ -447,7 +413,7 @@ export const ScheduleBuilder = () => {
               <div className='flex items-center overflow-hidden rounded-md bg-white shadow-sm ring-1 ring-slate-200 dark:bg-neutral-800 dark:ring-neutral-700'>
                 <button
                   aria-label='Previous schedule'
-                  className='inline-flex size-9 cursor-pointer items-center justify-center text-gray-700 transition-all duration-150 hover:bg-slate-50 active:scale-95 disabled:cursor-not-allowed disabled:text-gray-300 disabled:active:scale-100 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
+                  className='inline-flex size-9 cursor-pointer items-center justify-center text-gray-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-gray-300 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
                   disabled={results.length === 0}
                   onClick={() => selectResultIndex(resultIndex - 1)}
                   title='Previous schedule'
@@ -463,7 +429,7 @@ export const ScheduleBuilder = () => {
                 </div>
                 <button
                   aria-label='Next schedule'
-                  className='inline-flex size-9 cursor-pointer items-center justify-center text-gray-700 transition-all duration-150 hover:bg-slate-50 active:scale-95 disabled:cursor-not-allowed disabled:text-gray-300 disabled:active:scale-100 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
+                  className='inline-flex size-9 cursor-pointer items-center justify-center text-gray-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-gray-300 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
                   disabled={results.length === 0}
                   onClick={() => selectResultIndex(resultIndex + 1)}
                   title='Next schedule'
@@ -485,7 +451,7 @@ export const ScheduleBuilder = () => {
               </div>
             ) : result ? (
               <div className='space-y-3'>
-                <VisualSchedule blocks={result.blocks} className='shadow-sm' />
+                <VisualSchedule blocks={result.blocks} />
                 <div className='overflow-hidden rounded-md bg-white/70 shadow-sm ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800'>
                   <div className='divide-y divide-slate-100 dark:divide-neutral-800'>
                     {result.blocks.map((block) => (

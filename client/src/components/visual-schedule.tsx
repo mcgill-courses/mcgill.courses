@@ -1,4 +1,3 @@
-import { m, useReducedMotion } from 'framer-motion';
 import { twMerge } from 'tailwind-merge';
 
 import type { BuilderBlock } from '../lib/schedule-builder';
@@ -20,12 +19,12 @@ const DAYS = [
 const HOUR_HEIGHT = 52;
 
 const COURSE_COLORS = [
-  'border-red-200 bg-gradient-to-br from-red-50 via-white to-red-50 text-red-950 ring-red-100 shadow-red-950/5 dark:border-red-500/35 dark:from-red-950/70 dark:via-red-950/50 dark:to-neutral-900 dark:text-red-100 dark:ring-red-400/15 dark:shadow-red-950/20',
-  'border-sky-200 bg-gradient-to-br from-sky-50 via-white to-sky-50 text-sky-950 ring-sky-100 shadow-sky-950/5 dark:border-sky-500/35 dark:from-sky-950/70 dark:via-sky-950/50 dark:to-neutral-900 dark:text-sky-100 dark:ring-sky-400/15 dark:shadow-sky-950/20',
-  'border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-emerald-50 text-emerald-950 ring-emerald-100 shadow-emerald-950/5 dark:border-emerald-500/35 dark:from-emerald-950/70 dark:via-emerald-950/50 dark:to-neutral-900 dark:text-emerald-100 dark:ring-emerald-400/15 dark:shadow-emerald-950/20',
-  'border-amber-200 bg-gradient-to-br from-amber-50 via-white to-amber-50 text-amber-950 ring-amber-100 shadow-amber-950/5 dark:border-amber-500/35 dark:from-amber-950/70 dark:via-amber-950/50 dark:to-neutral-900 dark:text-amber-100 dark:ring-amber-400/15 dark:shadow-amber-950/20',
-  'border-violet-200 bg-gradient-to-br from-violet-50 via-white to-violet-50 text-violet-950 ring-violet-100 shadow-violet-950/5 dark:border-violet-500/35 dark:from-violet-950/70 dark:via-violet-950/50 dark:to-neutral-900 dark:text-violet-100 dark:ring-violet-400/15 dark:shadow-violet-950/20',
-  'border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-cyan-50 text-cyan-950 ring-cyan-100 shadow-cyan-950/5 dark:border-cyan-500/35 dark:from-cyan-950/70 dark:via-cyan-950/50 dark:to-neutral-900 dark:text-cyan-100 dark:ring-cyan-400/15 dark:shadow-cyan-950/20',
+  'border-red-200 bg-red-50 text-red-950 dark:border-red-500/40 dark:bg-red-950/60 dark:text-red-100',
+  'border-sky-200 bg-sky-50 text-sky-950 dark:border-sky-500/40 dark:bg-sky-950/60 dark:text-sky-100',
+  'border-emerald-200 bg-emerald-50 text-emerald-950 dark:border-emerald-500/40 dark:bg-emerald-950/60 dark:text-emerald-100',
+  'border-amber-200 bg-amber-50 text-amber-950 dark:border-amber-500/40 dark:bg-amber-950/60 dark:text-amber-100',
+  'border-violet-200 bg-violet-50 text-violet-950 dark:border-violet-500/40 dark:bg-violet-950/60 dark:text-violet-100',
+  'border-cyan-200 bg-cyan-50 text-cyan-950 dark:border-cyan-500/40 dark:bg-cyan-950/60 dark:text-cyan-100',
 ];
 
 type Meeting = {
@@ -83,7 +82,6 @@ const formatCourseId = (courseId: string) =>
     : courseId;
 
 export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
-  const reduceMotion = useReducedMotion();
   const meetings = getMeetings(blocks);
   const { endHour, startHour } = getHourRange(meetings);
   const hours = Array.from(
@@ -104,7 +102,7 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
     return (
       <div
         className={twMerge(
-          'flex min-h-64 items-center justify-center rounded-md bg-white/80 text-sm font-medium text-gray-500 shadow-sm ring-1 ring-slate-200 dark:bg-neutral-900/50 dark:text-gray-400 dark:ring-neutral-800',
+          'flex min-h-64 items-center justify-center rounded-md bg-white/70 text-sm font-medium text-gray-500 ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:text-gray-400 dark:ring-neutral-800',
           className
         )}
       >
@@ -116,7 +114,7 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
   return (
     <div
       className={twMerge(
-        'overflow-hidden rounded-md bg-white/85 shadow-sm ring-1 ring-slate-200 backdrop-blur dark:bg-neutral-900/55 dark:ring-neutral-800',
+        'overflow-hidden rounded-md bg-white/80 ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800',
         className
       )}
     >
@@ -196,7 +194,7 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
                   ))}
                   {meetings
                     .filter((meeting) => meeting.day === day.code)
-                    .map((meeting, meetingIndex) => {
+                    .map((meeting) => {
                       const top =
                         ((meeting.start - startHour * 60) / 60) * HOUR_HEIGHT;
                       const meetingHeight = Math.max(
@@ -216,30 +214,16 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
                         .join(' · ');
 
                       return (
-                        <m.div
-                          animate={
-                            reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }
-                          }
+                        <div
                           className={twMerge(
-                            'absolute right-1 left-1 z-10 flex overflow-hidden rounded-[4px] border px-2 py-1 text-xs shadow-sm ring-1 backdrop-blur-[1px] transition-shadow duration-200 will-change-transform ring-inset hover:shadow-md',
+                            'absolute right-1 left-1 z-10 flex overflow-hidden rounded-sm border px-2 py-1 text-xs shadow-sm',
                             colorForCourse(meeting.block.courseId)
                           )}
-                          initial={
-                            reduceMotion ? { opacity: 0 } : { opacity: 0, y: 4 }
-                          }
                           key={`${meeting.block.courseId}-${meeting.block.display}-${meeting.block.crn}-${meeting.day}-${meeting.start}-${meeting.end}`}
                           style={{ height: meetingHeight, top }}
                           title={title}
-                          transition={{
-                            delay: reduceMotion
-                              ? 0
-                              : Math.min(meetingIndex * 0.025, 0.18),
-                            duration: 0.18,
-                            ease: 'easeOut',
-                          }}
-                          whileHover={reduceMotion ? undefined : { y: -1 }}
                         >
-                          <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-px'>
+                          <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-center'>
                             <div className='truncate text-[10px] leading-3.5 font-semibold'>
                               {formatCourseId(meeting.block.courseId)}
                             </div>
@@ -259,7 +243,7 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
                               </div>
                             )}
                           </div>
-                        </m.div>
+                        </div>
                       );
                     })}
                 </div>

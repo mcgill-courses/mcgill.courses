@@ -1,4 +1,3 @@
-import { m } from 'framer-motion';
 import { Layers, User } from 'lucide-react';
 import { RefObject, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -235,12 +234,7 @@ export const CourseSearchBar = ({
       />
       {searchSelected &&
         (length > 0 || showExploreButton || showEmptyState) && (
-          <m.div
-            animate={{ opacity: 1, y: 0 }}
-            className='absolute top-full z-50 w-full overflow-hidden bg-white shadow-md dark:bg-neutral-800'
-            initial={{ opacity: 0, y: -3 }}
-            transition={{ duration: 0.12, ease: 'easeOut' }}
-          >
+          <div className='absolute top-full z-50 w-full overflow-hidden bg-white shadow-md dark:bg-neutral-800'>
             {results.courses.map((result, index) => (
               <SearchResult
                 index={index}
@@ -281,7 +275,7 @@ export const CourseSearchBar = ({
               </div>
             )}
             {showExploreButton && <ExploreButton />}
-          </m.div>
+          </div>
         )}
     </div>
   );
