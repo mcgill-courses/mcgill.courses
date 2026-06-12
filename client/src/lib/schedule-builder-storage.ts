@@ -1,10 +1,14 @@
 const SCHEDULE_BUILDER_STORAGE_KEY = 'mcgill.courses.schedule-builder';
 
-export type StoredSchedule = {
+export type StoredTermSchedule = {
   allowConflicts: boolean;
   pinnedOptions: Record<string, string>;
   selectedCourseIds: string[];
   selectedResultId?: string;
+};
+
+export type StoredSchedule = {
+  schedulesByTerm: Record<string, StoredTermSchedule>;
   selectedTerm: string;
 };
 
@@ -21,6 +25,46 @@ const getStorage = () => {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+const readPinnedOptions = (value: unknown) =>
+  isRecord(value)
+    ? Object.fromEntries(
+        Object.entries(value).filter(
+          (entry): entry is [string, string] =>
+            typeof entry[0] === 'string' && typeof entry[1] === 'string'
+        )
+      )
+    : {};
+
+const readSelectedCourseIds = (value: unknown) =>
+  Array.isArray(value)
+    ? value.filter((value): value is string => typeof value === 'string')
+    : [];
+
+const readTermSchedule = (
+  value: Record<string, unknown>
+): StoredTermSchedule => ({
+  allowConflicts:
+    typeof value.allowConflicts === 'boolean' ? value.allowConflicts : false,
+  pinnedOptions: readPinnedOptions(value.pinnedOptions),
+  selectedCourseIds: readSelectedCourseIds(value.selectedCourseIds),
+  selectedResultId:
+    typeof value.selectedResultId === 'string'
+      ? value.selectedResultId
+      : undefined,
+});
+
+const readSchedulesByTerm = (value: unknown) => {
+  if (!isRecord(value)) return {};
+
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter((entry): entry is [string, Record<string, unknown>] =>
+        isRecord(entry[1])
+      )
+      .map(([term, schedule]) => [term, readTermSchedule(schedule)])
+  );
+};
+
 export const readStoredSchedule = (
   currentTerms: readonly string[]
 ): StoredSchedule | undefined => {
@@ -36,34 +80,18 @@ export const readStoredSchedule = (
     const value = JSON.parse(rawValue) as unknown;
 
     if (!isRecord(value)) return undefined;
+    if (!isRecord(value.schedulesByTerm)) return undefined;
+
+    const selectedTerm =
+      typeof value.selectedTerm === 'string' &&
+      currentTerms.includes(value.selectedTerm)
+        ? value.selectedTerm
+        : (currentTerms[0] ?? '');
+    const schedulesByTerm = readSchedulesByTerm(value.schedulesByTerm);
 
     return {
-      allowConflicts:
-        typeof value.allowConflicts === 'boolean'
-          ? value.allowConflicts
-          : false,
-      pinnedOptions: isRecord(value.pinnedOptions)
-        ? Object.fromEntries(
-            Object.entries(value.pinnedOptions).filter(
-              (entry): entry is [string, string] =>
-                typeof entry[0] === 'string' && typeof entry[1] === 'string'
-            )
-          )
-        : {},
-      selectedCourseIds: Array.isArray(value.selectedCourseIds)
-        ? value.selectedCourseIds.filter(
-            (value): value is string => typeof value === 'string'
-          )
-        : [],
-      selectedResultId:
-        typeof value.selectedResultId === 'string'
-          ? value.selectedResultId
-          : undefined,
-      selectedTerm:
-        typeof value.selectedTerm === 'string' &&
-        currentTerms.includes(value.selectedTerm)
-          ? value.selectedTerm
-          : (currentTerms[0] ?? ''),
+      schedulesByTerm,
+      selectedTerm,
     };
   } catch {
     return undefined;

@@ -5,11 +5,13 @@ import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import courseTerms from '../assets/course-terms.json';
+import { AddToCalendarButton } from '../components/add-to-calendar-button';
 import { CourseSearchBar } from '../components/course-search-bar';
 import { Layout } from '../components/layout';
 import { Select } from '../components/select';
 import { VisualSchedule } from '../components/visual-schedule';
 import { api } from '../lib/api';
+import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
 import {
   type BuilderBlock,
   DAY_LABELS,
@@ -19,9 +21,11 @@ import {
   getBlockMeetingLabels,
   getCourseScheduleOptions,
   getScheduleConflicts,
+  parseVsbMinutes,
 } from '../lib/schedule-builder';
 import {
   type StoredSchedule,
+  type StoredTermSchedule,
   readStoredSchedule,
   writeStoredSchedule,
 } from '../lib/schedule-builder-storage';
@@ -50,6 +54,165 @@ const formatResultCount = (count: number, truncated: boolean) =>
 const formatResultTime = (value: number | null) =>
   value === null ? 'No meeting time' : formatScheduleMinutes(value);
 
+const DAY_CODE_MAP: Record<string, string> = {
+  '1': 'SU',
+  '2': 'MO',
+  '3': 'TU',
+  '4': 'WE',
+  '5': 'TH',
+  '6': 'FR',
+  '7': 'SA',
+};
+
+const DAY_ORDER = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+
+const DEFAULT_MEETING_COUNT = 13;
+
+const TERM_START_CONFIG = {
+  Winter: { startMonth: 1, offsetDays: 6 },
+  Summer: { startMonth: 5, offsetDays: 6 },
+  Fall: { startMonth: 9, offsetDays: 6 },
+} as const;
+
+type TermSeason = keyof typeof TERM_START_CONFIG;
+
+const parseTermSeason = (
+  term: string
+): { season: TermSeason; year: number } | null => {
+  const match = term.match(/^(Winter|Summer|Fall)\s+(\d{4})$/);
+
+  if (!match) return null;
+
+  const [, season, year] = match;
+
+  return { season: season as TermSeason, year: parseInt(year, 10) };
+};
+
+const vsbDayToJsDay = (day: string): number | null => {
+  const parsed = parseInt(day, 10);
+
+  if (Number.isNaN(parsed)) return null;
+
+  const jsDay = parsed - 1;
+
+  return jsDay >= 0 && jsDay <= 6 ? jsDay : null;
+};
+
+const getFirstOccurrenceForTermDay = (
+  term: string,
+  day: string
+): Date | null => {
+  const termInfo = parseTermSeason(term);
+  const jsDay = vsbDayToJsDay(day);
+
+  if (!termInfo || jsDay === null) return null;
+
+  const { season, year } = termInfo;
+  const { startMonth, offsetDays } = TERM_START_CONFIG[season];
+
+  const anchor = new Date(year, startMonth - 1, 1);
+  anchor.setDate(anchor.getDate() + offsetDays);
+
+  const occurrence = new Date(anchor);
+  const diff = (jsDay - occurrence.getDay() + 7) % 7;
+  occurrence.setDate(occurrence.getDate() + diff);
+
+  return occurrence;
+};
+
+const getCourseUrl = (courseId: string) => {
+  const origin =
+    typeof window === 'undefined'
+      ? 'https://mcgill.courses'
+      : window.location.origin;
+
+  return `${origin}/course/${courseIdToUrlParam(courseId)}`;
+};
+
+const buildScheduleCalendarEvents = (
+  blocks: BuilderBlock[],
+  term: string
+): IcsEventOptions[] =>
+  blocks.flatMap((block) => {
+    const groupedTimeblocks = block.timeblocks.reduce<
+      Map<string, { days: string[]; end: number; start: number }>
+    >((map, timeblock) => {
+      const start = parseVsbMinutes(timeblock.t1);
+      const end = parseVsbMinutes(timeblock.t2);
+
+      if (!timeblock.day || start === null || end === null) return map;
+
+      const key = `${start}-${end}`;
+      const value = map.get(key) ?? { days: [], end, start };
+      map.set(key, { ...value, days: [...value.days, timeblock.day] });
+
+      return map;
+    }, new Map());
+
+    return Array.from(groupedTimeblocks.values()).flatMap(
+      ({ days, end, start }, index) => {
+        const sortedDays = Array.from(new Set(days)).sort(
+          (a, b) => parseInt(a, 10) - parseInt(b, 10)
+        );
+        const firstDay = sortedDays[0];
+        const occurrence =
+          firstDay === undefined
+            ? null
+            : getFirstOccurrenceForTermDay(term, firstDay);
+
+        if (!occurrence) return [];
+
+        const eventStart = new Date(occurrence);
+        eventStart.setHours(Math.floor(start / 60), start % 60, 0, 0);
+
+        const eventEnd = new Date(occurrence);
+        eventEnd.setHours(Math.floor(end / 60), end % 60, 0, 0);
+
+        const byDayCodes = sortedDays
+          .map((day) => DAY_CODE_MAP[day])
+          .filter((code): code is string => Boolean(code));
+        const uniqueByDayCodes = Array.from(new Set(byDayCodes)).sort(
+          (a, b) => DAY_ORDER.indexOf(a) - DAY_ORDER.indexOf(b)
+        );
+        const rruleParts = [
+          'FREQ=WEEKLY',
+          'INTERVAL=1',
+          `COUNT=${DEFAULT_MEETING_COUNT * Math.max(1, uniqueByDayCodes.length)}`,
+        ];
+
+        if (uniqueByDayCodes.length > 0) {
+          rruleParts.push(`BYDAY=${uniqueByDayCodes.join(',')}`);
+        }
+
+        const courseCode = spliceCourseCode(block.courseId, ' ');
+        const uidBase = sanitizeForFilename(
+          `${block.courseId}-${block.display}-${block.crn}-${term}-${start}-${end}-${index}`
+        );
+
+        return [
+          {
+            description: [
+              block.courseTitle,
+              block.display ? `Section: ${block.display}` : null,
+              block.crn ? `CRN: ${block.crn}` : null,
+              `Term: ${term}`,
+              block.campus ? `Campus: ${block.campus}` : null,
+            ]
+              .filter(Boolean)
+              .join('\n'),
+            end: eventEnd,
+            location: block.location || block.campus || null,
+            rrule: rruleParts.join(';'),
+            start: eventStart,
+            summary: `${courseCode} ${block.display}`.trim(),
+            uid: `${(uidBase || 'schedule').slice(0, 64)}@mcgill.courses`,
+            url: getCourseUrl(block.courseId),
+          },
+        ];
+      }
+    );
+  });
+
 export const ScheduleBuilder = () => {
   const currentTerms = useMemo(() => getCurrentTerms(), []);
   const storedSchedule = useMemo(
@@ -63,23 +226,17 @@ export const ScheduleBuilder = () => {
     courses: [],
     instructors: [],
   });
-  const [restoredSchedule, setRestoredSchedule] = useState(
-    () => (storedSchedule?.selectedCourseIds.length ?? 0) === 0
-  );
+  const [restoredSchedule, setRestoredSchedule] = useState(false);
   const [resultIndex, setResultIndex] = useState(0);
   const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
-  const [selectedResultId, setSelectedResultId] = useState(
-    storedSchedule?.selectedResultId
-  );
+  const [selectedResultId, setSelectedResultId] = useState<
+    string | undefined
+  >();
   const [selectedTerm, setSelectedTerm] = useState(
     () => storedSchedule?.selectedTerm ?? currentTerms[0]
   );
-  const [pinnedOptions, setPinnedOptions] = useState<PinnedScheduleOptions>(
-    () => storedSchedule?.pinnedOptions ?? {}
-  );
-  const [allowConflicts, setAllowConflicts] = useState(
-    () => storedSchedule?.allowConflicts ?? false
-  );
+  const [pinnedOptions, setPinnedOptions] = useState<PinnedScheduleOptions>({});
+  const [allowConflicts, setAllowConflicts] = useState(false);
 
   const visibleSearchResults = useMemo(() => {
     const selectedCourseIds = new Set(
@@ -126,16 +283,43 @@ export const ScheduleBuilder = () => {
         .map((option) => option.courseId) ?? [],
     [pinnedOptions, result]
   );
+  const calendarPayload = useMemo(() => {
+    if (!result) return null;
+
+    const events = buildScheduleCalendarEvents(result.blocks, selectedTerm);
+
+    if (events.length === 0) return null;
+
+    const filename =
+      sanitizeForFilename(
+        `mcgill-courses-${selectedTerm}-schedule-${activeResultIndex + 1}`
+      ) || 'mcgill-courses-schedule';
+
+    return {
+      events,
+      filename: `${filename}.ics`,
+      prodId: '-//mcgill.courses//ScheduleBuilder//EN',
+    };
+  }, [activeResultIndex, result, selectedTerm]);
 
   useEffect(() => {
-    const selectedCourseIds = storedSchedule?.selectedCourseIds ?? [];
+    const storedSchedule = readStoredSchedule(currentTerms);
+    const termSchedule = storedSchedule?.schedulesByTerm[selectedTerm];
+    const selectedCourseIds = termSchedule?.selectedCourseIds ?? [];
+
+    let active = true;
+
+    setRestoredSchedule(false);
+    setAllowConflicts(termSchedule?.allowConflicts ?? false);
+    setPinnedOptions(termSchedule?.pinnedOptions ?? {});
+    setResultIndex(0);
+    setSelectedResultId(termSchedule?.selectedResultId);
 
     if (selectedCourseIds.length === 0) {
+      setSelectedCourses([]);
       setRestoredSchedule(true);
       return;
     }
-
-    let active = true;
 
     Promise.all(
       selectedCourseIds.map((courseId) =>
@@ -164,7 +348,7 @@ export const ScheduleBuilder = () => {
     return () => {
       active = false;
     };
-  }, [storedSchedule]);
+  }, [currentTerms, selectedTerm]);
 
   useEffect(() => {
     if (!restoredSchedule) return;
@@ -191,17 +375,25 @@ export const ScheduleBuilder = () => {
   useEffect(() => {
     if (!restoredSchedule) return;
 
-    const schedule: StoredSchedule = {
+    const termSchedule: StoredTermSchedule = {
       allowConflicts,
       pinnedOptions,
       selectedCourseIds: selectedCourses.map((course) => course._id),
       selectedResultId,
+    };
+    const previous = readStoredSchedule(currentTerms);
+    const schedule: StoredSchedule = {
+      schedulesByTerm: {
+        ...(previous?.schedulesByTerm ?? {}),
+        [selectedTerm]: termSchedule,
+      },
       selectedTerm,
     };
 
     writeStoredSchedule(schedule);
   }, [
     allowConflicts,
+    currentTerms,
     pinnedOptions,
     restoredSchedule,
     selectedCourses,
@@ -296,7 +488,14 @@ export const ScheduleBuilder = () => {
     setResultIndex(0);
     setSelectedCourses([]);
     setSelectedResultId(undefined);
-    setSelectedTerm(currentTerms[0]);
+  };
+
+  const selectTerm = (term: string) => {
+    if (term === selectedTerm) return;
+
+    resetSearch();
+    setRestoredSchedule(false);
+    setSelectedTerm(term);
   };
 
   const selectResultIndex = (index: number) => {
@@ -358,13 +557,7 @@ export const ScheduleBuilder = () => {
             <div className='relative z-20'>
               <Select
                 options={currentTerms}
-                setValue={(term) => {
-                  if (term !== selectedTerm) {
-                    setPinnedOptions({});
-                  }
-
-                  setSelectedTerm(term);
-                }}
+                setValue={selectTerm}
                 value={selectedTerm}
               />
             </div>
@@ -384,15 +577,30 @@ export const ScheduleBuilder = () => {
                 />
                 <span>Allow time conflicts</span>
               </label>
-              <button
-                aria-label='Start over'
-                className='inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md text-gray-500 ring-1 ring-slate-200 hover:bg-white hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
-                onClick={reset}
-                title='Start over'
-                type='button'
-              >
-                <RotateCcw className='size-4' />
-              </button>
+              <div className='flex items-center gap-2'>
+                <AddToCalendarButton
+                  ariaLabel='Export schedule to calendar'
+                  className='size-9 shrink-0 justify-center rounded-md border-transparent bg-transparent p-0 text-gray-500 shadow-none ring-1 ring-slate-200 hover:bg-white hover:text-gray-900 focus-visible:outline-red-500 disabled:cursor-not-allowed dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
+                  disabled={!calendarPayload}
+                  iconClassName='size-4'
+                  payload={calendarPayload}
+                  title={
+                    calendarPayload
+                      ? 'Export schedule to calendar'
+                      : 'No schedule to export'
+                  }
+                  variant='ghost'
+                />
+                <button
+                  aria-label='Start over'
+                  className='inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md text-gray-500 ring-1 ring-slate-200 hover:bg-white hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
+                  onClick={reset}
+                  title='Start over'
+                  type='button'
+                >
+                  <RotateCcw className='size-4' />
+                </button>
+              </div>
             </div>
           </section>
 
