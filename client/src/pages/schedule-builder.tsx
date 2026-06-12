@@ -4,9 +4,9 @@ import { Helmet } from 'react-helmet-async';
 import { toast } from 'sonner';
 
 import courseTerms from '../assets/course-terms.json';
-import { Autocomplete } from '../components/autocomplete';
 import { CourseSearchBar } from '../components/course-search-bar';
 import { Layout } from '../components/layout';
+import { Select } from '../components/select';
 import { VisualSchedule } from '../components/visual-schedule';
 import { api } from '../lib/api';
 import {
@@ -350,7 +350,7 @@ export const ScheduleBuilder = () => {
               Term
             </div>
             <div className='relative z-20'>
-              <Autocomplete
+              <Select
                 options={currentTerms}
                 setValue={(term) => {
                   if (term !== selectedTerm) {
