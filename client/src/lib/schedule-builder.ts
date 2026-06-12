@@ -1,7 +1,6 @@
 import type { Block, Course, Schedule, TimeBlock } from './types';
-import { compareTerms } from './utils';
 
-export const SCHEDULE_RESULT_LIMIT = 100;
+const SCHEDULE_RESULT_LIMIT = 100;
 
 export type BuilderBlock = {
   campus: string;
@@ -22,7 +21,7 @@ export type CourseScheduleOption = {
   term: string;
 };
 
-export type ScheduleResult = {
+type ScheduleResult = {
   blocks: BuilderBlock[];
   dayCount: number;
   earliestStart: number | null;
@@ -248,17 +247,6 @@ const optionLabel = (blocks: BuilderBlock[]) => {
 
   return label || 'No scheduled meetings';
 };
-
-export const getScheduleTerms = (courses: Course[]): string[] =>
-  Array.from(
-    new Set(
-      courses.flatMap((course) =>
-        (course.schedule ?? [])
-          .map((schedule) => schedule.term)
-          .filter((term): term is string => term !== undefined)
-      )
-    )
-  ).sort(compareTerms);
 
 export const getCourseScheduleOptions = (
   course: Course,

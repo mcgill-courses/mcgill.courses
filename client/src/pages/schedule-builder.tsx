@@ -477,6 +477,15 @@ export const ScheduleBuilder = () => {
                                     )
                                     .join(' / ')}
                                 </div>
+                                <div className='truncate text-[11px] text-gray-500 dark:text-gray-400'>
+                                  {selectedOption.blocks
+                                    .map((block) =>
+                                      block.crn
+                                        ? `CRN ${block.crn}`
+                                        : 'CRN unavailable'
+                                    )
+                                    .join(' / ')}
+                                </div>
                               </div>
                             ) : (
                               <div className='mt-2 text-xs font-medium text-gray-500 dark:text-gray-400'>

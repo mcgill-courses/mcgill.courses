@@ -1,4 +1,4 @@
-export const SCHEDULE_BUILDER_STORAGE_KEY = 'mcgill.courses.schedule-builder';
+const SCHEDULE_BUILDER_STORAGE_KEY = 'mcgill.courses.schedule-builder';
 
 export type StoredSchedule = {
   pinnedOptions: Record<string, string>;
