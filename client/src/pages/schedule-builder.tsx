@@ -32,6 +32,7 @@ import {
 } from '../lib/search-index';
 import type { Course } from '../lib/types';
 import { getCurrentTerms, pluralize, spliceCourseCode } from '../lib/utils';
+import { Loading } from './loading';
 
 const { courses, instructors, coursesIndex, instructorsIndex } =
   getSearchIndex();
@@ -98,7 +99,13 @@ export const ScheduleBuilder = () => {
     [selectedCourses, selectedTerm]
   );
   const results = build.results;
-  const result = results[resultIndex];
+  const activeResultIndex =
+    results.length === 0
+      ? 0
+      : Math.min(Math.max(resultIndex, 0), results.length - 1);
+  const result = results[activeResultIndex];
+  const isRestoringSchedule = !restoredSchedule;
+  const resultCountLabel = formatResultCount(results.length, build.truncated);
   const pinnedCourseIds = useMemo(
     () =>
       result?.options
@@ -309,6 +316,10 @@ export const ScheduleBuilder = () => {
     });
   };
 
+  if (isRestoringSchedule) {
+    return <Loading />;
+  }
+
   return (
     <Layout>
       <Helmet>
@@ -333,7 +344,7 @@ export const ScheduleBuilder = () => {
                 {selectedTerm}
               </span>
               <span className='rounded-full bg-white/70 px-2 py-0.5 ring-1 ring-slate-200 transition-colors dark:bg-neutral-900/50 dark:ring-neutral-800'>
-                {formatResultCount(results.length, build.truncated)}
+                {resultCountLabel}
               </span>
             </div>
           </div>
@@ -438,43 +449,45 @@ export const ScheduleBuilder = () => {
                             </div>
                             {selectedOption ? (
                               <div className='mt-2 space-y-1'>
-                                <div className='flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-300'>
-                                  <span>{selectedOption.label}</span>
-                                  {pinned && (
-                                    <span className='rounded-sm bg-gray-900 px-1.5 py-0.5 text-[10px] text-white dark:bg-gray-100 dark:text-neutral-950'>
-                                      Pinned
-                                    </span>
-                                  )}
-                                </div>
-                                {selectedOption.blocks.flatMap((block) =>
-                                  getBlockMeetingLabels(block).map((label) => (
+                                {selectedOption.blocks.map(
+                                  (block, blockIndex) => (
                                     <div
-                                      className='truncate text-[11px] text-gray-500 dark:text-gray-400'
-                                      key={`${block.crn}-${label}`}
+                                      className='space-y-0.5'
+                                      key={`${block.display}-${block.crn}-${blockIndex}`}
                                     >
-                                      {label}
+                                      <div className='flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-300'>
+                                        <span>
+                                          {block.display || 'Section'}
+                                        </span>
+                                        {pinned && blockIndex === 0 && (
+                                          <span className='rounded-sm bg-gray-900 px-1.5 py-0.5 text-[10px] text-white dark:bg-gray-100 dark:text-neutral-950'>
+                                            Pinned
+                                          </span>
+                                        )}
+                                      </div>
+                                      {getBlockMeetingLabels(block).map(
+                                        (label) => (
+                                          <div
+                                            className='truncate text-[11px] text-gray-500 dark:text-gray-400'
+                                            key={label}
+                                          >
+                                            {label}
+                                          </div>
+                                        )
+                                      )}
+                                      <div className='truncate text-[11px] text-gray-500 dark:text-gray-400'>
+                                        {block.location ||
+                                          block.campus ||
+                                          'Location TBA'}
+                                      </div>
+                                      <div className='truncate text-[11px] text-gray-500 dark:text-gray-400'>
+                                        {block.crn
+                                          ? `CRN ${block.crn}`
+                                          : 'CRN unavailable'}
+                                      </div>
                                     </div>
-                                  ))
+                                  )
                                 )}
-                                <div className='truncate text-[11px] text-gray-500 dark:text-gray-400'>
-                                  {selectedOption.blocks
-                                    .map(
-                                      (block) =>
-                                        block.location ||
-                                        block.campus ||
-                                        'Location TBA'
-                                    )
-                                    .join(' / ')}
-                                </div>
-                                <div className='truncate text-[11px] text-gray-500 dark:text-gray-400'>
-                                  {selectedOption.blocks
-                                    .map((block) =>
-                                      block.crn
-                                        ? `CRN ${block.crn}`
-                                        : 'CRN unavailable'
-                                    )
-                                    .join(' / ')}
-                                </div>
                               </div>
                             ) : (
                               <div className='mt-2 text-xs font-medium text-gray-500 dark:text-gray-400'>
@@ -508,7 +521,7 @@ export const ScheduleBuilder = () => {
             <div className='mb-4 flex flex-col gap-3 border-slate-200 pb-4 md:flex-row md:items-center md:justify-between dark:border-neutral-800'>
               <div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-sm'>
                 <span className='font-semibold text-gray-950 dark:text-gray-100'>
-                  {formatResultCount(results.length, build.truncated)}
+                  {resultCountLabel}
                 </span>
                 {result && (
                   <span className='text-gray-500 dark:text-gray-400'>
@@ -523,7 +536,7 @@ export const ScheduleBuilder = () => {
                   aria-label='Previous schedule'
                   className='inline-flex size-9 cursor-pointer items-center justify-center text-gray-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-gray-300 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
                   disabled={results.length === 0}
-                  onClick={() => selectResultIndex(resultIndex - 1)}
+                  onClick={() => selectResultIndex(activeResultIndex - 1)}
                   title='Previous schedule'
                   type='button'
                 >
@@ -533,13 +546,14 @@ export const ScheduleBuilder = () => {
                   aria-live='polite'
                   className='min-w-20 border-x border-slate-200 px-3 py-2 text-center text-sm font-medium text-gray-700 transition-colors dark:border-neutral-700 dark:text-gray-200'
                 >
-                  {results.length > 0 ? resultIndex + 1 : 0} / {results.length}
+                  {results.length > 0 ? activeResultIndex + 1 : 0} /{' '}
+                  {results.length}
                 </div>
                 <button
                   aria-label='Next schedule'
                   className='inline-flex size-9 cursor-pointer items-center justify-center text-gray-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-gray-300 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
                   disabled={results.length === 0}
-                  onClick={() => selectResultIndex(resultIndex + 1)}
+                  onClick={() => selectResultIndex(activeResultIndex + 1)}
                   title='Next schedule'
                   type='button'
                 >
