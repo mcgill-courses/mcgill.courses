@@ -1,7 +1,14 @@
-import { ArrowLeft, ArrowRight, Pin, RotateCcw, Trash2 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Copy,
+  Pin,
+  RotateCcw,
+  Trash2,
+} from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import courseTerms from '../assets/course-terms.json';
@@ -213,8 +220,110 @@ const buildScheduleCalendarEvents = (
     );
   });
 
+type UrlScheduleState = {
+  selectedTerm: string;
+  termSchedule: StoredTermSchedule;
+};
+
+const readPinnedOptionsFromUrl = (searchParams: URLSearchParams) =>
+  Object.fromEntries(
+    searchParams.getAll('pin').flatMap((value) => {
+      const separatorIndex = value.indexOf(':');
+
+      if (separatorIndex === -1) return [];
+
+      const courseId = value.slice(0, separatorIndex);
+      const optionId = value.slice(separatorIndex + 1);
+
+      return courseId && optionId ? [[courseId, optionId]] : [];
+    })
+  );
+
+const readUrlScheduleState = (
+  searchParams: URLSearchParams,
+  currentTerms: readonly string[]
+): UrlScheduleState | undefined => {
+  const hasScheduleParams =
+    searchParams.has('term') ||
+    searchParams.has('course') ||
+    searchParams.has('conflicts') ||
+    searchParams.has('pin') ||
+    searchParams.has('result');
+
+  if (!hasScheduleParams) return undefined;
+
+  const term = searchParams.get('term');
+  const selectedTerm =
+    term && currentTerms.includes(term) ? term : (currentTerms[0] ?? '');
+  const selectedCourseIds = Array.from(
+    new Set(searchParams.getAll('course').filter(Boolean))
+  );
+  const selectedResultId = searchParams.get('result') ?? undefined;
+
+  return {
+    selectedTerm,
+    termSchedule: {
+      allowConflicts: searchParams.get('conflicts') === '1',
+      pinnedOptions: readPinnedOptionsFromUrl(searchParams),
+      selectedCourseIds,
+      selectedResultId,
+    },
+  };
+};
+
+const buildUrlSearchParams = (
+  selectedTerm: string,
+  termSchedule: StoredTermSchedule
+) => {
+  const searchParams = new URLSearchParams();
+
+  searchParams.set('term', selectedTerm);
+
+  termSchedule.selectedCourseIds.forEach((courseId) => {
+    searchParams.append('course', courseId);
+  });
+
+  if (termSchedule.allowConflicts) {
+    searchParams.set('conflicts', '1');
+  }
+
+  Object.entries(termSchedule.pinnedOptions)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .forEach(([courseId, optionId]) => {
+      searchParams.append('pin', `${courseId}:${optionId}`);
+    });
+
+  if (termSchedule.selectedResultId) {
+    searchParams.set('result', termSchedule.selectedResultId);
+  }
+
+  return searchParams;
+};
+
+const buildShareUrl = (
+  selectedTerm: string,
+  termSchedule: StoredTermSchedule
+) => {
+  const searchParams = buildUrlSearchParams(selectedTerm, termSchedule);
+  const path = `/schedule-builder?${searchParams.toString()}`;
+
+  if (typeof window === 'undefined') return path;
+
+  const url = new URL(window.location.href);
+  url.pathname = '/schedule-builder';
+  url.search = searchParams.toString();
+  url.hash = '';
+
+  return url.toString();
+};
+
 export const ScheduleBuilder = () => {
   const currentTerms = useMemo(() => getCurrentTerms(), []);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [initialUrlSchedule] = useState(() =>
+    readUrlScheduleState(searchParams, currentTerms)
+  );
+  const restoredInitialUrlSchedule = useRef(false);
   const storedSchedule = useMemo(
     () => readStoredSchedule(currentTerms),
     [currentTerms]
@@ -233,7 +342,10 @@ export const ScheduleBuilder = () => {
     string | undefined
   >();
   const [selectedTerm, setSelectedTerm] = useState(
-    () => storedSchedule?.selectedTerm ?? currentTerms[0]
+    () =>
+      initialUrlSchedule?.selectedTerm ??
+      storedSchedule?.selectedTerm ??
+      currentTerms[0]
   );
   const [pinnedOptions, setPinnedOptions] = useState<PinnedScheduleOptions>({});
   const [allowConflicts, setAllowConflicts] = useState(false);
@@ -276,6 +388,15 @@ export const ScheduleBuilder = () => {
   const result = results[activeResultIndex];
   const isRestoringSchedule = !restoredSchedule;
   const resultCountLabel = formatResultCount(results.length, build.truncated);
+  const currentTermSchedule = useMemo<StoredTermSchedule>(
+    () => ({
+      allowConflicts,
+      pinnedOptions,
+      selectedCourseIds: selectedCourses.map((course) => course._id),
+      selectedResultId,
+    }),
+    [allowConflicts, pinnedOptions, selectedCourses, selectedResultId]
+  );
   const pinnedCourseIds = useMemo(
     () =>
       result?.options
@@ -303,8 +424,13 @@ export const ScheduleBuilder = () => {
   }, [activeResultIndex, result, selectedTerm]);
 
   useEffect(() => {
+    const shouldUseInitialUrlSchedule =
+      !restoredInitialUrlSchedule.current &&
+      initialUrlSchedule?.selectedTerm === selectedTerm;
     const storedSchedule = readStoredSchedule(currentTerms);
-    const termSchedule = storedSchedule?.schedulesByTerm[selectedTerm];
+    const termSchedule = shouldUseInitialUrlSchedule
+      ? initialUrlSchedule.termSchedule
+      : storedSchedule?.schedulesByTerm[selectedTerm];
     const selectedCourseIds = termSchedule?.selectedCourseIds ?? [];
 
     let active = true;
@@ -317,6 +443,9 @@ export const ScheduleBuilder = () => {
 
     if (selectedCourseIds.length === 0) {
       setSelectedCourses([]);
+      if (shouldUseInitialUrlSchedule) {
+        restoredInitialUrlSchedule.current = true;
+      }
       setRestoredSchedule(true);
       return;
     }
@@ -342,13 +471,19 @@ export const ScheduleBuilder = () => {
         toast.error('Failed to restore schedule');
       })
       .finally(() => {
-        if (active) setRestoredSchedule(true);
+        if (!active) return;
+
+        if (shouldUseInitialUrlSchedule) {
+          restoredInitialUrlSchedule.current = true;
+        }
+
+        setRestoredSchedule(true);
       });
 
     return () => {
       active = false;
     };
-  }, [currentTerms, selectedTerm]);
+  }, [currentTerms, initialUrlSchedule, selectedTerm]);
 
   useEffect(() => {
     if (!restoredSchedule) return;
@@ -375,30 +510,25 @@ export const ScheduleBuilder = () => {
   useEffect(() => {
     if (!restoredSchedule) return;
 
-    const termSchedule: StoredTermSchedule = {
-      allowConflicts,
-      pinnedOptions,
-      selectedCourseIds: selectedCourses.map((course) => course._id),
-      selectedResultId,
-    };
     const previous = readStoredSchedule(currentTerms);
     const schedule: StoredSchedule = {
       schedulesByTerm: {
         ...(previous?.schedulesByTerm ?? {}),
-        [selectedTerm]: termSchedule,
+        [selectedTerm]: currentTermSchedule,
       },
       selectedTerm,
     };
 
     writeStoredSchedule(schedule);
+    setSearchParams(buildUrlSearchParams(selectedTerm, currentTermSchedule), {
+      replace: true,
+    });
   }, [
-    allowConflicts,
     currentTerms,
-    pinnedOptions,
+    currentTermSchedule,
     restoredSchedule,
-    selectedCourses,
-    selectedResultId,
     selectedTerm,
+    setSearchParams,
   ]);
 
   useEffect(() => {
@@ -490,6 +620,22 @@ export const ScheduleBuilder = () => {
     setSelectedResultId(undefined);
   };
 
+  const copyShareUrl = async () => {
+    if (typeof navigator === 'undefined' || !navigator.clipboard) {
+      toast.error('Failed to copy share URL');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        buildShareUrl(selectedTerm, currentTermSchedule)
+      );
+      toast.success('Copied share URL');
+    } catch {
+      toast.error('Failed to copy share URL');
+    }
+  };
+
   const selectTerm = (term: string) => {
     if (term === selectedTerm) return;
 
@@ -578,6 +724,15 @@ export const ScheduleBuilder = () => {
                 <span>Allow time conflicts</span>
               </label>
               <div className='flex items-center gap-2'>
+                <button
+                  aria-label='Copy share URL'
+                  className='inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md text-gray-500 ring-1 ring-slate-200 hover:bg-white hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
+                  onClick={() => void copyShareUrl()}
+                  title='Copy share URL'
+                  type='button'
+                >
+                  <Copy className='size-4' />
+                </button>
                 <AddToCalendarButton
                   ariaLabel='Export schedule to calendar'
                   className='size-9 shrink-0 justify-center rounded-md border-transparent bg-transparent p-0 text-gray-500 shadow-none ring-1 ring-slate-200 hover:bg-white hover:text-gray-900 focus-visible:outline-red-500 disabled:cursor-not-allowed dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
