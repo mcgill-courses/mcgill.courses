@@ -2,9 +2,9 @@ import { ArrowLeft, ArrowRight, RotateCcw, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'sonner';
-import { twMerge } from 'tailwind-merge';
 
 import courseTerms from '../assets/course-terms.json';
+import { Autocomplete } from '../components/autocomplete';
 import { CourseSearchBar } from '../components/course-search-bar';
 import { Layout } from '../components/layout';
 import { VisualSchedule } from '../components/visual-schedule';
@@ -334,77 +334,42 @@ export const ScheduleBuilder = () => {
     <Layout>
       <Helmet>
         <title>Schedule Builder - mcgill.courses</title>
-        <meta
-          name='description'
-          content='Build non-conflicting McGill course schedules.'
-        />
+        <meta name='description' content='Build McGill course schedules.' />
       </Helmet>
 
       <div className='py-7'>
-        <div className='mb-7 flex flex-col gap-4 border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between dark:border-neutral-800'>
-          <div>
-            <h1 className='text-2xl font-semibold tracking-tight text-gray-950 sm:text-3xl dark:text-gray-100'>
-              Schedule Builder
-            </h1>
-            <div className='mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400'>
-              <span className='rounded-full bg-white/70 px-2 py-0.5 ring-1 ring-slate-200 transition-colors dark:bg-neutral-900/50 dark:ring-neutral-800'>
-                {pluralize(selectedCourses.length, 'course')}
-              </span>
-              <span className='rounded-full bg-white/70 px-2 py-0.5 ring-1 ring-slate-200 transition-colors dark:bg-neutral-900/50 dark:ring-neutral-800'>
-                {selectedTerm}
-              </span>
-              <span className='rounded-full bg-white/70 px-2 py-0.5 ring-1 ring-slate-200 transition-colors dark:bg-neutral-900/50 dark:ring-neutral-800'>
-                {resultCountLabel}
-              </span>
-            </div>
-          </div>
-          <button
-            aria-label='Start over'
-            className='inline-flex size-9 cursor-pointer items-center justify-center rounded-md text-gray-500 ring-1 ring-slate-200 hover:bg-white hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
-            onClick={reset}
-            title='Start over'
-            type='button'
-          >
-            <RotateCcw className='size-4' />
-          </button>
+        <div className='mb-6'>
+          <h1 className='text-2xl font-semibold tracking-tight text-gray-950 sm:text-3xl dark:text-gray-100'>
+            Schedule Builder
+          </h1>
         </div>
 
-        <div className='grid gap-8 xl:grid-cols-[300px_minmax(0,1fr)]'>
-          <section className='space-y-6 xl:sticky xl:top-24 xl:self-start'>
-            <div>
-              <div className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
-                Term
-              </div>
-              <div className='flex flex-wrap gap-2 xl:flex-col'>
-                {currentTerms.map((term) => (
-                  <button
-                    className={twMerge(
-                      'cursor-pointer rounded-md px-3 py-2 text-left text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500',
-                      selectedTerm === term
-                        ? 'bg-gray-950 text-white dark:bg-gray-100 dark:text-neutral-950'
-                        : 'text-gray-600 hover:bg-white hover:text-gray-950 dark:text-gray-400 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
-                    )}
-                    key={term}
-                    onClick={() => {
-                      if (term !== selectedTerm) {
-                        setPinnedOptions({});
-                      }
-
-                      setSelectedTerm(term);
-                    }}
-                    type='button'
-                  >
-                    {term}
-                  </button>
-                ))}
-              </div>
+        <div className='grid gap-x-8 gap-y-6 xl:grid-cols-[300px_minmax(0,1fr)]'>
+          <section>
+            <div className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
+              Term
             </div>
+            <div className='relative z-20'>
+              <Autocomplete
+                options={currentTerms}
+                setValue={(term) => {
+                  if (term !== selectedTerm) {
+                    setPinnedOptions({});
+                  }
 
-            <div>
-              <div className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
-                Options
-              </div>
-              <label className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-white hover:text-gray-950 dark:text-gray-400 dark:hover:bg-neutral-800 dark:hover:text-gray-100'>
+                  setSelectedTerm(term);
+                }}
+                value={selectedTerm}
+              />
+            </div>
+          </section>
+
+          <section>
+            <div className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
+              Options
+            </div>
+            <div className='flex min-h-10 items-center justify-between gap-3'>
+              <label className='flex cursor-pointer items-center gap-2 rounded-xs px-3 py-2 text-sm font-medium text-gray-600 hover:bg-white hover:text-gray-950 dark:text-gray-400 dark:hover:bg-neutral-800 dark:hover:text-gray-100'>
                 <input
                   checked={allowConflicts}
                   className='size-4 cursor-pointer rounded border-slate-300 text-red-600 focus:ring-red-500 dark:border-neutral-700 dark:bg-neutral-900'
@@ -413,11 +378,22 @@ export const ScheduleBuilder = () => {
                 />
                 <span>Allow time conflicts</span>
               </label>
+              <button
+                aria-label='Start over'
+                className='inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-md text-gray-500 ring-1 ring-slate-200 hover:bg-white hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
+                onClick={reset}
+                title='Start over'
+                type='button'
+              >
+                <RotateCcw className='size-4' />
+              </button>
             </div>
+          </section>
 
+          <section className='space-y-6 xl:sticky xl:top-24 xl:self-start'>
             <div>
               <div className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
-                Course
+                Search
               </div>
               <CourseSearchBar
                 handleInputChange={handleInputChange}
@@ -543,6 +519,9 @@ export const ScheduleBuilder = () => {
           </section>
 
           <section className='min-w-0'>
+            <div className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
+              Schedule
+            </div>
             <div className='mb-4 flex flex-col gap-3 border-slate-200 pb-4 md:flex-row md:items-center md:justify-between dark:border-neutral-800'>
               <div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-sm'>
                 <span className='font-semibold text-gray-950 dark:text-gray-100'>
