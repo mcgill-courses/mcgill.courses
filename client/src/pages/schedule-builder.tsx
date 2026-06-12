@@ -11,7 +11,6 @@ import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import courseTerms from '../assets/course-terms.json';
 import { AddToCalendarButton } from '../components/add-to-calendar-button';
 import { CourseSearchBar } from '../components/course-search-bar';
 import { Layout } from '../components/layout';
@@ -53,7 +52,6 @@ import { Loading } from './loading';
 
 const { courses, instructors, coursesIndex, instructorsIndex } =
   getSearchIndex();
-const courseTermsById = courseTerms as Record<string, string[]>;
 
 const formatResultCount = (count: number, truncated: boolean) =>
   `${pluralize(count, 'schedule')}${truncated ? ' shown' : ''}`;
@@ -361,7 +359,7 @@ export const ScheduleBuilder = () => {
         .filter(
           (course) =>
             !selectedCourseIds.has(course._id) &&
-            courseTermsById[course._id]?.includes(selectedTerm)
+            course.terms.includes(selectedTerm)
         )
         .slice(0, 6),
       instructors: [],
