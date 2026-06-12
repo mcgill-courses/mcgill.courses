@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, RotateCcw, Trash2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Pin, RotateCcw, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'sonner';
@@ -442,8 +442,19 @@ export const ScheduleBuilder = () => {
                       >
                         <div className='flex items-start justify-between gap-3'>
                           <div className='min-w-0'>
-                            <div className='truncate text-sm font-semibold text-gray-950 group-hover:text-red-700 dark:text-gray-100 dark:group-hover:text-red-300'>
-                              {spliceCourseCode(course._id, ' ')}
+                            <div className='flex min-w-0 items-center gap-1.5 text-sm font-semibold text-gray-950 group-hover:text-red-700 dark:text-gray-100 dark:group-hover:text-red-300'>
+                              <span className='truncate'>
+                                {spliceCourseCode(course._id, ' ')}
+                              </span>
+                              {pinned && (
+                                <span
+                                  aria-label='Pinned section'
+                                  className='shrink-0 text-red-600 dark:text-red-400'
+                                  title='Pinned section'
+                                >
+                                  <Pin className='size-3.5' />
+                                </span>
+                              )}
                             </div>
                             <div className='truncate text-xs text-gray-500 dark:text-gray-400'>
                               {course.title}
@@ -460,11 +471,6 @@ export const ScheduleBuilder = () => {
                                         <span>
                                           {block.display || 'Section'}
                                         </span>
-                                        {pinned && blockIndex === 0 && (
-                                          <span className='rounded-sm bg-gray-900 px-1.5 py-0.5 text-[10px] text-white dark:bg-gray-100 dark:text-neutral-950'>
-                                            Pinned
-                                          </span>
-                                        )}
                                       </div>
                                       {getBlockMeetingLabels(block).map(
                                         (label) => (
