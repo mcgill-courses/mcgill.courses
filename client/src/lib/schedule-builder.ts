@@ -67,11 +67,45 @@ const blockKey = (block: Block | BuilderBlock) =>
     block.crn ?? '',
     block.campus ?? '',
     block.location ?? '',
-    JSON.stringify(block.timeblocks ?? []),
+    JSON.stringify(canonicalTimeblocks(block.timeblocks ?? [])),
   ].join('|');
 
 const optionKey = (blocks: BuilderBlock[]) =>
-  blocks.map((block) => blockKey(block)).join('::');
+  blocks
+    .map((block) => blockKey(block))
+    .sort()
+    .join('::');
+
+const timeblockKey = (timeblock: TimeBlock) =>
+  [timeblock.day ?? '', timeblock.t1 ?? '', timeblock.t2 ?? ''].join('|');
+
+const canonicalTimeblocks = (timeblocks: TimeBlock[]) =>
+  uniqTimeblocks(timeblocks).sort((left, right) =>
+    timeblockKey(left).localeCompare(timeblockKey(right))
+  );
+
+const uniqTimeblocks = (timeblocks: TimeBlock[]) =>
+  Array.from(
+    timeblocks
+      .reduce<
+        Map<string, TimeBlock>
+      >((map, timeblock) => map.set(timeblockKey(timeblock), timeblock), new Map())
+      .values()
+  );
+
+const hashString = (value: string) => {
+  let hash = 2_166_136_261;
+
+  for (const character of value) {
+    hash ^= character.charCodeAt(0);
+    hash = Math.imul(hash, 16_777_619);
+  }
+
+  return (hash >>> 0).toString(36);
+};
+
+const optionId = (course: Course, term: string, blocks: BuilderBlock[]) =>
+  `${course._id}-${hashString(`${term}|${optionKey(blocks)}`)}`;
 
 const normalizeBlock = (course: Course, block: Block): BuilderBlock => ({
   campus: block.campus ?? '',
@@ -80,7 +114,7 @@ const normalizeBlock = (course: Course, block: Block): BuilderBlock => ({
   crn: block.crn ?? '',
   display: block.display ?? '',
   location: block.location ?? '',
-  timeblocks: block.timeblocks ?? [],
+  timeblocks: uniqTimeblocks(block.timeblocks ?? []),
 });
 
 const uniqBlocks = (blocks: BuilderBlock[]) =>
@@ -92,29 +126,51 @@ const uniqBlocks = (blocks: BuilderBlock[]) =>
       .values()
   );
 
-const expandBlocks = (blocks: BuilderBlock[]) => {
-  const first = blocks[0];
+const repeatedBlockIndexes = (blocks: BuilderBlock[]) => {
+  const indexesByKey = blocks.reduce<Map<string, number[]>>(
+    (map, block, index) => {
+      const key = blockKey(block);
+      const indexes = map.get(key) ?? [];
+      map.set(key, [...indexes, index]);
+      return map;
+    },
+    new Map()
+  );
 
-  if (!first) return [];
+  return Array.from(indexesByKey.values())
+    .filter((indexes) => indexes.length > 1)
+    .sort((left, right) => {
+      if (left.length !== right.length) return right.length - left.length;
+      return left[0] - right[0];
+    })[0];
+};
 
-  const firstKey = blockKey(first);
-  const groups: BuilderBlock[][] = [];
-  let current: BuilderBlock[] = [];
+const expandBlocks = (blocks: BuilderBlock[]): BuilderBlock[][] => {
+  if (blocks.length === 0) return [];
 
-  blocks.forEach((block) => {
-    if (current.length > 0 && blockKey(block) === firstKey) {
-      groups.push(uniqBlocks(current));
-      current = [block];
-    } else {
-      current.push(block);
-    }
-  });
+  const indexes = repeatedBlockIndexes(blocks);
 
-  if (current.length > 0) {
-    groups.push(uniqBlocks(current));
-  }
+  if (indexes === undefined) return [uniqBlocks(blocks)];
 
-  return groups;
+  const baseGroups =
+    indexes[0] === 0
+      ? indexes.map((start, index) =>
+          blocks.slice(start, indexes[index + 1] ?? blocks.length)
+        )
+      : indexes.reduce<BuilderBlock[][]>((groups, end) => {
+          const start =
+            groups.length === 0 ? 0 : indexes[groups.length - 1] + 1;
+
+          return [...groups, blocks.slice(start, end + 1)];
+        }, []);
+
+  const lastIndex = indexes[indexes.length - 1];
+  const groups =
+    indexes[0] === 0 || lastIndex === blocks.length - 1
+      ? baseGroups
+      : [...baseGroups, blocks.slice(lastIndex + 1)];
+
+  return groups.flatMap(expandBlocks);
 };
 
 export const parseVsbMinutes = (value: string | undefined): number | null => {
@@ -212,17 +268,38 @@ const getMeetingConflicts = (
 const blockConflicts = (blocks: BuilderBlock[], candidate: BuilderBlock[]) =>
   getMeetingConflicts(blocks, candidate).length > 0;
 
-const selfConflicts = (blocks: BuilderBlock[]) => {
-  const meetings = getMeetings(blocks);
+const isSubset = (blocks: BuilderBlock[], candidate: BuilderBlock[]) => {
+  const candidateKeys = new Set(candidate.map((block) => blockKey(block)));
 
-  return meetings.some((meeting, index) =>
-    meetings
-      .slice(index + 1)
-      .some(
+  return blocks.every((block) => candidateKeys.has(blockKey(block)));
+};
+
+const expandNonConflictingBlocks = (candidateBlocks: BuilderBlock[]) => {
+  const blocks = uniqBlocks(candidateBlocks);
+  const groups: BuilderBlock[][] = [];
+
+  const visit = (index: number, selected: BuilderBlock[]) => {
+    if (index === blocks.length) {
+      if (selected.length > 0) groups.push(selected);
+      return;
+    }
+
+    const block = blocks[index];
+
+    if (!blockConflicts(selected, [block])) {
+      visit(index + 1, [...selected, block]);
+    }
+
+    visit(index + 1, selected);
+  };
+
+  visit(0, []);
+
+  return groups.filter(
+    (group) =>
+      !groups.some(
         (candidate) =>
-          meeting.day === candidate.day &&
-          meeting.start < candidate.end &&
-          candidate.start < meeting.end
+          candidate.length > group.length && isSubset(group, candidate)
       )
   );
 };
@@ -261,16 +338,16 @@ export const getCourseScheduleOptions = (
     .filter((schedule): schedule is Schedule & { term: string } => {
       return schedule.term === term;
     })
-    .flatMap((schedule, scheduleIndex) =>
+    .flatMap((schedule) =>
       expandBlocks(
         (schedule.blocks ?? []).map((block) => normalizeBlock(course, block))
       )
-        .filter((blocks) => !selfConflicts(blocks))
-        .map((blocks, blockIndex) => ({
+        .flatMap(expandNonConflictingBlocks)
+        .map((blocks) => ({
           blocks,
           courseId: course._id,
           courseTitle: course.title,
-          id: `${course._id}-${term}-${scheduleIndex}-${blockIndex}`,
+          id: optionId(course, term, blocks),
           label: optionLabel(blocks),
           term,
         }))

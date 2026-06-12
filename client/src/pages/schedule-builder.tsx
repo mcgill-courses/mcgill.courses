@@ -17,7 +17,11 @@ import { Layout } from '../components/layout';
 import { Select } from '../components/select';
 import { VisualSchedule } from '../components/visual-schedule';
 import { api } from '../lib/api';
-import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
+import {
+  type IcsEventOptions,
+  getTermMeetingRecurrence,
+  sanitizeForFilename,
+} from '../lib/calendar';
 import {
   type BuilderBlock,
   DAY_LABELS,
@@ -59,72 +63,6 @@ const formatResultCount = (count: number, truncated: boolean) =>
 const formatResultTime = (value: number | null) =>
   value === null ? 'No meeting time' : formatScheduleMinutes(value);
 
-const DAY_CODE_MAP: Record<string, string> = {
-  '1': 'SU',
-  '2': 'MO',
-  '3': 'TU',
-  '4': 'WE',
-  '5': 'TH',
-  '6': 'FR',
-  '7': 'SA',
-};
-
-const DAY_ORDER = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-
-const DEFAULT_MEETING_COUNT = 13;
-
-const TERM_START_CONFIG = {
-  Winter: { startMonth: 1, offsetDays: 6 },
-  Summer: { startMonth: 5, offsetDays: 6 },
-  Fall: { startMonth: 9, offsetDays: 6 },
-} as const;
-
-type TermSeason = keyof typeof TERM_START_CONFIG;
-
-const parseTermSeason = (
-  term: string
-): { season: TermSeason; year: number } | null => {
-  const match = term.match(/^(Winter|Summer|Fall)\s+(\d{4})$/);
-
-  if (!match) return null;
-
-  const [, season, year] = match;
-
-  return { season: season as TermSeason, year: parseInt(year, 10) };
-};
-
-const vsbDayToJsDay = (day: string): number | null => {
-  const parsed = parseInt(day, 10);
-
-  if (Number.isNaN(parsed)) return null;
-
-  const jsDay = parsed - 1;
-
-  return jsDay >= 0 && jsDay <= 6 ? jsDay : null;
-};
-
-const getFirstOccurrenceForTermDay = (
-  term: string,
-  day: string
-): Date | null => {
-  const termInfo = parseTermSeason(term);
-  const jsDay = vsbDayToJsDay(day);
-
-  if (!termInfo || jsDay === null) return null;
-
-  const { season, year } = termInfo;
-  const { startMonth, offsetDays } = TERM_START_CONFIG[season];
-
-  const anchor = new Date(year, startMonth - 1, 1);
-  anchor.setDate(anchor.getDate() + offsetDays);
-
-  const occurrence = new Date(anchor);
-  const diff = (jsDay - occurrence.getDay() + 7) % 7;
-  occurrence.setDate(occurrence.getDate() + diff);
-
-  return occurrence;
-};
-
 const getCourseUrl = (courseId: string) => {
   const origin =
     typeof window === 'undefined'
@@ -156,38 +94,15 @@ const buildScheduleCalendarEvents = (
 
     return Array.from(groupedTimeblocks.values()).flatMap(
       ({ days, end, start }, index) => {
-        const sortedDays = Array.from(new Set(days)).sort(
-          (a, b) => parseInt(a, 10) - parseInt(b, 10)
-        );
-        const firstDay = sortedDays[0];
-        const occurrence =
-          firstDay === undefined
-            ? null
-            : getFirstOccurrenceForTermDay(term, firstDay);
+        const recurrence = getTermMeetingRecurrence(term, days);
 
-        if (!occurrence) return [];
+        if (!recurrence) return [];
 
-        const eventStart = new Date(occurrence);
+        const eventStart = new Date(recurrence.start);
         eventStart.setHours(Math.floor(start / 60), start % 60, 0, 0);
 
-        const eventEnd = new Date(occurrence);
+        const eventEnd = new Date(recurrence.start);
         eventEnd.setHours(Math.floor(end / 60), end % 60, 0, 0);
-
-        const byDayCodes = sortedDays
-          .map((day) => DAY_CODE_MAP[day])
-          .filter((code): code is string => Boolean(code));
-        const uniqueByDayCodes = Array.from(new Set(byDayCodes)).sort(
-          (a, b) => DAY_ORDER.indexOf(a) - DAY_ORDER.indexOf(b)
-        );
-        const rruleParts = [
-          'FREQ=WEEKLY',
-          'INTERVAL=1',
-          `COUNT=${DEFAULT_MEETING_COUNT * Math.max(1, uniqueByDayCodes.length)}`,
-        ];
-
-        if (uniqueByDayCodes.length > 0) {
-          rruleParts.push(`BYDAY=${uniqueByDayCodes.join(',')}`);
-        }
 
         const courseCode = spliceCourseCode(block.courseId, ' ');
         const uidBase = sanitizeForFilename(
@@ -207,7 +122,7 @@ const buildScheduleCalendarEvents = (
               .join('\n'),
             end: eventEnd,
             location: block.location || block.campus || null,
-            rrule: rruleParts.join(';'),
+            rrule: recurrence.rrule,
             start: eventStart,
             summary: `${courseCode} ${block.display}`.trim(),
             uid: `${(uidBase || 'schedule').slice(0, 64)}@mcgill.courses`,

@@ -1,8 +1,8 @@
 import { Index } from 'flexsearch';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import type { CourseData } from './search-index';
-import { getRankedCourses } from './search-index';
+import type { CourseData, SearchResults } from './search-index';
+import { getRankedCourses, updateSearchResults } from './search-index';
 
 const course = (
   _id: string,
@@ -70,5 +70,56 @@ describe('getRankedCourses', () => {
 
   it('returns the earliest subject match when only the subject is provided', () => {
     expect(search('math')).toBe('MATH203');
+  });
+});
+
+describe('updateSearchResults', () => {
+  const instructors = ['foo', 'bar'];
+
+  it('skips instructor search when instructor limit is zero', () => {
+    const search = vi.fn(() => [0, 1]);
+    const instructorsIndex = { search } as unknown as Index;
+    const setResults = vi.fn((_results: SearchResults) => {});
+
+    updateSearchResults(
+      'foo',
+      courses,
+      instructors,
+      createIndex(),
+      instructorsIndex,
+      setResults,
+      {
+        instructorLimit: 0,
+      }
+    );
+
+    expect(search).not.toHaveBeenCalled();
+    expect(setResults).toHaveBeenCalledWith(
+      expect.objectContaining({
+        instructors: [],
+      })
+    );
+  });
+
+  it('uses the default instructor limit', () => {
+    const search = vi.fn(() => [1, 0]);
+    const instructorsIndex = { search } as unknown as Index;
+    const setResults = vi.fn((_results: SearchResults) => {});
+
+    updateSearchResults(
+      'foo',
+      courses,
+      instructors,
+      createIndex(),
+      instructorsIndex,
+      setResults
+    );
+
+    expect(search).toHaveBeenCalledWith('foo', { limit: 4 });
+    expect(setResults).toHaveBeenCalledWith(
+      expect.objectContaining({
+        instructors: ['bar', 'foo'],
+      })
+    );
   });
 });

@@ -34,6 +34,11 @@ type Meeting = {
   start: number;
 };
 
+type PositionedMeeting = Meeting & {
+  lane: number;
+  laneCount: number;
+};
+
 type VisualScheduleProps = {
   blocks: BuilderBlock[];
   className?: string;
@@ -73,6 +78,76 @@ const getHourRange = (meetings: Meeting[]) => {
   return { endHour, startHour };
 };
 
+const getPositionedDayMeetings = (meetings: Meeting[]) => {
+  const sorted = meetings
+    .map((meeting, index) => ({ index, meeting }))
+    .sort(
+      (left, right) =>
+        left.meeting.start - right.meeting.start ||
+        left.meeting.end - right.meeting.end ||
+        left.index - right.index
+    );
+  const positioned: (PositionedMeeting & { index: number })[] = [];
+  let cluster: typeof sorted = [];
+  let clusterEnd = 0;
+
+  const flush = () => {
+    const lanes: number[] = [];
+    const clusterPositioned = cluster.map(({ index, meeting }) => {
+      const availableLane = lanes.findIndex((end) => end <= meeting.start);
+      const lane = availableLane === -1 ? lanes.length : availableLane;
+
+      lanes[lane] = meeting.end;
+
+      return { ...meeting, index, lane };
+    });
+    const laneCount = Math.max(1, lanes.length);
+
+    positioned.push(
+      ...clusterPositioned.map((meeting) => ({ ...meeting, laneCount }))
+    );
+    cluster = [];
+    clusterEnd = 0;
+  };
+
+  sorted.forEach((meeting) => {
+    if (cluster.length > 0 && meeting.meeting.start >= clusterEnd) {
+      flush();
+    }
+
+    cluster.push(meeting);
+    clusterEnd = Math.max(clusterEnd, meeting.meeting.end);
+  });
+
+  if (cluster.length > 0) {
+    flush();
+  }
+
+  return positioned
+    .sort((left, right) => left.index - right.index)
+    .map(({ block, day, end, lane, laneCount, start }) => ({
+      block,
+      day,
+      end,
+      lane,
+      laneCount,
+      start,
+    }));
+};
+
+const getPositionedMeetings = (meetings: Meeting[]) => {
+  const meetingsByDay = meetings.reduce<Map<string, Meeting[]>>(
+    (map, meeting) => {
+      map.set(meeting.day, [...(map.get(meeting.day) ?? []), meeting]);
+
+      return map;
+    },
+    new Map()
+  );
+
+  return Array.from(meetingsByDay.values()).flatMap(getPositionedDayMeetings);
+};
+
 const formatMeetingTime = (meeting: Meeting) =>
   `${formatScheduleMinutes(meeting.start)} - ${formatScheduleMinutes(
     meeting.end
@@ -90,6 +165,7 @@ export const VisualSchedule = ({
   onBlockClick,
 }: VisualScheduleProps) => {
   const meetings = getMeetings(blocks);
+  const positionedMeetings = getPositionedMeetings(meetings);
   const { endHour, startHour } = getHourRange(meetings);
   const hours = Array.from(
     { length: endHour - startHour + 1 },
@@ -200,7 +276,7 @@ export const VisualSchedule = ({
                       style={{ top: (hour - startHour) * HOUR_HEIGHT }}
                     />
                   ))}
-                  {meetings
+                  {positionedMeetings
                     .filter((meeting) => meeting.day === day.code)
                     .map((meeting) => {
                       const top =
@@ -223,8 +299,13 @@ export const VisualSchedule = ({
                       ]
                         .filter(Boolean)
                         .join(' · ');
+                      const left =
+                        meeting.lane === 0
+                          ? '0.25rem'
+                          : `calc(${(meeting.lane / meeting.laneCount) * 100}% + 0.25rem)`;
+                      const width = `calc(${100 / meeting.laneCount}% - 0.5rem)`;
                       const blockClassName = twMerge(
-                        'absolute right-1 left-1 z-10 flex overflow-hidden rounded-sm border p-1.5 text-left text-xs shadow-sm',
+                        'absolute z-10 flex overflow-hidden rounded-sm border p-1.5 text-left text-xs shadow-sm',
                         onBlockClick &&
                           'cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-red-500',
                         isPinned && 'ring-2 ring-gray-900 dark:ring-gray-100',
@@ -263,7 +344,7 @@ export const VisualSchedule = ({
                             className={blockClassName}
                             key={`${meeting.block.courseId}-${meeting.block.display}-${meeting.block.crn}-${meeting.day}-${meeting.start}-${meeting.end}`}
                             onClick={() => onBlockClick(meeting.block)}
-                            style={{ height: meetingHeight, top }}
+                            style={{ height: meetingHeight, left, top, width }}
                             title={title}
                             type='button'
                           >
@@ -276,7 +357,7 @@ export const VisualSchedule = ({
                         <div
                           className={blockClassName}
                           key={`${meeting.block.courseId}-${meeting.block.display}-${meeting.block.crn}-${meeting.day}-${meeting.start}-${meeting.end}`}
-                          style={{ height: meetingHeight, top }}
+                          style={{ height: meetingHeight, left, top, width }}
                           title={title}
                         >
                           {content}

@@ -5,10 +5,15 @@ import { twMerge } from 'tailwind-merge';
 
 import * as buildingCodes from '../assets/building-codes.json';
 import * as buildingCoordinates from '../assets/building-coordinates.json';
-import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
+import {
+  type IcsEventOptions,
+  getTermMeetingRecurrence,
+  sanitizeForFilename,
+} from '../lib/calendar';
 import type { Block, Schedule, TimeBlock } from '../lib/types';
 import type { Course } from '../lib/types';
 import {
+  courseIdToUrlParam,
   formatDisplayTime,
   getCurrentTerm,
   groupBy,
@@ -22,26 +27,6 @@ import { AddToCalendarButton } from './add-to-calendar-button';
 import { BuildingLocation } from './building-location';
 import { Tooltip } from './tooltip';
 
-const DAY_CODE_MAP: Record<string, string> = {
-  '1': 'SU',
-  '2': 'MO',
-  '3': 'TU',
-  '4': 'WE',
-  '5': 'TH',
-  '6': 'FR',
-  '7': 'SA',
-};
-
-const DAY_ORDER = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-
-const DEFAULT_MEETING_COUNT = 13;
-
-const TERM_START_CONFIG = {
-  Winter: { startMonth: 1, offsetDays: 6 },
-  Summer: { startMonth: 5, offsetDays: 6 },
-  Fall: { startMonth: 9, offsetDays: 6 },
-} as const;
-
 type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
   location: string;
   display: string;
@@ -53,8 +38,6 @@ type RepeatingBlock = {
   startTime: string;
   endTime: string;
 };
-
-type TermSeason = keyof typeof TERM_START_CONFIG;
 
 const VSBtimeToDisplay = (time: string) => {
   const totalMinutes = parseInt(time, 10);
@@ -69,52 +52,6 @@ const VSBtimeToDisplay = (time: string) => {
   return `${hour.toString().padStart(2, '0')}:${minute
     .toString()
     .padStart(2, '0')}`;
-};
-
-const parseTermSeason = (
-  term: string
-): { season: TermSeason; year: number } | null => {
-  const match = term.match(/^(Winter|Summer|Fall)\s+(\d{4})$/);
-
-  if (!match) return null;
-
-  const [, season, year] = match;
-
-  return { season: season as TermSeason, year: parseInt(year, 10) };
-};
-
-const vsbDayToJsDay = (day: string): number | null => {
-  const parsed = parseInt(day, 10);
-
-  if (Number.isNaN(parsed)) return null;
-
-  const jsDay = parsed - 1;
-
-  if (jsDay < 0 || jsDay > 6) return null;
-
-  return jsDay;
-};
-
-const getFirstOccurrenceForTermDay = (
-  term: string,
-  day: string
-): Date | null => {
-  const termInfo = parseTermSeason(term);
-  const jsDay = vsbDayToJsDay(day);
-
-  if (!termInfo || jsDay === null) return null;
-
-  const { season, year } = termInfo;
-  const { startMonth, offsetDays } = TERM_START_CONFIG[season];
-
-  const anchor = new Date(year, startMonth - 1, 1);
-  anchor.setDate(anchor.getDate() + offsetDays);
-
-  const occurrence = new Date(anchor);
-  const diff = (jsDay - occurrence.getDay() + 7) % 7;
-  occurrence.setDate(occurrence.getDate() + diff);
-
-  return occurrence;
 };
 
 const parseTimeString = (
@@ -138,7 +75,9 @@ const buildScheduleEvents = (
   course: Course,
   term: string
 ): IcsEventOptions[] => {
-  const courseUrl = `https://mcgill.courses/${course._id}`;
+  const courseUrl = `https://mcgill.courses/course/${courseIdToUrlParam(
+    course._id
+  )}`;
 
   const summary = `${course._id} ${block.display}`.trim();
 
@@ -156,43 +95,17 @@ const buildScheduleEvents = (
   block.timeblocks.forEach((tb, index) => {
     if (!tb.startTime || !tb.endTime || tb.days.length === 0) return;
 
-    const sortedDays = [...tb.days].sort(
-      (a, b) => parseInt(a, 10) - parseInt(b, 10)
-    );
-
-    const firstDay = sortedDays[0];
-    const occurrence = getFirstOccurrenceForTermDay(term, firstDay);
-
+    const recurrence = getTermMeetingRecurrence(term, tb.days);
     const startTime = parseTimeString(tb.startTime);
     const endTime = parseTimeString(tb.endTime);
 
-    if (!occurrence || !startTime || !endTime) return;
+    if (!recurrence || !startTime || !endTime) return;
 
-    const eventStart = new Date(occurrence);
+    const eventStart = new Date(recurrence.start);
     eventStart.setHours(startTime.hour, startTime.minute, 0, 0);
 
-    const eventEnd = new Date(occurrence);
+    const eventEnd = new Date(recurrence.start);
     eventEnd.setHours(endTime.hour, endTime.minute, 0, 0);
-
-    const byDayCodes = sortedDays
-      .map((day) => DAY_CODE_MAP[day])
-      .filter((code): code is string => Boolean(code));
-
-    const uniqueByDayCodes = Array.from(new Set(byDayCodes)).sort(
-      (a, b) => DAY_ORDER.indexOf(a) - DAY_ORDER.indexOf(b)
-    );
-
-    const occurrencesPerWeek = Math.max(1, uniqueByDayCodes.length);
-
-    const rruleParts = [
-      'FREQ=WEEKLY',
-      'INTERVAL=1',
-      `COUNT=${DEFAULT_MEETING_COUNT * occurrencesPerWeek}`,
-    ];
-
-    if (uniqueByDayCodes.length > 0) {
-      rruleParts.push(`BYDAY=${uniqueByDayCodes.join(',')}`);
-    }
 
     const uidBase = sanitizeForFilename(
       `${course._id}-${block.display}-${term}-${tb.startTime}-${tb.endTime}-${index}`
@@ -207,7 +120,7 @@ const buildScheduleEvents = (
       location,
       url: courseUrl,
       uid,
-      rrule: rruleParts.join(';'),
+      rrule: recurrence.rrule,
     });
   });
 

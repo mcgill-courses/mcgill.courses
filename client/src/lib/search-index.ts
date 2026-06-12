@@ -82,9 +82,12 @@ export const updateSearchResults = (
     options?.courseSearchLimit
   ).slice(0, courseLimit);
 
-  const instructorSearchResults = instructorsIndex
-    .search(query, { limit: instructorLimit })
-    ?.map((id) => instructors[id as number]);
+  const instructorSearchResults =
+    instructorLimit === 0
+      ? []
+      : (instructorsIndex
+          .search(query, { limit: instructorLimit })
+          ?.map((id) => instructors[id as number]) ?? []);
 
   setResults({
     query: query,
