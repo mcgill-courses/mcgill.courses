@@ -1,18 +1,21 @@
-import { ArrowLeft, ArrowRight, Plus, RotateCcw, Trash2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, RotateCcw, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 
+import courseTerms from '../assets/course-terms.json';
+import { CourseSearchBar } from '../components/course-search-bar';
 import { Layout } from '../components/layout';
-import { SearchBar } from '../components/search-bar';
 import { VisualSchedule } from '../components/visual-schedule';
 import { api } from '../lib/api';
 import {
+  DAY_LABELS,
   buildScheduleResults,
   formatScheduleMinutes,
   getBlockMeetingLabels,
   getCourseScheduleOptions,
+  getScheduleConflicts,
 } from '../lib/schedule-builder';
 import {
   type StoredSchedule,
@@ -21,13 +24,16 @@ import {
 } from '../lib/schedule-builder-storage';
 import {
   type CourseData,
-  getRankedCourses,
+  type SearchResults,
   getSearchIndex,
+  updateSearchResults,
 } from '../lib/search-index';
 import type { Course } from '../lib/types';
 import { getCurrentTerms, spliceCourseCode } from '../lib/utils';
 
-const { courses, coursesIndex } = getSearchIndex();
+const { courses, instructors, coursesIndex, instructorsIndex } =
+  getSearchIndex();
+const courseTermsById = courseTerms as Record<string, string[]>;
 
 const formatCourseCount = (count: number) =>
   count === 1 ? '1 course' : `${count} courses`;
@@ -54,14 +60,16 @@ export const ScheduleBuilder = () => {
   );
 
   const [loadingCourseId, setLoadingCourseId] = useState<string | null>(null);
-  const [query, setQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResults>({
+    query: '',
+    courses: [],
+    instructors: [],
+  });
   const [restoredSchedule, setRestoredSchedule] = useState(
     () => (storedSchedule?.selectedCourseIds.length ?? 0) === 0
   );
   const [resultIndex, setResultIndex] = useState(0);
-  const [searchSelected, setSearchSelected] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedResultId, setSelectedResultId] = useState(
     storedSchedule?.selectedResultId
   );
@@ -69,20 +77,28 @@ export const ScheduleBuilder = () => {
     () => storedSchedule?.selectedTerm ?? currentTerms[0]
   );
 
-  const candidates = useMemo(() => {
-    if (!query.trim()) return [];
-
+  const visibleSearchResults = useMemo(() => {
     const selectedCourseIds = new Set(
       selectedCourses.map((course) => course._id)
     );
 
-    return getRankedCourses(query, courses, coursesIndex)
-      .filter((course) => !selectedCourseIds.has(course._id))
-      .slice(0, 6);
-  }, [query, selectedCourses]);
+    return {
+      query: searchResults.query,
+      courses: searchResults.courses.filter(
+        (course) =>
+          !selectedCourseIds.has(course._id) &&
+          courseTermsById[course._id]?.includes(selectedTerm)
+      ),
+      instructors: [],
+    };
+  }, [searchResults, selectedCourses, selectedTerm]);
 
   const build = useMemo(
     () => buildScheduleResults(selectedCourses, selectedTerm),
+    [selectedCourses, selectedTerm]
+  );
+  const conflicts = useMemo(
+    () => getScheduleConflicts(selectedCourses, selectedTerm),
     [selectedCourses, selectedTerm]
   );
   const results = build.results;
@@ -178,8 +194,6 @@ export const ScheduleBuilder = () => {
       }
 
       setSelectedCourses((previous) => [...previous, payload.course]);
-      setQuery('');
-      setSearchSelected(false);
     } catch {
       toast.error('Failed to fetch course schedule');
     } finally {
@@ -187,26 +201,23 @@ export const ScheduleBuilder = () => {
     }
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      setSelectedIndex((previous) =>
-        previous > 0 ? previous - 1 : Math.max(0, candidates.length - 1)
-      );
-    }
-
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      setSelectedIndex((previous) =>
-        previous < candidates.length - 1 ? previous + 1 : 0
-      );
-    }
-
-    if (event.key === 'Enter' && candidates[selectedIndex]) {
-      event.preventDefault();
-      addCourse(candidates[selectedIndex]);
-    }
+  const handleInputChange = (query: string) => {
+    updateSearchResults(
+      query,
+      courses,
+      instructors,
+      coursesIndex,
+      instructorsIndex,
+      setSearchResults
+    );
   };
+
+  const resetSearch = () =>
+    setSearchResults({
+      query: '',
+      courses: [],
+      instructors: [],
+    });
 
   const removeCourse = (courseId: string) => {
     setSelectedCourses((previous) =>
@@ -215,20 +226,21 @@ export const ScheduleBuilder = () => {
   };
 
   const reset = () => {
-    setQuery('');
+    resetSearch();
     setResultIndex(0);
-    setSearchSelected(false);
     setSelectedCourses([]);
     setSelectedResultId(undefined);
     setSelectedTerm(currentTerms[0]);
   };
 
   const selectResultIndex = (index: number) => {
-    const result = results[index];
+    if (results.length === 0) return;
 
-    if (!result) return;
+    const indexWithinResults =
+      ((index % results.length) + results.length) % results.length;
+    const result = results[indexWithinResults];
 
-    setResultIndex(index);
+    setResultIndex(indexWithinResults);
     setSelectedResultId(result.id);
   };
 
@@ -243,7 +255,7 @@ export const ScheduleBuilder = () => {
       </Helmet>
 
       <div className='py-7'>
-        <div className='mb-7 flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between dark:border-neutral-800'>
+        <div className='mb-7 flex flex-col gap-4 border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between dark:border-neutral-800'>
           <div>
             <h1 className='text-2xl font-semibold tracking-tight text-gray-950 sm:text-3xl dark:text-gray-100'>
               Schedule Builder
@@ -294,57 +306,21 @@ export const ScheduleBuilder = () => {
               <div className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
                 Course
               </div>
-              <div className='relative'>
-                <SearchBar
-                  handleInputChange={(value) => {
-                    setQuery(value);
-                    setSelectedIndex(0);
-                  }}
-                  inputStyle='block w-full rounded-md bg-white p-3 pl-10 text-sm text-gray-950 outline-none ring-1 ring-slate-200 transition placeholder:text-gray-400 focus:ring-red-500 dark:bg-neutral-800 dark:text-gray-100 dark:ring-neutral-700 dark:placeholder:text-neutral-500'
-                  onKeyDown={handleKeyDown}
-                  placeholder='Search courses'
-                  searchSelected={searchSelected}
-                  setSearchSelected={setSearchSelected}
-                  value={query}
-                />
-                {searchSelected && query.trim() && (
-                  <div className='absolute top-full z-30 mt-2 w-full overflow-hidden rounded-md bg-white py-1 shadow-xl ring-1 ring-slate-200 dark:bg-neutral-800 dark:ring-neutral-700'>
-                    {candidates.length > 0 ? (
-                      candidates.map((candidate, index) => (
-                        <button
-                          className={twMerge(
-                            'flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition',
-                            index === selectedIndex
-                              ? 'bg-slate-100 text-gray-950 dark:bg-neutral-700 dark:text-gray-100'
-                              : 'text-gray-700 hover:bg-slate-50 dark:text-gray-200 dark:hover:bg-neutral-700'
-                          )}
-                          disabled={loadingCourseId !== null}
-                          key={candidate._id}
-                          onMouseDown={(event) => {
-                            event.preventDefault();
-                            addCourse(candidate);
-                          }}
-                          type='button'
-                        >
-                          <Plus className='size-4 shrink-0 text-gray-400' />
-                          <span className='min-w-0'>
-                            <span className='block truncate font-medium'>
-                              {spliceCourseCode(candidate._id, ' ')}
-                            </span>
-                            <span className='block truncate text-xs text-gray-500 dark:text-gray-400'>
-                              {candidate.title}
-                            </span>
-                          </span>
-                        </button>
-                      ))
-                    ) : (
-                      <div className='px-3 py-2.5 text-sm text-gray-500 dark:text-gray-400'>
-                        No courses found
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+              <CourseSearchBar
+                handleInputChange={handleInputChange}
+                inputClassName='lg:min-w-0'
+                onCourseSelect={(course) => {
+                  if (loadingCourseId !== null) return;
+
+                  addCourse(course);
+                }}
+                onResultClick={resetSearch}
+                placeholder='Search courses'
+                results={visibleSearchResults}
+                showFocusBorder={false}
+                showExploreButton={false}
+                showInstructors={false}
+              />
             </div>
 
             <div>
@@ -401,7 +377,7 @@ export const ScheduleBuilder = () => {
           </section>
 
           <section className='min-w-0'>
-            <div className='mb-4 flex flex-col gap-3 border-b border-slate-200 pb-4 md:flex-row md:items-center md:justify-between dark:border-neutral-800'>
+            <div className='mb-4 flex flex-col gap-3 border-slate-200 pb-4 md:flex-row md:items-center md:justify-between dark:border-neutral-800'>
               <div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-sm'>
                 <span className='font-semibold text-gray-950 dark:text-gray-100'>
                   {formatResultCount(results.length, build.truncated)}
@@ -417,7 +393,7 @@ export const ScheduleBuilder = () => {
               <div className='flex items-center overflow-hidden rounded-md bg-white ring-1 ring-slate-200 dark:bg-neutral-800 dark:ring-neutral-700'>
                 <button
                   className='inline-flex size-9 items-center justify-center text-gray-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-gray-300 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
-                  disabled={resultIndex === 0}
+                  disabled={results.length === 0}
                   onClick={() => selectResultIndex(resultIndex - 1)}
                   title='Previous schedule'
                   type='button'
@@ -429,7 +405,7 @@ export const ScheduleBuilder = () => {
                 </div>
                 <button
                   className='inline-flex size-9 items-center justify-center text-gray-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-gray-300 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
-                  disabled={resultIndex >= results.length - 1}
+                  disabled={results.length === 0}
                   onClick={() => selectResultIndex(resultIndex + 1)}
                   title='Next schedule'
                   type='button'
@@ -449,13 +425,13 @@ export const ScheduleBuilder = () => {
                 {build.missingCourses.map((course) => course._id).join(', ')}
               </div>
             ) : result ? (
-              <div className='space-y-4'>
+              <div className='space-y-3'>
                 <VisualSchedule blocks={result.blocks} />
                 <div className='overflow-hidden rounded-md bg-white/70 ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800'>
                   <div className='divide-y divide-slate-100 dark:divide-neutral-800'>
                     {result.blocks.map((block) => (
                       <div
-                        className='grid gap-x-4 gap-y-2 px-3 py-3 text-sm md:grid-cols-[120px_minmax(0,1fr)_minmax(180px,auto)] md:items-center'
+                        className='grid gap-x-4 gap-y-1.5 px-3 py-2 text-xs md:grid-cols-[104px_minmax(0,1fr)_minmax(168px,auto)] md:items-center'
                         key={`${block.courseId}-${block.display}-${block.crn}`}
                       >
                         <div className='min-w-0'>
@@ -469,14 +445,14 @@ export const ScheduleBuilder = () => {
                         <div className='flex flex-wrap gap-1.5'>
                           {getBlockMeetingLabels(block).map((label) => (
                             <span
-                              className='rounded-sm bg-slate-100 px-2 py-1 text-xs font-medium text-gray-600 dark:bg-neutral-800 dark:text-gray-300'
+                              className='rounded-sm bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-gray-600 dark:bg-neutral-800 dark:text-gray-300'
                               key={label}
                             >
                               {label}
                             </span>
                           ))}
                         </div>
-                        <div className='text-xs text-gray-500 md:text-right dark:text-gray-400'>
+                        <div className='text-[11px] text-gray-500 md:text-right dark:text-gray-400'>
                           {block.location || block.campus || 'Location TBA'}
                           {' · '}
                           {block.crn ? `CRN ${block.crn}` : 'CRN unavailable'}
@@ -485,6 +461,68 @@ export const ScheduleBuilder = () => {
                     ))}
                   </div>
                 </div>
+              </div>
+            ) : conflicts.length > 0 ? (
+              <div className='overflow-hidden rounded-md bg-white/70 ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800'>
+                <div className='border-b border-slate-100 px-4 py-3 dark:border-neutral-800'>
+                  <div className='text-sm font-semibold text-gray-950 dark:text-gray-100'>
+                    No non-conflicting schedules found
+                  </div>
+                  <div className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
+                    {conflicts.length} overlap
+                    {conflicts.length === 1 ? '' : 's'} in {selectedTerm}
+                  </div>
+                </div>
+                <div className='divide-y divide-slate-100 dark:divide-neutral-800'>
+                  {conflicts.slice(0, 8).map((conflict) => {
+                    const time = `${DAY_LABELS[conflict.day] ?? conflict.day} · ${formatScheduleMinutes(conflict.start)} - ${formatScheduleMinutes(conflict.end)}`;
+                    const left = `${spliceCourseCode(
+                      conflict.left.courseId,
+                      ' '
+                    )} ${conflict.left.display || 'Section'}`;
+                    const right = `${spliceCourseCode(
+                      conflict.right.courseId,
+                      ' '
+                    )} ${conflict.right.display || 'Section'}`;
+
+                    return (
+                      <div
+                        className='grid gap-2 px-4 py-3 text-sm md:grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] md:items-center'
+                        key={`${left}-${right}-${conflict.day}-${conflict.start}-${conflict.end}`}
+                      >
+                        <div className='min-w-0'>
+                          <div className='truncate font-semibold text-gray-950 dark:text-gray-100'>
+                            {left}
+                          </div>
+                          <div className='truncate text-xs text-gray-500 dark:text-gray-400'>
+                            {conflict.left.location ||
+                              conflict.left.campus ||
+                              'Location TBA'}
+                          </div>
+                        </div>
+                        <div className='rounded-sm bg-amber-50 px-2 py-1 text-center text-xs font-medium text-amber-900 dark:bg-amber-950/40 dark:text-amber-100'>
+                          {time}
+                        </div>
+                        <div className='min-w-0 md:text-right'>
+                          <div className='truncate font-semibold text-gray-950 dark:text-gray-100'>
+                            {right}
+                          </div>
+                          <div className='truncate text-xs text-gray-500 dark:text-gray-400'>
+                            {conflict.right.location ||
+                              conflict.right.campus ||
+                              'Location TBA'}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {conflicts.length > 8 && (
+                  <div className='border-t border-slate-100 px-4 py-3 text-sm font-medium text-gray-500 dark:border-neutral-800 dark:text-gray-400'>
+                    {conflicts.length - 8} more overlap
+                    {conflicts.length - 8 === 1 ? '' : 's'}
+                  </div>
+                )}
               </div>
             ) : (
               <div className='flex min-h-[520px] items-center justify-center rounded-md bg-white/70 p-6 text-center text-sm font-medium text-gray-500 ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:text-gray-400 dark:ring-neutral-800'>

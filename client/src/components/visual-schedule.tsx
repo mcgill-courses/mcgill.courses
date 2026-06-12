@@ -16,7 +16,7 @@ const DAYS = [
   { code: '7', label: 'Sat' },
 ];
 
-const HOUR_HEIGHT = 72;
+const HOUR_HEIGHT = 52;
 
 const COURSE_COLORS = [
   'border-red-200 bg-red-50 text-red-950 dark:border-red-500/40 dark:bg-red-950/60 dark:text-red-100',
@@ -96,7 +96,7 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
   const days = DAYS.filter(
     (day) => (day.code >= '2' && day.code <= '6') || meetingDays.has(day.code)
   );
-  const gridTemplateColumns = `52px repeat(${days.length}, minmax(112px, 1fr))`;
+  const gridTemplateColumns = `48px repeat(${days.length}, minmax(104px, 1fr))`;
 
   if (meetings.length === 0) {
     return (
@@ -119,14 +119,14 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
       )}
     >
       <div className='overflow-x-auto'>
-        <div style={{ minWidth: 52 + days.length * 112 }}>
+        <div style={{ minWidth: 48 + days.length * 104 }}>
           <div
-            className='grid border-b border-slate-200 text-xs font-medium text-gray-500 dark:border-neutral-800 dark:text-gray-400'
+            className='grid text-xs font-medium text-gray-500 dark:text-gray-400'
             style={{ gridTemplateColumns }}
           >
             <div />
             {days.map((day) => (
-              <div className='px-3 py-2 text-center' key={day.code}>
+              <div className='px-2 py-1.5 text-center' key={day.code}>
                 {day.label}
               </div>
             ))}
@@ -138,7 +138,7 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
             >
               {hours.slice(0, -1).map((hour) => (
                 <div
-                  className='absolute right-2 -translate-y-2 text-xs text-gray-400 dark:text-gray-500'
+                  className='absolute right-1.5 -translate-y-2 text-[10px] text-gray-400 dark:text-gray-500'
                   key={hour}
                   style={{ top: (hour - startHour) * HOUR_HEIGHT }}
                 >
@@ -165,12 +165,12 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
                     const top =
                       ((meeting.start - startHour * 60) / 60) * HOUR_HEIGHT;
                     const meetingHeight = Math.max(
-                      42,
+                      34,
                       ((meeting.end - meeting.start) / 60) * HOUR_HEIGHT
                     );
-                    const showDisplay = meetingHeight >= 50;
-                    const showTime = meetingHeight >= 56;
-                    const showLocation = meetingHeight >= 96;
+                    const showDisplay = meetingHeight >= 42;
+                    const showTime = meetingHeight >= 48;
+                    const showLocation = meetingHeight >= 78;
                     const title = [
                       formatCourseId(meeting.block.courseId),
                       meeting.block.display,
@@ -183,29 +183,29 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
                     return (
                       <div
                         className={twMerge(
-                          'absolute right-1 left-1 z-10 flex overflow-hidden rounded-md border px-2.5 py-1.5 text-xs shadow-sm',
+                          'absolute right-1 left-1 z-10 flex overflow-hidden rounded-sm border px-2 py-1 text-xs shadow-sm',
                           colorForCourse(meeting.block.courseId)
                         )}
                         key={`${meeting.block.courseId}-${meeting.block.display}-${meeting.block.crn}-${meeting.day}-${meeting.start}-${meeting.end}`}
                         style={{ height: meetingHeight, top }}
                         title={title}
                       >
-                        <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-0.5'>
-                          <div className='truncate text-[11px] leading-4 font-semibold'>
+                        <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-center'>
+                          <div className='truncate text-[10px] leading-3.5 font-semibold'>
                             {formatCourseId(meeting.block.courseId)}
                           </div>
                           {showDisplay && (
-                            <div className='truncate text-[11px] leading-4 opacity-80'>
+                            <div className='truncate text-[10px] leading-3.5 opacity-80'>
                               {meeting.block.display || 'Section'}
                             </div>
                           )}
                           {showTime && (
-                            <div className='truncate text-[10px] leading-3 font-medium opacity-75'>
+                            <div className='truncate text-[9px] leading-3 font-medium opacity-75'>
                               {formatMeetingTime(meeting)}
                             </div>
                           )}
                           {showLocation && meeting.block.location && (
-                            <div className='truncate text-[10px] leading-3 opacity-70'>
+                            <div className='truncate text-[9px] leading-3 opacity-70'>
                               {meeting.block.location}
                             </div>
                           )}

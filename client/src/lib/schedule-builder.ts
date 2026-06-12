@@ -37,6 +37,14 @@ export type ScheduleBuild = {
   truncated: boolean;
 };
 
+export type ScheduleConflict = {
+  day: string;
+  end: number;
+  left: BuilderBlock;
+  right: BuilderBlock;
+  start: number;
+};
+
 export const DAY_LABELS: Record<string, string> = {
   '1': 'Sun',
   '2': 'Mon',
@@ -148,7 +156,14 @@ export const getBlockMeetingLabels = (block: BuilderBlock) => {
   return labels.length > 0 ? labels : ['No meeting time'];
 };
 
-const getMeetings = (blocks: BuilderBlock[]) =>
+type Meeting = {
+  block: BuilderBlock;
+  day: string;
+  end: number;
+  start: number;
+};
+
+const getMeetings = (blocks: BuilderBlock[]): Meeting[] =>
   blocks.flatMap((block) =>
     block.timeblocks.flatMap((timeblock) => {
       const start = parseVsbMinutes(timeblock.t1);
@@ -162,15 +177,34 @@ const getMeetings = (blocks: BuilderBlock[]) =>
     })
   );
 
-const blockConflicts = (blocks: BuilderBlock[], candidate: BuilderBlock[]) =>
-  getMeetings(blocks).some((meeting) =>
-    getMeetings(candidate).some(
-      (candidateMeeting) =>
-        meeting.day === candidateMeeting.day &&
-        meeting.start < candidateMeeting.end &&
-        candidateMeeting.start < meeting.end
-    )
+const getMeetingConflicts = (
+  blocks: BuilderBlock[],
+  candidate: BuilderBlock[]
+): ScheduleConflict[] =>
+  getMeetings(blocks).flatMap((meeting) =>
+    getMeetings(candidate).flatMap((candidateMeeting) => {
+      if (
+        meeting.day !== candidateMeeting.day ||
+        meeting.start >= candidateMeeting.end ||
+        candidateMeeting.start >= meeting.end
+      ) {
+        return [];
+      }
+
+      return [
+        {
+          day: meeting.day,
+          end: Math.min(meeting.end, candidateMeeting.end),
+          left: meeting.block,
+          right: candidateMeeting.block,
+          start: Math.max(meeting.start, candidateMeeting.start),
+        },
+      ];
+    })
   );
+
+const blockConflicts = (blocks: BuilderBlock[], candidate: BuilderBlock[]) =>
+  getMeetingConflicts(blocks, candidate).length > 0;
 
 const selfConflicts = (blocks: BuilderBlock[]) => {
   const meetings = getMeetings(blocks);
@@ -254,6 +288,54 @@ export const getCourseScheduleOptions = (
       >((map, option) => map.set(optionKey(option.blocks), option), new Map())
       .values()
   );
+};
+
+export const getScheduleConflicts = (
+  courses: Course[],
+  term: string
+): ScheduleConflict[] => {
+  const courseOptions = courses.map((course) => ({
+    course,
+    options: getCourseScheduleOptions(course, term),
+  }));
+
+  const conflicts: ScheduleConflict[] = [];
+
+  courseOptions.forEach((left, leftIndex) => {
+    courseOptions.slice(leftIndex + 1).forEach((right) => {
+      left.options.forEach((leftOption) => {
+        right.options.forEach((rightOption) => {
+          conflicts.push(
+            ...getMeetingConflicts(leftOption.blocks, rightOption.blocks)
+          );
+        });
+      });
+    });
+  });
+
+  return Array.from(
+    conflicts
+      .reduce<Map<string, ScheduleConflict>>((map, conflict) => {
+        const key = [
+          conflict.left.courseId,
+          conflict.left.display,
+          conflict.left.crn,
+          conflict.right.courseId,
+          conflict.right.display,
+          conflict.right.crn,
+          conflict.day,
+          conflict.start,
+          conflict.end,
+        ].join('|');
+
+        return map.set(key, conflict);
+      }, new Map())
+      .values()
+  ).sort((a, b) => {
+    if (a.day !== b.day) return a.day.localeCompare(b.day);
+    if (a.start !== b.start) return a.start - b.start;
+    return a.left.courseId.localeCompare(b.left.courseId);
+  });
 };
 
 export const buildScheduleResults = (

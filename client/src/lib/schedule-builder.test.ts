@@ -4,6 +4,7 @@ import {
   buildScheduleResults,
   getBlockMeetingLabels,
   getCourseScheduleOptions,
+  getScheduleConflicts,
 } from './schedule-builder';
 import type { Block, Course } from './types';
 
@@ -71,6 +72,21 @@ describe('schedule builder', () => {
 
     expect(build.missingCourses).toEqual([foo]);
     expect(build.results).toEqual([]);
+  });
+
+  test('reports overlapping sections', () => {
+    const foo = course('FOOO100', [block('Lec 001', '2', '540', '620')]);
+    const bar = course('BARR200', [block('Lec 001', '2', '600', '660')]);
+
+    expect(getScheduleConflicts([foo, bar], term)).toMatchObject([
+      {
+        day: '2',
+        end: 620,
+        left: { courseId: 'FOOO100' },
+        right: { courseId: 'BARR200' },
+        start: 600,
+      },
+    ]);
   });
 
   test('formats meeting labels', () => {
