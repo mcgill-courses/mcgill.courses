@@ -8,7 +8,7 @@ To address performance concerns, the raw data files are substantial and would co
 excessive resources when bundled for client-side delivery.
 
 **search-index-aggregator** selectively includes only the [JSON fields](https://github.com/terror/mcgill.courses/blob/master/client/src/assets/search-data.json) required by the
-search component, significantly reducing payload size and improving resource efficiency.
+search component and schedule builder, significantly reducing payload size and improving resource efficiency.
 
 ### Setup
 

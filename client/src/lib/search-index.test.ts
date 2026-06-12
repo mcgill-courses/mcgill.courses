@@ -4,49 +4,27 @@ import { describe, expect, it } from 'vitest';
 import type { CourseData } from './search-index';
 import { getRankedCourses } from './search-index';
 
+const course = (
+  _id: string,
+  subject: string,
+  code: string,
+  title: string
+): CourseData => ({
+  _id,
+  code,
+  subject,
+  terms: [],
+  title,
+});
+
 const courses: CourseData[] = [
-  {
-    _id: 'MATH203',
-    subject: 'MATH',
-    title: 'Principles of Statistics 1',
-    code: '203',
-  },
-  {
-    _id: 'MATH204',
-    subject: 'MATH',
-    title: 'Principles of Statistics 2',
-    code: '204',
-  },
-  {
-    _id: 'MATH222',
-    subject: 'MATH',
-    title: 'Calculus 3',
-    code: '222',
-  },
-  {
-    _id: 'CHEM367',
-    subject: 'CHEM',
-    title: 'Instrumental Analysis 1',
-    code: '367',
-  },
-  {
-    _id: 'MATH242',
-    subject: 'MATH',
-    title: 'Analysis 1',
-    code: '242',
-  },
-  {
-    _id: 'COMP505',
-    subject: 'COMP',
-    title: 'Advanced Computer Architecture',
-    code: '505',
-  },
-  {
-    _id: 'COMP550',
-    subject: 'COMP',
-    title: 'Natural Language Processing',
-    code: '550',
-  },
+  course('MATH203', 'MATH', '203', 'Principles of Statistics 1'),
+  course('MATH204', 'MATH', '204', 'Principles of Statistics 2'),
+  course('MATH222', 'MATH', '222', 'Calculus 3'),
+  course('CHEM367', 'CHEM', '367', 'Instrumental Analysis 1'),
+  course('MATH242', 'MATH', '242', 'Analysis 1'),
+  course('COMP505', 'COMP', '505', 'Advanced Computer Architecture'),
+  course('COMP550', 'COMP', '550', 'Natural Language Processing'),
 ];
 
 const createIndex = () => {
