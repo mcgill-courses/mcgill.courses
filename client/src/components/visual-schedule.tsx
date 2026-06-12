@@ -210,7 +210,7 @@ export const VisualSchedule = ({
                         ((meeting.end - meeting.start) / 60) * HOUR_HEIGHT
                       );
                       const showDisplay = meetingHeight >= 42;
-                      const showTime = meetingHeight >= 48;
+                      const showTime = meetingHeight >= 38;
                       const showLocation = meetingHeight >= 78;
                       const isPinned = pinnedCourseIdSet.has(
                         meeting.block.courseId
@@ -224,14 +224,14 @@ export const VisualSchedule = ({
                         .filter(Boolean)
                         .join(' · ');
                       const blockClassName = twMerge(
-                        'absolute right-1 left-1 z-10 flex overflow-hidden rounded-sm border px-2 py-1 text-left text-xs shadow-sm',
+                        'absolute right-1 left-1 z-10 flex overflow-hidden rounded-sm border p-1.5 text-left text-xs shadow-sm',
                         onBlockClick &&
                           'cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-red-500',
                         isPinned && 'ring-2 ring-gray-900 dark:ring-gray-100',
                         colorForCourse(meeting.block.courseId)
                       );
                       const content = (
-                        <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-center'>
+                        <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-start'>
                           <div className='flex min-w-0 flex-col gap-px sm:flex-row sm:items-baseline sm:justify-between sm:gap-1'>
                             <div className='truncate text-[10px] leading-3.5 font-semibold'>
                               {formatCourseId(meeting.block.courseId)}
