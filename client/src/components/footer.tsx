@@ -6,6 +6,7 @@ import { NavItem } from './nav-item';
 export const navigationItems = [
   { name: 'Home', href: '/' },
   { name: 'Explore', href: '/explore' },
+  { name: 'Schedule', href: '/schedule-builder' },
   { name: 'Reviews', href: '/reviews' },
   { name: 'About', href: '/about' },
 ];

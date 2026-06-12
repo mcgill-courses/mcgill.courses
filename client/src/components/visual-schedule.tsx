@@ -1,0 +1,223 @@
+import { twMerge } from 'tailwind-merge';
+
+import type { BuilderBlock } from '../lib/schedule-builder';
+import {
+  formatScheduleMinutes,
+  parseVsbMinutes,
+} from '../lib/schedule-builder';
+
+const DAYS = [
+  { code: '1', label: 'Sun' },
+  { code: '2', label: 'Mon' },
+  { code: '3', label: 'Tue' },
+  { code: '4', label: 'Wed' },
+  { code: '5', label: 'Thu' },
+  { code: '6', label: 'Fri' },
+  { code: '7', label: 'Sat' },
+];
+
+const HOUR_HEIGHT = 72;
+
+const COURSE_COLORS = [
+  'border-red-200 bg-red-50 text-red-950 dark:border-red-500/40 dark:bg-red-950/60 dark:text-red-100',
+  'border-sky-200 bg-sky-50 text-sky-950 dark:border-sky-500/40 dark:bg-sky-950/60 dark:text-sky-100',
+  'border-emerald-200 bg-emerald-50 text-emerald-950 dark:border-emerald-500/40 dark:bg-emerald-950/60 dark:text-emerald-100',
+  'border-amber-200 bg-amber-50 text-amber-950 dark:border-amber-500/40 dark:bg-amber-950/60 dark:text-amber-100',
+  'border-violet-200 bg-violet-50 text-violet-950 dark:border-violet-500/40 dark:bg-violet-950/60 dark:text-violet-100',
+  'border-cyan-200 bg-cyan-50 text-cyan-950 dark:border-cyan-500/40 dark:bg-cyan-950/60 dark:text-cyan-100',
+];
+
+type Meeting = {
+  block: BuilderBlock;
+  day: string;
+  end: number;
+  start: number;
+};
+
+type VisualScheduleProps = {
+  blocks: BuilderBlock[];
+  className?: string;
+};
+
+const getMeetings = (blocks: BuilderBlock[]): Meeting[] =>
+  blocks.flatMap((block) =>
+    block.timeblocks.flatMap((timeblock) => {
+      const start = parseVsbMinutes(timeblock.t1);
+      const end = parseVsbMinutes(timeblock.t2);
+
+      if (!timeblock.day || start === null || end === null) {
+        return [];
+      }
+
+      return [{ block, day: timeblock.day, end, start }];
+    })
+  );
+
+const getHourRange = (meetings: Meeting[]) => {
+  if (meetings.length === 0) {
+    return { endHour: 18, startHour: 8 };
+  }
+
+  const startHour = Math.min(
+    8,
+    Math.floor(Math.min(...meetings.map((meeting) => meeting.start)) / 60)
+  );
+
+  const endHour = Math.max(
+    18,
+    Math.ceil(Math.max(...meetings.map((meeting) => meeting.end)) / 60)
+  );
+
+  return { endHour, startHour };
+};
+
+const formatMeetingTime = (meeting: Meeting) =>
+  `${formatScheduleMinutes(meeting.start)} - ${formatScheduleMinutes(
+    meeting.end
+  )}`;
+
+const formatCourseId = (courseId: string) =>
+  courseId.length > 4
+    ? `${courseId.slice(0, 4)} ${courseId.slice(4)}`
+    : courseId;
+
+export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
+  const meetings = getMeetings(blocks);
+  const { endHour, startHour } = getHourRange(meetings);
+  const hours = Array.from(
+    { length: endHour - startHour + 1 },
+    (_, index) => startHour + index
+  );
+  const height = (endHour - startHour) * HOUR_HEIGHT;
+  const courseIds = Array.from(new Set(blocks.map((block) => block.courseId)));
+  const colorForCourse = (courseId: string) =>
+    COURSE_COLORS[courseIds.indexOf(courseId) % COURSE_COLORS.length];
+  const meetingDays = new Set(meetings.map((meeting) => meeting.day));
+  const days = DAYS.filter(
+    (day) => (day.code >= '2' && day.code <= '6') || meetingDays.has(day.code)
+  );
+  const gridTemplateColumns = `52px repeat(${days.length}, minmax(112px, 1fr))`;
+
+  if (meetings.length === 0) {
+    return (
+      <div
+        className={twMerge(
+          'flex min-h-64 items-center justify-center rounded-md bg-white/70 text-sm font-medium text-gray-500 ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:text-gray-400 dark:ring-neutral-800',
+          className
+        )}
+      >
+        No scheduled meeting times
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={twMerge(
+        'overflow-hidden rounded-md bg-white/80 ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800',
+        className
+      )}
+    >
+      <div className='overflow-x-auto'>
+        <div style={{ minWidth: 52 + days.length * 112 }}>
+          <div
+            className='grid border-b border-slate-200 text-xs font-medium text-gray-500 dark:border-neutral-800 dark:text-gray-400'
+            style={{ gridTemplateColumns }}
+          >
+            <div />
+            {days.map((day) => (
+              <div className='px-3 py-2 text-center' key={day.code}>
+                {day.label}
+              </div>
+            ))}
+          </div>
+          <div className='grid' style={{ gridTemplateColumns }}>
+            <div
+              className='relative border-r border-slate-200 dark:border-neutral-800'
+              style={{ height }}
+            >
+              {hours.slice(0, -1).map((hour) => (
+                <div
+                  className='absolute right-2 -translate-y-2 text-xs text-gray-400 dark:text-gray-500'
+                  key={hour}
+                  style={{ top: (hour - startHour) * HOUR_HEIGHT }}
+                >
+                  {formatScheduleMinutes(hour * 60)}
+                </div>
+              ))}
+            </div>
+            {days.map((day) => (
+              <div
+                className='relative border-r border-slate-100 last:border-r-0 dark:border-neutral-800'
+                key={day.code}
+                style={{ height }}
+              >
+                {hours.slice(0, -1).map((hour) => (
+                  <div
+                    className='absolute right-0 left-0 border-t border-slate-100 dark:border-neutral-800/80'
+                    key={hour}
+                    style={{ top: (hour - startHour) * HOUR_HEIGHT }}
+                  />
+                ))}
+                {meetings
+                  .filter((meeting) => meeting.day === day.code)
+                  .map((meeting) => {
+                    const top =
+                      ((meeting.start - startHour * 60) / 60) * HOUR_HEIGHT;
+                    const meetingHeight = Math.max(
+                      42,
+                      ((meeting.end - meeting.start) / 60) * HOUR_HEIGHT
+                    );
+                    const showDisplay = meetingHeight >= 50;
+                    const showTime = meetingHeight >= 56;
+                    const showLocation = meetingHeight >= 96;
+                    const title = [
+                      formatCourseId(meeting.block.courseId),
+                      meeting.block.display,
+                      formatMeetingTime(meeting),
+                      meeting.block.location,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ');
+
+                    return (
+                      <div
+                        className={twMerge(
+                          'absolute right-1 left-1 z-10 flex overflow-hidden rounded-md border px-2.5 py-1.5 text-xs shadow-sm',
+                          colorForCourse(meeting.block.courseId)
+                        )}
+                        key={`${meeting.block.courseId}-${meeting.block.display}-${meeting.block.crn}-${meeting.day}-${meeting.start}-${meeting.end}`}
+                        style={{ height: meetingHeight, top }}
+                        title={title}
+                      >
+                        <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-0.5'>
+                          <div className='truncate text-[11px] leading-4 font-semibold'>
+                            {formatCourseId(meeting.block.courseId)}
+                          </div>
+                          {showDisplay && (
+                            <div className='truncate text-[11px] leading-4 opacity-80'>
+                              {meeting.block.display || 'Section'}
+                            </div>
+                          )}
+                          {showTime && (
+                            <div className='truncate text-[10px] leading-3 font-medium opacity-75'>
+                              {formatMeetingTime(meeting)}
+                            </div>
+                          )}
+                          {showLocation && meeting.block.location && (
+                            <div className='truncate text-[10px] leading-3 opacity-70'>
+                              {meeting.block.location}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

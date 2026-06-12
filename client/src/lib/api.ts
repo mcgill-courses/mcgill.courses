@@ -272,11 +272,18 @@ export const api = {
   },
 
   async getCourseById(
-    id: string | undefined
+    id: string | undefined,
+    params?: {
+      withAverages?: boolean;
+      withReviews?: boolean;
+    }
   ): Promise<GetCourseByIdPayload | null> {
     return client.deserialize<GetCourseByIdPayload | null>(
       'GET',
-      `/courses/${id}?with_reviews=true&with_averages=true`
+      client.buildQuery(`/courses/${id}`, {
+        with_averages: params?.withAverages ?? true,
+        with_reviews: params?.withReviews ?? true,
+      })
     );
   },
 
