@@ -65,6 +65,41 @@ describe('schedule builder', () => {
     ]);
   });
 
+  test('builds schedules with pinned sections', () => {
+    const foo = course('FOOO100', [
+      block('Lec 001', '2', '540', '600'),
+      block('Lec 002', '2', '660', '720'),
+    ]);
+    const bar = course('BARR200', [block('Lec 001', '3', '540', '600')]);
+    const pinnedOption = getCourseScheduleOptions(foo, term)[1];
+
+    const build = buildScheduleResults([foo, bar], term, {
+      [foo._id]: pinnedOption.id,
+    });
+
+    expect(build.results).toHaveLength(1);
+    expect(build.results[0].options.map((option) => option.id)).toContain(
+      pinnedOption.id
+    );
+    expect(build.results[0].options.map((option) => option.label)).toEqual([
+      'Lec 002',
+      'Lec 001',
+    ]);
+  });
+
+  test('ignores unavailable pinned sections', () => {
+    const foo = course('FOOO100', [
+      block('Lec 001', '2', '540', '600'),
+      block('Lec 002', '2', '660', '720'),
+    ]);
+
+    const build = buildScheduleResults([foo], term, {
+      [foo._id]: 'foo',
+    });
+
+    expect(build.results).toHaveLength(2);
+  });
+
   test('reports courses without sections', () => {
     const foo = course('FOOO100', []);
 

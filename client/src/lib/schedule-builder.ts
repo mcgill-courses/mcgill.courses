@@ -37,6 +37,8 @@ export type ScheduleBuild = {
   truncated: boolean;
 };
 
+export type PinnedScheduleOptions = Record<string, string>;
+
 export type ScheduleConflict = {
   day: string;
   end: number;
@@ -340,12 +342,25 @@ export const getScheduleConflicts = (
 
 export const buildScheduleResults = (
   courses: Course[],
-  term: string
+  term: string,
+  pinnedOptions: PinnedScheduleOptions = {}
 ): ScheduleBuild => {
-  const courseOptions = courses.map((course) => ({
-    course,
-    options: getCourseScheduleOptions(course, term),
-  }));
+  const courseOptions = courses.map((course) => {
+    const options = getCourseScheduleOptions(course, term);
+    const pinnedOptionId = pinnedOptions[course._id];
+    const matchingPinnedOptions =
+      pinnedOptionId === undefined
+        ? []
+        : options.filter((option) => option.id === pinnedOptionId);
+
+    return {
+      course,
+      options:
+        pinnedOptionId === undefined || matchingPinnedOptions.length === 0
+          ? options
+          : matchingPinnedOptions,
+    };
+  });
 
   const missingCourses = courseOptions
     .filter(({ options }) => options.length === 0)

@@ -37,6 +37,8 @@ type Meeting = {
 type VisualScheduleProps = {
   blocks: BuilderBlock[];
   className?: string;
+  pinnedCourseIds?: readonly string[];
+  onBlockClick?: (block: BuilderBlock) => void;
 };
 
 const getMeetings = (blocks: BuilderBlock[]): Meeting[] =>
@@ -81,7 +83,12 @@ const formatCourseId = (courseId: string) =>
     ? `${courseId.slice(0, 4)} ${courseId.slice(4)}`
     : courseId;
 
-export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
+export const VisualSchedule = ({
+  blocks,
+  className,
+  pinnedCourseIds = [],
+  onBlockClick,
+}: VisualScheduleProps) => {
   const meetings = getMeetings(blocks);
   const { endHour, startHour } = getHourRange(meetings);
   const hours = Array.from(
@@ -90,6 +97,7 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
   );
   const height = (endHour - startHour) * HOUR_HEIGHT;
   const courseIds = Array.from(new Set(blocks.map((block) => block.courseId)));
+  const pinnedCourseIdSet = new Set(pinnedCourseIds);
   const colorForCourse = (courseId: string) =>
     COURSE_COLORS[courseIds.indexOf(courseId) % COURSE_COLORS.length];
   const meetingDays = new Set(meetings.map((meeting) => meeting.day));
@@ -204,6 +212,9 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
                       const showDisplay = meetingHeight >= 42;
                       const showTime = meetingHeight >= 48;
                       const showLocation = meetingHeight >= 78;
+                      const isPinned = pinnedCourseIdSet.has(
+                        meeting.block.courseId
+                      );
                       const title = [
                         formatCourseId(meeting.block.courseId),
                         meeting.block.display,
@@ -212,37 +223,63 @@ export const VisualSchedule = ({ blocks, className }: VisualScheduleProps) => {
                       ]
                         .filter(Boolean)
                         .join(' · ');
-
-                      return (
-                        <div
-                          className={twMerge(
-                            'absolute right-1 left-1 z-10 flex overflow-hidden rounded-sm border px-2 py-1 text-xs shadow-sm',
-                            colorForCourse(meeting.block.courseId)
-                          )}
-                          key={`${meeting.block.courseId}-${meeting.block.display}-${meeting.block.crn}-${meeting.day}-${meeting.start}-${meeting.end}`}
-                          style={{ height: meetingHeight, top }}
-                          title={title}
-                        >
-                          <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-center'>
+                      const blockClassName = twMerge(
+                        'absolute right-1 left-1 z-10 flex overflow-hidden rounded-sm border px-2 py-1 text-left text-xs shadow-sm',
+                        onBlockClick &&
+                          'cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-red-500',
+                        isPinned && 'ring-2 ring-gray-900 dark:ring-gray-100',
+                        colorForCourse(meeting.block.courseId)
+                      );
+                      const content = (
+                        <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-center'>
+                          <div className='flex min-w-0 flex-col gap-px sm:flex-row sm:items-baseline sm:justify-between sm:gap-1'>
                             <div className='truncate text-[10px] leading-3.5 font-semibold'>
                               {formatCourseId(meeting.block.courseId)}
                             </div>
                             {showDisplay && (
-                              <div className='truncate text-[10px] leading-3.5 opacity-80'>
+                              <div className='truncate text-[9px] leading-3 font-medium opacity-80 sm:text-right'>
                                 {meeting.block.display || 'Section'}
                               </div>
                             )}
-                            {showTime && (
-                              <div className='truncate text-[9px] leading-3 font-medium tabular-nums opacity-75'>
-                                {formatMeetingTime(meeting)}
-                              </div>
-                            )}
-                            {showLocation && meeting.block.location && (
-                              <div className='truncate text-[9px] leading-3 opacity-70'>
-                                {meeting.block.location}
-                              </div>
-                            )}
                           </div>
+                          {showTime && (
+                            <div className='truncate text-[9px] leading-3 font-medium tabular-nums opacity-75'>
+                              {formatMeetingTime(meeting)}
+                            </div>
+                          )}
+                          {showLocation && meeting.block.location && (
+                            <div className='truncate text-[9px] leading-3 opacity-70'>
+                              {meeting.block.location}
+                            </div>
+                          )}
+                        </div>
+                      );
+
+                      if (onBlockClick) {
+                        return (
+                          <button
+                            aria-label={`${isPinned ? 'Unpin' : 'Pin'} ${formatCourseId(meeting.block.courseId)} ${meeting.block.display || 'Section'}`}
+                            aria-pressed={isPinned}
+                            className={blockClassName}
+                            key={`${meeting.block.courseId}-${meeting.block.display}-${meeting.block.crn}-${meeting.day}-${meeting.start}-${meeting.end}`}
+                            onClick={() => onBlockClick(meeting.block)}
+                            style={{ height: meetingHeight, top }}
+                            title={title}
+                            type='button'
+                          >
+                            {content}
+                          </button>
+                        );
+                      }
+
+                      return (
+                        <div
+                          className={blockClassName}
+                          key={`${meeting.block.courseId}-${meeting.block.display}-${meeting.block.crn}-${meeting.day}-${meeting.start}-${meeting.end}`}
+                          style={{ height: meetingHeight, top }}
+                          title={title}
+                        >
+                          {content}
                         </div>
                       );
                     })}

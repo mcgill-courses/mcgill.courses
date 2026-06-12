@@ -1,6 +1,7 @@
 export const SCHEDULE_BUILDER_STORAGE_KEY = 'mcgill.courses.schedule-builder';
 
 export type StoredSchedule = {
+  pinnedOptions: Record<string, string>;
   selectedCourseIds: string[];
   selectedResultId?: string;
   selectedTerm: string;
@@ -36,6 +37,14 @@ export const readStoredSchedule = (
     if (!isRecord(value)) return undefined;
 
     return {
+      pinnedOptions: isRecord(value.pinnedOptions)
+        ? Object.fromEntries(
+            Object.entries(value.pinnedOptions).filter(
+              (entry): entry is [string, string] =>
+                typeof entry[0] === 'string' && typeof entry[1] === 'string'
+            )
+          )
+        : {},
       selectedCourseIds: Array.isArray(value.selectedCourseIds)
         ? value.selectedCourseIds.filter(
             (value): value is string => typeof value === 'string'

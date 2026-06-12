@@ -10,7 +10,9 @@ import { Layout } from '../components/layout';
 import { VisualSchedule } from '../components/visual-schedule';
 import { api } from '../lib/api';
 import {
+  type BuilderBlock,
   DAY_LABELS,
+  type PinnedScheduleOptions,
   buildScheduleResults,
   formatScheduleMinutes,
   getBlockMeetingLabels,
@@ -76,6 +78,9 @@ export const ScheduleBuilder = () => {
   const [selectedTerm, setSelectedTerm] = useState(
     () => storedSchedule?.selectedTerm ?? currentTerms[0]
   );
+  const [pinnedOptions, setPinnedOptions] = useState<PinnedScheduleOptions>(
+    () => storedSchedule?.pinnedOptions ?? {}
+  );
 
   const visibleSearchResults = useMemo(() => {
     const selectedCourseIds = new Set(
@@ -96,8 +101,8 @@ export const ScheduleBuilder = () => {
   }, [searchResults, selectedCourses, selectedTerm]);
 
   const build = useMemo(
-    () => buildScheduleResults(selectedCourses, selectedTerm),
-    [selectedCourses, selectedTerm]
+    () => buildScheduleResults(selectedCourses, selectedTerm, pinnedOptions),
+    [pinnedOptions, selectedCourses, selectedTerm]
   );
   const conflicts = useMemo(
     () => getScheduleConflicts(selectedCourses, selectedTerm),
@@ -105,6 +110,13 @@ export const ScheduleBuilder = () => {
   );
   const results = build.results;
   const result = results[resultIndex];
+  const pinnedCourseIds = useMemo(
+    () =>
+      result?.options
+        .filter((option) => pinnedOptions[option.courseId] === option.id)
+        .map((option) => option.courseId) ?? [],
+    [pinnedOptions, result]
+  );
 
   useEffect(() => {
     const selectedCourseIds = storedSchedule?.selectedCourseIds ?? [];
@@ -171,13 +183,38 @@ export const ScheduleBuilder = () => {
     if (!restoredSchedule) return;
 
     const schedule: StoredSchedule = {
+      pinnedOptions,
       selectedCourseIds: selectedCourses.map((course) => course._id),
       selectedResultId,
       selectedTerm,
     };
 
     writeStoredSchedule(schedule);
-  }, [restoredSchedule, selectedCourses, selectedResultId, selectedTerm]);
+  }, [
+    pinnedOptions,
+    restoredSchedule,
+    selectedCourses,
+    selectedResultId,
+    selectedTerm,
+  ]);
+
+  useEffect(() => {
+    if (!restoredSchedule) return;
+
+    const selectedCourseIds = new Set(
+      selectedCourses.map((course) => course._id)
+    );
+
+    setPinnedOptions((previous) => {
+      const entries = Object.entries(previous).filter(([courseId]) =>
+        selectedCourseIds.has(courseId)
+      );
+
+      if (entries.length === Object.keys(previous).length) return previous;
+
+      return Object.fromEntries(entries);
+    });
+  }, [restoredSchedule, selectedCourses]);
 
   const addCourse = async (course: CourseData) => {
     if (selectedCourses.some((selected) => selected._id === course._id)) {
@@ -234,10 +271,16 @@ export const ScheduleBuilder = () => {
     setSelectedCourses((previous) =>
       previous.filter((course) => course._id !== courseId)
     );
+    setPinnedOptions((previous) => {
+      const next = { ...previous };
+      delete next[courseId];
+      return next;
+    });
   };
 
   const reset = () => {
     resetSearch();
+    setPinnedOptions({});
     setResultIndex(0);
     setSelectedCourses([]);
     setSelectedResultId(undefined);
@@ -253,6 +296,28 @@ export const ScheduleBuilder = () => {
 
     setResultIndex(indexWithinResults);
     setSelectedResultId(result.id);
+  };
+
+  const togglePinnedBlock = (block: BuilderBlock) => {
+    if (!result) return;
+
+    const option = result.options.find(
+      (option) => option.courseId === block.courseId
+    );
+
+    if (!option) return;
+
+    setPinnedOptions((previous) => {
+      const next = { ...previous };
+
+      if (next[option.courseId] === option.id) {
+        delete next[option.courseId];
+      } else {
+        next[option.courseId] = option.id;
+      }
+
+      return next;
+    });
   };
 
   return (
@@ -310,7 +375,13 @@ export const ScheduleBuilder = () => {
                         : 'text-gray-600 hover:bg-white hover:text-gray-950 dark:text-gray-400 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
                     )}
                     key={term}
-                    onClick={() => setSelectedTerm(term)}
+                    onClick={() => {
+                      if (term !== selectedTerm) {
+                        setPinnedOptions({});
+                      }
+
+                      setSelectedTerm(term);
+                    }}
                     type='button'
                   >
                     {term}
@@ -356,6 +427,12 @@ export const ScheduleBuilder = () => {
                       course,
                       selectedTerm
                     );
+                    const selectedOption = result?.options.find(
+                      (option) => option.courseId === course._id
+                    );
+                    const pinned =
+                      selectedOption !== undefined &&
+                      pinnedOptions[course._id] === selectedOption.id;
 
                     return (
                       <div
@@ -370,9 +447,42 @@ export const ScheduleBuilder = () => {
                             <div className='truncate text-xs text-gray-500 dark:text-gray-400'>
                               {course.title}
                             </div>
-                            <div className='mt-2 text-xs font-medium text-gray-500 dark:text-gray-400'>
-                              {formatOptionCount(options.length)}
-                            </div>
+                            {selectedOption ? (
+                              <div className='mt-2 space-y-1'>
+                                <div className='flex flex-wrap items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-300'>
+                                  <span>{selectedOption.label}</span>
+                                  {pinned && (
+                                    <span className='rounded-sm bg-gray-900 px-1.5 py-0.5 text-[10px] text-white dark:bg-gray-100 dark:text-neutral-950'>
+                                      Pinned
+                                    </span>
+                                  )}
+                                </div>
+                                {selectedOption.blocks.flatMap((block) =>
+                                  getBlockMeetingLabels(block).map((label) => (
+                                    <div
+                                      className='truncate text-[11px] text-gray-500 dark:text-gray-400'
+                                      key={`${block.crn}-${label}`}
+                                    >
+                                      {label}
+                                    </div>
+                                  ))
+                                )}
+                                <div className='truncate text-[11px] text-gray-500 dark:text-gray-400'>
+                                  {selectedOption.blocks
+                                    .map(
+                                      (block) =>
+                                        block.location ||
+                                        block.campus ||
+                                        'Location TBA'
+                                    )
+                                    .join(' / ')}
+                                </div>
+                              </div>
+                            ) : (
+                              <div className='mt-2 text-xs font-medium text-gray-500 dark:text-gray-400'>
+                                {formatOptionCount(options.length)}
+                              </div>
+                            )}
                           </div>
                           <button
                             aria-label={`Remove ${course._id}`}
@@ -451,41 +561,11 @@ export const ScheduleBuilder = () => {
               </div>
             ) : result ? (
               <div className='space-y-3'>
-                <VisualSchedule blocks={result.blocks} />
-                <div className='overflow-hidden rounded-md bg-white/70 shadow-sm ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800'>
-                  <div className='divide-y divide-slate-100 dark:divide-neutral-800'>
-                    {result.blocks.map((block) => (
-                      <div
-                        className='grid gap-x-4 gap-y-1.5 px-3 py-2 text-xs transition-colors duration-150 hover:bg-slate-50/80 md:grid-cols-[104px_minmax(0,1fr)_minmax(168px,auto)] md:items-center dark:hover:bg-neutral-800/50'
-                        key={`${block.courseId}-${block.display}-${block.crn}`}
-                      >
-                        <div className='min-w-0'>
-                          <div className='font-semibold text-gray-950 dark:text-gray-100'>
-                            {block.courseId}
-                          </div>
-                          <div className='text-xs text-gray-500 dark:text-gray-400'>
-                            {block.display || 'Section'}
-                          </div>
-                        </div>
-                        <div className='flex flex-wrap gap-1.5'>
-                          {getBlockMeetingLabels(block).map((label) => (
-                            <span
-                              className='rounded-sm bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-gray-600 transition-colors dark:bg-neutral-800 dark:text-gray-300'
-                              key={label}
-                            >
-                              {label}
-                            </span>
-                          ))}
-                        </div>
-                        <div className='text-[11px] text-gray-500 md:text-right dark:text-gray-400'>
-                          {block.location || block.campus || 'Location TBA'}
-                          {' · '}
-                          {block.crn ? `CRN ${block.crn}` : 'CRN unavailable'}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <VisualSchedule
+                  blocks={result.blocks}
+                  onBlockClick={togglePinnedBlock}
+                  pinnedCourseIds={pinnedCourseIds}
+                />
               </div>
             ) : conflicts.length > 0 ? (
               <div className='overflow-hidden rounded-md bg-white/70 shadow-sm ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800'>
