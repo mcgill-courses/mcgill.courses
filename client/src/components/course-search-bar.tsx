@@ -1,5 +1,6 @@
+import { m } from 'framer-motion';
 import { Layers, User } from 'lucide-react';
-import { RefObject, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,7 +18,7 @@ type SearchResultProps = {
   text: string;
   type: SearchResultType;
   url?: string;
-  onClick?: () => void;
+  onClick?: () => void | Promise<void>;
 };
 
 const highlightResultStyle =
@@ -62,14 +63,26 @@ const SearchResult = ({
 
   if (!url) {
     return (
-      <button className='w-full cursor-pointer' onClick={onClick} type='button'>
+      <button
+        className='w-full cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-red-500'
+        onClick={() => {
+          void onClick?.();
+        }}
+        type='button'
+      >
         {content}
       </button>
     );
   }
 
   return (
-    <Link to={url} className='cursor-pointer' onClick={onClick}>
+    <Link
+      to={url}
+      className='cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-red-500'
+      onClick={() => {
+        void onClick?.();
+      }}
+    >
       {content}
     </Link>
   );
@@ -103,7 +116,9 @@ type CourseSearchBarProps = {
   handleInputChange: (query: string) => void;
   inputRef?: RefObject<HTMLInputElement | null>;
   inputClassName?: string;
-  onCourseSelect?: (course: CourseData) => void | Promise<void>;
+  onCourseSelect?: (
+    course: CourseData
+  ) => boolean | void | Promise<boolean | void>;
   onResultClick?: () => void;
   placeholder?: string;
   showFocusBorder?: boolean;
@@ -133,20 +148,35 @@ export const CourseSearchBar = ({
   const showEmptyState =
     Boolean(results.query?.trim()) && length === 0 && !showExploreButton;
 
+  useEffect(() => {
+    if (length === 0) {
+      setSelectedIndex(0);
+      return;
+    }
+
+    setSelectedIndex((index) => Math.min(index, length - 1));
+  }, [length]);
+
   const resetSelection = (query: string) => {
     setSelectedIndex(0);
     handleInputChange(query);
   };
 
-  const selectCourse = (course: CourseData) => {
+  const selectCourse = async (course: CourseData) => {
     if (onCourseSelect) {
-      onCourseSelect(course);
+      const selected = await onCourseSelect(course);
+
+      if (selected === false) {
+        return false;
+      }
+
       onResultClick?.();
-      return;
+      return true;
     }
 
     navigate(`/course/${courseIdToUrlParam(course._id)}`);
     onResultClick?.();
+    return true;
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -164,20 +194,25 @@ export const CourseSearchBar = ({
 
     if (selectedIndex > -1 && event.key === 'Enter' && length !== 0) {
       event.preventDefault();
+      const input = event.currentTarget;
 
       if (selectedIndex < results.courses.length) {
-        selectCourse(results.courses[selectedIndex]);
+        void selectCourse(results.courses[selectedIndex]).then((selected) => {
+          if (selected && onResultClick) {
+            input.blur();
+          }
+        });
       } else {
-        navigate(
-          `/instructor/${encodeURIComponent(
-            instructors[selectedIndex - results.courses.length]
-          )}`
-        );
-        onResultClick?.();
-      }
+        const instructor = instructors[selectedIndex - results.courses.length];
 
-      if (onResultClick) {
-        event.currentTarget.blur();
+        if (!instructor) return;
+
+        navigate(`/instructor/${encodeURIComponent(instructor)}`);
+        onResultClick?.();
+
+        if (onResultClick) {
+          input.blur();
+        }
       }
     }
   };
@@ -200,7 +235,12 @@ export const CourseSearchBar = ({
       />
       {searchSelected &&
         (length > 0 || showExploreButton || showEmptyState) && (
-          <div className='absolute top-full z-50 w-full overflow-hidden bg-white shadow-md dark:bg-neutral-800'>
+          <m.div
+            animate={{ opacity: 1, y: 0 }}
+            className='absolute top-full z-50 w-full overflow-hidden bg-white shadow-md dark:bg-neutral-800'
+            initial={{ opacity: 0, y: -3 }}
+            transition={{ duration: 0.12, ease: 'easeOut' }}
+          >
             {results.courses.map((result, index) => (
               <SearchResult
                 index={index}
@@ -215,7 +255,11 @@ export const CourseSearchBar = ({
                 }
                 key={result._id}
                 onClick={
-                  onCourseSelect ? () => selectCourse(result) : onResultClick
+                  onCourseSelect
+                    ? async () => {
+                        await selectCourse(result);
+                      }
+                    : onResultClick
                 }
               />
             ))}
@@ -237,7 +281,7 @@ export const CourseSearchBar = ({
               </div>
             )}
             {showExploreButton && <ExploreButton />}
-          </div>
+          </m.div>
         )}
     </div>
   );

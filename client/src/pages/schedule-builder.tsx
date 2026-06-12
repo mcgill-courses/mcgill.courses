@@ -1,3 +1,4 @@
+import { AnimatePresence, m } from 'framer-motion';
 import { ArrowLeft, ArrowRight, RotateCcw, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -52,6 +53,16 @@ const formatDayCount = (count: number) =>
 const formatOptionCount = (count: number) =>
   count === 1 ? '1 section' : `${count} sections`;
 
+const quickTransition = { duration: 0.16, ease: 'easeOut' } as const;
+
+const stateTransition = { duration: 0.2, ease: 'easeOut' } as const;
+
+const stateMotion = {
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -4 },
+  initial: { opacity: 0, y: 6 },
+} as const;
+
 export const ScheduleBuilder = () => {
   const currentTerms = useMemo(() => getCurrentTerms(), []);
   const storedSchedule = useMemo(
@@ -84,11 +95,13 @@ export const ScheduleBuilder = () => {
 
     return {
       query: searchResults.query,
-      courses: searchResults.courses.filter(
-        (course) =>
-          !selectedCourseIds.has(course._id) &&
-          courseTermsById[course._id]?.includes(selectedTerm)
-      ),
+      courses: searchResults.courses
+        .filter(
+          (course) =>
+            !selectedCourseIds.has(course._id) &&
+            courseTermsById[course._id]?.includes(selectedTerm)
+        )
+        .slice(0, 6),
       instructors: [],
     };
   }, [searchResults, selectedCourses, selectedTerm]);
@@ -178,7 +191,9 @@ export const ScheduleBuilder = () => {
   }, [restoredSchedule, selectedCourses, selectedResultId, selectedTerm]);
 
   const addCourse = async (course: CourseData) => {
-    if (selectedCourses.some((selected) => selected._id === course._id)) return;
+    if (selectedCourses.some((selected) => selected._id === course._id)) {
+      return false;
+    }
 
     setLoadingCourseId(course._id);
 
@@ -190,12 +205,14 @@ export const ScheduleBuilder = () => {
 
       if (payload === null) {
         toast.error('Course could not be found');
-        return;
+        return false;
       }
 
       setSelectedCourses((previous) => [...previous, payload.course]);
+      return true;
     } catch {
       toast.error('Failed to fetch course schedule');
+      return false;
     } finally {
       setLoadingCourseId(null);
     }
@@ -208,7 +225,12 @@ export const ScheduleBuilder = () => {
       instructors,
       coursesIndex,
       instructorsIndex,
-      setSearchResults
+      setSearchResults,
+      {
+        courseLimit: 150,
+        courseSearchLimit: 250,
+        instructorLimit: 0,
+      }
     );
   };
 
@@ -261,14 +283,20 @@ export const ScheduleBuilder = () => {
               Schedule Builder
             </h1>
             <div className='mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400'>
-              <span>{formatCourseCount(selectedCourses.length)}</span>
-              <span>{selectedTerm}</span>
-              <span>{formatResultCount(results.length, build.truncated)}</span>
+              <span className='rounded-full bg-white/70 px-2 py-0.5 ring-1 ring-slate-200 transition-colors dark:bg-neutral-900/50 dark:ring-neutral-800'>
+                {formatCourseCount(selectedCourses.length)}
+              </span>
+              <span className='rounded-full bg-white/70 px-2 py-0.5 ring-1 ring-slate-200 transition-colors dark:bg-neutral-900/50 dark:ring-neutral-800'>
+                {selectedTerm}
+              </span>
+              <span className='rounded-full bg-white/70 px-2 py-0.5 ring-1 ring-slate-200 transition-colors dark:bg-neutral-900/50 dark:ring-neutral-800'>
+                {formatResultCount(results.length, build.truncated)}
+              </span>
             </div>
           </div>
           <button
             aria-label='Start over'
-            className='inline-flex size-9 items-center justify-center rounded-md text-gray-500 ring-1 ring-slate-200 transition hover:bg-white hover:text-gray-900 dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
+            className='inline-flex size-9 cursor-pointer items-center justify-center rounded-md text-gray-500 ring-1 ring-slate-200 transition-all duration-150 hover:-translate-y-px hover:bg-white hover:text-gray-900 hover:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 active:translate-y-0 active:scale-95 dark:text-gray-400 dark:ring-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
             onClick={reset}
             title='Start over'
             type='button'
@@ -287,10 +315,10 @@ export const ScheduleBuilder = () => {
                 {currentTerms.map((term) => (
                   <button
                     className={twMerge(
-                      'rounded-md px-3 py-2 text-left text-sm font-medium transition',
+                      'cursor-pointer rounded-md px-3 py-2 text-left text-sm font-medium transition-all duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 active:scale-[0.98]',
                       selectedTerm === term
-                        ? 'bg-gray-950 text-white dark:bg-gray-100 dark:text-neutral-950'
-                        : 'text-gray-600 hover:bg-white hover:text-gray-950 dark:text-gray-400 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
+                        ? 'bg-gray-950 text-white shadow-sm dark:bg-gray-100 dark:text-neutral-950'
+                        : 'text-gray-600 hover:-translate-y-px hover:bg-white hover:text-gray-950 hover:shadow-sm dark:text-gray-400 dark:hover:bg-neutral-800 dark:hover:text-gray-100'
                     )}
                     key={term}
                     onClick={() => setSelectedTerm(term)}
@@ -310,9 +338,9 @@ export const ScheduleBuilder = () => {
                 handleInputChange={handleInputChange}
                 inputClassName='lg:min-w-0'
                 onCourseSelect={(course) => {
-                  if (loadingCourseId !== null) return;
+                  if (loadingCourseId !== null) return false;
 
-                  addCourse(course);
+                  return addCourse(course);
                 }}
                 onResultClick={resetSearch}
                 placeholder='Search courses'
@@ -332,47 +360,73 @@ export const ScheduleBuilder = () => {
                   {selectedCourses.length}
                 </div>
               </div>
-              {selectedCourses.length > 0 ? (
-                <div className='divide-y divide-slate-200 overflow-hidden rounded-md bg-white/70 ring-1 ring-slate-200 dark:divide-neutral-800 dark:bg-neutral-900/40 dark:ring-neutral-800'>
-                  {selectedCourses.map((course) => {
-                    const options = getCourseScheduleOptions(
-                      course,
-                      selectedTerm
-                    );
+              <AnimatePresence mode='wait' initial={false}>
+                {selectedCourses.length > 0 ? (
+                  <m.div
+                    className='divide-y divide-slate-200 overflow-hidden rounded-md bg-white/70 shadow-sm ring-1 ring-slate-200 dark:divide-neutral-800 dark:bg-neutral-900/40 dark:ring-neutral-800'
+                    key='courses-populated'
+                    initial={stateMotion.initial}
+                    animate={stateMotion.animate}
+                    exit={stateMotion.exit}
+                    transition={stateTransition}
+                  >
+                    <AnimatePresence initial={false}>
+                      {selectedCourses.map((course) => {
+                        const options = getCourseScheduleOptions(
+                          course,
+                          selectedTerm
+                        );
 
-                    return (
-                      <div className='p-3' key={course._id}>
-                        <div className='flex items-start justify-between gap-3'>
-                          <div className='min-w-0'>
-                            <div className='truncate text-sm font-semibold text-gray-950 dark:text-gray-100'>
-                              {spliceCourseCode(course._id, ' ')}
-                            </div>
-                            <div className='truncate text-xs text-gray-500 dark:text-gray-400'>
-                              {course.title}
-                            </div>
-                            <div className='mt-2 text-xs font-medium text-gray-500 dark:text-gray-400'>
-                              {formatOptionCount(options.length)}
-                            </div>
-                          </div>
-                          <button
-                            aria-label={`Remove ${course._id}`}
-                            className='rounded-md p-1.5 text-gray-400 transition hover:bg-slate-100 hover:text-red-600 dark:hover:bg-neutral-800 dark:hover:text-red-300'
-                            onClick={() => removeCourse(course._id)}
-                            title={`Remove ${course._id}`}
-                            type='button'
+                        return (
+                          <m.div
+                            className='group p-3 transition-colors duration-150 hover:bg-white dark:hover:bg-neutral-900/60'
+                            key={course._id}
+                            layout
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, x: -8 }}
+                            transition={quickTransition}
                           >
-                            <Trash2 className='size-4' />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className='border-t border-slate-200 py-4 text-sm text-gray-500 dark:border-neutral-800 dark:text-gray-400'>
-                  No courses selected
-                </div>
-              )}
+                            <div className='flex items-start justify-between gap-3'>
+                              <div className='min-w-0'>
+                                <div className='truncate text-sm font-semibold text-gray-950 transition-colors group-hover:text-red-700 dark:text-gray-100 dark:group-hover:text-red-300'>
+                                  {spliceCourseCode(course._id, ' ')}
+                                </div>
+                                <div className='truncate text-xs text-gray-500 dark:text-gray-400'>
+                                  {course.title}
+                                </div>
+                                <div className='mt-2 text-xs font-medium text-gray-500 dark:text-gray-400'>
+                                  {formatOptionCount(options.length)}
+                                </div>
+                              </div>
+                              <button
+                                aria-label={`Remove ${course._id}`}
+                                className='cursor-pointer rounded-md p-1.5 text-gray-400 transition-all duration-150 hover:bg-slate-100 hover:text-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 active:scale-95 dark:hover:bg-neutral-800 dark:hover:text-red-300'
+                                onClick={() => removeCourse(course._id)}
+                                title={`Remove ${course._id}`}
+                                type='button'
+                              >
+                                <Trash2 className='size-4' />
+                              </button>
+                            </div>
+                          </m.div>
+                        );
+                      })}
+                    </AnimatePresence>
+                  </m.div>
+                ) : (
+                  <m.div
+                    className='border-t border-slate-200 py-4 text-sm text-gray-500 dark:border-neutral-800 dark:text-gray-400'
+                    key='courses-empty'
+                    initial={stateMotion.initial}
+                    animate={stateMotion.animate}
+                    exit={stateMotion.exit}
+                    transition={stateTransition}
+                  >
+                    No courses selected
+                  </m.div>
+                )}
+              </AnimatePresence>
             </div>
           </section>
 
@@ -390,9 +444,10 @@ export const ScheduleBuilder = () => {
                   </span>
                 )}
               </div>
-              <div className='flex items-center overflow-hidden rounded-md bg-white ring-1 ring-slate-200 dark:bg-neutral-800 dark:ring-neutral-700'>
+              <div className='flex items-center overflow-hidden rounded-md bg-white shadow-sm ring-1 ring-slate-200 dark:bg-neutral-800 dark:ring-neutral-700'>
                 <button
-                  className='inline-flex size-9 items-center justify-center text-gray-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-gray-300 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
+                  aria-label='Previous schedule'
+                  className='inline-flex size-9 cursor-pointer items-center justify-center text-gray-700 transition-all duration-150 hover:bg-slate-50 active:scale-95 disabled:cursor-not-allowed disabled:text-gray-300 disabled:active:scale-100 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
                   disabled={results.length === 0}
                   onClick={() => selectResultIndex(resultIndex - 1)}
                   title='Previous schedule'
@@ -400,11 +455,15 @@ export const ScheduleBuilder = () => {
                 >
                   <ArrowLeft className='size-4' />
                 </button>
-                <div className='min-w-20 border-x border-slate-200 px-3 py-2 text-center text-sm font-medium text-gray-700 dark:border-neutral-700 dark:text-gray-200'>
+                <div
+                  aria-live='polite'
+                  className='min-w-20 border-x border-slate-200 px-3 py-2 text-center text-sm font-medium text-gray-700 transition-colors dark:border-neutral-700 dark:text-gray-200'
+                >
                   {results.length > 0 ? resultIndex + 1 : 0} / {results.length}
                 </div>
                 <button
-                  className='inline-flex size-9 items-center justify-center text-gray-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-gray-300 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
+                  aria-label='Next schedule'
+                  className='inline-flex size-9 cursor-pointer items-center justify-center text-gray-700 transition-all duration-150 hover:bg-slate-50 active:scale-95 disabled:cursor-not-allowed disabled:text-gray-300 disabled:active:scale-100 dark:text-gray-200 dark:hover:bg-neutral-700 dark:disabled:text-gray-600'
                   disabled={results.length === 0}
                   onClick={() => selectResultIndex(resultIndex + 1)}
                   title='Next schedule'
@@ -416,22 +475,22 @@ export const ScheduleBuilder = () => {
             </div>
 
             {selectedCourses.length === 0 ? (
-              <div className='flex min-h-[520px] items-center justify-center rounded-md border border-dashed border-slate-300 bg-white/60 text-sm font-medium text-gray-500 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-gray-400'>
+              <div className='flex min-h-[520px] items-center justify-center rounded-md border border-dashed border-slate-300 bg-white/60 text-sm font-medium text-gray-500 shadow-sm transition-colors duration-200 dark:border-neutral-800 dark:bg-neutral-900/40 dark:text-gray-400'>
                 No courses selected
               </div>
             ) : build.missingCourses.length > 0 ? (
-              <div className='rounded-md border-l-2 border-amber-400 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 dark:bg-amber-950/40 dark:text-amber-100'>
+              <div className='rounded-md border-l-2 border-amber-400 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 shadow-sm ring-1 ring-amber-100 dark:bg-amber-950/40 dark:text-amber-100 dark:ring-amber-900/40'>
                 No sections in {selectedTerm}:{' '}
                 {build.missingCourses.map((course) => course._id).join(', ')}
               </div>
             ) : result ? (
               <div className='space-y-3'>
-                <VisualSchedule blocks={result.blocks} />
-                <div className='overflow-hidden rounded-md bg-white/70 ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800'>
+                <VisualSchedule blocks={result.blocks} className='shadow-sm' />
+                <div className='overflow-hidden rounded-md bg-white/70 shadow-sm ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800'>
                   <div className='divide-y divide-slate-100 dark:divide-neutral-800'>
                     {result.blocks.map((block) => (
                       <div
-                        className='grid gap-x-4 gap-y-1.5 px-3 py-2 text-xs md:grid-cols-[104px_minmax(0,1fr)_minmax(168px,auto)] md:items-center'
+                        className='grid gap-x-4 gap-y-1.5 px-3 py-2 text-xs transition-colors duration-150 hover:bg-slate-50/80 md:grid-cols-[104px_minmax(0,1fr)_minmax(168px,auto)] md:items-center dark:hover:bg-neutral-800/50'
                         key={`${block.courseId}-${block.display}-${block.crn}`}
                       >
                         <div className='min-w-0'>
@@ -445,7 +504,7 @@ export const ScheduleBuilder = () => {
                         <div className='flex flex-wrap gap-1.5'>
                           {getBlockMeetingLabels(block).map((label) => (
                             <span
-                              className='rounded-sm bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-gray-600 dark:bg-neutral-800 dark:text-gray-300'
+                              className='rounded-sm bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-gray-600 transition-colors dark:bg-neutral-800 dark:text-gray-300'
                               key={label}
                             >
                               {label}
@@ -463,7 +522,7 @@ export const ScheduleBuilder = () => {
                 </div>
               </div>
             ) : conflicts.length > 0 ? (
-              <div className='overflow-hidden rounded-md bg-white/70 ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800'>
+              <div className='overflow-hidden rounded-md bg-white/70 shadow-sm ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:ring-neutral-800'>
                 <div className='border-b border-slate-100 px-4 py-3 dark:border-neutral-800'>
                   <div className='text-sm font-semibold text-gray-950 dark:text-gray-100'>
                     No non-conflicting schedules found
@@ -487,7 +546,7 @@ export const ScheduleBuilder = () => {
 
                     return (
                       <div
-                        className='grid gap-2 px-4 py-3 text-sm md:grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] md:items-center'
+                        className='grid gap-2 px-4 py-3 text-sm transition-colors duration-150 hover:bg-slate-50/80 md:grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] md:items-center dark:hover:bg-neutral-800/50'
                         key={`${left}-${right}-${conflict.day}-${conflict.start}-${conflict.end}`}
                       >
                         <div className='min-w-0'>
@@ -500,7 +559,7 @@ export const ScheduleBuilder = () => {
                               'Location TBA'}
                           </div>
                         </div>
-                        <div className='rounded-sm bg-amber-50 px-2 py-1 text-center text-xs font-medium text-amber-900 dark:bg-amber-950/40 dark:text-amber-100'>
+                        <div className='rounded-sm bg-amber-50 px-2 py-1 text-center text-xs font-medium text-amber-900 ring-1 ring-amber-200/70 dark:bg-amber-950/40 dark:text-amber-100 dark:ring-amber-900/60'>
                           {time}
                         </div>
                         <div className='min-w-0 md:text-right'>
@@ -525,7 +584,7 @@ export const ScheduleBuilder = () => {
                 )}
               </div>
             ) : (
-              <div className='flex min-h-[520px] items-center justify-center rounded-md bg-white/70 p-6 text-center text-sm font-medium text-gray-500 ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:text-gray-400 dark:ring-neutral-800'>
+              <div className='flex min-h-[520px] items-center justify-center rounded-md bg-white/70 p-6 text-center text-sm font-medium text-gray-500 shadow-sm ring-1 ring-slate-200 dark:bg-neutral-900/40 dark:text-gray-400 dark:ring-neutral-800'>
                 No non-conflicting schedules found
               </div>
             )}
