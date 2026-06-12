@@ -1,6 +1,7 @@
 const SCHEDULE_BUILDER_STORAGE_KEY = 'mcgill.courses.schedule-builder';
 
 export type StoredSchedule = {
+  allowConflicts: boolean;
   pinnedOptions: Record<string, string>;
   selectedCourseIds: string[];
   selectedResultId?: string;
@@ -37,6 +38,10 @@ export const readStoredSchedule = (
     if (!isRecord(value)) return undefined;
 
     return {
+      allowConflicts:
+        typeof value.allowConflicts === 'boolean'
+          ? value.allowConflicts
+          : false,
       pinnedOptions: isRecord(value.pinnedOptions)
         ? Object.fromEntries(
             Object.entries(value.pinnedOptions).filter(

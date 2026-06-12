@@ -74,7 +74,9 @@ describe('schedule builder', () => {
     const pinnedOption = getCourseScheduleOptions(foo, term)[1];
 
     const build = buildScheduleResults([foo, bar], term, {
-      [foo._id]: pinnedOption.id,
+      pinnedOptions: {
+        [foo._id]: pinnedOption.id,
+      },
     });
 
     expect(build.results).toHaveLength(1);
@@ -94,10 +96,27 @@ describe('schedule builder', () => {
     ]);
 
     const build = buildScheduleResults([foo], term, {
-      [foo._id]: 'foo',
+      pinnedOptions: {
+        [foo._id]: 'foo',
+      },
     });
 
     expect(build.results).toHaveLength(2);
+  });
+
+  test('builds schedules with conflicts when allowed', () => {
+    const foo = course('FOOO100', [block('Lec 001', '2', '540', '600')]);
+    const bar = course('BARR200', [block('Lec 001', '2', '540', '600')]);
+
+    const build = buildScheduleResults([foo, bar], term, {
+      allowConflicts: true,
+    });
+
+    expect(build.results).toHaveLength(1);
+    expect(build.results[0].options.map((option) => option.label)).toEqual([
+      'Lec 001',
+      'Lec 001',
+    ]);
   });
 
   test('reports courses without sections', () => {

@@ -38,6 +38,11 @@ export type ScheduleBuild = {
 
 export type PinnedScheduleOptions = Record<string, string>;
 
+type ScheduleBuildOptions = {
+  allowConflicts?: boolean;
+  pinnedOptions?: PinnedScheduleOptions;
+};
+
 export type ScheduleConflict = {
   day: string;
   end: number;
@@ -331,8 +336,9 @@ export const getScheduleConflicts = (
 export const buildScheduleResults = (
   courses: Course[],
   term: string,
-  pinnedOptions: PinnedScheduleOptions = {}
+  options: ScheduleBuildOptions = {}
 ): ScheduleBuild => {
+  const { allowConflicts = false, pinnedOptions = {} } = options;
   const courseOptions = courses.map((course) => {
     const options = getCourseScheduleOptions(course, term);
     const pinnedOptionId = pinnedOptions[course._id];
@@ -386,7 +392,7 @@ export const buildScheduleResults = (
         return;
       }
 
-      if (blockConflicts(blocks, option.blocks)) return;
+      if (!allowConflicts && blockConflicts(blocks, option.blocks)) return;
 
       visit(index + 1, [...selected, option], [...blocks, ...option.blocks]);
     });

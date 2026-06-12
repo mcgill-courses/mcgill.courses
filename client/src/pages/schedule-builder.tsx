@@ -71,6 +71,9 @@ export const ScheduleBuilder = () => {
   const [pinnedOptions, setPinnedOptions] = useState<PinnedScheduleOptions>(
     () => storedSchedule?.pinnedOptions ?? {}
   );
+  const [allowConflicts, setAllowConflicts] = useState(
+    () => storedSchedule?.allowConflicts ?? false
+  );
 
   const visibleSearchResults = useMemo(() => {
     const selectedCourseIds = new Set(
@@ -91,8 +94,12 @@ export const ScheduleBuilder = () => {
   }, [searchResults, selectedCourses, selectedTerm]);
 
   const build = useMemo(
-    () => buildScheduleResults(selectedCourses, selectedTerm, pinnedOptions),
-    [pinnedOptions, selectedCourses, selectedTerm]
+    () =>
+      buildScheduleResults(selectedCourses, selectedTerm, {
+        allowConflicts,
+        pinnedOptions,
+      }),
+    [allowConflicts, pinnedOptions, selectedCourses, selectedTerm]
   );
   const conflicts = useMemo(
     () => getScheduleConflicts(selectedCourses, selectedTerm),
@@ -179,6 +186,7 @@ export const ScheduleBuilder = () => {
     if (!restoredSchedule) return;
 
     const schedule: StoredSchedule = {
+      allowConflicts,
       pinnedOptions,
       selectedCourseIds: selectedCourses.map((course) => course._id),
       selectedResultId,
@@ -187,6 +195,7 @@ export const ScheduleBuilder = () => {
 
     writeStoredSchedule(schedule);
   }, [
+    allowConflicts,
     pinnedOptions,
     restoredSchedule,
     selectedCourses,
@@ -276,6 +285,7 @@ export const ScheduleBuilder = () => {
 
   const reset = () => {
     resetSearch();
+    setAllowConflicts(false);
     setPinnedOptions({});
     setResultIndex(0);
     setSelectedCourses([]);
@@ -388,6 +398,21 @@ export const ScheduleBuilder = () => {
                   </button>
                 ))}
               </div>
+            </div>
+
+            <div>
+              <div className='mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400'>
+                Options
+              </div>
+              <label className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-white hover:text-gray-950 dark:text-gray-400 dark:hover:bg-neutral-800 dark:hover:text-gray-100'>
+                <input
+                  checked={allowConflicts}
+                  className='size-4 cursor-pointer rounded border-slate-300 text-red-600 focus:ring-red-500 dark:border-neutral-700 dark:bg-neutral-900'
+                  onChange={(event) => setAllowConflicts(event.target.checked)}
+                  type='checkbox'
+                />
+                <span>Allow time conflicts</span>
+              </label>
             </div>
 
             <div>
