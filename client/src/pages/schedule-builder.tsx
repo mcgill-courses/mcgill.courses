@@ -571,7 +571,7 @@ export const ScheduleBuilder = () => {
                 No courses selected
               </div>
             ) : build.missingCourses.length > 0 ? (
-              <div className='rounded-md border-l-2 border-amber-400 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 shadow-sm ring-1 ring-amber-100 dark:bg-amber-950/40 dark:text-amber-100 dark:ring-amber-900/40'>
+              <div className='rounded-md bg-amber-50/80 px-4 py-3 text-sm text-amber-900 shadow-sm ring-1 ring-amber-100 dark:bg-amber-950/40 dark:text-amber-100 dark:ring-amber-900/40'>
                 No sections in {selectedTerm}:{' '}
                 {build.missingCourses.map((course) => course._id).join(', ')}
               </div>
@@ -607,7 +607,7 @@ export const ScheduleBuilder = () => {
 
                     return (
                       <div
-                        className='grid gap-2 px-4 py-3 text-sm transition-colors duration-150 hover:bg-slate-50/80 md:grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)] md:items-center dark:hover:bg-neutral-800/50'
+                        className='grid gap-2 px-4 py-3 text-sm transition-colors duration-150 hover:bg-slate-50/80 md:grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)] md:items-center dark:hover:bg-neutral-800/50'
                         key={`${left}-${right}-${conflict.day}-${conflict.start}-${conflict.end}`}
                       >
                         <div className='min-w-0'>
@@ -620,7 +620,7 @@ export const ScheduleBuilder = () => {
                               'Location TBA'}
                           </div>
                         </div>
-                        <div className='rounded-sm bg-amber-50 px-2 py-1 text-center text-xs font-medium text-amber-900 ring-1 ring-amber-200/70 dark:bg-amber-950/40 dark:text-amber-100 dark:ring-amber-900/60'>
+                        <div className='rounded-sm bg-amber-50 px-2 py-1 text-center text-xs font-medium whitespace-nowrap text-amber-900 ring-1 ring-amber-200/70 dark:bg-amber-950/40 dark:text-amber-100 dark:ring-amber-900/60'>
                           {time}
                         </div>
                         <div className='min-w-0 md:text-right'>
