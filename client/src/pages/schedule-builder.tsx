@@ -31,28 +31,17 @@ import {
   updateSearchResults,
 } from '../lib/search-index';
 import type { Course } from '../lib/types';
-import { getCurrentTerms, spliceCourseCode } from '../lib/utils';
+import { getCurrentTerms, pluralize, spliceCourseCode } from '../lib/utils';
 
 const { courses, instructors, coursesIndex, instructorsIndex } =
   getSearchIndex();
 const courseTermsById = courseTerms as Record<string, string[]>;
 
-const formatCourseCount = (count: number) =>
-  count === 1 ? '1 course' : `${count} courses`;
-
 const formatResultCount = (count: number, truncated: boolean) =>
-  `${count.toLocaleString('en-US')} schedule${count === 1 ? '' : 's'}${
-    truncated ? ' shown' : ''
-  }`;
+  `${pluralize(count, 'schedule')}${truncated ? ' shown' : ''}`;
 
 const formatResultTime = (value: number | null) =>
   value === null ? 'No meeting time' : formatScheduleMinutes(value);
-
-const formatDayCount = (count: number) =>
-  count === 1 ? '1 day' : `${count} days`;
-
-const formatOptionCount = (count: number) =>
-  count === 1 ? '1 section' : `${count} sections`;
 
 export const ScheduleBuilder = () => {
   const currentTerms = useMemo(() => getCurrentTerms(), []);
@@ -338,7 +327,7 @@ export const ScheduleBuilder = () => {
             </h1>
             <div className='mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400'>
               <span className='rounded-full bg-white/70 px-2 py-0.5 ring-1 ring-slate-200 transition-colors dark:bg-neutral-900/50 dark:ring-neutral-800'>
-                {formatCourseCount(selectedCourses.length)}
+                {pluralize(selectedCourses.length, 'course')}
               </span>
               <span className='rounded-full bg-white/70 px-2 py-0.5 ring-1 ring-slate-200 transition-colors dark:bg-neutral-900/50 dark:ring-neutral-800'>
                 {selectedTerm}
@@ -489,7 +478,7 @@ export const ScheduleBuilder = () => {
                               </div>
                             ) : (
                               <div className='mt-2 text-xs font-medium text-gray-500 dark:text-gray-400'>
-                                {formatOptionCount(options.length)}
+                                {pluralize(options.length, 'section')}
                               </div>
                             )}
                           </div>
@@ -525,7 +514,7 @@ export const ScheduleBuilder = () => {
                   <span className='text-gray-500 dark:text-gray-400'>
                     {formatResultTime(result.earliestStart)} to{' '}
                     {formatResultTime(result.latestEnd)} ·{' '}
-                    {formatDayCount(result.dayCount)}
+                    {pluralize(result.dayCount, 'day', 'days')}
                   </span>
                 )}
               </div>
@@ -583,8 +572,7 @@ export const ScheduleBuilder = () => {
                     No non-conflicting schedules found
                   </div>
                   <div className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-                    {conflicts.length} overlap
-                    {conflicts.length === 1 ? '' : 's'} in {selectedTerm}
+                    {pluralize(conflicts.length, 'overlap')} in {selectedTerm}
                   </div>
                 </div>
                 <div className='divide-y divide-slate-100 dark:divide-neutral-800'>
@@ -633,8 +621,7 @@ export const ScheduleBuilder = () => {
                 </div>
                 {conflicts.length > 8 && (
                   <div className='border-t border-slate-100 px-4 py-3 text-sm font-medium text-gray-500 dark:border-neutral-800 dark:text-gray-400'>
-                    {conflicts.length - 8} more overlap
-                    {conflicts.length - 8 === 1 ? '' : 's'}
+                    {pluralize(conflicts.length - 8, 'more overlap')}
                   </div>
                 )}
               </div>

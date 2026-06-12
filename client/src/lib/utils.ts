@@ -255,6 +255,23 @@ export const mapValues = <T, U>(
 export const mod = (n: number, m: number): number => ((n % m) + m) % m;
 
 /**
+ * Formats a count with a singular or plural noun.
+ *
+ * Uses the default plural form by appending "s" unless a custom plural is provided.
+ *
+ * @param count - Number to display
+ * @param singular - Singular noun to use for count of one
+ * @param plural - Optional plural noun override
+ * @returns Count followed by the correct noun form
+ */
+export const pluralize = (
+  count: number,
+  singular: string,
+  plural = `${singular}s`
+): string =>
+  `${count.toLocaleString('en-US')} ${count === 1 ? singular : plural}`;
+
+/**
  * Ensures a string ends with a period.
  *
  * Adds a period if one is not already present.
