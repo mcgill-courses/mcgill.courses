@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, Pin, RotateCcw, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import courseTerms from '../assets/course-terms.json';
@@ -31,7 +32,12 @@ import {
   updateSearchResults,
 } from '../lib/search-index';
 import type { Course } from '../lib/types';
-import { getCurrentTerms, pluralize, spliceCourseCode } from '../lib/utils';
+import {
+  courseIdToUrlParam,
+  getCurrentTerms,
+  pluralize,
+  spliceCourseCode,
+} from '../lib/utils';
 import { Loading } from './loading';
 
 const { courses, instructors, coursesIndex, instructorsIndex } =
@@ -442,23 +448,28 @@ export const ScheduleBuilder = () => {
                       >
                         <div className='flex items-start justify-between gap-3'>
                           <div className='min-w-0'>
-                            <div className='flex min-w-0 items-center gap-1.5 text-sm font-semibold text-gray-950 group-hover:text-red-700 dark:text-gray-100 dark:group-hover:text-red-300'>
-                              <span className='truncate'>
-                                {spliceCourseCode(course._id, ' ')}
-                              </span>
-                              {pinned && (
-                                <span
-                                  aria-label='Pinned section'
-                                  className='shrink-0 text-red-600 dark:text-red-400'
-                                  title='Pinned section'
-                                >
-                                  <Pin className='size-3.5' />
+                            <Link
+                              className='group/link block min-w-0 cursor-pointer rounded-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500'
+                              to={`/course/${courseIdToUrlParam(course._id)}`}
+                            >
+                              <div className='flex min-w-0 items-center gap-1.5 text-sm font-semibold text-gray-950 group-hover/link:text-red-700 dark:text-gray-100 dark:group-hover/link:text-red-300'>
+                                <span className='truncate'>
+                                  {spliceCourseCode(course._id, ' ')}
                                 </span>
-                              )}
-                            </div>
-                            <div className='truncate text-xs text-gray-500 dark:text-gray-400'>
-                              {course.title}
-                            </div>
+                                {pinned && (
+                                  <span
+                                    aria-label='Pinned section'
+                                    className='shrink-0 text-red-600 dark:text-red-400'
+                                    title='Pinned section'
+                                  >
+                                    <Pin className='size-3.5' />
+                                  </span>
+                                )}
+                              </div>
+                              <div className='truncate text-xs text-gray-500 group-hover/link:text-red-700 dark:text-gray-400 dark:group-hover/link:text-red-300'>
+                                {course.title}
+                              </div>
+                            </Link>
                             {selectedOption ? (
                               <div className='mt-2 space-y-1'>
                                 {selectedOption.blocks.map(
