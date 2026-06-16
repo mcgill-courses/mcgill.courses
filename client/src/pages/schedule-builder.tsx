@@ -89,22 +89,24 @@ const readUrlScheduleState = (
   searchParams: URLSearchParams,
   currentTerms: readonly string[]
 ): UrlScheduleState | undefined => {
-  const hasScheduleParams =
-    searchParams.has('term') ||
-    searchParams.has('course') ||
-    searchParams.has('conflicts') ||
-    searchParams.has('pin') ||
-    searchParams.has('result');
+  const hasScheduleParams = [
+    'term',
+    'course',
+    'conflicts',
+    'pin',
+    'result',
+  ].some((key) => searchParams.has(key));
 
   if (!hasScheduleParams) return undefined;
 
   const term = searchParams.get('term');
+
   const selectedTerm =
     term && currentTerms.includes(term) ? term : (currentTerms[0] ?? '');
-  const selectedCourseIds = Array.from(
-    new Set(searchParams.getAll('course').filter(Boolean))
-  );
-  const selectedResultId = searchParams.get('result') ?? undefined;
+
+  const selectedCourseIds = [
+    ...new Set(searchParams.getAll('course').filter(Boolean)),
+  ];
 
   return {
     selectedTerm,
@@ -112,7 +114,7 @@ const readUrlScheduleState = (
       allowConflicts: searchParams.get('conflicts') === '1',
       pinnedOptions: readPinnedOptionsFromUrl(searchParams),
       selectedCourseIds,
-      selectedResultId,
+      selectedResultId: searchParams.get('result') ?? undefined,
     },
   };
 };
@@ -151,9 +153,10 @@ const buildShareUrl = (
   termSchedule: StoredTermSchedule
 ) => {
   const searchParams = buildUrlSearchParams(selectedTerm, termSchedule);
-  const path = `/schedule-builder?${searchParams.toString()}`;
 
-  if (typeof window === 'undefined') return path;
+  if (typeof window === 'undefined') {
+    return `/schedule-builder?${searchParams.toString()}`;
+  }
 
   const url = new URL(window.location.href);
   url.pathname = '/schedule-builder';
@@ -165,33 +168,42 @@ const buildShareUrl = (
 
 export const ScheduleBuilder = () => {
   const currentTerms = useMemo(() => getCurrentTerms(), []);
+
   const [searchParams, setSearchParams] = useSearchParams();
+
   const [initialUrlSchedule] = useState(() =>
     readUrlScheduleState(searchParams, currentTerms)
   );
+
   const restoredInitialUrlSchedule = useRef(false);
+
   const storedSchedule = useMemo(
     () => readStoredSchedule(currentTerms),
     [currentTerms]
   );
 
   const [loadingCourseId, setLoadingCourseId] = useState<string | null>(null);
+
   const [searchResults, setSearchResults] = useState<SearchResults>({
     query: '',
     courses: [],
     instructors: [],
   });
+
   const [restoredSchedule, setRestoredSchedule] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
+
   const [selectedResultId, setSelectedResultId] = useState<
     string | undefined
   >();
+
   const [selectedTerm, setSelectedTerm] = useState(
     () =>
       initialUrlSchedule?.selectedTerm ??
       storedSchedule?.selectedTerm ??
       currentTerms[0]
   );
+
   const [pinnedOptions, setPinnedOptions] = useState<PinnedScheduleOptions>({});
   const [allowConflicts, setAllowConflicts] = useState(false);
 
@@ -221,19 +233,24 @@ export const ScheduleBuilder = () => {
       }),
     [allowConflicts, pinnedOptions, selectedCourses, selectedTerm]
   );
+
   const conflicts = useMemo(
     () => getScheduleConflicts(selectedCourses, selectedTerm, pinnedOptions),
     [pinnedOptions, selectedCourses, selectedTerm]
   );
+
   const results = build.results;
+
   const selectedResultIndex =
     selectedResultId === undefined
       ? -1
       : results.findIndex((result) => result.id === selectedResultId);
+
   const activeResultIndex = Math.max(selectedResultIndex, 0);
   const result = results[activeResultIndex];
   const isRestoringSchedule = !restoredSchedule;
   const resultCountLabel = formatResultCount(results.length, build.truncated);
+
   const currentTermSchedule = useMemo<StoredTermSchedule>(
     () => ({
       allowConflicts,
@@ -243,6 +260,7 @@ export const ScheduleBuilder = () => {
     }),
     [allowConflicts, pinnedOptions, result?.id, selectedCourses]
   );
+
   const pinnedCourseIds = useMemo(
     () =>
       result?.options
@@ -250,6 +268,7 @@ export const ScheduleBuilder = () => {
         .map((option) => option.courseId) ?? [],
     [pinnedOptions, result]
   );
+
   const calendarPayload = useMemo(() => {
     if (!result) return null;
 
@@ -275,10 +294,13 @@ export const ScheduleBuilder = () => {
     const shouldUseInitialUrlSchedule =
       !restoredInitialUrlSchedule.current &&
       initialUrlSchedule?.selectedTerm === selectedTerm;
+
     const storedSchedule = readStoredSchedule(currentTerms);
+
     const termSchedule = shouldUseInitialUrlSchedule
       ? initialUrlSchedule.termSchedule
       : storedSchedule?.schedulesByTerm[selectedTerm];
+
     const selectedCourseIds = termSchedule?.selectedCourseIds ?? [];
 
     let active = true;
@@ -290,10 +312,13 @@ export const ScheduleBuilder = () => {
 
     if (selectedCourseIds.length === 0) {
       setSelectedCourses([]);
+
       if (shouldUseInitialUrlSchedule) {
         restoredInitialUrlSchedule.current = true;
       }
+
       setRestoredSchedule(true);
+
       return;
     }
 
@@ -336,6 +361,7 @@ export const ScheduleBuilder = () => {
     if (!restoredSchedule) return;
 
     const previous = readStoredSchedule(currentTerms);
+
     const schedule: StoredSchedule = {
       schedulesByTerm: {
         ...(previous?.schedulesByTerm ?? {}),
@@ -345,6 +371,7 @@ export const ScheduleBuilder = () => {
     };
 
     writeStoredSchedule(schedule);
+
     setSearchParams(buildUrlSearchParams(selectedTerm, currentTermSchedule), {
       replace: true,
     });
