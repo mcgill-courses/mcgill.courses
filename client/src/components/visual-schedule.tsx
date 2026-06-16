@@ -67,7 +67,9 @@ const getPositionedDayMeetings = (meetings: Meeting[]) => {
         left.meeting.end - right.meeting.end ||
         left.index - right.index
     );
+
   const positioned: (PositionedMeeting & { index: number })[] = [];
+
   let cluster: typeof sorted = [];
   let clusterEnd = 0;
 
@@ -75,17 +77,20 @@ const getPositionedDayMeetings = (meetings: Meeting[]) => {
     const lanes: number[] = [];
     const clusterPositioned = cluster.map(({ index, meeting }) => {
       const availableLane = lanes.findIndex((end) => end <= meeting.start);
+
       const lane = availableLane === -1 ? lanes.length : availableLane;
 
       lanes[lane] = meeting.end;
 
       return { ...meeting, index, lane };
     });
+
     const laneCount = Math.max(1, lanes.length);
 
     positioned.push(
       ...clusterPositioned.map((meeting) => ({ ...meeting, laneCount }))
     );
+
     cluster = [];
     clusterEnd = 0;
   };
@@ -146,20 +151,27 @@ export const VisualSchedule = ({
 }: VisualScheduleProps) => {
   const meetings = getMeetings(blocks);
   const positionedMeetings = getPositionedMeetings(meetings);
+
   const { endHour, startHour } = getHourRange(meetings);
+
   const hours = Array.from(
     { length: endHour - startHour + 1 },
     (_, index) => startHour + index
   );
+
   const height = (endHour - startHour) * HOUR_HEIGHT;
   const courseIds = Array.from(new Set(blocks.map((block) => block.courseId)));
   const pinnedCourseIdSet = new Set(pinnedCourseIds);
+
   const colorForCourse = (courseId: string) =>
     COURSE_COLORS[courseIds.indexOf(courseId) % COURSE_COLORS.length];
+
   const meetingDays = new Set(meetings.map((meeting) => meeting.day));
+
   const days = DAYS.filter(
     (day) => (day.code >= '2' && day.code <= '6') || meetingDays.has(day.code)
   );
+
   const gridTemplateColumns = `48px repeat(${days.length}, minmax(104px, 1fr))`;
 
   if (meetings.length === 0) {
@@ -191,6 +203,7 @@ export const VisualSchedule = ({
             <div className='bg-white/30 dark:bg-neutral-900/30' />
             {days.map((day, index) => {
               const hasOuterBorders = day.code === '3' || day.code === '5';
+
               const previousHasRightBorder =
                 days[index - 1]?.code === '3' || days[index - 1]?.code === '5';
 
@@ -231,6 +244,7 @@ export const VisualSchedule = ({
             </div>
             {days.map((day, dayIndex) => {
               const hasOuterBorders = day.code === '3' || day.code === '5';
+
               const nextHasLeftBorder =
                 days[dayIndex + 1]?.code === '3' ||
                 days[dayIndex + 1]?.code === '5';
@@ -261,16 +275,20 @@ export const VisualSchedule = ({
                     .map((meeting) => {
                       const top =
                         ((meeting.start - startHour * 60) / 60) * HOUR_HEIGHT;
+
                       const meetingHeight = Math.max(
                         34,
                         ((meeting.end - meeting.start) / 60) * HOUR_HEIGHT
                       );
+
                       const showDisplay = meetingHeight >= 42;
                       const showTime = meetingHeight >= 38;
                       const showLocation = meetingHeight >= 78;
+
                       const isPinned = pinnedCourseIdSet.has(
                         meeting.block.courseId
                       );
+
                       const title = [
                         formatCourseId(meeting.block.courseId),
                         meeting.block.display,
@@ -279,11 +297,14 @@ export const VisualSchedule = ({
                       ]
                         .filter(Boolean)
                         .join(' · ');
+
                       const left =
                         meeting.lane === 0
                           ? '0.25rem'
                           : `calc(${(meeting.lane / meeting.laneCount) * 100}% + 0.25rem)`;
+
                       const width = `calc(${100 / meeting.laneCount}% - 0.5rem)`;
+
                       const blockClassName = twMerge(
                         'absolute z-10 flex overflow-hidden rounded-sm border p-1.5 text-left text-xs shadow-sm',
                         onBlockClick &&
@@ -291,6 +312,7 @@ export const VisualSchedule = ({
                         isPinned && 'ring-2 ring-gray-900 dark:ring-gray-100',
                         colorForCourse(meeting.block.courseId)
                       );
+
                       const content = (
                         <div className='flex min-h-0 min-w-0 flex-1 flex-col justify-start'>
                           <div className='flex min-w-0 flex-col gap-px sm:flex-row sm:items-baseline sm:justify-between sm:gap-1'>
