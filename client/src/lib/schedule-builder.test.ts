@@ -55,6 +55,9 @@ const courseWithSchedules = (id: string, schedules: Block[][]): Course => ({
   })),
 });
 
+const optionLabels = (course: Course) =>
+  getCourseScheduleOptions(course, term).map((option) => option.label);
+
 describe('schedule builder', () => {
   test('builds non-conflicting schedules', () => {
     const foo = course('FOOO100', [
@@ -162,9 +165,10 @@ describe('schedule builder', () => {
       ],
     ]);
 
-    expect(
-      getCourseScheduleOptions(foo, term).map((option) => option.label)
-    ).toEqual(['Lec 001 + Lab 002', 'Lec 001 + Lab 003']);
+    expect(optionLabels(foo)).toEqual([
+      'Lec 001 + Lab 002',
+      'Lec 001 + Lab 003',
+    ]);
   });
 
   test('expands repeated trailing blocks', () => {
@@ -178,9 +182,10 @@ describe('schedule builder', () => {
       ],
     ]);
 
-    expect(
-      getCourseScheduleOptions(foo, term).map((option) => option.label)
-    ).toEqual(['Lec 001 + Seminar 003', 'Lec 002 + Seminar 003']);
+    expect(optionLabels(foo)).toEqual([
+      'Lec 001 + Seminar 003',
+      'Lec 002 + Seminar 003',
+    ]);
   });
 
   test('keeps same-time alternate sections', () => {
@@ -191,9 +196,37 @@ describe('schedule builder', () => {
       ],
     ]);
 
-    expect(
-      getCourseScheduleOptions(foo, term).map((option) => option.label)
-    ).toEqual(['Lec 001', 'Lec 002']);
+    expect(optionLabels(foo)).toEqual(['Lec 001', 'Lec 002']);
+  });
+
+  test('keeps no-time section choices', () => {
+    [
+      {
+        blocks: [
+          { ...block('Studio 001', '2', '540', '600'), timeblocks: [] },
+          { ...block('Studio 002', '2', '540', '600'), timeblocks: [] },
+        ],
+        labels: ['Studio 001', 'Studio 002'],
+      },
+      {
+        blocks: [
+          block('Lec 001', '2', '540', '600'),
+          { ...block('Lab 002', '2', '540', '600'), timeblocks: [] },
+        ],
+        labels: ['Lec 001 + Lab 002'],
+      },
+      {
+        blocks: [
+          { ...block('Lec 001', '2', '540', '600'), timeblocks: [] },
+          { ...block('Lab 002', '2', '540', '600'), timeblocks: [] },
+        ],
+        labels: ['Lec 001 + Lab 002'],
+      },
+    ].forEach(({ blocks, labels }) => {
+      expect(optionLabels(courseWithSchedules('FOOO100', [blocks]))).toEqual(
+        labels
+      );
+    });
   });
 
   test('keeps blocks with duplicate timeblocks', () => {
@@ -223,14 +256,18 @@ describe('schedule builder', () => {
     const original = courseWithSchedules('FOOO100', [[first], [second]]);
     const reordered = courseWithSchedules('FOOO100', [[second], [first]]);
 
-    const originalId = getCourseScheduleOptions(original, term).find(
+    const originalOption = getCourseScheduleOptions(original, term).find(
       (option) => option.label === 'Lec 001'
-    )?.id;
-    const reorderedId = getCourseScheduleOptions(reordered, term).find(
+    );
+    const reorderedOption = getCourseScheduleOptions(reordered, term).find(
       (option) => option.label === 'Lec 001'
-    )?.id;
+    );
 
-    expect(reorderedId).toBe(originalId);
+    if (originalOption === undefined || reorderedOption === undefined) {
+      throw new Error('Expected Lec 001 option');
+    }
+
+    expect(reorderedOption.id).toBe(originalOption.id);
   });
 
   test('formats meeting labels', () => {

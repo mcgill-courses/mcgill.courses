@@ -6,14 +6,12 @@ import { twMerge } from 'tailwind-merge';
 import * as buildingCodes from '../assets/building-codes.json';
 import * as buildingCoordinates from '../assets/building-coordinates.json';
 import {
-  type IcsEventOptions,
-  getTermMeetingRecurrence,
+  buildScheduleCalendarEvents,
   sanitizeForFilename,
 } from '../lib/calendar';
 import type { Block, Schedule, TimeBlock } from '../lib/types';
 import type { Course } from '../lib/types';
 import {
-  courseIdToUrlParam,
   formatDisplayTime,
   getCurrentTerm,
   groupBy,
@@ -35,8 +33,8 @@ type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
 
 type RepeatingBlock = {
   days: string[];
-  startTime: string;
-  endTime: string;
+  t1: string;
+  t2: string;
 };
 
 const VSBtimeToDisplay = (time: string) => {
@@ -54,78 +52,17 @@ const VSBtimeToDisplay = (time: string) => {
     .padStart(2, '0')}`;
 };
 
-const parseTimeString = (
-  value: string
-): { hour: number; minute: number } | null => {
-  const trimmed = value.trim();
-  const [hourString, minuteString] = trimmed.split(':');
-
-  const hour = parseInt(hourString, 10);
-  const minute = parseInt(minuteString, 10);
-
-  if (Number.isNaN(hour) || Number.isNaN(minute)) {
-    return null;
-  }
-
-  return { hour, minute };
-};
-
-const buildScheduleEvents = (
-  block: ScheduleBlock,
-  course: Course,
-  term: string
-): IcsEventOptions[] => {
-  const courseUrl = `https://mcgill.courses/course/${courseIdToUrlParam(
-    course._id
-  )}`;
-
-  const summary = `${course._id} ${block.display}`.trim();
-
-  const descriptionParts = [
-    course.title,
-    `Section: ${block.display}`,
-    `Term: ${term}`,
-    block.campus ? `Campus: ${block.campus}` : null,
-  ].filter((part): part is string => Boolean(part));
-
-  const location = block.location.split(';')[0]?.trim() ?? block.location;
-
-  const events: IcsEventOptions[] = [];
-
-  block.timeblocks.forEach((tb, index) => {
-    if (!tb.startTime || !tb.endTime || tb.days.length === 0) return;
-
-    const recurrence = getTermMeetingRecurrence(term, tb.days);
-    const startTime = parseTimeString(tb.startTime);
-    const endTime = parseTimeString(tb.endTime);
-
-    if (!recurrence || !startTime || !endTime) return;
-
-    const eventStart = new Date(recurrence.start);
-    eventStart.setHours(startTime.hour, startTime.minute, 0, 0);
-
-    const eventEnd = new Date(recurrence.start);
-    eventEnd.setHours(endTime.hour, endTime.minute, 0, 0);
-
-    const uidBase = sanitizeForFilename(
-      `${course._id}-${block.display}-${term}-${tb.startTime}-${tb.endTime}-${index}`
-    );
-    const uid = `${(uidBase || 'schedule').slice(0, 64)}@mcgill.courses`;
-
-    events.push({
-      start: eventStart,
-      end: eventEnd,
-      summary,
-      description: descriptionParts.join('\n'),
-      location,
-      url: courseUrl,
-      uid,
-      rrule: recurrence.rrule,
-    });
-  });
-
-  return events;
-};
+const getScheduleCalendarBlocks = (block: ScheduleBlock, course: Course) => [
+  {
+    campus: block.campus,
+    courseId: course._id,
+    courseTitle: course.title,
+    crn: block.crn,
+    display: block.display,
+    location: block.location.split(';')[0]?.trim() ?? block.location,
+    timeblocks: block.timeblocks,
+  },
+];
 
 const getSections = (
   schedules: Schedule[]
@@ -157,8 +94,8 @@ const getSections = (
 
         return {
           days: tbs.map((tb) => tb.day).filter((d): d is string => d != null),
-          startTime: VSBtimeToDisplay(t1),
-          endTime: VSBtimeToDisplay(t2),
+          t1,
+          t2,
         };
       }),
     }))
@@ -240,7 +177,10 @@ type ScheduleRowProps = {
 };
 
 const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
-  const events = buildScheduleEvents(block, course, term);
+  const events = buildScheduleCalendarEvents(
+    getScheduleCalendarBlocks(block, course),
+    term
+  );
 
   const filenameBase =
     sanitizeForFilename(`${course._id}-${block.display}-${term}`) || 'schedule';
@@ -262,12 +202,10 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
     .filter((location) => location.length > 0);
 
   const timeRanges = block.timeblocks
-    .filter(
-      (timeblock) => Boolean(timeblock.startTime) && Boolean(timeblock.endTime)
-    )
+    .filter((timeblock) => Boolean(timeblock.t1) && Boolean(timeblock.t2))
     .map(
       (timeblock) =>
-        `${formatDisplayTime(timeblock.startTime)} - ${formatDisplayTime(timeblock.endTime)}`
+        `${formatDisplayTime(VSBtimeToDisplay(timeblock.t1))} - ${formatDisplayTime(VSBtimeToDisplay(timeblock.t2))}`
     );
 
   const daySets = block.timeblocks

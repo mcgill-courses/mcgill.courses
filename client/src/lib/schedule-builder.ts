@@ -218,14 +218,14 @@ export const getBlockMeetingLabels = (block: BuilderBlock) => {
   return labels.length > 0 ? labels : ['No meeting time'];
 };
 
-type Meeting = {
+export type Meeting = {
   block: BuilderBlock;
   day: string;
   end: number;
   start: number;
 };
 
-const getMeetings = (blocks: BuilderBlock[]): Meeting[] =>
+export const getMeetings = (blocks: BuilderBlock[]): Meeting[] =>
   blocks.flatMap((block) =>
     block.timeblocks.flatMap((timeblock) => {
       const start = parseVsbMinutes(timeblock.t1);
@@ -274,9 +274,21 @@ const isSubset = (blocks: BuilderBlock[], candidate: BuilderBlock[]) => {
   return blocks.every((block) => candidateKeys.has(blockKey(block)));
 };
 
+const hasMeetings = (block: BuilderBlock) => getMeetings([block]).length > 0;
+
+const blockKind = (block: BuilderBlock) => block.display.split(/\s+/)[0] ?? '';
+
 const expandNonConflictingBlocks = (candidateBlocks: BuilderBlock[]) => {
   const blocks = uniqBlocks(candidateBlocks);
   const groups: BuilderBlock[][] = [];
+
+  if (blocks.length === 0) return [];
+
+  if (blocks.every((block) => !hasMeetings(block))) {
+    const kinds = new Set(blocks.map(blockKind));
+
+    return kinds.size === 1 ? blocks.map((block) => [block]) : [blocks];
+  }
 
   const visit = (index: number, selected: BuilderBlock[]) => {
     if (index === blocks.length) {
@@ -362,13 +374,26 @@ export const getCourseScheduleOptions = (
   );
 };
 
+const getCourseOptions = (
+  course: Course,
+  term: string,
+  pinnedOptions: PinnedScheduleOptions
+) => {
+  const options = getCourseScheduleOptions(course, term);
+  const pinnedOptionId = pinnedOptions[course._id];
+  const pinnedOption = options.find((option) => option.id === pinnedOptionId);
+
+  return pinnedOption === undefined ? options : [pinnedOption];
+};
+
 export const getScheduleConflicts = (
   courses: Course[],
-  term: string
+  term: string,
+  pinnedOptions: PinnedScheduleOptions = {}
 ): ScheduleConflict[] => {
   const courseOptions = courses.map((course) => ({
     course,
-    options: getCourseScheduleOptions(course, term),
+    options: getCourseOptions(course, term, pinnedOptions),
   }));
 
   const conflicts: ScheduleConflict[] = [];
@@ -416,22 +441,10 @@ export const buildScheduleResults = (
   options: ScheduleBuildOptions = {}
 ): ScheduleBuild => {
   const { allowConflicts = false, pinnedOptions = {} } = options;
-  const courseOptions = courses.map((course) => {
-    const options = getCourseScheduleOptions(course, term);
-    const pinnedOptionId = pinnedOptions[course._id];
-    const matchingPinnedOptions =
-      pinnedOptionId === undefined
-        ? []
-        : options.filter((option) => option.id === pinnedOptionId);
-
-    return {
-      course,
-      options:
-        pinnedOptionId === undefined || matchingPinnedOptions.length === 0
-          ? options
-          : matchingPinnedOptions,
-    };
-  });
+  const courseOptions = courses.map((course) => ({
+    course,
+    options: getCourseOptions(course, term, pinnedOptions),
+  }));
 
   const missingCourses = courseOptions
     .filter(({ options }) => options.length === 0)

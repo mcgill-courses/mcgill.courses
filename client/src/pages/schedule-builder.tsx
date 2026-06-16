@@ -18,8 +18,7 @@ import { Select } from '../components/select';
 import { VisualSchedule } from '../components/visual-schedule';
 import { api } from '../lib/api';
 import {
-  type IcsEventOptions,
-  getTermMeetingRecurrence,
+  buildScheduleCalendarEvents,
   sanitizeForFilename,
 } from '../lib/calendar';
 import {
@@ -31,7 +30,6 @@ import {
   getBlockMeetingLabels,
   getCourseScheduleOptions,
   getScheduleConflicts,
-  parseVsbMinutes,
 } from '../lib/schedule-builder';
 import {
   type StoredSchedule,
@@ -63,75 +61,10 @@ const formatResultCount = (count: number, truncated: boolean) =>
 const formatResultTime = (value: number | null) =>
   value === null ? 'No meeting time' : formatScheduleMinutes(value);
 
-const getCourseUrl = (courseId: string) => {
-  const origin =
-    typeof window === 'undefined'
-      ? 'https://mcgill.courses'
-      : window.location.origin;
-
-  return `${origin}/course/${courseIdToUrlParam(courseId)}`;
-};
-
-const buildScheduleCalendarEvents = (
-  blocks: BuilderBlock[],
-  term: string
-): IcsEventOptions[] =>
-  blocks.flatMap((block) => {
-    const groupedTimeblocks = block.timeblocks.reduce<
-      Map<string, { days: string[]; end: number; start: number }>
-    >((map, timeblock) => {
-      const start = parseVsbMinutes(timeblock.t1);
-      const end = parseVsbMinutes(timeblock.t2);
-
-      if (!timeblock.day || start === null || end === null) return map;
-
-      const key = `${start}-${end}`;
-      const value = map.get(key) ?? { days: [], end, start };
-      map.set(key, { ...value, days: [...value.days, timeblock.day] });
-
-      return map;
-    }, new Map());
-
-    return Array.from(groupedTimeblocks.values()).flatMap(
-      ({ days, end, start }, index) => {
-        const recurrence = getTermMeetingRecurrence(term, days);
-
-        if (!recurrence) return [];
-
-        const eventStart = new Date(recurrence.start);
-        eventStart.setHours(Math.floor(start / 60), start % 60, 0, 0);
-
-        const eventEnd = new Date(recurrence.start);
-        eventEnd.setHours(Math.floor(end / 60), end % 60, 0, 0);
-
-        const courseCode = spliceCourseCode(block.courseId, ' ');
-        const uidBase = sanitizeForFilename(
-          `${block.courseId}-${block.display}-${block.crn}-${term}-${start}-${end}-${index}`
-        );
-
-        return [
-          {
-            description: [
-              block.courseTitle,
-              block.display ? `Section: ${block.display}` : null,
-              block.crn ? `CRN: ${block.crn}` : null,
-              `Term: ${term}`,
-              block.campus ? `Campus: ${block.campus}` : null,
-            ]
-              .filter(Boolean)
-              .join('\n'),
-            end: eventEnd,
-            location: block.location || block.campus || null,
-            rrule: recurrence.rrule,
-            start: eventStart,
-            summary: `${courseCode} ${block.display}`.trim(),
-            uid: `${(uidBase || 'schedule').slice(0, 64)}@mcgill.courses`,
-            url: getCourseUrl(block.courseId),
-          },
-        ];
-      }
-    );
-  });
+const getCalendarOrigin = () =>
+  typeof window === 'undefined'
+    ? 'https://mcgill.courses'
+    : window.location.origin;
 
 type UrlScheduleState = {
   selectedTerm: string;
@@ -249,7 +182,6 @@ export const ScheduleBuilder = () => {
     instructors: [],
   });
   const [restoredSchedule, setRestoredSchedule] = useState(false);
-  const [resultIndex, setResultIndex] = useState(0);
   const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
   const [selectedResultId, setSelectedResultId] = useState<
     string | undefined
@@ -290,14 +222,15 @@ export const ScheduleBuilder = () => {
     [allowConflicts, pinnedOptions, selectedCourses, selectedTerm]
   );
   const conflicts = useMemo(
-    () => getScheduleConflicts(selectedCourses, selectedTerm),
-    [selectedCourses, selectedTerm]
+    () => getScheduleConflicts(selectedCourses, selectedTerm, pinnedOptions),
+    [pinnedOptions, selectedCourses, selectedTerm]
   );
   const results = build.results;
-  const activeResultIndex =
-    results.length === 0
-      ? 0
-      : Math.min(Math.max(resultIndex, 0), results.length - 1);
+  const selectedResultIndex =
+    selectedResultId === undefined
+      ? -1
+      : results.findIndex((result) => result.id === selectedResultId);
+  const activeResultIndex = Math.max(selectedResultIndex, 0);
   const result = results[activeResultIndex];
   const isRestoringSchedule = !restoredSchedule;
   const resultCountLabel = formatResultCount(results.length, build.truncated);
@@ -306,9 +239,9 @@ export const ScheduleBuilder = () => {
       allowConflicts,
       pinnedOptions,
       selectedCourseIds: selectedCourses.map((course) => course._id),
-      selectedResultId,
+      selectedResultId: result?.id,
     }),
-    [allowConflicts, pinnedOptions, selectedCourses, selectedResultId]
+    [allowConflicts, pinnedOptions, result?.id, selectedCourses]
   );
   const pinnedCourseIds = useMemo(
     () =>
@@ -320,7 +253,9 @@ export const ScheduleBuilder = () => {
   const calendarPayload = useMemo(() => {
     if (!result) return null;
 
-    const events = buildScheduleCalendarEvents(result.blocks, selectedTerm);
+    const events = buildScheduleCalendarEvents(result.blocks, selectedTerm, {
+      origin: getCalendarOrigin(),
+    });
 
     if (events.length === 0) return null;
 
@@ -351,7 +286,6 @@ export const ScheduleBuilder = () => {
     setRestoredSchedule(false);
     setAllowConflicts(termSchedule?.allowConflicts ?? false);
     setPinnedOptions(termSchedule?.pinnedOptions ?? {});
-    setResultIndex(0);
     setSelectedResultId(termSchedule?.selectedResultId);
 
     if (selectedCourseIds.length === 0) {
@@ -397,28 +331,6 @@ export const ScheduleBuilder = () => {
       active = false;
     };
   }, [currentTerms, initialUrlSchedule, selectedTerm]);
-
-  useEffect(() => {
-    if (!restoredSchedule) return;
-
-    if (results.length === 0) {
-      if (resultIndex !== 0) setResultIndex(0);
-      if (selectedResultId !== undefined) setSelectedResultId(undefined);
-      return;
-    }
-
-    const storedIndex = selectedResultId
-      ? results.findIndex((result) => result.id === selectedResultId)
-      : resultIndex;
-    const nextIndex =
-      storedIndex === -1
-        ? 0
-        : Math.min(Math.max(storedIndex, 0), results.length - 1);
-    const nextResultId = results[nextIndex].id;
-
-    if (nextIndex !== resultIndex) setResultIndex(nextIndex);
-    if (nextResultId !== selectedResultId) setSelectedResultId(nextResultId);
-  }, [restoredSchedule, resultIndex, results, selectedResultId]);
 
   useEffect(() => {
     if (!restoredSchedule) return;
@@ -528,7 +440,6 @@ export const ScheduleBuilder = () => {
     resetSearch();
     setAllowConflicts(false);
     setPinnedOptions({});
-    setResultIndex(0);
     setSelectedCourses([]);
     setSelectedResultId(undefined);
   };
@@ -564,7 +475,6 @@ export const ScheduleBuilder = () => {
       ((index % results.length) + results.length) % results.length;
     const result = results[indexWithinResults];
 
-    setResultIndex(indexWithinResults);
     setSelectedResultId(result.id);
   };
 
@@ -706,10 +616,6 @@ export const ScheduleBuilder = () => {
               {selectedCourses.length > 0 ? (
                 <div className='divide-y divide-slate-200 overflow-hidden rounded-md bg-white/70 ring-1 ring-slate-200 dark:divide-neutral-800 dark:bg-neutral-900/40 dark:ring-neutral-800'>
                   {selectedCourses.map((course) => {
-                    const options = getCourseScheduleOptions(
-                      course,
-                      selectedTerm
-                    );
                     const selectedOption = result?.options.find(
                       (option) => option.courseId === course._id
                     );
@@ -785,7 +691,11 @@ export const ScheduleBuilder = () => {
                               </div>
                             ) : (
                               <div className='mt-2 text-xs font-medium text-gray-500 dark:text-gray-400'>
-                                {pluralize(options.length, 'section')}
+                                {pluralize(
+                                  getCourseScheduleOptions(course, selectedTerm)
+                                    .length,
+                                  'section'
+                                )}
                               </div>
                             )}
                           </div>

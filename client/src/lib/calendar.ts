@@ -1,3 +1,7 @@
+import { parseVsbMinutes } from './schedule-builder';
+import type { TimeBlock } from './types';
+import { courseIdToUrlParam, spliceCourseCode } from './utils';
+
 const ICS_TIMEZONE = 'America/Toronto';
 
 const DEFAULT_TERM_MEETING_COUNT = 13;
@@ -138,9 +142,100 @@ export type IcsEventOptions = {
   rrule?: string;
 };
 
+type ScheduleCalendarTimeBlock = TimeBlock & {
+  days?: string[];
+};
+
+export type ScheduleCalendarBlock = {
+  campus?: string | null;
+  courseId: string;
+  courseTitle: string;
+  crn?: string | null;
+  display?: string | null;
+  location?: string | null;
+  timeblocks: ScheduleCalendarTimeBlock[];
+};
+
+type BuildScheduleCalendarEventsOptions = {
+  origin?: string;
+};
+
 type BuildIcsContentOptions = {
   events: IcsEventOptions[];
   prodId?: string;
+};
+
+const getCourseUrl = (courseId: string, origin: string) =>
+  `${origin}/course/${courseIdToUrlParam(courseId)}`;
+
+const getTimeblockDays = (timeblock: ScheduleCalendarTimeBlock) =>
+  timeblock.days ?? (timeblock.day ? [timeblock.day] : []);
+
+const groupScheduleTimeblocks = (timeblocks: ScheduleCalendarTimeBlock[]) =>
+  timeblocks.reduce<
+    Map<string, { days: string[]; end: number; start: number }>
+  >((map, timeblock) => {
+    const start = parseVsbMinutes(timeblock.t1);
+    const end = parseVsbMinutes(timeblock.t2);
+    const days = getTimeblockDays(timeblock);
+
+    if (days.length === 0 || start === null || end === null) return map;
+
+    const key = `${start}-${end}`;
+    const value = map.get(key) ?? { days: [], end, start };
+    map.set(key, { ...value, days: [...value.days, ...days] });
+
+    return map;
+  }, new Map());
+
+export const buildScheduleCalendarEvents = (
+  blocks: ScheduleCalendarBlock[],
+  term: string,
+  options: BuildScheduleCalendarEventsOptions = {}
+): IcsEventOptions[] => {
+  const origin = options.origin ?? 'https://mcgill.courses';
+
+  return blocks.flatMap((block) =>
+    Array.from(groupScheduleTimeblocks(block.timeblocks).values()).flatMap(
+      ({ days, end, start }, index) => {
+        const recurrence = getTermMeetingRecurrence(term, days);
+
+        if (!recurrence) return [];
+
+        const eventStart = new Date(recurrence.start);
+        eventStart.setHours(Math.floor(start / 60), start % 60, 0, 0);
+
+        const eventEnd = new Date(recurrence.start);
+        eventEnd.setHours(Math.floor(end / 60), end % 60, 0, 0);
+
+        const courseCode = spliceCourseCode(block.courseId, ' ');
+        const uidBase = sanitizeForFilename(
+          `${block.courseId}-${block.display ?? ''}-${block.crn ?? ''}-${term}-${start}-${end}-${index}`
+        );
+
+        return [
+          {
+            description: [
+              block.courseTitle,
+              block.display ? `Section: ${block.display}` : null,
+              block.crn ? `CRN: ${block.crn}` : null,
+              `Term: ${term}`,
+              block.campus ? `Campus: ${block.campus}` : null,
+            ]
+              .filter(Boolean)
+              .join('\n'),
+            end: eventEnd,
+            location: block.location || block.campus || null,
+            rrule: recurrence.rrule,
+            start: eventStart,
+            summary: `${courseCode} ${block.display ?? ''}`.trim(),
+            uid: `${(uidBase || 'schedule').slice(0, 64)}@mcgill.courses`,
+            url: getCourseUrl(block.courseId, origin),
+          },
+        ];
+      }
+    )
+  );
 };
 
 export const buildIcsContent = ({

@@ -1,9 +1,10 @@
 import { twMerge } from 'tailwind-merge';
 
-import type { BuilderBlock } from '../lib/schedule-builder';
 import {
+  type BuilderBlock,
+  type Meeting,
   formatScheduleMinutes,
-  parseVsbMinutes,
+  getMeetings,
 } from '../lib/schedule-builder';
 
 const DAYS = [
@@ -27,13 +28,6 @@ const COURSE_COLORS = [
   'border-cyan-200 bg-cyan-50 text-cyan-950 dark:border-cyan-500/40 dark:bg-cyan-950/60 dark:text-cyan-100',
 ];
 
-type Meeting = {
-  block: BuilderBlock;
-  day: string;
-  end: number;
-  start: number;
-};
-
 type PositionedMeeting = Meeting & {
   lane: number;
   laneCount: number;
@@ -45,20 +39,6 @@ type VisualScheduleProps = {
   pinnedCourseIds?: readonly string[];
   onBlockClick?: (block: BuilderBlock) => void;
 };
-
-const getMeetings = (blocks: BuilderBlock[]): Meeting[] =>
-  blocks.flatMap((block) =>
-    block.timeblocks.flatMap((timeblock) => {
-      const start = parseVsbMinutes(timeblock.t1);
-      const end = parseVsbMinutes(timeblock.t2);
-
-      if (!timeblock.day || start === null || end === null) {
-        return [];
-      }
-
-      return [{ block, day: timeblock.day, end, start }];
-    })
-  );
 
 const getHourRange = (meetings: Meeting[]) => {
   if (meetings.length === 0) {
