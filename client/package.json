@@ -51,7 +51,7 @@
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
-    "@vitest/coverage-v8": "^4.0.17",
+    "@vitest/coverage-v8": "^4.1.8",
     "cypress": "^15.16.0",
     "eslint": "^10.4.1",
     "globals": "^17.6.0",
