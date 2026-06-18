@@ -236,6 +236,26 @@ impl Arguments {
   }
 }
 
+type Result<T = (), E = Error> = std::result::Result<T, E>;
+
+#[tokio::main]
+async fn main() {
+  tracing_subscriber::registry()
+    .with(
+      tracing_subscriber::EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| "info".into()),
+    )
+    .with(tracing_subscriber::fmt::layer())
+    .init();
+
+  dotenv().ok();
+
+  if let Err(error) = Arguments::parse().run().await {
+    eprintln!("error: {error}");
+    process::exit(1);
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use {super::*, serde_json::json};
@@ -277,25 +297,5 @@ mod tests {
     let model = pull_request_model(None);
 
     assert!(arguments.pull_request(&model).is_none());
-  }
-}
-
-type Result<T = (), E = Error> = std::result::Result<T, E>;
-
-#[tokio::main]
-async fn main() {
-  tracing_subscriber::registry()
-    .with(
-      tracing_subscriber::EnvFilter::try_from_default_env()
-        .unwrap_or_else(|_| "info".into()),
-    )
-    .with(tracing_subscriber::fmt::layer())
-    .init();
-
-  dotenv().ok();
-
-  if let Err(error) = Arguments::parse().run().await {
-    eprintln!("error: {error}");
-    process::exit(1);
   }
 }
