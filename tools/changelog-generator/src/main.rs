@@ -177,13 +177,15 @@ impl Arguments {
 
     let pull_requests = model
       .iter()
-      .map(|pull_request| PullRequest {
-        title: pull_request.title.as_deref(),
-        description: pull_request.body.as_deref(),
-        number: pull_request.number,
-        merged_at: pull_request.merged_at,
-        user: &self.user,
-        repository: &self.repo,
+      .filter_map(|pull_request| {
+        Some(PullRequest {
+          title: pull_request.title.as_deref(),
+          description: pull_request.body.as_deref(),
+          number: pull_request.number?,
+          merged_at: pull_request.merged_at,
+          user: &self.user,
+          repository: &self.repo,
+        })
       })
       .collect::<Vec<_>>();
 
