@@ -1,6 +1,6 @@
 import { Disclosure } from '@headlessui/react';
 import { AnimatePresence, m } from 'framer-motion';
-import { ChevronDown, Github, Mail, MessageCircle } from 'lucide-react';
+import { ChevronDown, GitBranch, Mail, MessageCircle } from 'lucide-react';
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
@@ -360,7 +360,7 @@ export const About = () => {
           >
             {[
               {
-                icon: Github,
+                icon: GitBranch,
                 href: 'https://www.github.com/terror/mcgill.courses',
                 label: 'GitHub',
               },
