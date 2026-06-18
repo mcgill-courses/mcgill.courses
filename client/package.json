@@ -27,7 +27,7 @@
     "flexsearch": "^0.8.212",
     "formik": "^2.4.9",
     "framer-motion": "^12.27.1",
-    "lucide-react": "^0.562.0",
+    "lucide-react": "^1.17.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-error-boundary": "^6.0.3",
