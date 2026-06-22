@@ -21,6 +21,8 @@ pub struct Review {
   /// Timestamp when the review was created or last updated.
   #[typeshare(serialized_as = "String")]
   pub timestamp: DateTime,
+  /// The term this review was written for (e.g. "Fall 2025").
+  pub term: Option<String>,
   /// The user ID of the review author.
   pub user_id: String,
 }
@@ -35,6 +37,7 @@ impl Default for Review {
       likes: 0,
       rating: 0,
       timestamp: DateTime::from_millis(0),
+      term: None,
       user_id: String::new(),
     }
   }
@@ -50,6 +53,7 @@ impl Into<Bson> for Review {
       "rating": self.rating,
       "timestamp": self.timestamp.timestamp_millis().to_string(),
       "userId": self.user_id,
+      "term": self.term,
       "likes": self.likes
     })
   }
