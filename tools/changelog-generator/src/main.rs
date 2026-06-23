@@ -145,6 +145,20 @@ struct Arguments {
 }
 
 impl Arguments {
+  fn pull_request<'a>(
+    &'a self,
+    pull_request: &'a models::pulls::PullRequest,
+  ) -> Option<PullRequest<'a>> {
+    Some(PullRequest {
+      title: pull_request.title.as_deref(),
+      description: pull_request.body.as_deref(),
+      number: pull_request.number?,
+      merged_at: pull_request.merged_at,
+      user: &self.user,
+      repository: &self.repo,
+    })
+  }
+
   async fn run(&self) -> Result {
     let client = octocrab::instance();
 
@@ -177,14 +191,7 @@ impl Arguments {
 
     let pull_requests = model
       .iter()
-      .map(|pull_request| PullRequest {
-        title: pull_request.title.as_deref(),
-        description: pull_request.body.as_deref(),
-        number: pull_request.number,
-        merged_at: pull_request.merged_at,
-        user: &self.user,
-        repository: &self.repo,
-      })
+      .filter_map(|pull_request| self.pull_request(pull_request))
       .collect::<Vec<_>>();
 
     let mut grouped: Entry = HashMap::new();
@@ -246,5 +253,49 @@ async fn main() {
   if let Err(error) = Arguments::parse().run().await {
     eprintln!("error: {error}");
     process::exit(1);
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use {super::*, serde_json::json};
+
+  fn arguments() -> Arguments {
+    Arguments {
+      output: "foo".into(),
+      regenerate: Vec::new(),
+      regenerate_all: false,
+      repo: "bar".to_string(),
+      user: "baz".to_string(),
+    }
+  }
+
+  fn pull_request_model(number: Option<u64>) -> models::pulls::PullRequest {
+    serde_json::from_value(json!({
+      "body": "bar",
+      "merged_at": "2026-01-02T03:04:05Z",
+      "number": number,
+      "title": "foo",
+    }))
+    .unwrap()
+  }
+
+  #[test]
+  fn pull_request() {
+    let arguments = arguments();
+    let model = pull_request_model(Some(1));
+
+    let pull_request = arguments.pull_request(&model).unwrap();
+
+    assert_eq!(pull_request.title, Some("foo"));
+    assert_eq!(pull_request.description, Some("bar"));
+    assert_eq!(pull_request.number, 1);
+    assert_eq!(pull_request.user, "baz");
+    assert_eq!(pull_request.repository, "bar");
+    assert!(pull_request.merged_at.is_some());
+
+    let model = pull_request_model(None);
+
+    assert!(arguments.pull_request(&model).is_none());
   }
 }
