@@ -15,6 +15,7 @@ import {
   isValidCourseCode,
   mapValues,
   mod,
+  pluralize,
   punctuate,
   round2Decimals,
   sortBy,
@@ -331,6 +332,22 @@ describe('mod', () => {
 
   it('handles zero dividend', () => {
     expect(mod(0, 5)).toBe(0);
+  });
+});
+
+describe('pluralize', () => {
+  it('formats singular and plural labels', () => {
+    const cases = [
+      [1, 'course', undefined, '1 course'],
+      [2, 'course', undefined, '2 courses'],
+      [1000, 'schedule', undefined, '1,000 schedules'],
+      [1, 'day', 'days', '1 day'],
+      [3, 'day', 'days', '3 days'],
+    ] as const;
+
+    cases.forEach(([count, singular, plural, expected]) => {
+      expect(pluralize(count, singular, plural)).toBe(expected);
+    });
   });
 });
 

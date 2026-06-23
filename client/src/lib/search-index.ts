@@ -19,6 +19,12 @@ export type SearchResults = {
   instructors: InstructorName[];
 };
 
+type UpdateSearchResultsOptions = {
+  courseLimit?: number;
+  courseSearchLimit?: number;
+  instructorLimit?: number;
+};
+
 export const getSearchIndex = () => {
   const courseData = data.courses;
   const instructors = data.instructors as InstructorName[];
@@ -63,17 +69,25 @@ export const updateSearchResults = (
   instructors: InstructorName[],
   coursesIndex: Index,
   instructorsIndex: Index,
-  setResults: (_: SearchResults) => void
+  setResults: (_: SearchResults) => void,
+  options?: UpdateSearchResultsOptions
 ) => {
+  const courseLimit = options?.courseLimit ?? 4;
+  const instructorLimit = options?.instructorLimit ?? 4;
+
   const courseSearchResults = getRankedCourses(
     query,
     courses,
-    coursesIndex
-  ).slice(0, 4);
+    coursesIndex,
+    options?.courseSearchLimit
+  ).slice(0, courseLimit);
 
-  const instructorSearchResults = instructorsIndex
-    .search(query, { limit: 4 })
-    ?.map((id) => instructors[id as number]);
+  const instructorSearchResults =
+    instructorLimit === 0
+      ? []
+      : (instructorsIndex
+          .search(query, { limit: instructorLimit })
+          ?.map((id) => instructors[id as number]) ?? []);
 
   setResults({
     query: query,
@@ -151,9 +165,10 @@ const scoreCourseMatch = (query: string, course: CourseData) => {
 export const getRankedCourses = (
   query: string,
   courses: CourseData[],
-  index: Index
+  index: Index,
+  limit = 25
 ) =>
-  Array.from(new Set(index.search(query, { limit: 25 }) ?? []))
+  Array.from(new Set(index.search(query, { limit }) ?? []))
     .map((id) => courses[id as number])
     .filter((course): course is CourseData => course !== undefined)
     .map((course) => ({

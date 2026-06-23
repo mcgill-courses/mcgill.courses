@@ -1,9 +1,9 @@
 import { Layers, User } from 'lucide-react';
-import { RefObject, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 
-import type { SearchResults } from '../lib/search-index';
+import type { CourseData, SearchResults } from '../lib/search-index';
 import { courseIdToUrlParam, spliceCourseCode } from '../lib/utils';
 import { Highlight } from './highlight';
 import { SearchBar } from './search-bar';
@@ -16,8 +16,8 @@ type SearchResultProps = {
   selectedIndex: number;
   text: string;
   type: SearchResultType;
-  url: string;
-  onClick?: () => void;
+  url?: string;
+  onClick?: () => void | Promise<void>;
 };
 
 const highlightResultStyle =
@@ -42,27 +42,47 @@ const SearchResult = ({
       <User className='dark:text-gray-200' />
     );
 
+  const content = (
+    <div
+      className={twMerge(
+        'flex border-gray-200 p-3 text-left transition-all duration-75 dark:border-neutral-700',
+        toHighlight ? highlightResultStyle : 'bg-gray-100 dark:bg-neutral-800'
+      )}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      <div className='mr-2 w-6'>{icon}</div>
+      <Highlight
+        className='dark:text-gray-200'
+        query={query?.trim()}
+        text={text}
+      />
+    </div>
+  );
+
+  if (!url) {
+    return (
+      <button
+        className='w-full cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-red-500'
+        onClick={() => {
+          void onClick?.();
+        }}
+        type='button'
+      >
+        {content}
+      </button>
+    );
+  }
+
   return (
     <Link
       to={url}
-      className='cursor-pointer'
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-      onClick={onClick}
+      className='cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-red-500'
+      onClick={() => {
+        void onClick?.();
+      }}
     >
-      <div
-        className={twMerge(
-          'flex border-gray-200 p-3 text-left transition-all duration-75 dark:border-neutral-700',
-          toHighlight ? highlightResultStyle : 'bg-gray-100 dark:bg-neutral-800'
-        )}
-      >
-        <div className='mr-2 w-6'>{icon}</div>
-        <Highlight
-          className='dark:text-gray-200'
-          query={query?.trim()}
-          text={text}
-        />
-      </div>
+      {content}
     </Link>
   );
 };
@@ -93,24 +113,72 @@ const ExploreButton = () => {
 type CourseSearchBarProps = {
   results: SearchResults;
   handleInputChange: (query: string) => void;
-  onResultClick?: () => void;
   inputRef?: RefObject<HTMLInputElement | null>;
+  inputClassName?: string;
+  onCourseSelect?: (
+    course: CourseData
+  ) => boolean | void | Promise<boolean | void>;
+  onResultClick?: () => void;
+  placeholder?: string;
+  showFocusBorder?: boolean;
+  showExploreButton?: boolean;
+  showInstructors?: boolean;
 };
 
 export const CourseSearchBar = ({
   results,
   handleInputChange,
-  onResultClick,
   inputRef,
+  inputClassName,
+  onCourseSelect,
+  onResultClick,
+  placeholder = 'Search by course, subject, or professor',
+  showFocusBorder = true,
+  showExploreButton = true,
+  showInstructors = true,
 }: CourseSearchBarProps) => {
   const navigate = useNavigate();
 
   const [searchSelected, setSearchSelected] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const length = results.courses.length + results.instructors.length;
+  const instructors = showInstructors ? results.instructors : [];
+  const length = results.courses.length + instructors.length;
+  const showEmptyState =
+    Boolean(results.query?.trim()) && length === 0 && !showExploreButton;
 
+  useEffect(() => {
+    if (length === 0) {
+      setSelectedIndex(0);
+      return;
+    }
+
+    setSelectedIndex((index) => Math.min(index, length - 1));
+  }, [length]);
+
+  const resetSelection = (query: string) => {
+    setSelectedIndex(0);
+    handleInputChange(query);
+  };
+
+  const selectCourse = async (course: CourseData) => {
+    if (onCourseSelect) {
+      const selected = await onCourseSelect(course);
+
+      if (selected === false) {
+        return false;
+      }
+
+      onResultClick?.();
+      return true;
+    }
+
+    navigate(`/course/${courseIdToUrlParam(course._id)}`);
+    onResultClick?.();
+    return true;
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowUp') {
       event.preventDefault();
       setSelectedIndex((prevIndex) =>
@@ -124,17 +192,26 @@ export const CourseSearchBar = ({
     }
 
     if (selectedIndex > -1 && event.key === 'Enter' && length !== 0) {
-      navigate(
-        selectedIndex < results.courses.length
-          ? `/course/${courseIdToUrlParam(results.courses[selectedIndex]._id)}`
-          : `/instructor/${encodeURIComponent(
-              results.instructors[selectedIndex - results.courses.length]
-            )}`
-      );
+      event.preventDefault();
+      const input = event.currentTarget;
 
-      if (onResultClick) {
-        onResultClick();
-        event.currentTarget.blur();
+      if (selectedIndex < results.courses.length) {
+        void selectCourse(results.courses[selectedIndex]).then((selected) => {
+          if (selected && onResultClick) {
+            input.blur();
+          }
+        });
+      } else {
+        const instructor = instructors[selectedIndex - results.courses.length];
+
+        if (!instructor) return;
+
+        navigate(`/instructor/${encodeURIComponent(instructor)}`);
+        onResultClick?.();
+
+        if (onResultClick) {
+          input.blur();
+        }
       }
     }
   };
@@ -143,46 +220,63 @@ export const CourseSearchBar = ({
     <div className='relative'>
       <SearchBar
         value={results.query}
-        handleInputChange={handleInputChange}
+        handleInputChange={resetSelection}
         inputStyle={twMerge(
           'block w-full bg-gray-100 border border-gray-300 shadow-sm p-3 pl-10 text-sm text-black outline-none dark:border-neutral-50 dark:bg-neutral-800 dark:text-gray-200 dark:placeholder:text-neutral-500 lg:min-w-[570px] dark:border-gray-700 rounded-xs',
-          searchSelected ? 'border-b' : ''
+          searchSelected && showFocusBorder ? 'border-b' : '',
+          inputClassName
         )}
         onKeyDown={handleKeyDown}
-        placeholder='Search by course, subject, or professor'
+        placeholder={placeholder}
         searchSelected={searchSelected}
         setSearchSelected={setSearchSelected}
         inputRef={inputRef}
       />
-      {searchSelected && (
-        <div className='absolute top-full z-50 w-full overflow-hidden bg-white shadow-md dark:bg-neutral-800'>
-          {results.courses.map((result, index) => (
-            <SearchResult
-              index={index}
-              query={results.query}
-              selectedIndex={selectedIndex}
-              text={`${spliceCourseCode(result._id, ' ')} - ${result.title}`}
-              type='course'
-              url={`/course/${courseIdToUrlParam(result._id)}`}
-              key={result._id}
-              onClick={onResultClick}
-            />
-          ))}
-          {results.instructors.map((result, index) => (
-            <SearchResult
-              index={results.courses.length + index}
-              query={results.query}
-              selectedIndex={selectedIndex}
-              text={result}
-              type='instructor'
-              url={`/instructor/${encodeURIComponent(result)}`}
-              key={result + index}
-              onClick={onResultClick}
-            />
-          ))}
-          <ExploreButton />
-        </div>
-      )}
+      {searchSelected &&
+        (length > 0 || showExploreButton || showEmptyState) && (
+          <div className='absolute top-full z-50 w-full overflow-hidden bg-white shadow-md dark:bg-neutral-800'>
+            {results.courses.map((result, index) => (
+              <SearchResult
+                index={index}
+                query={results.query}
+                selectedIndex={selectedIndex}
+                text={`${spliceCourseCode(result._id, ' ')} - ${result.title}`}
+                type='course'
+                url={
+                  onCourseSelect
+                    ? undefined
+                    : `/course/${courseIdToUrlParam(result._id)}`
+                }
+                key={result._id}
+                onClick={
+                  onCourseSelect
+                    ? async () => {
+                        await selectCourse(result);
+                      }
+                    : onResultClick
+                }
+              />
+            ))}
+            {instructors.map((result, index) => (
+              <SearchResult
+                index={results.courses.length + index}
+                query={results.query}
+                selectedIndex={selectedIndex}
+                text={result}
+                type='instructor'
+                url={`/instructor/${encodeURIComponent(result)}`}
+                key={result + index}
+                onClick={onResultClick}
+              />
+            ))}
+            {showEmptyState && (
+              <div className='bg-gray-100 p-3 text-left text-sm text-gray-500 dark:bg-neutral-800 dark:text-gray-400'>
+                No courses found
+              </div>
+            )}
+            {showExploreButton && <ExploreButton />}
+          </div>
+        )}
     </div>
   );
 };

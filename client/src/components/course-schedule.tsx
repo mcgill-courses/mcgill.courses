@@ -5,7 +5,10 @@ import { twMerge } from 'tailwind-merge';
 
 import * as buildingCodes from '../assets/building-codes.json';
 import * as buildingCoordinates from '../assets/building-coordinates.json';
-import { type IcsEventOptions, sanitizeForFilename } from '../lib/calendar';
+import {
+  buildScheduleCalendarEvents,
+  sanitizeForFilename,
+} from '../lib/calendar';
 import type { Block, Schedule, TimeBlock } from '../lib/types';
 import type { Course } from '../lib/types';
 import {
@@ -22,26 +25,6 @@ import { AddToCalendarButton } from './add-to-calendar-button';
 import { BuildingLocation } from './building-location';
 import { Tooltip } from './tooltip';
 
-const DAY_CODE_MAP: Record<string, string> = {
-  '1': 'SU',
-  '2': 'MO',
-  '3': 'TU',
-  '4': 'WE',
-  '5': 'TH',
-  '6': 'FR',
-  '7': 'SA',
-};
-
-const DAY_ORDER = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-
-const DEFAULT_MEETING_COUNT = 13;
-
-const TERM_START_CONFIG = {
-  Winter: { startMonth: 1, offsetDays: 6 },
-  Summer: { startMonth: 5, offsetDays: 6 },
-  Fall: { startMonth: 9, offsetDays: 6 },
-} as const;
-
 type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
   location: string;
   display: string;
@@ -50,11 +33,9 @@ type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
 
 type RepeatingBlock = {
   days: string[];
-  startTime: string;
-  endTime: string;
+  t1: string;
+  t2: string;
 };
-
-type TermSeason = keyof typeof TERM_START_CONFIG;
 
 const VSBtimeToDisplay = (time: string) => {
   const totalMinutes = parseInt(time, 10);
@@ -71,148 +52,17 @@ const VSBtimeToDisplay = (time: string) => {
     .padStart(2, '0')}`;
 };
 
-const parseTermSeason = (
-  term: string
-): { season: TermSeason; year: number } | null => {
-  const match = term.match(/^(Winter|Summer|Fall)\s+(\d{4})$/);
-
-  if (!match) return null;
-
-  const [, season, year] = match;
-
-  return { season: season as TermSeason, year: parseInt(year, 10) };
-};
-
-const vsbDayToJsDay = (day: string): number | null => {
-  const parsed = parseInt(day, 10);
-
-  if (Number.isNaN(parsed)) return null;
-
-  const jsDay = parsed - 1;
-
-  if (jsDay < 0 || jsDay > 6) return null;
-
-  return jsDay;
-};
-
-const getFirstOccurrenceForTermDay = (
-  term: string,
-  day: string
-): Date | null => {
-  const termInfo = parseTermSeason(term);
-  const jsDay = vsbDayToJsDay(day);
-
-  if (!termInfo || jsDay === null) return null;
-
-  const { season, year } = termInfo;
-  const { startMonth, offsetDays } = TERM_START_CONFIG[season];
-
-  const anchor = new Date(year, startMonth - 1, 1);
-  anchor.setDate(anchor.getDate() + offsetDays);
-
-  const occurrence = new Date(anchor);
-  const diff = (jsDay - occurrence.getDay() + 7) % 7;
-  occurrence.setDate(occurrence.getDate() + diff);
-
-  return occurrence;
-};
-
-const parseTimeString = (
-  value: string
-): { hour: number; minute: number } | null => {
-  const trimmed = value.trim();
-  const [hourString, minuteString] = trimmed.split(':');
-
-  const hour = parseInt(hourString, 10);
-  const minute = parseInt(minuteString, 10);
-
-  if (Number.isNaN(hour) || Number.isNaN(minute)) {
-    return null;
-  }
-
-  return { hour, minute };
-};
-
-const buildScheduleEvents = (
-  block: ScheduleBlock,
-  course: Course,
-  term: string
-): IcsEventOptions[] => {
-  const courseUrl = `https://mcgill.courses/${course._id}`;
-
-  const summary = `${course._id} ${block.display}`.trim();
-
-  const descriptionParts = [
-    course.title,
-    `Section: ${block.display}`,
-    `Term: ${term}`,
-    block.campus ? `Campus: ${block.campus}` : null,
-  ].filter((part): part is string => Boolean(part));
-
-  const location = block.location.split(';')[0]?.trim() ?? block.location;
-
-  const events: IcsEventOptions[] = [];
-
-  block.timeblocks.forEach((tb, index) => {
-    if (!tb.startTime || !tb.endTime || tb.days.length === 0) return;
-
-    const sortedDays = [...tb.days].sort(
-      (a, b) => parseInt(a, 10) - parseInt(b, 10)
-    );
-
-    const firstDay = sortedDays[0];
-    const occurrence = getFirstOccurrenceForTermDay(term, firstDay);
-
-    const startTime = parseTimeString(tb.startTime);
-    const endTime = parseTimeString(tb.endTime);
-
-    if (!occurrence || !startTime || !endTime) return;
-
-    const eventStart = new Date(occurrence);
-    eventStart.setHours(startTime.hour, startTime.minute, 0, 0);
-
-    const eventEnd = new Date(occurrence);
-    eventEnd.setHours(endTime.hour, endTime.minute, 0, 0);
-
-    const byDayCodes = sortedDays
-      .map((day) => DAY_CODE_MAP[day])
-      .filter((code): code is string => Boolean(code));
-
-    const uniqueByDayCodes = Array.from(new Set(byDayCodes)).sort(
-      (a, b) => DAY_ORDER.indexOf(a) - DAY_ORDER.indexOf(b)
-    );
-
-    const occurrencesPerWeek = Math.max(1, uniqueByDayCodes.length);
-
-    const rruleParts = [
-      'FREQ=WEEKLY',
-      'INTERVAL=1',
-      `COUNT=${DEFAULT_MEETING_COUNT * occurrencesPerWeek}`,
-    ];
-
-    if (uniqueByDayCodes.length > 0) {
-      rruleParts.push(`BYDAY=${uniqueByDayCodes.join(',')}`);
-    }
-
-    const uidBase = sanitizeForFilename(
-      `${course._id}-${block.display}-${term}-${tb.startTime}-${tb.endTime}-${index}`
-    );
-    const uid = `${(uidBase || 'schedule').slice(0, 64)}@mcgill.courses`;
-
-    events.push({
-      start: eventStart,
-      end: eventEnd,
-      summary,
-      description: descriptionParts.join('\n'),
-      location,
-      url: courseUrl,
-      uid,
-      rrule: rruleParts.join(';'),
-    });
-  });
-
-  return events;
-};
+const getScheduleCalendarBlocks = (block: ScheduleBlock, course: Course) => [
+  {
+    campus: block.campus,
+    courseId: course._id,
+    courseTitle: course.title,
+    crn: block.crn,
+    display: block.display,
+    location: block.location.split(';')[0]?.trim() ?? block.location,
+    timeblocks: block.timeblocks,
+  },
+];
 
 const getSections = (
   schedules: Schedule[]
@@ -244,8 +94,8 @@ const getSections = (
 
         return {
           days: tbs.map((tb) => tb.day).filter((d): d is string => d != null),
-          startTime: VSBtimeToDisplay(t1),
-          endTime: VSBtimeToDisplay(t2),
+          t1,
+          t2,
         };
       }),
     }))
@@ -327,7 +177,10 @@ type ScheduleRowProps = {
 };
 
 const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
-  const events = buildScheduleEvents(block, course, term);
+  const events = buildScheduleCalendarEvents(
+    getScheduleCalendarBlocks(block, course),
+    term
+  );
 
   const filenameBase =
     sanitizeForFilename(`${course._id}-${block.display}-${term}`) || 'schedule';
@@ -349,12 +202,10 @@ const ScheduleRow = ({ block, course, term }: ScheduleRowProps) => {
     .filter((location) => location.length > 0);
 
   const timeRanges = block.timeblocks
-    .filter(
-      (timeblock) => Boolean(timeblock.startTime) && Boolean(timeblock.endTime)
-    )
+    .filter((timeblock) => Boolean(timeblock.t1) && Boolean(timeblock.t2))
     .map(
       (timeblock) =>
-        `${formatDisplayTime(timeblock.startTime)} - ${formatDisplayTime(timeblock.endTime)}`
+        `${formatDisplayTime(VSBtimeToDisplay(timeblock.t1))} - ${formatDisplayTime(VSBtimeToDisplay(timeblock.t2))}`
     );
 
   const daySets = block.timeblocks
