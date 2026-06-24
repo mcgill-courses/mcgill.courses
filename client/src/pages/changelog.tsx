@@ -80,7 +80,7 @@ export const Changelog = () => {
                 {itemsToRender.map((item) => (
                   <div key={item.number} className='mt-4'>
                     <p className='text-lg text-gray-800 dark:text-gray-300'>
-                      - {item.summary.replace('/^- /', '')} (
+                      - {item.summary.replace(/^- /, '')} (
                       <a
                         href={item.url}
                         className='text-blue-600 dark:text-blue-400'
