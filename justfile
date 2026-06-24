@@ -65,11 +65,6 @@ fmt-check:
 forbid:
   ./bin/forbid
 
-[group: 'tools']
-[working-directory: 'tools/changelog-generator']
-generate-changelog *args:
-  cargo run -- --output ../../client/src/assets/changelog.json {{ args }}
-
 [group: 'setup']
 initialize *args: restart-services
   cargo run -- --source=seed --initialize --db-name=mcgill-courses {{ args }}
