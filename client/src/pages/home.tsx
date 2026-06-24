@@ -104,7 +104,7 @@ export const Home = () => {
                   New
                 </span>
                 <span className='min-w-0 truncate font-semibold text-gray-950 dark:text-gray-100'>
-                  Schedule builder
+                  Schedule Builder
                 </span>
               </span>
               <span className='relative flex shrink-0 items-center gap-1 text-sm font-medium text-red-700 transition group-hover:text-red-800 dark:text-red-300 dark:group-hover:text-red-200'>
