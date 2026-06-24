@@ -77,7 +77,7 @@ describe('Home', () => {
     });
 
     expect(banner).toHaveAttribute('href', '/schedule-builder');
-    expect(screen.getByText('Schedule builder')).toBeInTheDocument();
+    expect(screen.getByText('Schedule Builder')).toBeInTheDocument();
     expect(window.localStorage.getItem(storageKey)).toBe('true');
   });
 
