@@ -103,4 +103,24 @@ describe('Changelog page', () => {
     expect(withinMarch.getAllByRole('link')).toHaveLength(1);
     expect(withinMarch.queryByText(/#302/)).not.toBeInTheDocument();
   });
+
+  it('strips generated leading summary bullets', async () => {
+    mockChangelog['March 2024'][0] = {
+      ...mockChangelog['March 2024'][0],
+      summary: '- Summary 301',
+    };
+
+    await renderChangelog();
+
+    const marchSection = screen.getByText('March 2024').closest('div');
+    expect(marchSection).toBeTruthy();
+
+    const paragraph = within(marchSection as HTMLElement).getByText(
+      (content, element) =>
+        element?.tagName === 'P' && content.includes('Summary 301')
+    );
+
+    expect(paragraph.textContent).toContain('- Summary 301');
+    expect(paragraph.textContent).not.toContain('- - Summary 301');
+  });
 });

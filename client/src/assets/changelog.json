@@ -1024,7 +1024,7 @@
     },
     {
       "number": 228,
-      "summary": "Added the ability to scaffold end-to-end tests using Cypress. The pull request included setting up a mock for the /user route using fixtures.",
+      "summary": "Added end-to-end test scaffolding, including a sample user route fixture.",
       "url": "https://github.com/terror/mcgill.courses/pull/228",
       "mergedAt": "2023-05-13T04:00:25Z"
     },
@@ -1648,7 +1648,7 @@
     },
     {
       "number": 259,
-      "summary": "- Checked if the instructor is included in the review instructors array for enabling review permissions.",
+      "summary": "Checked if the instructor is included in the review instructors array for enabling review permissions.",
       "url": "https://github.com/terror/mcgill.courses/pull/259",
       "mergedAt": "2023-06-05T00:39:09Z"
     },
@@ -2714,7 +2714,7 @@
     },
     {
       "number": 660,
-      "summary": "Added functionality to display credits in the course information section on the platform. The pull request includes visual changes to show the credits alongside the course details.",
+      "summary": "Added course credits to the course information section so users could see credit values alongside other course details.",
       "url": "https://github.com/terror/mcgill.courses/pull/660",
       "mergedAt": "2025-05-24T17:07:21Z"
     },
@@ -2851,6 +2851,202 @@
       "summary": "Added the capability for users to perform full-text searches on the explore page. This enhancement makes it easier for users to find specific content quickly and efficiently within the platform.",
       "url": "https://github.com/terror/mcgill.courses/pull/421",
       "mergedAt": "2023-10-02T17:27:15Z"
+    }
+  ],
+  "November 2025": [
+    {
+      "number": 764,
+      "summary": "Updated Fall 2025 final exam schedules so course pages showed the latest exam dates and times.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/764",
+      "mergedAt": "2025-11-14T17:36:41Z"
+    }
+  ],
+  "December 2025": [
+    {
+      "number": 805,
+      "summary": "Fixed notification deletion so clearing a review notification removed the correct item.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/805",
+      "mergedAt": "2025-12-28T02:40:00Z"
+    },
+    {
+      "number": 803,
+      "summary": "Added liked reviews to profile pages so users could revisit reviews they had reacted to.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/803",
+      "mergedAt": "2025-12-27T01:16:23Z"
+    },
+    {
+      "number": 777,
+      "summary": "Added support for bold and italic formatting in displayed course reviews.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/777",
+      "mergedAt": "2025-12-16T22:35:34Z"
+    },
+    {
+      "number": 770,
+      "summary": "Updated course averages with grade data through Winter 2025.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/770",
+      "mergedAt": "2025-12-06T22:11:45Z"
+    },
+    {
+      "number": 769,
+      "summary": "Fixed displayed reviews so line breaks written by reviewers were preserved.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/769",
+      "mergedAt": "2025-12-02T22:05:59Z"
+    }
+  ],
+  "January 2026": [
+    {
+      "number": 931,
+      "summary": "Added tentative Winter 2026 final exam schedules to course pages.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/931",
+      "mergedAt": "2026-01-29T20:47:41Z"
+    },
+    {
+      "number": 929,
+      "summary": "Improved loading performance by compressing server responses.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/929",
+      "mergedAt": "2026-01-29T20:06:42Z"
+    },
+    {
+      "number": 924,
+      "summary": "Updated McGill sign-in to use the correct tenant, improving login reliability.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/924",
+      "mergedAt": "2026-01-28T00:15:46Z"
+    },
+    {
+      "number": 914,
+      "summary": "Fixed course code lookups so links worked regardless of letter casing.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/914",
+      "mergedAt": "2026-01-27T05:02:36Z"
+    },
+    {
+      "number": 904,
+      "summary": "Fixed duplicate courses that could appear on instructor pages.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/904",
+      "mergedAt": "2026-01-22T19:37:55Z"
+    },
+    {
+      "number": 899,
+      "summary": "Improved explore search responsiveness by waiting briefly before refreshing results while typing.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/899",
+      "mergedAt": "2026-01-22T06:01:07Z"
+    },
+    {
+      "number": 888,
+      "summary": "Fixed stale course term data so refreshed course listings replaced old term information correctly.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/888",
+      "mergedAt": "2026-01-22T00:23:06Z"
+    },
+    {
+      "number": 854,
+      "summary": "Updated 2025-2026 course data with a fresh scrape from McGill.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/854",
+      "mergedAt": "2026-01-19T20:54:11Z"
+    },
+    {
+      "number": 843,
+      "summary": "Added a course average chart to make grade distributions easier to compare.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/843",
+      "mergedAt": "2026-01-13T00:51:30Z"
+    },
+    {
+      "number": 838,
+      "summary": "Added currently taught courses to instructor pages so students could see active offerings for each instructor.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/838",
+      "mergedAt": "2026-01-12T01:01:57Z"
+    }
+  ],
+  "February 2026": [
+    {
+      "number": 965,
+      "summary": "Updated Winter 2026 final exam schedules with the latest available exam details.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/965",
+      "mergedAt": "2026-02-27T15:59:00Z"
+    },
+    {
+      "number": 942,
+      "summary": "Hid the explore filter reset button until filters were selected.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/942",
+      "mergedAt": "2026-02-03T02:07:42Z"
+    }
+  ],
+  "March 2026": [
+    {
+      "number": 984,
+      "summary": "Added a smoother animation when expanding professor details in course information cards.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/984",
+      "mergedAt": "2026-03-16T03:26:04Z"
+    },
+    {
+      "number": 978,
+      "summary": "Improved accessibility by using standard buttons for interactive controls.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/978",
+      "mergedAt": "2026-03-10T02:49:40Z"
+    },
+    {
+      "number": 973,
+      "summary": "Improved course page loading by loading the course graph only when it was opened.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/973",
+      "mergedAt": "2026-03-10T01:54:25Z"
+    },
+    {
+      "number": 972,
+      "summary": "Improved course page loading by loading course average charts only when they were viewed.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/972",
+      "mergedAt": "2026-03-10T01:47:08Z"
+    }
+  ],
+  "April 2026": [
+    {
+      "number": 1005,
+      "summary": "Improved rate limit messages by returning a clear retry time when too many requests were made.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1005",
+      "mergedAt": "2026-04-07T04:07:48Z"
+    },
+    {
+      "number": 1004,
+      "summary": "Fixed review submission validation so incomplete or invalid reviews were rejected before being saved.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1004",
+      "mergedAt": "2026-04-07T03:57:20Z"
+    },
+    {
+      "number": 1002,
+      "summary": "Updated 2025-2026 course data with a fresh scrape from McGill.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1002",
+      "mergedAt": "2026-04-07T03:27:04Z"
+    }
+  ],
+  "May 2026": [
+    {
+      "number": 1055,
+      "summary": "Added 2026-2027 course data so upcoming courses were available ahead of registration.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1055",
+      "mergedAt": "2026-05-16T18:38:31Z"
+    }
+  ],
+  "June 2026": [
+    {
+      "number": 1118,
+      "summary": "Added a one-time home page banner to point students to the new schedule builder.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1118",
+      "mergedAt": "2026-06-24T01:23:47Z"
+    },
+    {
+      "number": 1117,
+      "summary": "Updated 2026-2027 course data with the latest available course details.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1117",
+      "mergedAt": "2026-06-24T00:56:39Z"
+    },
+    {
+      "number": 1099,
+      "summary": "Added an interactive schedule builder for choosing courses, comparing timetable options, pinning sections, sharing schedules, and exporting them to a calendar.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1099",
+      "mergedAt": "2026-06-23T23:56:25Z"
+    },
+    {
+      "number": 1100,
+      "summary": "Updated search data so course search results included available terms.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1100",
+      "mergedAt": "2026-06-12T15:43:17Z"
     }
   ]
 }
