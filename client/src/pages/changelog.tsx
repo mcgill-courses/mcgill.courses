@@ -3,7 +3,13 @@ import { Helmet } from 'react-helmet-async';
 
 import changelogItems from '../assets/changelog.json';
 import { Layout } from '../components/layout';
-import type { ChangelogItem } from '../lib/types';
+
+export interface ChangelogItem {
+  number: number;
+  summary?: string;
+  url: string;
+  mergedAt: string;
+}
 
 const typedChangelogItems: Record<string, ChangelogItem[]> = changelogItems;
 
