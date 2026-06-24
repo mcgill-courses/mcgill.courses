@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { ChangelogItem } from '../lib/types';
+import type { ChangelogItem } from './changelog';
 
 const createItems = (count: number, month: number): ChangelogItem[] =>
   Array.from({ length: count }, (_, index) => {
