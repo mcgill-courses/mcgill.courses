@@ -93,7 +93,7 @@ export const Changelog = () => {
                     </p>
                   </div>
                 ))}
-                {sanitizedItems.length > 10 && (
+                {sanitizedItems.length > 5 && (
                   <button
                     onClick={() => toggleShowAll(month)}
                     className='mt-4 underline dark:text-gray-400'

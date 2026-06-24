@@ -24,12 +24,12 @@ vi.mock('../components/layout', () => ({
 }));
 
 const mockChangelog = {
-  'April 2024': createItems(11, 4),
+  'April 2024': createItems(6, 4),
   'March 2024': createItems(2, 3),
 };
 
 const resetMockChangelog = () => {
-  mockChangelog['April 2024'] = createItems(11, 4);
+  mockChangelog['April 2024'] = createItems(6, 4);
   mockChangelog['March 2024'] = createItems(2, 3);
 };
 
@@ -80,7 +80,7 @@ describe('Changelog page', () => {
     const toggleButton = withinApril.getByRole('button', { name: 'Show all' });
 
     await user.click(toggleButton);
-    expect(withinApril.getAllByRole('link')).toHaveLength(11);
+    expect(withinApril.getAllByRole('link')).toHaveLength(6);
     expect(toggleButton).toHaveTextContent('Show less');
 
     await user.click(toggleButton);
