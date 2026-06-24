@@ -37,13 +37,6 @@ export interface Block {
   crn?: string;
 }
 
-export interface ChangelogItem {
-  number: number;
-  summary?: string;
-  url: string;
-  mergedAt: string;
-}
-
 export interface Instructor {
   /** Instructor display name. */
   name: string;
