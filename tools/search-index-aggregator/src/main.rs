@@ -1,8 +1,10 @@
 use {
   anyhow::{Context, Error},
   clap::Parser,
+  rayon::prelude::*,
   serde::{Deserialize, Serialize},
   std::{
+    backtrace::BacktraceStatus,
     collections::{BTreeSet, HashMap},
     fs,
     fs::File,
@@ -38,6 +40,46 @@ struct Course {
 struct SearchData {
   courses: Vec<Course>,
   instructors: Vec<String>,
+}
+
+#[derive(Debug)]
+struct SeedData {
+  courses: Vec<Course>,
+  instructors: BTreeSet<String>,
+}
+
+impl SeedData {
+  fn read(path: &Path) -> Result<Self> {
+    let file = File::open(path)
+      .with_context(|| format!("failed to open {}", path.display()))?;
+
+    let seed_courses =
+      serde_json::from_reader::<_, Vec<SeedCourse>>(BufReader::new(file))
+        .with_context(|| format!("failed to parse {}", path.display()))?;
+
+    let (mut courses, mut instructors) =
+      (Vec::with_capacity(seed_courses.len()), BTreeSet::new());
+
+    for course in seed_courses {
+      let SeedCourse {
+        id,
+        title,
+        terms,
+        instructors: seed_instructors,
+      } = course;
+
+      courses.push(Course { id, title, terms });
+
+      for instructor in seed_instructors {
+        instructors.insert(instructor.name);
+      }
+    }
+
+    Ok(Self {
+      courses,
+      instructors,
+    })
+  }
 }
 
 #[derive(Parser, Debug)]
@@ -84,36 +126,29 @@ impl Arguments {
 
     data_paths.sort();
 
+    let seed_data = data_paths
+      .par_iter()
+      .map(|path| SeedData::read(path))
+      .collect::<Vec<_>>();
+
     let mut course_ids = Vec::new();
 
     let (mut courses, mut instructors) = (HashMap::new(), BTreeSet::new());
 
-    for path in data_paths {
-      let file = File::open(&path)
-        .with_context(|| format!("failed to open {}", path.display()))?;
+    for seed_data in seed_data {
+      let seed_data = seed_data?;
 
-      let seed_courses =
-        serde_json::from_reader::<_, Vec<SeedCourse>>(BufReader::new(file))
-          .with_context(|| format!("failed to parse {}", path.display()))?;
-
-      for course in seed_courses {
-        let SeedCourse {
-          id,
-          title,
-          terms,
-          instructors: seed_instructors,
-        } = course;
+      for course in seed_data.courses {
+        let id = course.id.clone();
 
         if !courses.contains_key(&id) {
           course_ids.push(id.clone());
         }
 
-        courses.insert(id.clone(), Course { id, title, terms });
-
-        for instructor in seed_instructors {
-          instructors.insert(instructor.name);
-        }
+        courses.insert(id, course);
       }
+
+      instructors.extend(seed_data.instructors);
     }
 
     let courses = course_ids
@@ -157,15 +192,28 @@ fn default_output_path() -> PathBuf {
   repo_root().join("client/src/assets/search-data.json")
 }
 
-fn run() -> Result {
-  Arguments::parse().run()
-}
-
 type Result<T = (), E = Error> = std::result::Result<T, E>;
 
 fn main() {
-  if let Err(error) = run() {
+  if let Err(error) = Arguments::parse().run() {
     eprintln!("error: {error}");
+
+    for (i, error) in error.chain().skip(1).enumerate() {
+      if i == 0 {
+        eprintln!();
+        eprintln!("because:");
+      }
+
+      eprintln!("- {error}");
+    }
+
+    let backtrace = error.backtrace();
+
+    if backtrace.status() == BacktraceStatus::Captured {
+      eprintln!("backtrace:");
+      eprintln!("{backtrace}");
+    }
+
     process::exit(1);
   }
 }
@@ -268,7 +316,7 @@ mod tests {
         "    \"foo\",\n",
         "    \"qux\"\n",
         "  ]\n",
-        "}\n"
+        "}"
       )
     );
   }
