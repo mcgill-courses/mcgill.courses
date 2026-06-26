@@ -1,55 +1,5 @@
 use super::*;
 
-pub enum Requirement {
-  Corequisites,
-  Prerequisites,
-  Restrictions,
-  Unknown,
-}
-
-impl From<&str> for Requirement {
-  fn from(s: &str) -> Self {
-    match s {
-      "Corequisite" => Self::Corequisites,
-      "Prerequisite" => Self::Prerequisites,
-      "Restriction" => Self::Restrictions,
-      _ => Self::Unknown,
-    }
-  }
-}
-
-#[derive(
-  Debug,
-  PartialEq,
-  Eq,
-  Serialize,
-  Deserialize,
-  Clone,
-  Hash,
-  Ord,
-  PartialOrd,
-  ToSchema,
-)]
-#[serde(rename_all = "camelCase")]
-#[typeshare]
-pub enum Operator {
-  /// All requirements must be satisfied.
-  #[serde(rename = "AND")]
-  And,
-  /// Any requirement may be satisfied.
-  #[serde(rename = "OR")]
-  Or,
-}
-
-impl Into<Bson> for Operator {
-  fn into(self) -> Bson {
-    match self {
-      Self::And => Bson::String("AND".to_string()),
-      Self::Or => Bson::String("OR".to_string()),
-    }
-  }
-}
-
 #[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Requirements {
