@@ -1,8 +1,8 @@
 fmt:
-  ruff check --select I --fix && ruff format
+  cargo fmt
 
 readme:
   present --in-place README.md
 
 run *args:
-  uv run main.py {{args}}
+  cargo run {{ args }}

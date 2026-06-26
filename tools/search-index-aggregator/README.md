@@ -1,42 +1,51 @@
-The search functionality in [mcgill.courses](https://mcgill.courses/) implements client-side indexing of course data,
-extracting course and instructor keywords for optimized search performance.
+## search-index-aggregator
 
-Our system utilizes a [JSON seed file](https://github.com/terror/mcgill.courses/tree/master/seed) containing scraped course data for database initialization,
-which we repurpose for the search indexing process.
+**search-index-aggregator** is the tool we use to build the compact
+client-side search data consumed by [mcgill.courses](https://mcgill.courses/).
+It reads scraped course seed files and writes the smaller JSON payload imported
+by the frontend search index.
 
-To address performance concerns, the raw data files are substantial and would consume
-excessive resources when bundled for client-side delivery.
+The source data lives in course [seed files](https://github.com/mcgill-courses/mcgill.courses/tree/master/seed),
+which contain the full course objects used to initialize the production
+database. Those files include significantly more data than the search bar and
+schedule builder need.
 
-**search-index-aggregator** selectively includes only the [JSON fields](https://github.com/terror/mcgill.courses/blob/master/client/src/assets/search-data.json) required by the
-search component and schedule builder, significantly reducing payload size and improving resource efficiency.
+This tool keeps only each course's ID, title, terms, and unique instructor
+names, then writes them to
+[`client/src/assets/search-data.json`](https://github.com/mcgill-courses/mcgill.courses/blob/master/client/src/assets/search-data.json).
 
-### Setup
+## Usage
 
-First, install dependencies:
+You can invoke `search-index-aggregator` from within this directory as follows:
 
 ```bash
-uv sync
+cargo run
 ```
 
-### Usage
+The `--seed-path` flag specifies the directory containing seed files (default:
+the repository `seed` directory). The `--output-path` flag specifies the JSON
+file to write (default: the repository
+`client/src/assets/search-data.json` file).
 
-Run this tool from this directory directly:
-
-```shell
-uv run main.py
+```bash
+cargo run -- --seed-path ../../seed --output-path ../../client/src/assets/search-data.json
 ```
 
-...or you can specify options:
+## Input
 
-```present uv run main.py --help
-usage: main.py [-h] [-s SEED_PATH] [-o OUTPUT_PATH]
+The aggregator reads files named `courses-*.json` from `--seed-path`, sorted by
+file name. Files with other names are ignored.
 
-Aggregate course data from seed files and export to JSON.
+When the same course ID appears in multiple seed files, the later seed file
+replaces the course title and terms while preserving the course's first-seen
+position in the output list. Instructor names are collected across all course
+seed files.
 
-options:
-  -h, --help            show this help message and exit
-  -s SEED_PATH, --seed-path SEED_PATH
-                        Path to the directory containing seed files.
-  -o OUTPUT_PATH, --output-path OUTPUT_PATH
-                        Path to the output JSON file.
-```
+## Output
+
+The output JSON contains two top-level arrays:
+
+| Field | Description |
+|-------|-------------|
+| `courses` | Course objects with `id`, `title`, and `terms` fields |
+| `instructors` | Sorted unique instructor names |

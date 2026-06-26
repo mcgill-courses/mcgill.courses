@@ -3859,6 +3859,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "search-index-aggregator"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "rayon",
+ "serde",
+ "serde_json",
+ "tempfile",
+]
+
+[[package]]
 name = "security-framework"
 version = "2.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
