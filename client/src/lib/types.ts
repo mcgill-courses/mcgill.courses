@@ -46,7 +46,7 @@ export interface Instructor {
   term: string;
 }
 
-export type ReqNode =
+export type RequirementNode =
   /** A single course code requirement. */
   | { type: 'course'; data: string }
   /** A group of requirement nodes combined by an operator. */
@@ -56,7 +56,7 @@ export type ReqNode =
         /** Operator used to combine the child nodes. */
         operator: Operator;
         /** Child requirement nodes in the group. */
-        groups: ReqNode[];
+        groups: RequirementNode[];
       };
     };
 
@@ -105,9 +105,9 @@ export interface Course {
   /** Course codes that list this course as a prerequisite. */
   leadingTo: string[];
   /** Structured prerequisites expression. */
-  logicalPrerequisites?: ReqNode;
+  logicalPrerequisites?: RequirementNode;
   /** Structured corequisites expression. */
-  logicalCorequisites?: ReqNode;
+  logicalCorequisites?: RequirementNode;
   /** Restriction text from the catalog. */
   restrictions?: string;
   /** Schedule offerings for the course. */

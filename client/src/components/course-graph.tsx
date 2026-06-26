@@ -10,8 +10,7 @@ import type {
 } from 'react-vis-graph-wrapper';
 
 import { useDarkMode } from '../hooks/use-dark-mode';
-import type { ReqNode } from '../lib/types';
-import type { Course } from '../lib/types';
+import type { Course, RequirementNode } from '../lib/types';
 import {
   courseIdToUrlParam,
   isValidCourseCode,
@@ -55,13 +54,13 @@ type CourseGraphProps = {
 
 type NodeType = 'operator' | 'prerequisite' | 'corequisite';
 
-const makeGraph = (nodeGroup: NodeType, requirements?: ReqNode) => {
+const makeGraph = (nodeGroup: NodeType, requirements?: RequirementNode) => {
   if (!requirements) return { nodes: [], edges: [], root: undefined };
 
   const nodes: Node[] = [];
   const edges: Edge[] = [];
 
-  const traverse = (node: ReqNode): string => {
+  const traverse = (node: RequirementNode): string => {
     if (node.type === 'course') {
       const courseCode = node.data;
 

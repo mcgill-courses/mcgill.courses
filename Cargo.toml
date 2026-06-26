@@ -9,6 +9,7 @@ members = [
   "crates/*",
   "tools/course-average-fetcher",
   "tools/final-exam-schedule-parser",
+  "tools/requirement-parser",
   "tools/scraper",
   "tools/search-index-aggregator",
 ]
