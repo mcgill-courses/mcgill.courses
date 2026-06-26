@@ -12,13 +12,14 @@ use {
     env, fs,
     path::{Path, PathBuf},
     process,
-    sync::OnceLock,
+    sync::LazyLock,
     thread,
     time::Duration,
   },
 };
 
 mod arguments;
+mod re;
 
 const DEFAULT_API_URL: &str = "https://api.openai.com/v1/chat/completions";
 
@@ -163,24 +164,6 @@ struct RequirementResponse {
   requirement: Option<RequirementNode>,
 }
 
-fn course_code_regex() -> &'static Regex {
-  static REGEX: OnceLock<Regex> = OnceLock::new();
-
-  REGEX.get_or_init(|| {
-    Regex::new(r"^[A-Z0-9]{4} [0-9]{3}(D1|D2|N1|N2|J1|J2|J3)?$")
-      .expect("course code regex should compile")
-  })
-}
-
-fn course_code_search_regex() -> &'static Regex {
-  static REGEX: OnceLock<Regex> = OnceLock::new();
-
-  REGEX.get_or_init(|| {
-    Regex::new(r"\b[A-Z0-9]{4} [0-9]{3}(D1|D2|N1|N2|J1|J2|J3)?\b")
-      .expect("course code search regex should compile")
-  })
-}
-
 fn parse_course_req(
   client: &OpenAiClient,
   req: Option<&str>,
@@ -291,7 +274,7 @@ fn candidates(courses: &[String], req: &str) -> Result<Vec<String>> {
     candidates.insert(course);
   }
 
-  for course in course_code_search_regex().find_iter(req) {
+  for course in re::COURSE_CODE_IN_TEXT.find_iter(req) {
     candidates.insert(course.as_str().to_string());
   }
 
@@ -301,7 +284,7 @@ fn candidates(courses: &[String], req: &str) -> Result<Vec<String>> {
 fn normalize_course_code(course: &str) -> Option<String> {
   let course = course.trim().to_uppercase().replace('-', " ");
 
-  if course_code_regex().is_match(&course) {
+  if re::COURSE_CODE.is_match(&course) {
     return Some(course);
   }
 
@@ -315,7 +298,7 @@ fn normalize_course_code(course: &str) -> Option<String> {
 
   let course = format!("{subject} {code}");
 
-  course_code_regex().is_match(&course).then_some(course)
+  re::COURSE_CODE.is_match(&course).then_some(course)
 }
 
 fn parse_html(html: &str) -> Result<String> {
