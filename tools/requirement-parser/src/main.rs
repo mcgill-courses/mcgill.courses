@@ -17,7 +17,8 @@ use {
   openai_client::OpenAiClient,
   progress::Progress,
   regex::Regex,
-  schema::{RequirementResponse, RequirementSchema},
+  response::Response,
+  schema::Schema,
   serde::Deserialize,
   serde_json::json,
   std::{
@@ -39,6 +40,7 @@ mod openai_client;
 mod parser;
 mod progress;
 mod re;
+mod response;
 mod schema;
 mod summary;
 

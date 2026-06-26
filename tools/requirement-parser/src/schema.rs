@@ -1,15 +1,10 @@
 use super::*;
 
-#[derive(Debug, Deserialize)]
-pub(super) struct RequirementResponse {
-  pub(super) requirement: Option<RequirementNode>,
-}
-
-pub(super) struct RequirementSchema<'a> {
+pub(super) struct Schema<'a> {
   candidates: &'a [String],
 }
 
-impl<'a> RequirementSchema<'a> {
+impl<'a> Schema<'a> {
   pub(super) fn new(candidates: &'a [String]) -> Self {
     Self { candidates }
   }

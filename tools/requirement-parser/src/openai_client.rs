@@ -49,7 +49,7 @@ impl OpenAiClient {
           .build()?
           .into(),
       ])
-      .response_format(RequirementSchema::new(&candidates).response_format())
+      .response_format(Schema::new(&candidates).response_format())
       .temperature(0.0)
       .build()?;
 
@@ -68,7 +68,7 @@ impl OpenAiClient {
       .context("GPT gave none for message content")?
       .replace('\n', "");
 
-    let response = serde_json::from_str::<RequirementResponse>(&prediction)
+    let response = serde_json::from_str::<Response>(&prediction)
       .context("failed to parse structured requirement response")?;
 
     match response.requirement {
