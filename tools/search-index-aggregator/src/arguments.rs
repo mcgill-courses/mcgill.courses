@@ -1,6 +1,6 @@
 use super::*;
 
-#[derive(Parser, Debug)]
+#[derive(Debug, Parser)]
 #[command(
   author,
   version,
@@ -78,7 +78,7 @@ impl Arguments {
       })
       .collect::<Vec<Course>>();
 
-    let output = serde_json::to_string_pretty(&SearchData {
+    let output = serde_json::to_string_pretty(&Output {
       courses,
       instructors: instructors.into_iter().collect(),
     })?;
