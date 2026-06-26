@@ -6,9 +6,9 @@ pub(super) struct Parser {
 }
 
 impl Parser {
-  pub(super) fn new(api_base: &str) -> Result<Self> {
+  pub(super) fn new(base_url: &str) -> Result<Self> {
     Ok(Self {
-      client: OpenAiClient::new(api_base)?,
+      client: OpenAiClient::new(base_url)?,
     })
   }
 

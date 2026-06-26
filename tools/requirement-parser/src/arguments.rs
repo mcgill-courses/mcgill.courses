@@ -1,14 +1,18 @@
 use super::*;
 
-#[derive(Debug, Parser)]
+#[derive(Clap, Debug)]
 #[command(
   author,
   version,
   about = "Parse logical course requirements from existing data."
 )]
 pub(super) struct Arguments {
-  #[arg(long, alias = "api-url", default_value = DEFAULT_API_BASE, hide = true)]
-  api_base: String,
+  #[arg(
+    long = "base-url",
+    default_value = DEFAULT_BASE_URL,
+    help = "The OpenAI API base URL."
+  )]
+  base_url: String,
   #[arg(
     short,
     long,
@@ -30,7 +34,7 @@ impl Arguments {
   pub(super) async fn run(self) -> Result {
     dotenv().ok();
 
-    let parser = parser::Parser::new(&self.api_base)?;
+    let parser = Parser::new(&self.base_url)?;
 
     let contents = fs::read_to_string(&self.file)
       .with_context(|| format!("failed to read {}", self.file.display()))?;
@@ -78,7 +82,7 @@ impl Arguments {
         match parser.parse(text, &course.prerequisites).await {
           Ok(requirements) => requirements,
           Err(error) => {
-            println!("  prerequisites failed: {error}");
+            println!("  prerequisites failed: {error:#}");
             println!();
             summary.failed += 1;
             continue 'courses;
@@ -101,7 +105,7 @@ impl Arguments {
         match parser.parse(text, &course.corequisites).await {
           Ok(requirements) => requirements,
           Err(error) => {
-            println!("  corequisites failed: {error}");
+            println!("  corequisites failed: {error:#}");
             println!();
             summary.failed += 1;
             continue 'courses;

@@ -1,5 +1,7 @@
 use super::*;
 
+const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
+
 #[derive(Debug)]
 pub(super) struct OpenAiClient {
   client: Client<OpenAIConfig>,
@@ -7,7 +9,7 @@ pub(super) struct OpenAiClient {
 }
 
 impl OpenAiClient {
-  pub(super) fn new(api_base: &str) -> Result<Self> {
+  pub(super) fn new(base_url: &str) -> Result<Self> {
     Ok(Self {
       client: Client::with_config(
         OpenAIConfig::new()
@@ -15,7 +17,7 @@ impl OpenAiClient {
             env::var("OPENAI_API_KEY")
               .context("OpenAI API key not present in environment variables")?,
           )
-          .with_api_base(api_base),
+          .with_api_base(base_url),
       ),
       model: env::var("OPENAI_MODEL_NAME")
         .context("OpenAI model name not present in environment variables")?,
@@ -53,11 +55,9 @@ impl OpenAiClient {
       .temperature(0.0)
       .build()?;
 
-    let response = self
-      .client
-      .chat()
-      .create(request)
+    let response = timeout(REQUEST_TIMEOUT, self.client.chat().create(request))
       .await
+      .context("OpenAI request timed out")?
       .context("failed to send OpenAI request")?;
 
     let prediction = response

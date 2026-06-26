@@ -11,10 +11,11 @@ use {
     },
   },
   candidate::Candidate,
-  clap::Parser,
+  clap::Parser as Clap,
   dotenv::dotenv,
   model::RequirementNode,
   openai_client::OpenAiClient,
+  parser::Parser,
   progress::Progress,
   regex::Regex,
   response::Response,
@@ -31,7 +32,7 @@ use {
     time::Duration,
   },
   summary::Summary,
-  tokio::time::sleep,
+  tokio::time::{sleep, timeout},
 };
 
 mod arguments;
@@ -44,7 +45,7 @@ mod response;
 mod schema;
 mod summary;
 
-const DEFAULT_API_BASE: &str = "https://api.openai.com/v1";
+const DEFAULT_BASE_URL: &str = "https://api.openai.com/v1";
 const PROMPT: &str = include_str!("prompt.txt");
 
 type Result<T = (), E = Error> = std::result::Result<T, E>;
