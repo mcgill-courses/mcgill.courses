@@ -1,10 +1,10 @@
 set dotenv-load
 
 fmt:
-  ruff check --select I --fix && ruff format
+  cargo fmt -p course-average-fetcher
 
 readme:
   present --in-place README.md
 
 run *args:
-  uv run main.py {{args}}
+  cargo run {{ args }}

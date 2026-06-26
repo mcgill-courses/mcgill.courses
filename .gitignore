@@ -45,5 +45,5 @@ lerna-debug.log*
 /notes
 
 # Google API credentials (tools/course-average-fetcher)
-token.json
+tokencache.json
 credentials.json
