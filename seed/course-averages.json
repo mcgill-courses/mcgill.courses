@@ -75,6 +75,16 @@
     "average": "B+"
   },
   {
+    "courseId": "ACCT351",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "ACCT351",
+    "term": "Summer 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ACCT352",
     "term": "Fall 2016",
     "average": "B"
@@ -120,6 +130,11 @@
     "average": "B"
   },
   {
+    "courseId": "ACCT352",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ACCT354",
     "term": "Fall 2016",
     "average": "B"
@@ -157,6 +172,16 @@
   {
     "courseId": "ACCT354",
     "term": "Fall 2023",
+    "average": "B+"
+  },
+  {
+    "courseId": "ACCT354",
+    "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "ACCT354",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -317,6 +342,16 @@
   {
     "courseId": "ACCT385",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "ACCT385",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "ACCT385",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -492,6 +527,11 @@
   {
     "courseId": "AEBI122",
     "term": "Winter 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "AEBI122",
+    "term": "Winter 2025",
     "average": "B"
   },
   {
@@ -985,6 +1025,11 @@
     "average": "C+"
   },
   {
+    "courseId": "AEMA102",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "AEMA202",
     "term": "Fall 2015",
     "average": "B-"
@@ -1147,6 +1192,11 @@
   {
     "courseId": "AEMA310",
     "term": "Winter 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "AEMA310",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -1275,6 +1325,11 @@
     "average": "B"
   },
   {
+    "courseId": "AEPH114",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "AEPH115",
     "term": "Winter 2017",
     "average": "B-"
@@ -1307,6 +1362,11 @@
   {
     "courseId": "AERO401",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "AERO401",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -1370,6 +1430,11 @@
     "average": "A"
   },
   {
+    "courseId": "AFRI200",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "AFRI401",
     "term": "Fall 2016",
     "average": "A"
@@ -1383,6 +1448,16 @@
     "courseId": "AFRI401",
     "term": "Fall 2018",
     "average": "A"
+  },
+  {
+    "courseId": "AFYR101",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "AFYR102",
+    "term": "Winter 2025",
+    "average": "B+"
   },
   {
     "courseId": "AGEC200",
@@ -1423,6 +1498,11 @@
     "courseId": "AGEC200",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "AGEC200",
+    "term": "Fall 2025",
+    "average": "B"
   },
   {
     "courseId": "AGEC231",
@@ -1518,6 +1598,11 @@
     "courseId": "AGRI510",
     "term": "Winter 2021",
     "average": "A"
+  },
+  {
+    "courseId": "AGRI510",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "AGRI550",
@@ -1635,6 +1720,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ANAT214",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ANAT261",
     "term": "Fall 2013",
     "average": "B"
@@ -1692,6 +1782,11 @@
   {
     "courseId": "ANAT261",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "ANAT261",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -1875,6 +1970,11 @@
     "average": "B"
   },
   {
+    "courseId": "ANAT316",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ANAT321",
     "term": "Fall 2015",
     "average": "A-"
@@ -1922,6 +2022,11 @@
   {
     "courseId": "ANAT321",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "ANAT321",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -1990,6 +2095,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ANAT323",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "ANAT365",
     "term": "Fall 2014",
     "average": "B-"
@@ -2035,6 +2145,16 @@
     "average": "B"
   },
   {
+    "courseId": "ANAT365",
+    "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "ANAT365",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "ANAT381",
     "term": "Fall 2018",
     "average": "B+"
@@ -2067,6 +2187,11 @@
   {
     "courseId": "ANAT381",
     "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "ANAT381",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -2115,6 +2240,11 @@
     "average": "A"
   },
   {
+    "courseId": "ANAT514",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "ANAT541",
     "term": "Winter 2018",
     "average": "B+"
@@ -2210,6 +2340,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ANSC250",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ANSC312",
     "term": "Winter 2017",
     "average": "B+"
@@ -2258,6 +2393,11 @@
     "courseId": "ANSC323",
     "term": "Fall 2024",
     "average": "B"
+  },
+  {
+    "courseId": "ANSC323",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "ANSC350",
@@ -2337,6 +2477,11 @@
   {
     "courseId": "ANSC424",
     "term": "Winter 2023",
+    "average": "B+"
+  },
+  {
+    "courseId": "ANSC424",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -2495,6 +2640,16 @@
     "average": "A-"
   },
   {
+    "courseId": "ANTH202",
+    "term": "Summer 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "ANTH202",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ANTH203",
     "term": "Winter 2016",
     "average": "B"
@@ -2655,6 +2810,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ANTH209",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ANTH210",
     "term": "Winter 2013",
     "average": "B"
@@ -2707,6 +2867,16 @@
   {
     "courseId": "ANTH210",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "ANTH210",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "ANTH210",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -2770,6 +2940,11 @@
     "average": "B"
   },
   {
+    "courseId": "ANTH212",
+    "term": "Winter 2026",
+    "average": "A-"
+  },
+  {
     "courseId": "ANTH213",
     "term": "Winter 2024",
     "average": "A-"
@@ -2828,6 +3003,11 @@
     "courseId": "ANTH222",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "ANTH222",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "ANTH227",
@@ -2915,6 +3095,16 @@
     "average": "A-"
   },
   {
+    "courseId": "ANTH227",
+    "term": "Summer 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "ANTH227",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "ANTH301",
     "term": "Fall 2016",
     "average": "B+"
@@ -2955,6 +3145,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ANTH303",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
     "courseId": "ANTH304",
     "term": "Fall 2022",
     "average": "B+"
@@ -2978,6 +3173,11 @@
     "courseId": "ANTH307",
     "term": "Fall 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "ANTH307",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "ANTH308",
@@ -3008,6 +3208,11 @@
     "courseId": "ANTH308",
     "term": "Winter 2023",
     "average": "B+"
+  },
+  {
+    "courseId": "ANTH308",
+    "term": "Fall 2023",
+    "average": "B"
   },
   {
     "courseId": "ANTH311",
@@ -3110,6 +3315,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ANTH322",
+    "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
     "courseId": "ANTH325",
     "term": "Summer 2018",
     "average": "A-"
@@ -3175,6 +3385,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ANTH327",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ANTH331",
     "term": "Winter 2021",
     "average": "A-"
@@ -3198,6 +3413,11 @@
     "courseId": "ANTH338",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "ANTH338",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "ANTH339",
@@ -3335,6 +3555,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ANTH355",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ANTH357",
     "term": "Fall 2018",
     "average": "A-"
@@ -3347,6 +3572,11 @@
   {
     "courseId": "ANTH357",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "ANTH357",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -3372,6 +3602,11 @@
   {
     "courseId": "ANTH358",
     "term": "Fall 2023",
+    "average": "A"
+  },
+  {
+    "courseId": "ANTH358",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -3610,6 +3845,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ARCH251",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ARCH303",
     "term": "Fall 2022",
     "average": "A-"
@@ -3770,6 +4010,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ARCH517",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ARCH528",
     "term": "Winter 2017",
     "average": "A-"
@@ -3827,6 +4072,11 @@
   {
     "courseId": "ARTH200",
     "term": "Summer 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "ARTH200",
+    "term": "Summer 2025",
     "average": "A-"
   },
   {
@@ -3902,6 +4152,11 @@
   {
     "courseId": "ARTH204",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "ARTH204",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -4050,9 +4305,19 @@
     "average": "B+"
   },
   {
+    "courseId": "ARTH223",
+    "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
     "courseId": "ARTH225",
     "term": "Fall 2023",
     "average": "B+"
+  },
+  {
+    "courseId": "ARTH225",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "ARTH226",
@@ -4087,6 +4352,16 @@
   {
     "courseId": "ARTH302",
     "term": "Fall 2023",
+    "average": "B+"
+  },
+  {
+    "courseId": "ARTH302",
+    "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "ARTH302",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -4155,6 +4430,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ARTH315",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ARTH321",
     "term": "Winter 2017",
     "average": "B+"
@@ -4185,9 +4465,19 @@
     "average": "B+"
   },
   {
+    "courseId": "ARTH323",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
     "courseId": "ARTH325",
     "term": "Winter 2023",
     "average": "B+"
+  },
+  {
+    "courseId": "ARTH325",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "ARTH336",
@@ -4235,6 +4525,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ARTH339",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ARTH352",
     "term": "Fall 2022",
     "average": "A"
@@ -4273,6 +4568,16 @@
     "courseId": "ARTH353",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "ARTH353",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "ARTH353",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "ARTH354",
@@ -4400,6 +4705,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ATOC181",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ATOC182",
     "term": "Winter 2018",
     "average": "B+"
@@ -4423,6 +4733,11 @@
     "courseId": "ATOC182",
     "term": "Fall 2023",
     "average": "B+"
+  },
+  {
+    "courseId": "ATOC182",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "ATOC183",
@@ -4480,6 +4795,16 @@
     "average": "B+"
   },
   {
+    "courseId": "ATOC184",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "ATOC184",
+    "term": "Winter 2026",
+    "average": "B+"
+  },
+  {
     "courseId": "ATOC185",
     "term": "Fall 2014",
     "average": "B+"
@@ -4532,6 +4857,11 @@
   {
     "courseId": "ATOC185",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "ATOC185",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -4660,6 +4990,11 @@
     "average": "A-"
   },
   {
+    "courseId": "BASC201",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "BIEN200",
     "term": "Fall 2016",
     "average": "A-"
@@ -4705,6 +5040,11 @@
     "average": "A"
   },
   {
+    "courseId": "BIEN200",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "BIEN210",
     "term": "Winter 2017",
     "average": "A-"
@@ -4745,6 +5085,11 @@
     "average": "A-"
   },
   {
+    "courseId": "BIEN210",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "BIEN219",
     "term": "Fall 2020",
     "average": "A-"
@@ -4768,6 +5113,11 @@
     "courseId": "BIEN219",
     "term": "Fall 2024",
     "average": "A"
+  },
+  {
+    "courseId": "BIEN219",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "BIEN220",
@@ -4775,6 +5125,11 @@
     "average": "A"
   },
   {
+    "courseId": "BIEN220",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "BIEN267",
     "term": "Fall 2022",
     "average": "A"
@@ -4787,6 +5142,11 @@
   {
     "courseId": "BIEN267",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "BIEN267",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -4830,6 +5190,11 @@
     "average": "A"
   },
   {
+    "courseId": "BIEN290",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "BIEN300",
     "term": "Winter 2019",
     "average": "B"
@@ -4852,6 +5217,11 @@
   {
     "courseId": "BIEN300",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "BIEN300",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -4890,6 +5260,11 @@
     "average": "A-"
   },
   {
+    "courseId": "BIEN310",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "BIEN314",
     "term": "Fall 2019",
     "average": "A-"
@@ -4920,6 +5295,11 @@
     "average": "B+"
   },
   {
+    "courseId": "BIEN314",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "BIEN320",
     "term": "Winter 2019",
     "average": "A-"
@@ -4938,6 +5318,11 @@
     "courseId": "BIEN320",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "BIEN320",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "BIEN330",
@@ -5015,6 +5400,11 @@
     "average": "A-"
   },
   {
+    "courseId": "BIEN350",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "BIEN360",
     "term": "Winter 2019",
     "average": "A-"
@@ -5117,6 +5507,16 @@
   {
     "courseId": "BIEN420",
     "term": "Winter 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "BIEN420",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "BIEN470D2",
+    "term": "Winter 2021",
     "average": "A"
   },
   {
@@ -5275,6 +5675,11 @@
     "average": "A"
   },
   {
+    "courseId": "BIEN590",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "BIOC212",
     "term": "Winter 2015",
     "average": "B+"
@@ -5320,6 +5725,11 @@
     "average": "B+"
   },
   {
+    "courseId": "BIOC212",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "BIOC220",
     "term": "Winter 2016",
     "average": "B+"
@@ -5357,6 +5767,11 @@
   {
     "courseId": "BIOC220",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "BIOC220",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -5407,6 +5822,11 @@
   {
     "courseId": "BIOC311",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "BIOC311",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -5495,6 +5915,11 @@
     "average": "B+"
   },
   {
+    "courseId": "BIOC320",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "BIOC404",
     "term": "Winter 2018",
     "average": "B+"
@@ -5545,6 +5970,11 @@
     "average": "B+"
   },
   {
+    "courseId": "BIOC450",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "BIOC454",
     "term": "Fall 2017",
     "average": "B+"
@@ -5582,6 +6012,11 @@
   {
     "courseId": "BIOC454",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "BIOC454",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -5667,6 +6102,11 @@
   {
     "courseId": "BIOL111",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "BIOL111",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -5790,6 +6230,11 @@
     "average": "A-"
   },
   {
+    "courseId": "BIOL115",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "BIOL200",
     "term": "Fall 2013",
     "average": "B-"
@@ -5847,6 +6292,11 @@
   {
     "courseId": "BIOL200",
     "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "BIOL200",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -6095,6 +6545,11 @@
     "average": "A-"
   },
   {
+    "courseId": "BIOL206",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "BIOL210",
     "term": "Fall 2016",
     "average": "B"
@@ -6137,6 +6592,11 @@
   {
     "courseId": "BIOL210",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "BIOL210",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -6195,6 +6655,11 @@
     "average": "B+"
   },
   {
+    "courseId": "BIOL215",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "BIOL216",
     "term": "Winter 2022",
     "average": "A-"
@@ -6208,6 +6673,11 @@
     "courseId": "BIOL216",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "BIOL216",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "BIOL219",
@@ -6395,6 +6865,16 @@
     "average": "A"
   },
   {
+    "courseId": "BIOL301",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "BIOL301",
+    "term": "Winter 2026",
+    "average": "A"
+  },
+  {
     "courseId": "BIOL302",
     "term": "Fall 2022",
     "average": "A-"
@@ -6407,6 +6887,11 @@
   {
     "courseId": "BIOL302",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "BIOL302",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -6498,6 +6983,11 @@
     "courseId": "BIOL304",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "BIOL304",
+    "term": "Fall 2025",
+    "average": "B"
   },
   {
     "courseId": "BIOL305",
@@ -6730,6 +7220,11 @@
     "average": "A-"
   },
   {
+    "courseId": "BIOL311",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "BIOL313",
     "term": "Winter 2019",
     "average": "B+"
@@ -6747,6 +7242,11 @@
   {
     "courseId": "BIOL313",
     "term": "Winter 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "BIOL313",
+    "term": "Winter 2024",
     "average": "A-"
   },
   {
@@ -6830,6 +7330,11 @@
     "average": "A"
   },
   {
+    "courseId": "BIOL320",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "BIOL342",
     "term": "Winter 2017",
     "average": "A-"
@@ -6903,6 +7408,11 @@
     "courseId": "BIOL373",
     "term": "Fall 2019",
     "average": "B+"
+  },
+  {
+    "courseId": "BIOL389",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "BIOL395",
@@ -6998,6 +7508,11 @@
     "courseId": "BIOL465",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "BIOL465",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "BIOL530",
@@ -7590,6 +8105,11 @@
     "average": "B+"
   },
   {
+    "courseId": "BREE415",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "BREE416",
     "term": "Fall 2018",
     "average": "A-"
@@ -7665,6 +8185,11 @@
     "average": "A"
   },
   {
+    "courseId": "BREE504",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "BREE509",
     "term": "Winter 2025",
     "average": "A-"
@@ -7697,6 +8222,11 @@
   {
     "courseId": "BREE529",
     "term": "Fall 2019",
+    "average": "A"
+  },
+  {
+    "courseId": "BREE529",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -7975,6 +8505,11 @@
     "average": "A-"
   },
   {
+    "courseId": "BUSA364",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "BUSA391",
     "term": "Fall 2016",
     "average": "B"
@@ -8010,6 +8545,11 @@
     "average": "B+"
   },
   {
+    "courseId": "BUSA410",
+    "term": "Summer 2025",
+    "average": "A"
+  },
+  {
     "courseId": "BUSA430",
     "term": "Fall 2016",
     "average": "B+"
@@ -8042,6 +8582,11 @@
   {
     "courseId": "BUSA451D2",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "BUSA451D2",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -8140,6 +8685,11 @@
     "average": "B+"
   },
   {
+    "courseId": "CANS200",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "CANS301",
     "term": "Winter 2024",
     "average": "A-"
@@ -8187,6 +8737,11 @@
   {
     "courseId": "CANS315",
     "term": "Fall 2022",
+    "average": "A-"
+  },
+  {
+    "courseId": "CANS420",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -8595,6 +9150,11 @@
     "average": "B+"
   },
   {
+    "courseId": "CEFN332",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "CEGL355",
     "term": "Summer 2024",
     "average": "B+"
@@ -8705,6 +9265,11 @@
     "average": "C+"
   },
   {
+    "courseId": "CHEE200",
+    "term": "Fall 2025",
+    "average": "C+"
+  },
+  {
     "courseId": "CHEE204",
     "term": "Winter 2014",
     "average": "B-"
@@ -8750,6 +9315,16 @@
     "average": "B-"
   },
   {
+    "courseId": "CHEE204",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "CHEE204",
+    "term": "Winter 2026",
+    "average": "B-"
+  },
+  {
     "courseId": "CHEE220",
     "term": "Winter 2014",
     "average": "C+"
@@ -8793,6 +9368,16 @@
     "courseId": "CHEE220",
     "term": "Winter 2024",
     "average": "C+"
+  },
+  {
+    "courseId": "CHEE220",
+    "term": "Winter 2025",
+    "average": "B-"
+  },
+  {
+    "courseId": "CHEE220",
+    "term": "Winter 2026",
+    "average": "B-"
   },
   {
     "courseId": "CHEE231",
@@ -8847,6 +9432,11 @@
   {
     "courseId": "CHEE231",
     "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "CHEE231",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -8903,6 +9493,11 @@
     "courseId": "CHEE291",
     "term": "Fall 2024",
     "average": "A"
+  },
+  {
+    "courseId": "CHEE291",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "CHEE301",
@@ -8960,6 +9555,11 @@
     "average": "B+"
   },
   {
+    "courseId": "CHEE310",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "CHEE314",
     "term": "Fall 2014",
     "average": "B"
@@ -9007,6 +9607,11 @@
   {
     "courseId": "CHEE314",
     "term": "Fall 2024",
+    "average": "C+"
+  },
+  {
+    "courseId": "CHEE314",
+    "term": "Fall 2025",
     "average": "C+"
   },
   {
@@ -9050,6 +9655,16 @@
     "average": "C+"
   },
   {
+    "courseId": "CHEE315",
+    "term": "Winter 2025",
+    "average": "C+"
+  },
+  {
+    "courseId": "CHEE315",
+    "term": "Winter 2026",
+    "average": "C+"
+  },
+  {
     "courseId": "CHEE351",
     "term": "Winter 2015",
     "average": "B"
@@ -9088,6 +9703,11 @@
     "courseId": "CHEE351",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "CHEE351",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "CHEE360",
@@ -9150,6 +9770,11 @@
     "average": "B+"
   },
   {
+    "courseId": "CHEE370",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "CHEE380",
     "term": "Fall 2014",
     "average": "B+"
@@ -9200,6 +9825,11 @@
     "average": "B-"
   },
   {
+    "courseId": "CHEE380",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "CHEE390",
     "term": "Fall 2014",
     "average": "B+"
@@ -9248,6 +9878,11 @@
     "courseId": "CHEE390",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "CHEE390",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "CHEE400",
@@ -9283,6 +9918,11 @@
     "courseId": "CHEE400",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "CHEE400",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "CHEE401",
@@ -9350,6 +9990,11 @@
     "average": "B"
   },
   {
+    "courseId": "CHEE423",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "CHEE440",
     "term": "Winter 2017",
     "average": "B+"
@@ -9415,6 +10060,11 @@
     "average": "A-"
   },
   {
+    "courseId": "CHEE453",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "CHEE455",
     "term": "Winter 2017",
     "average": "B"
@@ -9442,6 +10092,11 @@
   {
     "courseId": "CHEE455",
     "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "CHEE455",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -9525,6 +10180,11 @@
     "average": "A-"
   },
   {
+    "courseId": "CHEE474",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "CHEE484",
     "term": "Winter 2015",
     "average": "B-"
@@ -9563,6 +10223,11 @@
     "courseId": "CHEE484",
     "term": "Winter 2024",
     "average": "C+"
+  },
+  {
+    "courseId": "CHEE484",
+    "term": "Winter 2025",
+    "average": "B-"
   },
   {
     "courseId": "CHEE491",
@@ -9695,6 +10360,11 @@
     "average": "B"
   },
   {
+    "courseId": "CHEE591",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "CHEE593",
     "term": "Winter 2015",
     "average": "A-"
@@ -9765,6 +10435,11 @@
     "average": "A-"
   },
   {
+    "courseId": "CHEM110",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "CHEM120",
     "term": "Winter 2013",
     "average": "B"
@@ -9822,6 +10497,11 @@
   {
     "courseId": "CHEM120",
     "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "CHEM120",
+    "term": "Winter 2026",
     "average": "B+"
   },
   {
@@ -9920,6 +10600,11 @@
     "average": "A"
   },
   {
+    "courseId": "CHEM181",
+    "term": "Winter 2026",
+    "average": "A"
+  },
+  {
     "courseId": "CHEM183",
     "term": "Fall 2013",
     "average": "B+"
@@ -9980,6 +10665,11 @@
     "average": "A-"
   },
   {
+    "courseId": "CHEM183",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "CHEM203",
     "term": "Fall 2014",
     "average": "A-"
@@ -10033,6 +10723,11 @@
     "courseId": "CHEM203",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "CHEM203",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "CHEM204",
@@ -10132,6 +10827,11 @@
   {
     "courseId": "CHEM204",
     "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "CHEM204",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -10288,6 +10988,16 @@
     "courseId": "CHEM212",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "CHEM212",
+    "term": "Summer 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "CHEM212",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "CHEM213",
@@ -10490,6 +11200,11 @@
     "average": "B+"
   },
   {
+    "courseId": "CHEM222",
+    "term": "Summer 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "CHEM223",
     "term": "Fall 2015",
     "average": "B-"
@@ -10560,6 +11275,11 @@
     "average": "B+"
   },
   {
+    "courseId": "CHEM233",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "CHEM234",
     "term": "Winter 2014",
     "average": "C+"
@@ -10620,9 +11340,19 @@
     "average": "B+"
   },
   {
+    "courseId": "CHEM234",
+    "term": "Winter 2026",
+    "average": "B+"
+  },
+  {
     "courseId": "CHEM242",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "CHEM242",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "CHEM243",
@@ -10653,6 +11383,11 @@
     "courseId": "CHEM244",
     "term": "Winter 2022",
     "average": "A-"
+  },
+  {
+    "courseId": "CHEM252",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "CHEM267",
@@ -10700,6 +11435,11 @@
     "average": "B+"
   },
   {
+    "courseId": "CHEM267",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "CHEM273",
     "term": "Winter 2021",
     "average": "A-"
@@ -10718,6 +11458,11 @@
     "courseId": "CHEM273",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "CHEM273",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "CHEM281",
@@ -10757,6 +11502,11 @@
   {
     "courseId": "CHEM281",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "CHEM281",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -10845,6 +11595,11 @@
     "average": "B"
   },
   {
+    "courseId": "CHEM302",
+    "term": "Fall 2025",
+    "average": "B-"
+  },
+  {
     "courseId": "CHEM332",
     "term": "Winter 2019",
     "average": "B+"
@@ -10862,6 +11617,11 @@
   {
     "courseId": "CHEM334",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "CHEM334",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -10897,6 +11657,11 @@
   {
     "courseId": "CHEM345",
     "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "CHEM345",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -10960,6 +11725,11 @@
     "average": "A-"
   },
   {
+    "courseId": "CHEM362",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "CHEM365",
     "term": "Winter 2019",
     "average": "B-"
@@ -10998,6 +11768,11 @@
     "courseId": "CHEM367",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "CHEM367",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "CHEM377",
@@ -11058,6 +11833,11 @@
     "courseId": "CHEM381",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "CHEM381",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "CHEM392D2",
@@ -11235,6 +12015,11 @@
     "average": "B"
   },
   {
+    "courseId": "CIVE205",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "CIVE206",
     "term": "Winter 2015",
     "average": "C+"
@@ -11390,6 +12175,16 @@
     "average": "B+"
   },
   {
+    "courseId": "CIVE207",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "CIVE207",
+    "term": "Winter 2026",
+    "average": "B+"
+  },
+  {
     "courseId": "CIVE208",
     "term": "Fall 2016",
     "average": "A-"
@@ -11433,6 +12228,11 @@
     "courseId": "CIVE208",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "CIVE208",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "CIVE210",
@@ -11480,6 +12280,11 @@
     "average": "A-"
   },
   {
+    "courseId": "CIVE210",
+    "term": "Summer 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "CIVE225",
     "term": "Winter 2017",
     "average": "B"
@@ -11508,6 +12313,11 @@
     "courseId": "CIVE225",
     "term": "Winter 2024",
     "average": "B"
+  },
+  {
+    "courseId": "CIVE225",
+    "term": "Winter 2025",
+    "average": "B+"
   },
   {
     "courseId": "CIVE281",
@@ -11563,6 +12373,11 @@
     "courseId": "CIVE281",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "CIVE281",
+    "term": "Fall 2025",
+    "average": "B"
   },
   {
     "courseId": "CIVE284",
@@ -11752,6 +12567,11 @@
   {
     "courseId": "CIVE317",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "CIVE317",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -12441,6 +13261,11 @@
   },
   {
     "courseId": "CLAS302",
+    "term": "Winter 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "CLAS302",
     "term": "Winter 2024",
     "average": "A-"
   },
@@ -12462,6 +13287,11 @@
   {
     "courseId": "CLAS305",
     "term": "Fall 2019",
+    "average": "B+"
+  },
+  {
+    "courseId": "CLAS305",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -12645,6 +13475,11 @@
     "average": "A"
   },
   {
+    "courseId": "COMP189",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "COMP202",
     "term": "Winter 2013",
     "average": "B+"
@@ -12820,6 +13655,11 @@
     "average": "B+"
   },
   {
+    "courseId": "COMP202",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "COMP204",
     "term": "Fall 2018",
     "average": "B"
@@ -12885,6 +13725,16 @@
     "average": "B+"
   },
   {
+    "courseId": "COMP204",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "COMP204",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "COMP206",
     "term": "Fall 2013",
     "average": "B"
@@ -13000,6 +13850,11 @@
     "average": "B+"
   },
   {
+    "courseId": "COMP206",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "COMP208",
     "term": "Fall 2013",
     "average": "B"
@@ -13112,6 +13967,16 @@
   {
     "courseId": "COMP208",
     "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "COMP208",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "COMP208",
+    "term": "Winter 2026",
     "average": "A-"
   },
   {
@@ -13275,6 +14140,11 @@
     "average": "B-"
   },
   {
+    "courseId": "COMP250",
+    "term": "Fall 2025",
+    "average": "C+"
+  },
+  {
     "courseId": "COMP251",
     "term": "Winter 2014",
     "average": "B+"
@@ -13380,6 +14250,11 @@
     "average": "B+"
   },
   {
+    "courseId": "COMP251",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "COMP252",
     "term": "Winter 2014",
     "average": "B"
@@ -13428,6 +14303,11 @@
     "courseId": "COMP252",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "COMP252",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "COMP273",
@@ -13540,6 +14420,11 @@
     "average": "B+"
   },
   {
+    "courseId": "COMP273",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "COMP302",
     "term": "Winter 2014",
     "average": "B+"
@@ -13650,6 +14535,11 @@
     "average": "B"
   },
   {
+    "courseId": "COMP302",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "COMP303",
     "term": "Fall 2014",
     "average": "C+"
@@ -13743,6 +14633,16 @@
     "courseId": "COMP303",
     "term": "Fall 2024",
     "average": "C+"
+  },
+  {
+    "courseId": "COMP303",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "COMP303",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "COMP307",
@@ -13908,6 +14808,11 @@
     "courseId": "COMP310",
     "term": "Winter 2025",
     "average": "A-"
+  },
+  {
+    "courseId": "COMP310",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "COMP321",
@@ -14025,6 +14930,11 @@
     "average": "A-"
   },
   {
+    "courseId": "COMP322",
+    "term": "Winter 2026",
+    "average": "A"
+  },
+  {
     "courseId": "COMP330",
     "term": "Fall 2015",
     "average": "B+"
@@ -14100,6 +15010,11 @@
     "average": "B+"
   },
   {
+    "courseId": "COMP330",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "COMP345",
     "term": "Winter 2023",
     "average": "A-"
@@ -14107,6 +15022,11 @@
   {
     "courseId": "COMP345",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "COMP345",
+    "term": "Winter 2026",
     "average": "A-"
   },
   {
@@ -14158,6 +15078,11 @@
     "courseId": "COMP350",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "COMP350",
+    "term": "Fall 2025",
+    "average": "B"
   },
   {
     "courseId": "COMP360",
@@ -14360,6 +15285,11 @@
     "average": "A-"
   },
   {
+    "courseId": "COMP400",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "COMP409",
     "term": "Winter 2019",
     "average": "B"
@@ -14500,6 +15430,11 @@
     "average": "B+"
   },
   {
+    "courseId": "COMP424",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "COMP445",
     "term": "Fall 2020",
     "average": "A-"
@@ -14513,6 +15448,11 @@
     "courseId": "COMP445",
     "term": "Fall 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "COMP445",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "COMP451",
@@ -14625,6 +15565,11 @@
     "average": "B"
   },
   {
+    "courseId": "COMP520",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "COMP521",
     "term": "Winter 2017",
     "average": "B"
@@ -14657,6 +15602,11 @@
   {
     "courseId": "COMP523",
     "term": "Winter 2022",
+    "average": "B+"
+  },
+  {
+    "courseId": "COMP523",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -14730,6 +15680,11 @@
     "average": "A-"
   },
   {
+    "courseId": "COMP535",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "COMP540",
     "term": "Winter 2024",
     "average": "B+"
@@ -14755,6 +15710,11 @@
     "average": "B-"
   },
   {
+    "courseId": "COMP546",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "COMP547",
     "term": "Winter 2018",
     "average": "B-"
@@ -14772,6 +15732,11 @@
   {
     "courseId": "COMP549",
     "term": "Winter 2022",
+    "average": "A-"
+  },
+  {
+    "courseId": "COMP549",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -14807,6 +15772,11 @@
   {
     "courseId": "COMP550",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "COMP550",
+    "term": "Winter 2026",
     "average": "A-"
   },
   {
@@ -14890,6 +15860,11 @@
     "average": "A-"
   },
   {
+    "courseId": "COMP551",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "COMP553",
     "term": "Fall 2019",
     "average": "B+"
@@ -14928,6 +15903,11 @@
     "courseId": "COMP557",
     "term": "Fall 2022",
     "average": "B"
+  },
+  {
+    "courseId": "COMP557",
+    "term": "Winter 2024",
+    "average": "B+"
   },
   {
     "courseId": "COMP558",
@@ -15007,6 +15987,11 @@
   {
     "courseId": "COMP579",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "COMP579",
+    "term": "Winter 2026",
     "average": "A-"
   },
   {
@@ -15205,6 +16190,11 @@
     "average": "A-"
   },
   {
+    "courseId": "COMS210",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "COMS230",
     "term": "Fall 2015",
     "average": "B+"
@@ -15310,6 +16300,11 @@
     "average": "A-"
   },
   {
+    "courseId": "COMS310",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "COMS320",
     "term": "Winter 2021",
     "average": "A-"
@@ -15323,6 +16318,11 @@
     "courseId": "COMS330",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "COMS330",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "COMS340",
@@ -15405,6 +16405,11 @@
     "average": "A"
   },
   {
+    "courseId": "COMS361",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "COMS362",
     "term": "Winter 2019",
     "average": "A-"
@@ -15475,6 +16480,11 @@
     "average": "A-"
   },
   {
+    "courseId": "EAST211",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "EAST212",
     "term": "Winter 2014",
     "average": "B+"
@@ -15513,6 +16523,11 @@
     "courseId": "EAST212",
     "term": "Fall 2022",
     "average": "A"
+  },
+  {
+    "courseId": "EAST212",
+    "term": "Winter 2025",
+    "average": "B+"
   },
   {
     "courseId": "EAST213",
@@ -15557,6 +16572,11 @@
   {
     "courseId": "EAST213",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "EAST213",
+    "term": "Winter 2026",
     "average": "B+"
   },
   {
@@ -15670,6 +16690,11 @@
     "average": "A-"
   },
   {
+    "courseId": "EAST240D2",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "EAST250",
     "term": "Winter 2018",
     "average": "B"
@@ -15762,6 +16787,11 @@
   {
     "courseId": "EAST340D2",
     "term": "Winter 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "EAST340D2",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -16035,6 +17065,16 @@
     "average": "B"
   },
   {
+    "courseId": "ECON208",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "ECON208",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ECON209",
     "term": "Summer 2014",
     "average": "B-"
@@ -16185,6 +17225,11 @@
     "average": "B-"
   },
   {
+    "courseId": "ECON209",
+    "term": "Summer 2025",
+    "average": "B-"
+  },
+  {
     "courseId": "ECON219",
     "term": "Winter 2015",
     "average": "A"
@@ -16228,6 +17273,11 @@
     "courseId": "ECON219",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "ECON219",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "ECON223",
@@ -16278,6 +17328,11 @@
     "courseId": "ECON223",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "ECON223",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "ECON225",
@@ -16385,6 +17440,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ECON227D2",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "ECON230D2",
     "term": "Winter 2015",
     "average": "B+"
@@ -16427,6 +17487,11 @@
   {
     "courseId": "ECON230D2",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "ECON230D2",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -16648,6 +17713,11 @@
     "courseId": "ECON302",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "ECON302",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "ECON304",
@@ -16920,6 +17990,11 @@
     "average": "B"
   },
   {
+    "courseId": "ECON313",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ECON314",
     "term": "Fall 2016",
     "average": "B"
@@ -16990,6 +18065,11 @@
     "average": "B"
   },
   {
+    "courseId": "ECON314",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "ECON316",
     "term": "Fall 2015",
     "average": "B"
@@ -17032,6 +18112,11 @@
   {
     "courseId": "ECON316",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "ECON316",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -17158,6 +18243,11 @@
     "courseId": "ECON332",
     "term": "Fall 2024",
     "average": "B"
+  },
+  {
+    "courseId": "ECON332",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "ECON333",
@@ -17255,6 +18345,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ECON337",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ECON338",
     "term": "Winter 2017",
     "average": "A"
@@ -17305,6 +18400,11 @@
     "average": "B"
   },
   {
+    "courseId": "ECON347",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "ECON348",
     "term": "Winter 2019",
     "average": "B+"
@@ -17322,6 +18422,11 @@
   {
     "courseId": "ECON348",
     "term": "Winter 2023",
+    "average": "B"
+  },
+  {
+    "courseId": "ECON348",
+    "term": "Fall 2023",
     "average": "B"
   },
   {
@@ -17390,9 +18495,19 @@
     "average": "A-"
   },
   {
+    "courseId": "ECON354",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ECON405",
     "term": "Winter 2023",
     "average": "B+"
+  },
+  {
+    "courseId": "ECON405",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "ECON406",
@@ -17505,6 +18620,11 @@
     "average": "A"
   },
   {
+    "courseId": "ECON423",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ECON424",
     "term": "Winter 2018",
     "average": "B"
@@ -17537,6 +18657,11 @@
   {
     "courseId": "ECON426",
     "term": "Fall 2022",
+    "average": "B+"
+  },
+  {
+    "courseId": "ECON426",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -17648,6 +18773,11 @@
     "courseId": "ECON452",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "ECON452",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "ECON454",
@@ -18050,6 +19180,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ECSE205",
+    "term": "Fall 2025",
+    "average": "B-"
+  },
+  {
     "courseId": "ECSE206",
     "term": "Winter 2017",
     "average": "B-"
@@ -18127,6 +19262,11 @@
   {
     "courseId": "ECSE206",
     "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "ECSE206",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -18255,6 +19395,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ECSE210",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "ECSE211",
     "term": "Fall 2014",
     "average": "B+"
@@ -18352,6 +19497,11 @@
   {
     "courseId": "ECSE211",
     "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "ECSE211",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -18465,6 +19615,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ECSE222",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ECSE223",
     "term": "Winter 2017",
     "average": "B+"
@@ -18535,6 +19690,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ECSE223",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ECSE250",
     "term": "Winter 2023",
     "average": "B+"
@@ -18557,6 +19717,11 @@
   {
     "courseId": "ECSE250",
     "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "ECSE250",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -18630,6 +19795,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ECSE251",
+    "term": "Winter 2025",
+    "average": "B-"
+  },
+  {
     "courseId": "ECSE291",
     "term": "Fall 2014",
     "average": "A-"
@@ -18795,6 +19965,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ECSE307",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ECSE308",
     "term": "Winter 2018",
     "average": "A-"
@@ -18863,6 +20038,11 @@
     "courseId": "ECSE308",
     "term": "Winter 2025",
     "average": "B+"
+  },
+  {
+    "courseId": "ECSE308",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "ECSE309",
@@ -18930,6 +20110,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ECSE310",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ECSE316",
     "term": "Winter 2019",
     "average": "B"
@@ -19060,6 +20245,11 @@
     "average": "A"
   },
   {
+    "courseId": "ECSE321",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ECSE322",
     "term": "Winter 2015",
     "average": "B"
@@ -19180,6 +20370,11 @@
     "average": "B-"
   },
   {
+    "courseId": "ECSE324",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "ECSE325",
     "term": "Winter 2018",
     "average": "B+"
@@ -19340,6 +20535,16 @@
     "average": "B+"
   },
   {
+    "courseId": "ECSE331",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "ECSE331",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ECSE334",
     "term": "Winter 2016",
     "average": "B+"
@@ -19388,6 +20593,11 @@
     "courseId": "ECSE335",
     "term": "Fall 2024",
     "average": "B-"
+  },
+  {
+    "courseId": "ECSE335",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "ECSE343",
@@ -19495,6 +20705,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ECSE353",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ECSE354",
     "term": "Winter 2018",
     "average": "B"
@@ -19538,6 +20753,11 @@
     "courseId": "ECSE354",
     "term": "Winter 2025",
     "average": "A-"
+  },
+  {
+    "courseId": "ECSE354",
+    "term": "Fall 2025",
+    "average": "B-"
   },
   {
     "courseId": "ECSE361",
@@ -19627,6 +20847,11 @@
   {
     "courseId": "ECSE362",
     "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "ECSE362",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -20010,6 +21235,11 @@
     "average": "A"
   },
   {
+    "courseId": "ECSE428",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "ECSE429",
     "term": "Fall 2016",
     "average": "B+"
@@ -20072,6 +21302,11 @@
   {
     "courseId": "ECSE429",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "ECSE429",
+    "term": "Winter 2025",
     "average": "A"
   },
   {
@@ -20590,6 +21825,11 @@
     "average": "A-"
   },
   {
+    "courseId": "EDEC203",
+    "term": "Winter 2024",
+    "average": "A"
+  },
+  {
     "courseId": "EDEC233",
     "term": "Winter 2019",
     "average": "A-"
@@ -20635,6 +21875,11 @@
     "average": "A"
   },
   {
+    "courseId": "EDEC233",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "EDEC247",
     "term": "Fall 2013",
     "average": "B+"
@@ -20668,6 +21913,11 @@
     "courseId": "EDEC247",
     "term": "Summer 2021",
     "average": "A-"
+  },
+  {
+    "courseId": "EDEC247",
+    "term": "Summer 2024",
+    "average": "A"
   },
   {
     "courseId": "EDEC248",
@@ -20756,6 +22006,11 @@
   },
   {
     "courseId": "EDEC249",
+    "term": "Fall 2023",
+    "average": "A"
+  },
+  {
+    "courseId": "EDEC249",
     "term": "Winter 2024",
     "average": "A"
   },
@@ -20803,6 +22058,11 @@
     "courseId": "EDEC254",
     "term": "Summer 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "EDEC254",
+    "term": "Summer 2025",
+    "average": "A"
   },
   {
     "courseId": "EDEC260",
@@ -20887,6 +22147,11 @@
   {
     "courseId": "EDEC260",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "EDEC260",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -21280,6 +22545,11 @@
     "average": "B+"
   },
   {
+    "courseId": "EDER309",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
     "courseId": "EDER319",
     "term": "Winter 2018",
     "average": "B+"
@@ -21322,6 +22592,11 @@
   {
     "courseId": "EDES361",
     "term": "Winter 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "EDES361",
+    "term": "Winter 2025",
     "average": "A"
   },
   {
@@ -21422,6 +22697,11 @@
   {
     "courseId": "EDKP206",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "EDKP206",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -21535,6 +22815,11 @@
     "average": "A"
   },
   {
+    "courseId": "EDKP250",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
     "courseId": "EDKP253",
     "term": "Winter 2018",
     "average": "A"
@@ -21650,6 +22935,11 @@
     "average": "A-"
   },
   {
+    "courseId": "EDKP292",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "EDKP293",
     "term": "Fall 2017",
     "average": "B+"
@@ -21720,6 +23010,11 @@
     "average": "B+"
   },
   {
+    "courseId": "EDKP330",
+    "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
     "courseId": "EDKP342",
     "term": "Winter 2018",
     "average": "A-"
@@ -21768,6 +23063,11 @@
     "courseId": "EDKP350",
     "term": "Winter 2024",
     "average": "A"
+  },
+  {
+    "courseId": "EDKP350",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "EDKP391",
@@ -21827,6 +23127,11 @@
   {
     "courseId": "EDKP395",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "EDKP395",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -21860,6 +23165,11 @@
     "average": "A-"
   },
   {
+    "courseId": "EDKP396",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "EDKP405",
     "term": "Winter 2017",
     "average": "A-"
@@ -21873,6 +23183,11 @@
     "courseId": "EDKP405",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "EDKP405",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "EDKP442",
@@ -21915,6 +23230,11 @@
     "average": "A-"
   },
   {
+    "courseId": "EDKP443",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "EDKP444",
     "term": "Fall 2021",
     "average": "A-"
@@ -21955,6 +23275,11 @@
     "average": "A-"
   },
   {
+    "courseId": "EDKP447",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "EDKP448",
     "term": "Winter 2017",
     "average": "B+"
@@ -21985,6 +23310,11 @@
     "average": "B+"
   },
   {
+    "courseId": "EDKP448",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "EDKP449",
     "term": "Fall 2017",
     "average": "A-"
@@ -21992,6 +23322,11 @@
   {
     "courseId": "EDKP449",
     "term": "Winter 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "EDKP449",
+    "term": "Winter 2025",
     "average": "A"
   },
   {
@@ -22027,6 +23362,11 @@
   {
     "courseId": "EDKP485",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "EDKP485",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -22077,6 +23417,11 @@
   {
     "courseId": "EDKP498",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "EDKP498",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -22170,6 +23515,11 @@
     "average": "A"
   },
   {
+    "courseId": "EDPE300",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "EDPE304",
     "term": "Fall 2014",
     "average": "A"
@@ -22220,6 +23570,11 @@
     "average": "A-"
   },
   {
+    "courseId": "EDPE304",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
     "courseId": "EDPE335",
     "term": "Winter 2021",
     "average": "A-"
@@ -22233,6 +23588,11 @@
     "courseId": "EDPE335",
     "term": "Winter 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "EDPE355",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "EDPE375",
@@ -22297,6 +23657,11 @@
   {
     "courseId": "EDPI309",
     "term": "Winter 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "EDPI309",
+    "term": "Winter 2025",
     "average": "A"
   },
   {
@@ -22595,6 +23960,11 @@
     "average": "A"
   },
   {
+    "courseId": "EDSL350",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
     "courseId": "EDSL412",
     "term": "Winter 2017",
     "average": "A-"
@@ -22830,6 +24200,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ENGL226",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ENGL227",
     "term": "Fall 2016",
     "average": "B+"
@@ -22905,6 +24280,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ENGL229",
+    "term": "Fall 2024",
+    "average": "B"
+  },
+  {
     "courseId": "ENGL230",
     "term": "Fall 2014",
     "average": "B"
@@ -23025,6 +24405,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ENGL275",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ENGL277",
     "term": "Fall 2016",
     "average": "B"
@@ -23070,6 +24455,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ENGL277",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ENGL279",
     "term": "Fall 2020",
     "average": "B+"
@@ -23090,6 +24480,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ENGL279",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ENGL280",
     "term": "Winter 2017",
     "average": "B"
@@ -23098,6 +24493,11 @@
     "courseId": "ENGL280",
     "term": "Winter 2019",
     "average": "B"
+  },
+  {
+    "courseId": "ENGL280",
+    "term": "Winter 2025",
+    "average": "B-"
   },
   {
     "courseId": "ENGL290",
@@ -23148,6 +24548,11 @@
     "courseId": "ENGL297",
     "term": "Fall 2022",
     "average": "B+"
+  },
+  {
+    "courseId": "ENGL297",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "ENGL301",
@@ -23240,6 +24645,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ENGL313",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "ENGL314",
     "term": "Winter 2017",
     "average": "B+"
@@ -23285,6 +24695,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ENGL315",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ENGL316",
     "term": "Fall 2017",
     "average": "B"
@@ -23293,6 +24708,11 @@
     "courseId": "ENGL316",
     "term": "Fall 2018",
     "average": "B+"
+  },
+  {
+    "courseId": "ENGL316",
+    "term": "Fall 2025",
+    "average": "B"
   },
   {
     "courseId": "ENGL317",
@@ -23335,6 +24755,16 @@
     "average": "B+"
   },
   {
+    "courseId": "ENGL319",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "ENGL320",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ENGL322",
     "term": "Fall 2019",
     "average": "B+"
@@ -23348,6 +24778,11 @@
     "courseId": "ENGL324",
     "term": "Winter 2017",
     "average": "B+"
+  },
+  {
+    "courseId": "ENGL324",
+    "term": "Winter 2022",
+    "average": "B"
   },
   {
     "courseId": "ENGL326",
@@ -23445,6 +24880,16 @@
     "average": "A-"
   },
   {
+    "courseId": "ENGL333",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "ENGL334",
+    "term": "Fall 2021",
+    "average": "B+"
+  },
+  {
     "courseId": "ENGL334",
     "term": "Winter 2024",
     "average": "B+"
@@ -23487,6 +24932,11 @@
   {
     "courseId": "ENGL343",
     "term": "Winter 2022",
+    "average": "A-"
+  },
+  {
+    "courseId": "ENGL344",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -23545,8 +24995,18 @@
     "average": "B+"
   },
   {
+    "courseId": "ENGL348",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ENGL351",
     "term": "Winter 2023",
+    "average": "B+"
+  },
+  {
+    "courseId": "ENGL351",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -23665,6 +25125,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ENGL371",
+    "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
     "courseId": "ENGL374",
     "term": "Winter 2018",
     "average": "B"
@@ -23758,6 +25223,11 @@
     "courseId": "ENGL394",
     "term": "Summer 2022",
     "average": "A-"
+  },
+  {
+    "courseId": "ENGL394",
+    "term": "Winter 2025",
+    "average": "B+"
   },
   {
     "courseId": "ENGL405",
@@ -24065,6 +25535,11 @@
     "average": "A"
   },
   {
+    "courseId": "ENVB313",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "ENVB410",
     "term": "Fall 2015",
     "average": "A-"
@@ -24113,6 +25588,11 @@
     "courseId": "ENVB437",
     "term": "Winter 2023",
     "average": "A"
+  },
+  {
+    "courseId": "ENVB437",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "ENVB506",
@@ -24185,6 +25665,16 @@
     "average": "B+"
   },
   {
+    "courseId": "ENVR200",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "ENVR200",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ENVR201",
     "term": "Fall 2012",
     "average": "B+"
@@ -24240,6 +25730,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ENVR201",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ENVR202",
     "term": "Winter 2013",
     "average": "B"
@@ -24282,6 +25777,11 @@
   {
     "courseId": "ENVR202",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "ENVR202",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -24360,6 +25860,16 @@
     "average": "B+"
   },
   {
+    "courseId": "ENVR203",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "ENVR203",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ENVR301",
     "term": "Fall 2013",
     "average": "B+"
@@ -24437,6 +25947,11 @@
   {
     "courseId": "ENVR301",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "ENVR301",
+    "term": "Winter 2025",
     "average": "A"
   },
   {
@@ -24690,6 +26205,11 @@
     "average": "A"
   },
   {
+    "courseId": "EPSC185",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "EPSC186",
     "term": "Winter 2017",
     "average": "A-"
@@ -24712,6 +26232,11 @@
   {
     "courseId": "EPSC186",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "EPSC186",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -24890,6 +26415,11 @@
     "average": "B+"
   },
   {
+    "courseId": "EPSC221",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "EPSC233",
     "term": "Fall 2017",
     "average": "B+"
@@ -24972,6 +26502,11 @@
   {
     "courseId": "ESYS104",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "ESYS104",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -25220,6 +26755,11 @@
     "average": "A"
   },
   {
+    "courseId": "FACC100",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "FACC220",
     "term": "Fall 2012",
     "average": "B+"
@@ -25272,6 +26812,11 @@
   {
     "courseId": "FACC220",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "FACC220",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -25440,6 +26985,21 @@
     "average": "B-"
   },
   {
+    "courseId": "FACC300",
+    "term": "Summer 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "FACC300",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "FACC300",
+    "term": "Winter 2026",
+    "average": "B"
+  },
+  {
     "courseId": "FACC400",
     "term": "Winter 2016",
     "average": "A-"
@@ -25530,6 +27090,11 @@
     "average": "A"
   },
   {
+    "courseId": "FACC400",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "FACC500",
     "term": "Fall 2020",
     "average": "A-"
@@ -25542,6 +27107,11 @@
   {
     "courseId": "FACC500",
     "term": "Fall 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "FACC500",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -25592,6 +27162,16 @@
   {
     "courseId": "FDSC200",
     "term": "Fall 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "FDSC200",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "FDSC200",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -25703,6 +27283,11 @@
     "courseId": "FDSC230",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "FDSC230",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "FDSC231",
@@ -26085,6 +27670,11 @@
     "average": "B+"
   },
   {
+    "courseId": "FINE342",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "FINE434",
     "term": "Fall 2016",
     "average": "B+"
@@ -26225,6 +27815,11 @@
     "average": "A-"
   },
   {
+    "courseId": "FINE441",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "FINE442",
     "term": "Fall 2016",
     "average": "B+"
@@ -26360,8 +27955,18 @@
     "average": "A-"
   },
   {
+    "courseId": "FINE443",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "FINE444",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "FINE444",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -26392,6 +27997,11 @@
   {
     "courseId": "FINE445",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "FINE445",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -26428,6 +28038,11 @@
     "courseId": "FINE447",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "FINE447",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "FINE448",
@@ -26635,6 +28250,11 @@
     "average": "B+"
   },
   {
+    "courseId": "FINE482",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "FINE490",
     "term": "Winter 2024",
     "average": "B+"
@@ -26830,6 +28450,11 @@
     "average": "B+"
   },
   {
+    "courseId": "FRSL101",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "FRSL102",
     "term": "Winter 2015",
     "average": "B+"
@@ -26942,6 +28567,11 @@
   {
     "courseId": "FRSL103",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "FRSL103",
+    "term": "Fall 2024",
     "average": "B+"
   },
   {
@@ -27170,6 +28800,11 @@
     "average": "A-"
   },
   {
+    "courseId": "FRSL208",
+    "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
     "courseId": "FRSL211D2",
     "term": "Winter 2014",
     "average": "B+"
@@ -27297,6 +28932,11 @@
   {
     "courseId": "FRSL321D2",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "FRSL321D2",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -27580,6 +29220,11 @@
     "average": "A"
   },
   {
+    "courseId": "GEOG201",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "GEOG202",
     "term": "Fall 2016",
     "average": "B+"
@@ -27652,6 +29297,11 @@
   {
     "courseId": "GEOG203",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "GEOG203",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -27800,6 +29450,11 @@
     "average": "B-"
   },
   {
+    "courseId": "GEOG216",
+    "term": "Fall 2025",
+    "average": "B-"
+  },
+  {
     "courseId": "GEOG217",
     "term": "Winter 2015",
     "average": "B+"
@@ -27842,6 +29497,11 @@
   {
     "courseId": "GEOG217",
     "term": "Winter 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "GEOG217",
+    "term": "Winter 2025",
     "average": "B"
   },
   {
@@ -27913,6 +29573,11 @@
     "courseId": "GEOG272",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "GEOG272",
+    "term": "Winter 2025",
+    "average": "B+"
   },
   {
     "courseId": "GEOG300",
@@ -27995,6 +29660,11 @@
     "average": "A-"
   },
   {
+    "courseId": "GEOG302",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "GEOG303",
     "term": "Winter 2017",
     "average": "B+"
@@ -28028,6 +29698,11 @@
     "courseId": "GEOG303",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "GEOG303",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "GEOG305",
@@ -28122,6 +29797,11 @@
   {
     "courseId": "GEOG308",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "GEOG308",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -28262,6 +29942,11 @@
   {
     "courseId": "GEOG321",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "GEOG321",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -28355,6 +30040,11 @@
     "average": "A-"
   },
   {
+    "courseId": "GEOG325",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "GEOG331",
     "term": "Fall 2016",
     "average": "B+"
@@ -28380,6 +30070,11 @@
     "average": "A"
   },
   {
+    "courseId": "GEOG331",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "GEOG333",
     "term": "Winter 2022",
     "average": "A-"
@@ -28388,6 +30083,11 @@
     "courseId": "GEOG333",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "GEOG333",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "GEOG351",
@@ -28420,6 +30120,11 @@
     "average": "A-"
   },
   {
+    "courseId": "GEOG351",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "GEOG360",
     "term": "Winter 2017",
     "average": "A-"
@@ -28443,6 +30148,11 @@
     "courseId": "GEOG360",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "GEOG360",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "GEOG372",
@@ -28520,6 +30230,26 @@
     "average": "A-"
   },
   {
+    "courseId": "GEOG409",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "GEOG409",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "GEOG414",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "GEOG418",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "GEOG451",
     "term": "Winter 2023",
     "average": "A"
@@ -28527,6 +30257,11 @@
   {
     "courseId": "GEOG451",
     "term": "Winter 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "GEOG475",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -28562,6 +30297,11 @@
   {
     "courseId": "GEOG494",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "GEOG494",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -28615,6 +30355,11 @@
     "average": "A-"
   },
   {
+    "courseId": "GERM202D2",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "GERM259",
     "term": "Fall 2015",
     "average": "B+"
@@ -28627,6 +30372,11 @@
   {
     "courseId": "GERM259",
     "term": "Fall 2021",
+    "average": "B+"
+  },
+  {
+    "courseId": "GERM259",
+    "term": "Fall 2023",
     "average": "B+"
   },
   {
@@ -28643,6 +30393,11 @@
     "courseId": "GERM260",
     "term": "Winter 2023",
     "average": "B+"
+  },
+  {
+    "courseId": "GERM260",
+    "term": "Winter 2024",
+    "average": "A-"
   },
   {
     "courseId": "GERM307D2",
@@ -28675,6 +30430,11 @@
     "average": "B+"
   },
   {
+    "courseId": "GERM307D2",
+    "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
     "courseId": "GERM358",
     "term": "Fall 2024",
     "average": "A-"
@@ -28683,6 +30443,11 @@
     "courseId": "GERM370",
     "term": "Winter 2025",
     "average": "A-"
+  },
+  {
+    "courseId": "GERM371",
+    "term": "Fall 2023",
+    "average": "A"
   },
   {
     "courseId": "GERM373",
@@ -28695,6 +30460,11 @@
     "average": "A-"
   },
   {
+    "courseId": "GERM373",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "GPHL200",
     "term": "Fall 2023",
     "average": "A-"
@@ -28702,6 +30472,16 @@
   {
     "courseId": "GPHL200",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "GPHL200",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "GPHL201",
+    "term": "Winter 2025",
     "average": "A"
   },
   {
@@ -28765,6 +30545,11 @@
     "average": "A-"
   },
   {
+    "courseId": "GSFS200",
+    "term": "Summer 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "GSFS250",
     "term": "Fall 2016",
     "average": "B+"
@@ -28825,6 +30610,11 @@
     "average": "A-"
   },
   {
+    "courseId": "GSFS250",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "GSFS300",
     "term": "Winter 2017",
     "average": "A"
@@ -28852,6 +30642,11 @@
   {
     "courseId": "GSFS300",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "GSFS300",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -28930,6 +30725,11 @@
     "average": "B+"
   },
   {
+    "courseId": "GSFS307",
+    "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
     "courseId": "GSFS308",
     "term": "Fall 2021",
     "average": "A-"
@@ -28990,6 +30790,11 @@
     "average": "A-"
   },
   {
+    "courseId": "HGEN400",
+    "term": "Winter 2026",
+    "average": "A-"
+  },
+  {
     "courseId": "HISP210D2",
     "term": "Winter 2016",
     "average": "B+"
@@ -29027,6 +30832,11 @@
   {
     "courseId": "HISP210D2",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "HISP210D2",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -29220,6 +31030,11 @@
     "average": "A-"
   },
   {
+    "courseId": "HISP225",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "HISP226",
     "term": "Winter 2015",
     "average": "B+"
@@ -29265,6 +31080,11 @@
     "average": "B+"
   },
   {
+    "courseId": "HISP226",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "HISP241",
     "term": "Fall 2015",
     "average": "A-"
@@ -29278,6 +31098,11 @@
     "courseId": "HISP241",
     "term": "Winter 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "HISP241",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "HISP242",
@@ -29385,6 +31210,16 @@
     "average": "A-"
   },
   {
+    "courseId": "HIST201",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "HIST201",
+    "term": "Winter 2026",
+    "average": "B+"
+  },
+  {
     "courseId": "HIST202",
     "term": "Fall 2015",
     "average": "B+"
@@ -29427,6 +31262,11 @@
   {
     "courseId": "HIST202",
     "term": "Fall 2023",
+    "average": "B+"
+  },
+  {
+    "courseId": "HIST202",
+    "term": "Fall 2024",
     "average": "B+"
   },
   {
@@ -29478,6 +31318,11 @@
     "courseId": "HIST203",
     "term": "Winter 2024",
     "average": "B"
+  },
+  {
+    "courseId": "HIST203",
+    "term": "Winter 2025",
+    "average": "B+"
   },
   {
     "courseId": "HIST205",
@@ -29535,6 +31380,11 @@
     "average": "B+"
   },
   {
+    "courseId": "HIST205",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "HIST206",
     "term": "Fall 2018",
     "average": "A-"
@@ -29645,9 +31495,19 @@
     "average": "A-"
   },
   {
+    "courseId": "HIST209",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "HIST210",
     "term": "Fall 2023",
     "average": "B+"
+  },
+  {
+    "courseId": "HIST210",
+    "term": "Fall 2024",
+    "average": "A-"
   },
   {
     "courseId": "HIST211",
@@ -29695,6 +31555,11 @@
     "average": "B+"
   },
   {
+    "courseId": "HIST211",
+    "term": "Winter 2026",
+    "average": "A-"
+  },
+  {
     "courseId": "HIST212",
     "term": "Fall 2019",
     "average": "A-"
@@ -29713,6 +31578,11 @@
     "courseId": "HIST212",
     "term": "Fall 2023",
     "average": "B+"
+  },
+  {
+    "courseId": "HIST212",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "HIST213",
@@ -29912,6 +31782,11 @@
   {
     "courseId": "HIST218",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "HIST218",
+    "term": "Winter 2026",
     "average": "B+"
   },
   {
@@ -30170,8 +32045,18 @@
     "average": "B+"
   },
   {
+    "courseId": "HIST249",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "HIST262",
     "term": "Summer 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "HIST262",
+    "term": "Summer 2025",
     "average": "A-"
   },
   {
@@ -30225,6 +32110,16 @@
     "average": "A-"
   },
   {
+    "courseId": "HIST299",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "HIST300",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "HIST301",
     "term": "Fall 2017",
     "average": "A-"
@@ -30242,6 +32137,11 @@
   {
     "courseId": "HIST303",
     "term": "Fall 2022",
+    "average": "B"
+  },
+  {
+    "courseId": "HIST303",
+    "term": "Fall 2024",
     "average": "B"
   },
   {
@@ -30580,6 +32480,11 @@
     "average": "B+"
   },
   {
+    "courseId": "HIST334",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "HIST335",
     "term": "Fall 2017",
     "average": "B"
@@ -30860,6 +32765,11 @@
     "average": "A-"
   },
   {
+    "courseId": "HIST361",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "HIST362",
     "term": "Fall 2015",
     "average": "B"
@@ -30872,6 +32782,11 @@
   {
     "courseId": "HIST363",
     "term": "Winter 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "HIST363",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -30897,6 +32812,11 @@
   {
     "courseId": "HIST366",
     "term": "Fall 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "HIST366",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -30952,6 +32872,11 @@
   {
     "courseId": "HIST371",
     "term": "Fall 2020",
+    "average": "A-"
+  },
+  {
+    "courseId": "HIST371",
+    "term": "Fall 2023",
     "average": "A-"
   },
   {
@@ -31075,6 +33000,11 @@
     "average": "B"
   },
   {
+    "courseId": "HIST387",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "HIST388",
     "term": "Winter 2017",
     "average": "B+"
@@ -31173,6 +33103,11 @@
     "courseId": "HIST394",
     "term": "Winter 2017",
     "average": "B"
+  },
+  {
+    "courseId": "HIST394",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "HIST397",
@@ -31380,9 +33315,19 @@
     "average": "A-"
   },
   {
+    "courseId": "INDG200",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
     "courseId": "INDG202",
     "term": "Winter 2019",
     "average": "A-"
+  },
+  {
+    "courseId": "INDG202",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "INDG401",
@@ -31453,6 +33398,11 @@
     "courseId": "INDR294",
     "term": "Fall 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "INDR294",
+    "term": "Winter 2024",
+    "average": "B+"
   },
   {
     "courseId": "INDR294",
@@ -31550,6 +33500,11 @@
     "average": "B+"
   },
   {
+    "courseId": "INSY333",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "INSY336",
     "term": "Fall 2017",
     "average": "A-"
@@ -31617,6 +33572,11 @@
   {
     "courseId": "INSY432",
     "term": "Fall 2017",
+    "average": "B+"
+  },
+  {
+    "courseId": "INSY435",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -31805,6 +33765,16 @@
     "average": "B+"
   },
   {
+    "courseId": "INTD200",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "INTD200",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "INTD250",
     "term": "Fall 2024",
     "average": "B+"
@@ -31840,6 +33810,11 @@
     "average": "B+"
   },
   {
+    "courseId": "INTD350",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "INTD352",
     "term": "Fall 2019",
     "average": "B+"
@@ -31868,6 +33843,11 @@
     "courseId": "INTD354",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "INTD354",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "INTD356",
@@ -31905,6 +33885,16 @@
     "average": "B+"
   },
   {
+    "courseId": "INTD358",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "INTD358",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "INTD360",
     "term": "Winter 2021",
     "average": "A"
@@ -31917,6 +33907,11 @@
   {
     "courseId": "INTD360",
     "term": "Winter 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "INTD360",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -31990,6 +33985,11 @@
     "average": "A"
   },
   {
+    "courseId": "INTD397",
+    "term": "Summer 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "INTD398",
     "term": "Winter 2023",
     "average": "B+"
@@ -32055,8 +34055,23 @@
     "average": "A-"
   },
   {
+    "courseId": "INTD497",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "INTD497AA",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "INTD498",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "INTD498AA",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -32140,6 +34155,11 @@
     "average": "A-"
   },
   {
+    "courseId": "INTG215",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "ISLA199",
     "term": "Fall 2014",
     "average": "A-"
@@ -32195,6 +34215,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ISLA200",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ISLA210",
     "term": "Winter 2014",
     "average": "B+"
@@ -32237,6 +34262,11 @@
   {
     "courseId": "ISLA210",
     "term": "Winter 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "ISLA210",
+    "term": "Winter 2025",
     "average": "A"
   },
   {
@@ -32323,6 +34353,11 @@
     "courseId": "ISLA392",
     "term": "Fall 2019",
     "average": "A-"
+  },
+  {
+    "courseId": "ISLA395",
+    "term": "Fall 2024",
+    "average": "A"
   },
   {
     "courseId": "ISLA521D2",
@@ -32545,6 +34580,11 @@
     "average": "A-"
   },
   {
+    "courseId": "ITAL363",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ITAL374",
     "term": "Fall 2023",
     "average": "A-"
@@ -32565,9 +34605,19 @@
     "average": "A-"
   },
   {
+    "courseId": "ITAL375",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ITAL477",
     "term": "Winter 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "ITAL477",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "JWST202",
@@ -32585,6 +34635,11 @@
     "average": "A"
   },
   {
+    "courseId": "JWST211",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "JWST220D2",
     "term": "Winter 2017",
     "average": "A-"
@@ -32597,6 +34652,11 @@
   {
     "courseId": "JWST220D2",
     "term": "Winter 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "JWST225",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -32660,6 +34720,11 @@
     "average": "A-"
   },
   {
+    "courseId": "JWST245",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "JWST254",
     "term": "Fall 2018",
     "average": "B+"
@@ -32668,6 +34733,11 @@
     "courseId": "JWST261",
     "term": "Fall 2024",
     "average": "A"
+  },
+  {
+    "courseId": "JWST261",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "JWST303",
@@ -32730,11 +34800,26 @@
     "average": "A-"
   },
   {
+    "courseId": "JWST371",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "JWST376",
     "term": "Fall 2016",
     "average": "A"
   },
   {
+    "courseId": "JWST376",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "JWST382",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "LAWG100D2",
     "term": "Winter 2017",
     "average": "B"
@@ -32765,6 +34850,11 @@
     "average": "B"
   },
   {
+    "courseId": "LAWG100D2",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "LAWG101D2",
     "term": "Winter 2017",
     "average": "B"
@@ -32795,6 +34885,11 @@
     "average": "B"
   },
   {
+    "courseId": "LAWG101D2",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "LAWG102D2",
     "term": "Winter 2017",
     "average": "B"
@@ -32822,6 +34917,11 @@
   {
     "courseId": "LAWG102D2",
     "term": "Winter 2023",
+    "average": "B"
+  },
+  {
+    "courseId": "LAWG102D2",
+    "term": "Winter 2025",
     "average": "B"
   },
   {
@@ -32842,6 +34942,16 @@
   {
     "courseId": "LAWG103",
     "term": "Fall 2023",
+    "average": "B"
+  },
+  {
+    "courseId": "LAWG103",
+    "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "LAWG103",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -32927,6 +35037,11 @@
   {
     "courseId": "LAWG505",
     "term": "Fall 2021",
+    "average": "B"
+  },
+  {
+    "courseId": "LAWG505",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -33115,6 +35230,11 @@
     "average": "B+"
   },
   {
+    "courseId": "LING201",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "LING210",
     "term": "Winter 2017",
     "average": "B+"
@@ -33153,6 +35273,11 @@
     "courseId": "LING210",
     "term": "Fall 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "LING210",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "LING211",
@@ -33238,6 +35363,11 @@
     "courseId": "LING260",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "LING260",
+    "term": "Winter 2025",
+    "average": "B+"
   },
   {
     "courseId": "LING315",
@@ -33400,6 +35530,11 @@
     "average": "B+"
   },
   {
+    "courseId": "LING330",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "LING331",
     "term": "Fall 2013",
     "average": "B+"
@@ -33458,6 +35593,11 @@
     "courseId": "LING345",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "LING345",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "LING350",
@@ -33665,6 +35805,11 @@
     "average": "A-"
   },
   {
+    "courseId": "LING371",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "LING390",
     "term": "Fall 2014",
     "average": "B+"
@@ -33677,6 +35822,11 @@
   {
     "courseId": "LING410",
     "term": "Winter 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "LING410",
+    "term": "Winter 2025",
     "average": "A"
   },
   {
@@ -33708,6 +35858,11 @@
     "courseId": "LING445",
     "term": "Winter 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "LING445",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "LING451",
@@ -34035,6 +36190,11 @@
     "average": "A-"
   },
   {
+    "courseId": "LSCI211",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "LSCI230",
     "term": "Winter 2016",
     "average": "B+"
@@ -34165,6 +36325,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH122",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "MATH123",
     "term": "Winter 2014",
     "average": "B+"
@@ -34248,6 +36413,11 @@
     "courseId": "MATH123",
     "term": "Winter 2025",
     "average": "A-"
+  },
+  {
+    "courseId": "MATH123",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "MATH133",
@@ -34423,6 +36593,16 @@
     "courseId": "MATH133",
     "term": "Fall 2024",
     "average": "B-"
+  },
+  {
+    "courseId": "MATH133",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "MATH133",
+    "term": "Fall 2025",
+    "average": "C+"
   },
   {
     "courseId": "MATH139",
@@ -34642,6 +36822,21 @@
   {
     "courseId": "MATH140",
     "term": "Fall 2024",
+    "average": "B-"
+  },
+  {
+    "courseId": "MATH140",
+    "term": "Winter 2025",
+    "average": "B-"
+  },
+  {
+    "courseId": "MATH140",
+    "term": "Summer 2025",
+    "average": "B-"
+  },
+  {
+    "courseId": "MATH140",
+    "term": "Fall 2025",
     "average": "B-"
   },
   {
@@ -34825,6 +37020,21 @@
     "average": "B"
   },
   {
+    "courseId": "MATH141",
+    "term": "Summer 2025",
+    "average": "B-"
+  },
+  {
+    "courseId": "MATH141",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "MATH141",
+    "term": "Winter 2026",
+    "average": "B-"
+  },
+  {
     "courseId": "MATH150",
     "term": "Fall 2012",
     "average": "B"
@@ -34982,6 +37192,11 @@
   {
     "courseId": "MATH180",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "MATH180",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -35145,6 +37360,16 @@
     "average": "A-"
   },
   {
+    "courseId": "MATH203",
+    "term": "Summer 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "MATH203",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MATH204",
     "term": "Winter 2015",
     "average": "B+"
@@ -35190,6 +37415,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH204",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MATH208",
     "term": "Fall 2019",
     "average": "A-"
@@ -35217,6 +37447,11 @@
   {
     "courseId": "MATH208",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "MATH208",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -35375,6 +37610,16 @@
     "average": "B"
   },
   {
+    "courseId": "MATH222",
+    "term": "Summer 2025",
+    "average": "C+"
+  },
+  {
+    "courseId": "MATH222",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "MATH223",
     "term": "Fall 2013",
     "average": "B"
@@ -35490,6 +37735,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH223",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "MATH235",
     "term": "Fall 2014",
     "average": "B-"
@@ -35543,6 +37793,11 @@
     "courseId": "MATH235",
     "term": "Fall 2024",
     "average": "B"
+  },
+  {
+    "courseId": "MATH235",
+    "term": "Fall 2025",
+    "average": "B-"
   },
   {
     "courseId": "MATH236",
@@ -35695,6 +37950,11 @@
     "average": "B"
   },
   {
+    "courseId": "MATH240",
+    "term": "Fall 2025",
+    "average": "B-"
+  },
+  {
     "courseId": "MATH242",
     "term": "Fall 2014",
     "average": "B+"
@@ -35750,6 +38010,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MATH242",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "MATH243",
     "term": "Winter 2015",
     "average": "B"
@@ -35793,6 +38058,11 @@
     "courseId": "MATH243",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "MATH243",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "MATH245",
@@ -35800,6 +38070,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH245",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "MATH247",
     "term": "Winter 2016",
     "average": "B-"
@@ -35838,6 +38113,11 @@
     "courseId": "MATH247",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "MATH247",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "MATH248",
@@ -35930,6 +38210,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH249",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MATH251",
     "term": "Winter 2015",
     "average": "B+"
@@ -35972,6 +38257,11 @@
   {
     "courseId": "MATH251",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "MATH251",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -36025,6 +38315,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH254",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "MATH255",
     "term": "Winter 2015",
     "average": "B-"
@@ -36068,6 +38363,11 @@
     "courseId": "MATH255",
     "term": "Winter 2024",
     "average": "A"
+  },
+  {
+    "courseId": "MATH255",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "MATH262",
@@ -36227,6 +38527,11 @@
   {
     "courseId": "MATH262",
     "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "MATH262",
+    "term": "Winter 2025",
     "average": "B"
   },
   {
@@ -36235,6 +38540,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH262",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MATH263",
     "term": "Fall 2013",
     "average": "C+"
@@ -36400,6 +38710,11 @@
     "average": "B"
   },
   {
+    "courseId": "MATH263",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MATH264",
     "term": "Winter 2014",
     "average": "B-"
@@ -36560,6 +38875,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MATH264",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MATH270",
     "term": "Winter 2014",
     "average": "B"
@@ -36650,6 +38970,11 @@
     "average": "B"
   },
   {
+    "courseId": "MATH271",
+    "term": "Fall 2025",
+    "average": "B-"
+  },
+  {
     "courseId": "MATH308",
     "term": "Winter 2021",
     "average": "A"
@@ -36667,6 +38992,11 @@
   {
     "courseId": "MATH308",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MATH308",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -36768,6 +39098,11 @@
     "courseId": "MATH314",
     "term": "Fall 2024",
     "average": "B-"
+  },
+  {
+    "courseId": "MATH314",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "MATH315",
@@ -36920,6 +39255,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH315",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MATH316",
     "term": "Fall 2018",
     "average": "C+"
@@ -36990,6 +39330,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH317",
+    "term": "Fall 2025",
+    "average": "B-"
+  },
+  {
     "courseId": "MATH318",
     "term": "Fall 2016",
     "average": "B"
@@ -37032,6 +39377,11 @@
   {
     "courseId": "MATH318",
     "term": "Fall 2024",
+    "average": "B-"
+  },
+  {
+    "courseId": "MATH318",
+    "term": "Fall 2025",
     "average": "B-"
   },
   {
@@ -37215,6 +39565,16 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH323",
+    "term": "Summer 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "MATH323",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MATH324",
     "term": "Winter 2014",
     "average": "B"
@@ -37320,6 +39680,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MATH324",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MATH325",
     "term": "Fall 2014",
     "average": "B"
@@ -37370,6 +39735,11 @@
     "average": "B"
   },
   {
+    "courseId": "MATH325",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "MATH326",
     "term": "Fall 2014",
     "average": "B+"
@@ -37417,6 +39787,11 @@
   {
     "courseId": "MATH326",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MATH326",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -37517,6 +39892,11 @@
   {
     "courseId": "MATH338",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "MATH338",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -37677,6 +40057,11 @@
   {
     "courseId": "MATH356",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MATH356",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -37800,9 +40185,19 @@
     "average": "A"
   },
   {
+    "courseId": "MATH423",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "MATH430",
     "term": "Winter 2018",
     "average": "B-"
+  },
+  {
+    "courseId": "MATH430",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "MATH447",
@@ -37960,6 +40355,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MATH456",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MATH457",
     "term": "Winter 2021",
     "average": "A-"
@@ -38043,6 +40443,11 @@
     "courseId": "MATH475",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "MATH475",
+    "term": "Fall 2025",
+    "average": "B"
   },
   {
     "courseId": "MATH510",
@@ -38133,6 +40538,11 @@
     "courseId": "MATH545",
     "term": "Winter 2022",
     "average": "B"
+  },
+  {
+    "courseId": "MATH545",
+    "term": "Winter 2025",
+    "average": "B+"
   },
   {
     "courseId": "MATH556",
@@ -38375,6 +40785,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MECH215",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MECH220",
     "term": "Winter 2014",
     "average": "C+"
@@ -38485,6 +40900,21 @@
     "average": "B"
   },
   {
+    "courseId": "MECH220",
+    "term": "Winter 2025",
+    "average": "C+"
+  },
+  {
+    "courseId": "MECH220",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MECH220",
+    "term": "Winter 2026",
+    "average": "C+"
+  },
+  {
     "courseId": "MECH240",
     "term": "Winter 2015",
     "average": "B"
@@ -38575,6 +41005,16 @@
     "average": "B+"
   },
   {
+    "courseId": "MECH240",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MECH240",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "MECH261",
     "term": "Fall 2015",
     "average": "A-"
@@ -38638,6 +41078,11 @@
     "courseId": "MECH261",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "MECH261",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "MECH262",
@@ -38735,6 +41180,16 @@
     "average": "A-"
   },
   {
+    "courseId": "MECH262",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MECH262",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MECH289",
     "term": "Fall 2015",
     "average": "A-"
@@ -38828,6 +41283,16 @@
     "courseId": "MECH289",
     "term": "Winter 2025",
     "average": "A-"
+  },
+  {
+    "courseId": "MECH289",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "MECH289",
+    "term": "Winter 2026",
+    "average": "A"
   },
   {
     "courseId": "MECH290",
@@ -39115,6 +41580,11 @@
     "average": "B-"
   },
   {
+    "courseId": "MECH309",
+    "term": "Fall 2025",
+    "average": "B-"
+  },
+  {
     "courseId": "MECH314",
     "term": "Winter 2015",
     "average": "B+"
@@ -39210,6 +41680,16 @@
     "average": "B+"
   },
   {
+    "courseId": "MECH314",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "MECH314",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MECH315",
     "term": "Fall 2015",
     "average": "B+"
@@ -39287,6 +41767,21 @@
   {
     "courseId": "MECH315",
     "term": "Winter 2024",
+    "average": "B-"
+  },
+  {
+    "courseId": "MECH315",
+    "term": "Fall 2024",
+    "average": "B-"
+  },
+  {
+    "courseId": "MECH315",
+    "term": "Winter 2025",
+    "average": "C+"
+  },
+  {
+    "courseId": "MECH315",
+    "term": "Fall 2025",
     "average": "B-"
   },
   {
@@ -39372,6 +41867,16 @@
   {
     "courseId": "MECH321",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "MECH321",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MECH321",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -39470,6 +41975,11 @@
     "average": "B"
   },
   {
+    "courseId": "MECH331",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "MECH341",
     "term": "Fall 2015",
     "average": "A-"
@@ -39558,6 +42068,11 @@
     "courseId": "MECH341",
     "term": "Winter 2025",
     "average": "A-"
+  },
+  {
+    "courseId": "MECH341",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "MECH346",
@@ -39648,6 +42163,11 @@
     "courseId": "MECH346",
     "term": "Winter 2025",
     "average": "B"
+  },
+  {
+    "courseId": "MECH346",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "MECH360",
@@ -39750,6 +42270,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MECH360",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MECH362",
     "term": "Fall 2016",
     "average": "A"
@@ -39878,6 +42403,16 @@
     "courseId": "MECH383",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "MECH383",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MECH383",
+    "term": "Fall 2025",
+    "average": "B"
   },
   {
     "courseId": "MECH393",
@@ -39945,6 +42480,21 @@
     "average": "B+"
   },
   {
+    "courseId": "MECH393",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MECH393",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MECH393",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MECH412",
     "term": "Winter 2016",
     "average": "B"
@@ -39997,6 +42547,11 @@
   {
     "courseId": "MECH412",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "MECH412",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -40068,6 +42623,16 @@
     "courseId": "MECH430",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "MECH430",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MECH430",
+    "term": "Fall 2025",
+    "average": "B"
   },
   {
     "courseId": "MECH447",
@@ -40150,6 +42715,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MECH513",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "MECH530",
     "term": "Fall 2017",
     "average": "A-"
@@ -40232,6 +42802,11 @@
   {
     "courseId": "MECH536",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "MECH536",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -40455,6 +43030,16 @@
     "average": "B+"
   },
   {
+    "courseId": "MGCR211",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MGCR211",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MGCR222",
     "term": "Winter 2013",
     "average": "B"
@@ -40590,8 +43175,28 @@
     "average": "A-"
   },
   {
+    "courseId": "MGCR222",
+    "term": "Summer 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "MGCR222",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MGCR233",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MGCR233",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MGCR233",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -40613,6 +43218,11 @@
     "courseId": "MGCR250",
     "term": "Winter 2025",
     "average": "A-"
+  },
+  {
+    "courseId": "MGCR250",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "MGCR271",
@@ -40740,6 +43350,16 @@
     "average": "B+"
   },
   {
+    "courseId": "MGCR271",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MGCR271",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MGCR293",
     "term": "Fall 2014",
     "average": "B"
@@ -40835,9 +43455,19 @@
     "average": "B+"
   },
   {
+    "courseId": "MGCR293",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MGCR294",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "MGCR294",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "MGCR331",
@@ -40952,6 +43582,11 @@
   {
     "courseId": "MGCR331",
     "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MGCR331",
+    "term": "Summer 2025",
     "average": "B+"
   },
   {
@@ -41105,6 +43740,21 @@
     "average": "B+"
   },
   {
+    "courseId": "MGCR341",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "MGCR341",
+    "term": "Summer 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MGCR341",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MGCR352",
     "term": "Fall 2014",
     "average": "B+"
@@ -41245,6 +43895,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MGCR352",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MGCR360",
     "term": "Fall 2016",
     "average": "B"
@@ -41342,6 +43997,16 @@
   {
     "courseId": "MGCR372",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "MGCR372",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MGCR372",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -41447,6 +44112,16 @@
   {
     "courseId": "MGCR382",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "MGCR382",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "MGCR382",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -41560,6 +44235,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MGCR423",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MGCR460",
     "term": "Fall 2023",
     "average": "B+"
@@ -41572,6 +44252,16 @@
   {
     "courseId": "MGCR460",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MGCR460",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "MGCR460",
+    "term": "Summer 2025",
     "average": "A-"
   },
   {
@@ -41715,6 +44405,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MGPO362",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
     "courseId": "MGPO364",
     "term": "Winter 2019",
     "average": "B+"
@@ -41735,6 +44430,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MGPO364",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MGPO365",
     "term": "Fall 2016",
     "average": "B+"
@@ -41748,6 +44448,11 @@
     "courseId": "MGPO383",
     "term": "Winter 2021",
     "average": "A-"
+  },
+  {
+    "courseId": "MGPO383",
+    "term": "Winter 2025",
+    "average": "B+"
   },
   {
     "courseId": "MGPO434",
@@ -41880,6 +44585,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MGPO440",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MGPO460",
     "term": "Fall 2016",
     "average": "B"
@@ -41942,6 +44652,11 @@
   {
     "courseId": "MGPO475",
     "term": "Fall 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "MGPO475",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -42035,6 +44750,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MGSC372",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MGSC373",
     "term": "Fall 2016",
     "average": "B"
@@ -42070,6 +44790,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MGSC401",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MGSC404",
     "term": "Fall 2018",
     "average": "B+"
@@ -42083,6 +44808,11 @@
     "courseId": "MGSC404",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "MGSC404",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "MICR331",
@@ -42123,6 +44853,11 @@
     "courseId": "MICR341",
     "term": "Fall 2023",
     "average": "B"
+  },
+  {
+    "courseId": "MICR341",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "MIME203",
@@ -42215,6 +44950,11 @@
     "average": "B"
   },
   {
+    "courseId": "MIME212",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MIME250",
     "term": "Fall 2014",
     "average": "B"
@@ -42268,6 +45008,11 @@
     "courseId": "MIME250",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "MIME250",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "MIME260",
@@ -42375,6 +45120,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MIME260",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MIME261",
     "term": "Fall 2014",
     "average": "B+"
@@ -42427,6 +45177,11 @@
   {
     "courseId": "MIME261",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MIME261",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -42508,6 +45263,11 @@
     "courseId": "MIME262",
     "term": "Fall 2024",
     "average": "B"
+  },
+  {
+    "courseId": "MIME262",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "MIME280",
@@ -42580,6 +45340,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MIME317",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MIME320",
     "term": "Winter 2018",
     "average": "A-"
@@ -42835,6 +45600,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MIME356",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MIME360",
     "term": "Fall 2016",
     "average": "B"
@@ -42877,6 +45647,11 @@
   {
     "courseId": "MIME360",
     "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "MIME360",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -43075,6 +45850,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MIME470",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MIME473",
     "term": "Winter 2019",
     "average": "B+"
@@ -43175,6 +45955,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MIMM211",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MIMM212",
     "term": "Fall 2015",
     "average": "A"
@@ -43225,6 +46010,11 @@
     "average": "A"
   },
   {
+    "courseId": "MIMM212",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "MIMM214",
     "term": "Winter 2015",
     "average": "B+"
@@ -43305,6 +46095,11 @@
     "average": "A"
   },
   {
+    "courseId": "MIMM301",
+    "term": "Winter 2026",
+    "average": "A"
+  },
+  {
     "courseId": "MIMM314",
     "term": "Winter 2015",
     "average": "B"
@@ -43350,6 +46145,11 @@
     "average": "B"
   },
   {
+    "courseId": "MIMM314",
+    "term": "Winter 2026",
+    "average": "B"
+  },
+  {
     "courseId": "MIMM323",
     "term": "Fall 2016",
     "average": "A-"
@@ -43392,6 +46192,11 @@
   {
     "courseId": "MIMM323",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "MIMM323",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -43440,6 +46245,11 @@
     "average": "B+"
   },
   {
+    "courseId": "MIMM324",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "MIMM384",
     "term": "Fall 2016",
     "average": "A-"
@@ -43485,6 +46295,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MIMM384",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MIMM385",
     "term": "Winter 2017",
     "average": "A-"
@@ -43525,6 +46340,11 @@
     "average": "A"
   },
   {
+    "courseId": "MIMM385",
+    "term": "Winter 2026",
+    "average": "A"
+  },
+  {
     "courseId": "MIMM387",
     "term": "Winter 2016",
     "average": "A-"
@@ -43562,6 +46382,11 @@
   {
     "courseId": "MIMM387",
     "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "MIMM387",
+    "term": "Winter 2026",
     "average": "A-"
   },
   {
@@ -44435,6 +47260,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MUAR393",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "MUAR399",
     "term": "Winter 2015",
     "average": "B-"
@@ -44585,6 +47415,31 @@
     "average": "A"
   },
   {
+    "courseId": "MUEN570",
+    "term": "Fall 2023",
+    "average": "A"
+  },
+  {
+    "courseId": "MUEN570",
+    "term": "Winter 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "MUEN570",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "MUEN570",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "MUEN570",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "MUEN580",
     "term": "Fall 2016",
     "average": "A"
@@ -44700,6 +47555,16 @@
     "average": "A-"
   },
   {
+    "courseId": "MUEN593",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MUEN593",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MUEN595",
     "term": "Fall 2021",
     "average": "A"
@@ -44727,6 +47592,21 @@
   {
     "courseId": "MUEN595",
     "term": "Winter 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "MUEN595",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "MUEN595",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
+    "courseId": "MUEN595",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -45060,6 +47940,11 @@
     "average": "A"
   },
   {
+    "courseId": "MUIN281",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "MUIN282",
     "term": "Winter 2018",
     "average": "A-"
@@ -45080,6 +47965,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MUIN283",
+    "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
     "courseId": "MUIN380",
     "term": "Fall 2018",
     "average": "A"
@@ -45097,6 +47987,11 @@
   {
     "courseId": "MUIN380",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "MUIN380",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -45127,6 +48022,11 @@
   {
     "courseId": "MUIN382",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MUIN382",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -45167,6 +48067,31 @@
   {
     "courseId": "MUJZ187",
     "term": "Fall 2022",
+    "average": "A-"
+  },
+  {
+    "courseId": "MUJZ223",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "MUJZ260",
+    "term": "Fall 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "MUJZ261",
+    "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MUJZ340",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "MUJZ341",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -45340,6 +48265,11 @@
     "average": "A"
   },
   {
+    "courseId": "MUSP141",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "MUSP170",
     "term": "Fall 2015",
     "average": "B-"
@@ -45425,6 +48355,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MUSP171",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "MUSP240",
     "term": "Fall 2016",
     "average": "B"
@@ -45515,6 +48450,11 @@
     "average": "A-"
   },
   {
+    "courseId": "MUSR200",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
     "courseId": "MUSR201",
     "term": "Winter 2017",
     "average": "A-"
@@ -45533,6 +48473,11 @@
     "courseId": "MUSR201",
     "term": "Winter 2024",
     "average": "A"
+  },
+  {
+    "courseId": "MUTH101",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "MUTH150",
@@ -45617,6 +48562,11 @@
   {
     "courseId": "MUTH151",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "MUTH151",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -45740,9 +48690,19 @@
     "average": "B+"
   },
   {
+    "courseId": "NEUR310",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "NRSC221",
     "term": "Fall 2017",
     "average": "B+"
+  },
+  {
+    "courseId": "NRSC221",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "NRSC333",
@@ -45837,6 +48797,11 @@
   {
     "courseId": "NSCI200",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "NSCI200",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -46755,6 +49720,16 @@
     "average": "B-"
   },
   {
+    "courseId": "NUTR207",
+    "term": "Fall 2024",
+    "average": "B-"
+  },
+  {
+    "courseId": "NUTR207",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "NUTR208",
     "term": "Fall 2016",
     "average": "A-"
@@ -46832,6 +49807,11 @@
   {
     "courseId": "NUTR214",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "NUTR214",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -46980,6 +49960,16 @@
     "average": "B+"
   },
   {
+    "courseId": "NUTR337",
+    "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "NUTR337",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "NUTR341",
     "term": "Fall 2016",
     "average": "A"
@@ -47017,6 +50007,11 @@
   {
     "courseId": "NUTR341",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "NUTR341",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -47075,6 +50070,11 @@
     "average": "B"
   },
   {
+    "courseId": "NUTR344",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "NUTR345",
     "term": "Fall 2017",
     "average": "A-"
@@ -47103,6 +50103,11 @@
     "courseId": "NUTR401",
     "term": "Fall 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "NUTR401",
+    "term": "Fall 2024",
+    "average": "A"
   },
   {
     "courseId": "NUTR408",
@@ -47165,6 +50170,11 @@
     "average": "A"
   },
   {
+    "courseId": "NUTR505",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
     "courseId": "NUTR512",
     "term": "Fall 2018",
     "average": "B+"
@@ -47217,6 +50227,11 @@
   {
     "courseId": "OCC1245",
     "term": "Fall 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "OCC1245",
+    "term": "Fall 2024",
     "average": "A-"
   },
   {
@@ -47340,6 +50355,11 @@
     "average": "B+"
   },
   {
+    "courseId": "ORGB380",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "ORGB421",
     "term": "Winter 2023",
     "average": "B+"
@@ -47420,6 +50440,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PARA410",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PARA424",
     "term": "Winter 2024",
     "average": "A-"
@@ -47465,11 +50490,21 @@
     "average": "A"
   },
   {
+    "courseId": "PARA438",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PARA515",
     "term": "Winter 2018",
     "average": "A-"
   },
   {
+    "courseId": "PARA515",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PATH300",
     "term": "Winter 2017",
     "average": "B"
@@ -47555,6 +50590,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PHAR200",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PHAR201",
     "term": "Winter 2016",
     "average": "A-"
@@ -47592,6 +50632,11 @@
   {
     "courseId": "PHAR201",
     "term": "Winter 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "PHAR201",
+    "term": "Winter 2025",
     "average": "A"
   },
   {
@@ -47645,6 +50690,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PHAR300",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PHAR301",
     "term": "Winter 2016",
     "average": "B+"
@@ -47690,6 +50740,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PHAR301",
+    "term": "Winter 2026",
+    "average": "B+"
+  },
+  {
     "courseId": "PHAR303",
     "term": "Winter 2016",
     "average": "B+"
@@ -47733,6 +50788,11 @@
     "courseId": "PHAR303",
     "term": "Winter 2025",
     "average": "A-"
+  },
+  {
+    "courseId": "PHAR303",
+    "term": "Winter 2026",
+    "average": "B+"
   },
   {
     "courseId": "PHAR503",
@@ -47870,6 +50930,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PHAR562",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PHAR563",
     "term": "Winter 2017",
     "average": "B+"
@@ -47878,6 +50943,16 @@
     "courseId": "PHAR565",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "PHAR565",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "PHAR565",
+    "term": "Winter 2026",
+    "average": "B+"
   },
   {
     "courseId": "PHAR598D2",
@@ -47945,6 +51020,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PHGY209",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PHGY210",
     "term": "Winter 2014",
     "average": "B-"
@@ -47998,6 +51078,11 @@
     "courseId": "PHGY210",
     "term": "Winter 2025",
     "average": "B"
+  },
+  {
+    "courseId": "PHGY210",
+    "term": "Winter 2026",
+    "average": "B+"
   },
   {
     "courseId": "PHGY212",
@@ -48060,6 +51145,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PHGY212",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PHGY213",
     "term": "Winter 2014",
     "average": "B+"
@@ -48165,6 +51255,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PHGY311",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PHGY312",
     "term": "Winter 2015",
     "average": "B"
@@ -48298,6 +51393,11 @@
     "courseId": "PHGY314",
     "term": "Fall 2023",
     "average": "B+"
+  },
+  {
+    "courseId": "PHGY314",
+    "term": "Fall 2025",
+    "average": "B-"
   },
   {
     "courseId": "PHGY425",
@@ -48325,6 +51425,11 @@
     "average": "A"
   },
   {
+    "courseId": "PHGY513",
+    "term": "Winter 2024",
+    "average": "A"
+  },
+  {
     "courseId": "PHGY518",
     "term": "Fall 2016",
     "average": "A-"
@@ -48392,6 +51497,11 @@
   {
     "courseId": "PHIL200",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PHIL200",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -48570,6 +51680,11 @@
     "average": "B"
   },
   {
+    "courseId": "PHIL210",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "PHIL221",
     "term": "Winter 2015",
     "average": "A-"
@@ -48680,6 +51795,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PHIL230",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PHIL237",
     "term": "Winter 2012",
     "average": "B-"
@@ -48762,6 +51882,11 @@
   {
     "courseId": "PHIL237",
     "term": "Summer 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PHIL237",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -48863,6 +51988,11 @@
     "courseId": "PHIL242",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "PHIL242",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "PHIL306",
@@ -48960,6 +52090,11 @@
     "average": "A"
   },
   {
+    "courseId": "PHIL327",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PHIL334",
     "term": "Fall 2015",
     "average": "B"
@@ -48997,6 +52132,11 @@
   {
     "courseId": "PHIL334",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PHIL334",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -49110,6 +52250,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PHIL345",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "PHIL348",
     "term": "Fall 2014",
     "average": "B"
@@ -49220,6 +52365,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PHIL354",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PHIL355",
     "term": "Winter 2017",
     "average": "B"
@@ -49290,6 +52440,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PHIL360",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PHIL361",
     "term": "Winter 2019",
     "average": "B"
@@ -49302,6 +52457,11 @@
   {
     "courseId": "PHIL361",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "PHIL361",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -49480,6 +52640,11 @@
     "average": "B"
   },
   {
+    "courseId": "PHIL445",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PHIL453",
     "term": "Winter 2022",
     "average": "B+"
@@ -49533,6 +52698,11 @@
     "courseId": "PHIL474",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "PHIL474",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "PHIL475",
@@ -49620,6 +52790,11 @@
     "average": "A"
   },
   {
+    "courseId": "PHTH440",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "PHTH450",
     "term": "Winter 2016",
     "average": "A"
@@ -49628,6 +52803,21 @@
     "courseId": "PHTH450",
     "term": "Winter 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "PHTH450",
+    "term": "Winter 2026",
+    "average": "A-"
+  },
+  {
+    "courseId": "PHTH460",
+    "term": "Winter 2026",
+    "average": "A-"
+  },
+  {
+    "courseId": "PHTH482",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "PHTH550",
@@ -49745,6 +52935,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PHYS101",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PHYS102",
     "term": "Winter 2013",
     "average": "B"
@@ -49797,6 +52992,11 @@
   {
     "courseId": "PHYS102",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PHYS102",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -49865,6 +53065,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PHYS131",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PHYS142",
     "term": "Winter 2013",
     "average": "B"
@@ -49923,6 +53128,11 @@
     "courseId": "PHYS142",
     "term": "Winter 2025",
     "average": "B+"
+  },
+  {
+    "courseId": "PHYS142",
+    "term": "Winter 2026",
+    "average": "B"
   },
   {
     "courseId": "PHYS180",
@@ -49985,6 +53195,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PHYS180",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PHYS181",
     "term": "Fall 2013",
     "average": "B"
@@ -50022,6 +53237,11 @@
   {
     "courseId": "PHYS181",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "PHYS181",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -50120,6 +53340,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PHYS183",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PHYS186",
     "term": "Winter 2018",
     "average": "B+"
@@ -50270,6 +53495,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PHYS230",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PHYS232",
     "term": "Winter 2016",
     "average": "B-"
@@ -50490,6 +53720,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PHYS253",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PHYS257",
     "term": "Fall 2015",
     "average": "B+"
@@ -50537,6 +53772,11 @@
   {
     "courseId": "PHYS257",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PHYS257",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -50698,6 +53938,11 @@
     "courseId": "PHYS320",
     "term": "Fall 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "PHYS320",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "PHYS321",
@@ -50885,6 +54130,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PHYS346",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PHYS350",
     "term": "Fall 2016",
     "average": "B"
@@ -50922,6 +54172,11 @@
   {
     "courseId": "PHYS350",
     "term": "Fall 2023",
+    "average": "B+"
+  },
+  {
+    "courseId": "PHYS350",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -51025,6 +54280,11 @@
     "average": "A"
   },
   {
+    "courseId": "PHYS357",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PHYS359",
     "term": "Winter 2017",
     "average": "A-"
@@ -51048,6 +54308,11 @@
     "courseId": "PHYS359",
     "term": "Winter 2022",
     "average": "A-"
+  },
+  {
+    "courseId": "PHYS359",
+    "term": "Winter 2025",
+    "average": "B+"
   },
   {
     "courseId": "PHYS362",
@@ -51087,6 +54352,11 @@
   {
     "courseId": "PHYS362",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PHYS362",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -51167,6 +54437,11 @@
   {
     "courseId": "PHYS457",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PHYS457",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -51430,6 +54705,11 @@
     "average": "A-"
   },
   {
+    "courseId": "POLI210",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "POLI211",
     "term": "Fall 2011",
     "average": "B-"
@@ -51472,6 +54752,11 @@
   {
     "courseId": "POLI212",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "POLI212",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -51535,6 +54820,16 @@
     "average": "B"
   },
   {
+    "courseId": "POLI221",
+    "term": "Summer 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "POLI221",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "POLI222",
     "term": "Winter 2014",
     "average": "B+"
@@ -51585,6 +54880,11 @@
     "average": "B-"
   },
   {
+    "courseId": "POLI222",
+    "term": "Winter 2025",
+    "average": "B-"
+  },
+  {
     "courseId": "POLI226",
     "term": "Winter 2016",
     "average": "B"
@@ -51618,6 +54918,11 @@
     "courseId": "POLI226",
     "term": "Winter 2024",
     "average": "B"
+  },
+  {
+    "courseId": "POLI226",
+    "term": "Winter 2025",
+    "average": "A"
   },
   {
     "courseId": "POLI227",
@@ -51672,6 +54977,11 @@
   {
     "courseId": "POLI227",
     "term": "Summer 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "POLI227",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -51780,6 +55090,16 @@
     "average": "B+"
   },
   {
+    "courseId": "POLI231",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "POLI231",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "POLI232",
     "term": "Winter 2015",
     "average": "B"
@@ -51847,6 +55167,11 @@
   {
     "courseId": "POLI243",
     "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
+    "courseId": "POLI243",
+    "term": "Winter 2026",
     "average": "B+"
   },
   {
@@ -51950,6 +55275,11 @@
     "average": "B-"
   },
   {
+    "courseId": "POLI244",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "POLI311",
     "term": "Summer 2015",
     "average": "B+"
@@ -51990,6 +55320,11 @@
     "average": "A-"
   },
   {
+    "courseId": "POLI311",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "POLI313",
     "term": "Winter 2021",
     "average": "A-"
@@ -52010,9 +55345,24 @@
     "average": "A-"
   },
   {
+    "courseId": "POLI313",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "POLI313",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "POLI316",
     "term": "Fall 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "POLI316",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "POLI317",
@@ -52095,6 +55445,11 @@
     "average": "B+"
   },
   {
+    "courseId": "POLI319",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "POLI320",
     "term": "Fall 2018",
     "average": "A-"
@@ -52140,6 +55495,11 @@
     "average": "A-"
   },
   {
+    "courseId": "POLI321",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "POLI322",
     "term": "Winter 2022",
     "average": "B"
@@ -52147,6 +55507,11 @@
   {
     "courseId": "POLI322",
     "term": "Fall 2022",
+    "average": "B"
+  },
+  {
+    "courseId": "POLI322",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -52183,6 +55548,11 @@
     "courseId": "POLI324",
     "term": "Fall 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "POLI324",
+    "term": "Fall 2025",
+    "average": "B"
   },
   {
     "courseId": "POLI325",
@@ -52225,6 +55595,11 @@
     "average": "A-"
   },
   {
+    "courseId": "POLI325",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "POLI327",
     "term": "Winter 2016",
     "average": "B"
@@ -52272,6 +55647,11 @@
   {
     "courseId": "POLI329",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "POLI329",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -52350,6 +55730,11 @@
     "average": "B"
   },
   {
+    "courseId": "POLI334",
+    "term": "Winter 2023",
+    "average": "B"
+  },
+  {
     "courseId": "POLI338",
     "term": "Summer 2023",
     "average": "B+"
@@ -52412,6 +55797,11 @@
   {
     "courseId": "POLI340",
     "term": "Fall 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "POLI340",
+    "term": "Fall 2025",
     "average": "B"
   },
   {
@@ -52550,6 +55940,11 @@
     "average": "A-"
   },
   {
+    "courseId": "POLI346",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "POLI347",
     "term": "Winter 2014",
     "average": "B+"
@@ -52645,8 +56040,18 @@
     "average": "A-"
   },
   {
+    "courseId": "POLI350",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "POLI351",
     "term": "Winter 2015",
+    "average": "B+"
+  },
+  {
+    "courseId": "POLI351",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -52677,6 +56082,11 @@
   {
     "courseId": "POLI352",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "POLI352",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -52787,6 +56197,11 @@
   {
     "courseId": "POLI358",
     "term": "Fall 2023",
+    "average": "B+"
+  },
+  {
+    "courseId": "POLI358",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -52855,6 +56270,11 @@
     "average": "B+"
   },
   {
+    "courseId": "POLI360",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "POLI361",
     "term": "Summer 2015",
     "average": "B+"
@@ -52903,6 +56323,11 @@
     "courseId": "POLI362",
     "term": "Fall 2023",
     "average": "B"
+  },
+  {
+    "courseId": "POLI362",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "POLI363",
@@ -52957,6 +56382,11 @@
   {
     "courseId": "POLI364",
     "term": "Winter 2024",
+    "average": "B"
+  },
+  {
+    "courseId": "POLI364",
+    "term": "Winter 2025",
     "average": "B"
   },
   {
@@ -53015,6 +56445,11 @@
     "average": "B+"
   },
   {
+    "courseId": "POLI368",
+    "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
     "courseId": "POLI369",
     "term": "Winter 2018",
     "average": "B+"
@@ -53033,6 +56468,11 @@
     "courseId": "POLI369",
     "term": "Winter 2024",
     "average": "B+"
+  },
+  {
+    "courseId": "POLI369",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "POLI371",
@@ -53251,6 +56691,11 @@
   },
   {
     "courseId": "POLI432",
+    "term": "Fall 2021",
+    "average": "B+"
+  },
+  {
+    "courseId": "POLI432",
     "term": "Winter 2022",
     "average": "A-"
   },
@@ -53357,6 +56802,11 @@
   {
     "courseId": "POLI444",
     "term": "Winter 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "POLI444",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -53560,6 +57010,11 @@
     "average": "A-"
   },
   {
+    "courseId": "POTH225",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "POTH250",
     "term": "Winter 2015",
     "average": "A"
@@ -53590,8 +57045,18 @@
     "average": "A-"
   },
   {
+    "courseId": "POTH250",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "POTH305",
     "term": "Winter 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "POTH305",
+    "term": "Winter 2025",
     "average": "A-"
   },
   {
@@ -53608,6 +57073,11 @@
     "courseId": "POTH401",
     "term": "Winter 2023",
     "average": "A"
+  },
+  {
+    "courseId": "POTH401",
+    "term": "Winter 2026",
+    "average": "A-"
   },
   {
     "courseId": "POTH434",
@@ -53623,6 +57093,11 @@
     "courseId": "POTH434",
     "term": "Winter 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "POTH434",
+    "term": "Winter 2026",
+    "average": "B"
   },
   {
     "courseId": "POTH455",
@@ -53642,6 +57117,11 @@
   {
     "courseId": "POTH455",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "POTH455",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -53738,6 +57218,11 @@
     "courseId": "PPHS511",
     "term": "Fall 2024",
     "average": "A"
+  },
+  {
+    "courseId": "PPHS511",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "PPHS529",
@@ -53945,6 +57430,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PSYC100",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PSYC204",
     "term": "Fall 2012",
     "average": "B"
@@ -54100,6 +57590,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PSYC204",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PSYC211",
     "term": "Winter 2012",
     "average": "B"
@@ -54188,6 +57683,11 @@
     "courseId": "PSYC211",
     "term": "Fall 2024",
     "average": "B"
+  },
+  {
+    "courseId": "PSYC211",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "PSYC212",
@@ -54353,6 +57853,11 @@
     "courseId": "PSYC213",
     "term": "Winter 2025",
     "average": "B+"
+  },
+  {
+    "courseId": "PSYC213",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "PSYC215",
@@ -54485,6 +57990,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PSYC215",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PSYC301",
     "term": "Fall 2017",
     "average": "B+"
@@ -54530,8 +58040,23 @@
     "average": "B"
   },
   {
+    "courseId": "PSYC302",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "PSYC302",
+    "term": "Winter 2026",
+    "average": "B"
+  },
+  {
     "courseId": "PSYC303",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PSYC303",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -54612,6 +58137,11 @@
   {
     "courseId": "PSYC304",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PSYC304",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -54765,6 +58295,16 @@
     "average": "B"
   },
   {
+    "courseId": "PSYC305",
+    "term": "Summer 2025",
+    "average": "B"
+  },
+  {
+    "courseId": "PSYC305",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PSYC306",
     "term": "Winter 2023",
     "average": "B+"
@@ -54777,6 +58317,11 @@
   {
     "courseId": "PSYC306",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PSYC306",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -54910,6 +58455,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PSYC311",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PSYC315",
     "term": "Fall 2016",
     "average": "B+"
@@ -54955,6 +58505,11 @@
     "average": "A"
   },
   {
+    "courseId": "PSYC315",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "PSYC317",
     "term": "Fall 2015",
     "average": "B"
@@ -54997,6 +58552,11 @@
   {
     "courseId": "PSYC318",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "PSYC318",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -55140,6 +58700,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PSYC332",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PSYC333",
     "term": "Winter 2016",
     "average": "B"
@@ -55245,6 +58810,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PSYC337",
+    "term": "Fall 2025",
+    "average": "B"
+  },
+  {
     "courseId": "PSYC338",
     "term": "Winter 2016",
     "average": "B+"
@@ -55263,6 +58833,11 @@
     "courseId": "PSYC341",
     "term": "Winter 2015",
     "average": "B"
+  },
+  {
+    "courseId": "PSYC341",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "PSYC342",
@@ -55470,6 +59045,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PSYC406",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PSYC408",
     "term": "Winter 2021",
     "average": "A-"
@@ -55525,6 +59105,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PSYC410",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PSYC411",
     "term": "Fall 2023",
     "average": "A-"
@@ -55532,6 +59117,11 @@
   {
     "courseId": "PSYC411",
     "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
+    "courseId": "PSYC411",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -55575,6 +59165,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PSYC412",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "PSYC413",
     "term": "Fall 2018",
     "average": "B+"
@@ -55590,6 +59185,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PSYC413",
+    "term": "Fall 2024",
+    "average": "A-"
+  },
+  {
     "courseId": "PSYC427",
     "term": "Winter 2018",
     "average": "A-"
@@ -55602,6 +59202,11 @@
   {
     "courseId": "PSYC427",
     "term": "Winter 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "PSYC427",
+    "term": "Winter 2025",
     "average": "B+"
   },
   {
@@ -55725,6 +59330,11 @@
     "average": "A"
   },
   {
+    "courseId": "PSYC444",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PSYC471",
     "term": "Fall 2015",
     "average": "B+"
@@ -55775,6 +59385,11 @@
     "average": "B+"
   },
   {
+    "courseId": "PSYC471",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PSYC473",
     "term": "Winter 2019",
     "average": "B"
@@ -55800,6 +59415,11 @@
     "average": "A-"
   },
   {
+    "courseId": "PSYC474",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "PSYC475",
     "term": "Fall 2019",
     "average": "B+"
@@ -55813,6 +59433,11 @@
     "courseId": "PSYC482",
     "term": "Fall 2021",
     "average": "A"
+  },
+  {
+    "courseId": "PSYC493",
+    "term": "Winter 2025",
+    "average": "A-"
   },
   {
     "courseId": "PSYC494D2",
@@ -55955,6 +59580,11 @@
     "average": "A"
   },
   {
+    "courseId": "PSYT199",
+    "term": "Fall 2024",
+    "average": "A"
+  },
+  {
     "courseId": "PSYT301",
     "term": "Winter 2016",
     "average": "B+"
@@ -56040,6 +59670,11 @@
     "average": "B"
   },
   {
+    "courseId": "PUB2101D2",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "PUB2105",
     "term": "Fall 2021",
     "average": "B"
@@ -56068,6 +59703,11 @@
     "courseId": "PUB2313",
     "term": "Fall 2022",
     "average": "B"
+  },
+  {
+    "courseId": "PUB2313",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "PUB2401",
@@ -56115,6 +59755,11 @@
     "average": "B"
   },
   {
+    "courseId": "PUB3116",
+    "term": "Winter 2025",
+    "average": "B"
+  },
+  {
     "courseId": "PUB3116D2",
     "term": "Winter 2017",
     "average": "B"
@@ -56158,6 +59803,11 @@
     "courseId": "QCST200",
     "term": "Fall 2024",
     "average": "A"
+  },
+  {
+    "courseId": "QCST200",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "REDM400",
@@ -56550,6 +60200,11 @@
     "average": "B+"
   },
   {
+    "courseId": "RELG252",
+    "term": "Fall 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "RELG253",
     "term": "Winter 2014",
     "average": "B+"
@@ -56598,6 +60253,11 @@
     "courseId": "RELG253",
     "term": "Fall 2023",
     "average": "A-"
+  },
+  {
+    "courseId": "RELG253",
+    "term": "Winter 2025",
+    "average": "B"
   },
   {
     "courseId": "RELG254",
@@ -56725,6 +60385,11 @@
     "average": "A"
   },
   {
+    "courseId": "RELG271",
+    "term": "Winter 2025",
+    "average": "A"
+  },
+  {
     "courseId": "RELG288",
     "term": "Winter 2022",
     "average": "A-"
@@ -56792,6 +60457,11 @@
   {
     "courseId": "RELG307",
     "term": "Fall 2024",
+    "average": "A"
+  },
+  {
+    "courseId": "RELG307",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -57025,6 +60695,11 @@
     "average": "A"
   },
   {
+    "courseId": "RELG372",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "RELG375",
     "term": "Fall 2016",
     "average": "A-"
@@ -57058,6 +60733,16 @@
     "courseId": "RELG375",
     "term": "Winter 2024",
     "average": "A"
+  },
+  {
+    "courseId": "RELG375",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "RELG378",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "RELG451",
@@ -57132,6 +60817,11 @@
   {
     "courseId": "RUSS210",
     "term": "Fall 2023",
+    "average": "A-"
+  },
+  {
+    "courseId": "RUSS210",
+    "term": "Fall 2025",
     "average": "A-"
   },
   {
@@ -57325,6 +61015,11 @@
     "average": "B+"
   },
   {
+    "courseId": "RUSS337",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "RUSS340",
     "term": "Winter 2014",
     "average": "A-"
@@ -57368,6 +61063,11 @@
     "courseId": "SDST250",
     "term": "Fall 2015",
     "average": "B"
+  },
+  {
+    "courseId": "SEAD510",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "SEAD520",
@@ -57645,6 +61345,11 @@
     "average": "A-"
   },
   {
+    "courseId": "SOCI211",
+    "term": "Summer 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "SOCI212",
     "term": "Fall 2017",
     "average": "A-"
@@ -57712,6 +61417,16 @@
   {
     "courseId": "SOCI213",
     "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "SOCI213",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "SOCI213",
+    "term": "Fall 2025",
     "average": "B+"
   },
   {
@@ -57798,6 +61513,11 @@
     "courseId": "SOCI225",
     "term": "Winter 2025",
     "average": "A-"
+  },
+  {
+    "courseId": "SOCI225",
+    "term": "Fall 2025",
+    "average": "B+"
   },
   {
     "courseId": "SOCI227",
@@ -58103,6 +61823,11 @@
     "courseId": "SOCI250",
     "term": "Fall 2024",
     "average": "B"
+  },
+  {
+    "courseId": "SOCI250",
+    "term": "Fall 2025",
+    "average": "A-"
   },
   {
     "courseId": "SOCI254",
@@ -58195,6 +61920,11 @@
     "average": "A-"
   },
   {
+    "courseId": "SOCI301",
+    "term": "Fall 2025",
+    "average": "A"
+  },
+  {
     "courseId": "SOCI304",
     "term": "Fall 2017",
     "average": "B-"
@@ -58320,6 +62050,11 @@
     "average": "A"
   },
   {
+    "courseId": "SOCI309",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "SOCI310",
     "term": "Winter 2015",
     "average": "B+"
@@ -58405,6 +62140,11 @@
     "average": "A-"
   },
   {
+    "courseId": "SOCI312",
+    "term": "Winter 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "SOCI318",
     "term": "Summer 2018",
     "average": "B+"
@@ -58422,6 +62162,11 @@
   {
     "courseId": "SOCI318",
     "term": "Summer 2021",
+    "average": "B+"
+  },
+  {
+    "courseId": "SOCI318",
+    "term": "Fall 2024",
     "average": "B+"
   },
   {
@@ -58478,6 +62223,11 @@
     "courseId": "SOCI326",
     "term": "Fall 2023",
     "average": "B+"
+  },
+  {
+    "courseId": "SOCI326",
+    "term": "Fall 2025",
+    "average": "B"
   },
   {
     "courseId": "SOCI330",
@@ -58570,6 +62320,11 @@
     "average": "A-"
   },
   {
+    "courseId": "SOCI333",
+    "term": "Summer 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "SOCI335",
     "term": "Fall 2015",
     "average": "A-"
@@ -58592,6 +62347,11 @@
   {
     "courseId": "SOCI335",
     "term": "Fall 2023",
+    "average": "A"
+  },
+  {
+    "courseId": "SOCI335",
+    "term": "Fall 2025",
     "average": "A"
   },
   {
@@ -58707,6 +62467,11 @@
   {
     "courseId": "SOCI370",
     "term": "Fall 2023",
+    "average": "B+"
+  },
+  {
+    "courseId": "SOCI370",
+    "term": "Fall 2024",
     "average": "B+"
   },
   {
@@ -58955,6 +62720,16 @@
     "average": "A"
   },
   {
+    "courseId": "WCOM150",
+    "term": "Fall 2024",
+    "average": "B+"
+  },
+  {
+    "courseId": "WCOM150",
+    "term": "Winter 2025",
+    "average": "B+"
+  },
+  {
     "courseId": "WCOM203",
     "term": "Fall 2022",
     "average": "A-"
@@ -58973,6 +62748,11 @@
     "courseId": "WCOM203",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "WCOM203",
+    "term": "Fall 2025",
+    "average": "A"
   },
   {
     "courseId": "WCOM206",
@@ -59020,6 +62800,16 @@
     "average": "A-"
   },
   {
+    "courseId": "WCOM206",
+    "term": "Summer 2025",
+    "average": "A-"
+  },
+  {
+    "courseId": "WCOM206",
+    "term": "Fall 2025",
+    "average": "A-"
+  },
+  {
     "courseId": "WCOM250",
     "term": "Fall 2022",
     "average": "A"
@@ -59068,6 +62858,11 @@
     "courseId": "WCOM314",
     "term": "Winter 2024",
     "average": "A-"
+  },
+  {
+    "courseId": "WCOM314",
+    "term": "Fall 2024",
+    "average": "A"
   },
   {
     "courseId": "WCOM317",
