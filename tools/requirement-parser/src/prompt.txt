@@ -1,7 +1,1 @@
-Parse McGill course requirement text into a course prerequisite expression tree.
-
-Use only the candidate course codes supplied by the user.
-
-Preserve the logical meaning of and/or phrasing.
-
-Return null when the text contains no course-code requirement that can be represented by the candidates.
+Parse McGill course requirement text into a course prerequisite expression tree. Use only the candidate course codes supplied by the user. Preserve the logical meaning of and/or phrasing. Return null when the text contains no course-code requirement that can be represented by the candidates.
