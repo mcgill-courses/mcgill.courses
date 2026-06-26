@@ -1,0 +1,20 @@
+[package]
+name = "requirement-parser"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+anyhow = "1.0.102"
+clap = { version = "4.6.1", features = ["derive"] }
+dotenv = "0.15.0"
+model = { version = "0.0.0", path = "../../crates/model" }
+regex = "1.12.3"
+reqwest = { version = "0.13.4", default-features = false, features = ["blocking", "json", "rustls"] }
+scraper = "0.27.0"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.150"
+
+[dev-dependencies]
+mockito = "1.7.2"
+tempfile = "3.27.0"
