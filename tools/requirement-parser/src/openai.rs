@@ -68,8 +68,6 @@ impl OpenAiClient {
       .context("GPT gave none for message content")?
       .replace('\n', "");
 
-    println!("Got completion: {prediction}");
-
     let response = serde_json::from_str::<RequirementResponse>(&prediction)
       .context("failed to parse structured requirement response")?;
 

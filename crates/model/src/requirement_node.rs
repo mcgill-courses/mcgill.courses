@@ -19,6 +19,12 @@ pub enum RequirementNode {
   },
 }
 
+impl Default for RequirementNode {
+  fn default() -> Self {
+    Self::Course("".to_string())
+  }
+}
+
 impl<'de> Deserialize<'de> for RequirementNode {
   /// Supports both the current tagged format and legacy untagged requirement
   /// nodes already stored in seed data and the database.
@@ -82,9 +88,30 @@ impl Into<Bson> for RequirementNode {
   }
 }
 
-impl Default for RequirementNode {
-  fn default() -> Self {
-    Self::Course("".to_string())
+impl Display for RequirementNode {
+  fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    match self {
+      Self::Course(course) => f.write_str(course),
+      Self::Group { operator, groups } => {
+        let separator = match operator {
+          Operator::And => " AND ",
+          Operator::Or => " OR ",
+        };
+
+        for (i, group) in groups.iter().enumerate() {
+          if i > 0 {
+            f.write_str(separator)?;
+          }
+
+          match group {
+            Self::Course(_) => group.fmt(f)?,
+            Self::Group { .. } => write!(f, "({group})")?,
+          }
+        }
+
+        Ok(())
+      }
+    }
   }
 }
 
@@ -120,6 +147,27 @@ impl RequirementNode {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn display() {
+    assert_eq!(
+      RequirementNode::Group {
+        operator: Operator::And,
+        groups: vec![
+          RequirementNode::Course("FOOO 100".to_string()),
+          RequirementNode::Group {
+            operator: Operator::Or,
+            groups: vec![
+              RequirementNode::Course("BARR 200".to_string()),
+              RequirementNode::Course("BAZZ 300".to_string()),
+            ],
+          },
+        ],
+      }
+      .to_string(),
+      "FOOO 100 AND (BARR 200 OR BAZZ 300)",
+    );
+  }
 
   #[test]
   fn validate_flattens_single_child_groups() {

@@ -15,6 +15,7 @@ use {
   dotenv::dotenv,
   model::RequirementNode,
   openai::OpenAiClient,
+  progress::Progress,
   regex::Regex,
   schema::{RequirementResponse, RequirementSchema},
   serde::Deserialize,
@@ -28,6 +29,7 @@ use {
     sync::LazyLock,
     time::Duration,
   },
+  summary::Summary,
   tokio::time::sleep,
 };
 
@@ -35,8 +37,10 @@ mod arguments;
 mod candidate;
 mod openai;
 mod parser;
+mod progress;
 mod re;
 mod schema;
+mod summary;
 
 const DEFAULT_API_BASE: &str = "https://api.openai.com/v1";
 const PROMPT: &str = include_str!("prompt.txt");

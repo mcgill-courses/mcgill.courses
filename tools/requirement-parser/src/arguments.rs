@@ -40,24 +40,28 @@ impl Arguments {
 
     let course_count = courses.len();
 
-    'courses: for (i, course) in courses.iter_mut().enumerate() {
-      let progress = format!("({}/{course_count})", i + 1);
+    let mut summary = Summary::default();
 
-      let course_code = &course.id;
+    'courses: for (i, course) in courses.iter_mut().enumerate() {
+      let course_code = course.id.clone();
+
+      let progress = Progress {
+        current: i + 1,
+        total: course_count,
+        course: &course_code,
+      };
 
       if !self.overwrite && course.has_logical_requirements() {
+        summary.skipped_existing += 1;
         continue;
       }
 
       if course.prerequisites.is_empty() && course.corequisites.is_empty() {
-        println!(
-          "{progress} {course_code} does not have any requirements, skipping..."
-        );
-
+        summary.skipped_without_requirements += 1;
         continue;
       }
 
-      println!("{progress} Parsing requirements {course_code}...");
+      println!("{progress}");
 
       let prerequisites = 'prerequisites: {
         if course.prerequisites.is_empty() {
@@ -65,20 +69,18 @@ impl Arguments {
         }
 
         let Some(text) = course.prerequisites_text.as_deref() else {
-          println!(
-            "Failed to parse prerequisites for {course_code}: missing `prerequisitesText`, skipping..."
-          );
-
+          println!("  prerequisites failed: missing `prerequisitesText`");
+          println!();
+          summary.failed += 1;
           continue 'courses;
         };
 
         match parser.parse(text, &course.prerequisites).await {
           Ok(requirements) => requirements,
           Err(error) => {
-            println!(
-              "Failed to parse prerequisites for {course_code}: {error}, skipping..."
-            );
-
+            println!("  prerequisites failed: {error}");
+            println!();
+            summary.failed += 1;
             continue 'courses;
           }
         }
@@ -90,37 +92,51 @@ impl Arguments {
         }
 
         let Some(text) = course.corequisites_text.as_deref() else {
-          println!(
-            "Failed to parse corequisites for {course_code}: missing `corequisitesText`, skipping..."
-          );
-
+          println!("  corequisites failed: missing `corequisitesText`");
+          println!();
+          summary.failed += 1;
           continue 'courses;
         };
 
         match parser.parse(text, &course.corequisites).await {
           Ok(requirements) => requirements,
           Err(error) => {
-            println!(
-              "Failed to parse corequisites for {course_code}: {error}, skipping..."
-            );
-
+            println!("  corequisites failed: {error}");
+            println!();
+            summary.failed += 1;
             continue 'courses;
           }
         }
       };
 
-      println!("---Postprocessed---");
-      println!("Prerequisites: {prerequisites:?}");
-      println!("Corequisites: {corequisites:?}");
+      println!(
+        "  prerequisites: {}",
+        prerequisites
+          .as_ref()
+          .map_or_else(|| "none".to_string(), ToString::to_string)
+      );
+
+      println!(
+        "  corequisites: {}",
+        corequisites
+          .as_ref()
+          .map_or_else(|| "none".to_string(), ToString::to_string)
+      );
+
       println!();
 
       course.logical_prerequisites = prerequisites;
       course.logical_corequisites = corequisites;
 
+      summary.updated += 1;
+
       sleep(Duration::from_millis(self.delay)).await;
     }
 
     fs::write(&self.file, serde_json::to_string_pretty(&courses)?)?;
+
+    println!("Summary: {summary}.");
+    println!("Output written to {}", self.file.display());
 
     Ok(())
   }
