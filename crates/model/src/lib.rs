@@ -34,6 +34,7 @@ mod initialize_options;
 mod instructor;
 mod interaction;
 mod notification;
+mod requirement_node;
 mod requirements;
 mod review;
 mod review_filter;
@@ -53,7 +54,8 @@ pub use crate::{
   instructor::Instructor,
   interaction::{Interaction, InteractionKind},
   notification::Notification,
-  requirements::{Operator, Requirement, RequirementNode, Requirements},
+  requirement_node::RequirementNode,
+  requirements::{Operator, Requirement, Requirements},
   review::Review,
   review_filter::ReviewFilter,
   schedule::{Block, Schedule, TimeBlock},
