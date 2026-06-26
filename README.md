@@ -71,22 +71,27 @@ more recipes.
 
 ## Tools
 
-We have a few tools that we use for project-specific maintenance tasks. You can
-find all of them under the
+We have a few Rust tools for project-specific maintenance tasks. You can find
+all of them under the
 [`tools`](https://github.com/terror/mcgill.courses/tree/master/tools) directory
 from the project root.
 
-For python-based tools, we highly recommend you install
-[uv](https://docs.astral.sh/uv/) on your system. On macOS or linux, you can do
-it as follows:
+Since each tool is a Cargo workspace package, you can run them from the project
+root with:
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
+cargo run -p <package> <arguments>
 ```
 
-Follow the
-[documentation](https://docs.astral.sh/uv/getting-started/installation/) for
-other systems.
+For example:
+
+```bash
+cargo run -p search-index-aggregator
+cargo run -p requirement-parser seed/courses-2025-2026.json
+```
+
+Each tool includes a local README with detailed flags, input formats, output
+formats, and any authentication requirements.
 
 ## Deployment
 
