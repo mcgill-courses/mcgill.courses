@@ -14,7 +14,7 @@ use {
   clap::Parser,
   dotenv::dotenv,
   model::RequirementNode,
-  openai::OpenAiClient,
+  openai_client::OpenAiClient,
   progress::Progress,
   regex::Regex,
   schema::{RequirementResponse, RequirementSchema},
@@ -35,7 +35,7 @@ use {
 
 mod arguments;
 mod candidate;
-mod openai;
+mod openai_client;
 mod parser;
 mod progress;
 mod re;
