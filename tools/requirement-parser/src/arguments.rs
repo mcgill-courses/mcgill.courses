@@ -7,8 +7,8 @@ use super::*;
   about = "Parse logical course requirements from existing data."
 )]
 pub(super) struct Arguments {
-  #[arg(help = "The path to the course JSON file.")]
-  file: PathBuf,
+  #[arg(long, alias = "api-url", default_value = DEFAULT_API_BASE, hide = true)]
+  api_base: String,
   #[arg(
     short,
     long,
@@ -16,107 +16,111 @@ pub(super) struct Arguments {
     help = "The delay between requests in milliseconds."
   )]
   delay: u64,
+  #[arg(help = "The path to the course JSON file.")]
+  file: PathBuf,
   #[arg(
     short,
     long,
     help = "Reparse all courses, even if they already have parsed requirements."
   )]
   overwrite: bool,
-  #[arg(long, alias = "api-url", default_value = DEFAULT_API_BASE, hide = true)]
-  api_base: String,
 }
 
 impl Arguments {
   pub(super) async fn run(self) -> Result {
     dotenv().ok();
 
-    let client = OpenAiClient::new()?;
+    let parser = parser::Parser::new(&self.api_base)?;
 
-    let mut courses = serde_json::from_str::<Vec<Course>>(
-      &fs::read_to_string(&self.file)
-        .with_context(|| format!("failed to read {}", self.file.display()))?,
-    )
-    .with_context(|| format!("failed to parse {}", self.file.display()))?;
+    let contents = fs::read_to_string(&self.file)
+      .with_context(|| format!("failed to read {}", self.file.display()))?;
 
-    let num_courses = courses.len();
+    let mut courses = serde_json::from_str::<Vec<model::Course>>(&contents)
+      .with_context(|| format!("failed to parse {}", self.file.display()))?;
 
-    for (i, course) in courses.iter_mut().enumerate() {
-      let course_code = course.id.clone();
+    let course_count = courses.len();
 
-      let result = self
-        .parse_course(&client, course, &course_code, i, num_courses)
-        .await;
+    'courses: for (i, course) in courses.iter_mut().enumerate() {
+      let progress = format!("({}/{course_count})", i + 1);
 
-      if let Err(error) = result {
-        println!("Failed to parse requirements, skipping...");
-        println!("error: {error}");
+      let course_code = &course.id;
+
+      if !self.overwrite && course.has_logical_requirements() {
+        continue;
       }
+
+      if course.prerequisites.is_empty() && course.corequisites.is_empty() {
+        println!(
+          "{progress} {course_code} does not have any requirements, skipping..."
+        );
+
+        continue;
+      }
+
+      println!("{progress} Parsing requirements {course_code}...");
+
+      let prerequisites = 'prerequisites: {
+        if course.prerequisites.is_empty() {
+          break 'prerequisites None;
+        }
+
+        let Some(text) = course.prerequisites_text.as_deref() else {
+          println!(
+            "Failed to parse prerequisites for {course_code}: missing `prerequisitesText`, skipping..."
+          );
+
+          continue 'courses;
+        };
+
+        match parser.parse(text, &course.prerequisites).await {
+          Ok(requirements) => requirements,
+          Err(error) => {
+            println!(
+              "Failed to parse prerequisites for {course_code}: {error}, skipping..."
+            );
+
+            continue 'courses;
+          }
+        }
+      };
+
+      let corequisites = 'corequisites: {
+        if course.corequisites.is_empty() {
+          break 'corequisites None;
+        }
+
+        let Some(text) = course.corequisites_text.as_deref() else {
+          println!(
+            "Failed to parse corequisites for {course_code}: missing `corequisitesText`, skipping..."
+          );
+
+          continue 'courses;
+        };
+
+        match parser.parse(text, &course.corequisites).await {
+          Ok(requirements) => requirements,
+          Err(error) => {
+            println!(
+              "Failed to parse corequisites for {course_code}: {error}, skipping..."
+            );
+
+            continue 'courses;
+          }
+        }
+      };
+
+      println!("---Postprocessed---");
+      println!("Prerequisites: {prerequisites:?}");
+      println!("Corequisites: {corequisites:?}");
+      println!();
+
+      course.logical_prerequisites = prerequisites;
+      course.logical_corequisites = corequisites;
+
+      sleep(Duration::from_millis(self.delay)).await;
     }
 
-    fs::write(&self.file, serde_json::to_string_pretty(&courses)?)
-      .with_context(|| format!("failed to write {}", self.file.display()))?;
-
-    Ok(())
-  }
-
-  async fn parse_course(
-    &self,
-    client: &OpenAiClient,
-    course: &mut Course,
-    course_code: &str,
-    index: usize,
-    num_courses: usize,
-  ) -> Result {
-    if !self.overwrite && course.has_logical_requirements() {
-      return Ok(());
-    }
-
-    let progress = format!("({}/{num_courses})", index + 1);
-
-    if course.prerequisites.is_empty() && course.corequisites.is_empty() {
-      println!(
-        "{progress} {course_code} does not have any requirements, skipping..."
-      );
-      return Ok(());
-    }
-
-    println!("{progress} Parsing requirements {course_code}...");
-
-    let prerequisites = if course.prerequisites.is_empty() {
-      None
-    } else {
-      parse_requirement_text(
-        client,
-        course_code,
-        "prerequisitesText",
-        course.prerequisites_text.as_deref(),
-        &course.prerequisites,
-      )
-      .await?
-    };
-
-    let corequisites = if course.corequisites.is_empty() {
-      None
-    } else {
-      parse_requirement_text(
-        client,
-        course_code,
-        "corequisitesText",
-        course.corequisites_text.as_deref(),
-        &course.corequisites,
-      )
-      .await?
-    };
-
-    println!("---Postprocessed---");
-    println!("Prerequisites: {prerequisites:?}");
-    println!("Corequisites: {corequisites:?}");
-    println!();
-
-    course.logical_prerequisites = prerequisites;
-    course.logical_corequisites = corequisites;
-
-    thread::sleep(Duration::from_millis(self.delay));
+    fs::write(&self.file, serde_json::to_string_pretty(&courses)?)?;
 
     Ok(())
   }

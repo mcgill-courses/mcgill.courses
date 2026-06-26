@@ -1,45 +1,10 @@
 use {
   mockito::{Matcher, Server},
+  model::Course,
   serde_json::{Value, json},
   std::{fs, process::Command},
   tempfile::tempdir,
 };
-
-fn course(
-  id: &str,
-  prerequisites_text: Option<&str>,
-  corequisites_text: Option<&str>,
-  prerequisites: Vec<&str>,
-  corequisites: Vec<&str>,
-) -> Value {
-  json!({
-    "_id": id,
-    "idNgrams": null,
-    "title": "foo",
-    "titleNgrams": null,
-    "credits": "3",
-    "subject": &id[..4],
-    "code": &id[4..],
-    "url": "foo",
-    "department": "foo",
-    "faculty": "foo",
-    "terms": [],
-    "description": "foo",
-    "instructors": [],
-    "prerequisitesText": prerequisites_text,
-    "corequisitesText": corequisites_text,
-    "prerequisites": prerequisites,
-    "corequisites": corequisites,
-    "leadingTo": [],
-    "logicalPrerequisites": null,
-    "logicalCorequisites": null,
-    "restrictions": null,
-    "schedule": null,
-    "avgRating": 0.0,
-    "avgDifficulty": 0.0,
-    "reviewCount": 0,
-  })
-}
 
 #[test]
 fn parses_requirements() {
@@ -49,16 +14,26 @@ fn parses_requirements() {
 
   fs::write(
     &course_path,
-    serde_json::to_string_pretty(&json!([
-      course(
-        "BARR200",
-        Some(r#"Prerequisites: <a href="/courses/fooo-100/index.html">foo</a> and <a href="/courses/bazz-300">bar</a>"#),
-        Some("Corequisite: QUXY 400"),
-        vec!["FOOO100", "BAZZ300"],
-        vec!["QUXY400"],
-      ),
-      course("FOOO100", None, None, vec![], vec![]),
-    ]))
+    serde_json::to_string_pretty(&vec![
+      Course {
+        id: "BARR200".to_string(),
+        subject: "BARR".to_string(),
+        code: "200".to_string(),
+        prerequisites_text: Some(
+          "Prerequisites: FOOO 100 and BAZZ 300".to_string(),
+        ),
+        corequisites_text: Some("Corequisite: QUXY 400".to_string()),
+        prerequisites: vec!["FOOO100".to_string(), "BAZZ300".to_string()],
+        corequisites: vec!["QUXY400".to_string()],
+        ..Default::default()
+      },
+      Course {
+        id: "FOOO100".to_string(),
+        subject: "FOOO".to_string(),
+        code: "100".to_string(),
+        ..Default::default()
+      },
+    ])
     .unwrap(),
   )
   .unwrap();
@@ -182,16 +157,26 @@ fn continues_after_failure() {
 
   fs::write(
     &course_path,
-    serde_json::to_string_pretty(&json!([
-      course(
-        "BARR200",
-        Some(r#"Prerequisites: <a href="/courses/fooo-100/index.html">foo</a> and <a href="/courses/bazz-300">bar</a>"#),
-        None,
-        vec!["FOOO100", "BAZZ300"],
-        vec![],
-      ),
-      course("FOOO100", None, None, vec![], vec![]),
-    ]))
+    serde_json::to_string_pretty(&vec![
+      Course {
+        id: "BARR200".to_string(),
+        subject: "BARR".to_string(),
+        code: "200".to_string(),
+        prerequisites_text: Some(
+          "Prerequisites: FOOO 100 and BAZZ 300".to_string(),
+        ),
+        prerequisites: vec!["FOOO100".to_string(), "BAZZ300".to_string()],
+        ..Default::default()
+      },
+      Course {
+        id: "FOOO100".to_string(),
+        subject: "FOOO".to_string(),
+        code: "100".to_string(),
+        prerequisites_text: Some("Prerequisite: BAZZ 300".to_string()),
+        prerequisites: vec!["BAZZ300".to_string()],
+        ..Default::default()
+      },
+    ])
     .unwrap(),
   )
   .unwrap();
@@ -230,5 +215,12 @@ fn continues_after_failure() {
       .unwrap();
 
   assert_eq!(output[0]["logicalPrerequisites"], Value::Null);
-  assert_eq!(output[1]["logicalPrerequisites"], Value::Null);
+
+  assert_eq!(
+    output[1]["logicalPrerequisites"],
+    json!({
+      "type": "course",
+      "data": "BAZZ 300",
+    }),
+  );
 }
