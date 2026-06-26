@@ -80,7 +80,7 @@ Since each tool is a Cargo workspace package, you can run them from the project
 root with:
 
 ```bash
-cargo run -p <package> <args>
+cargo run -p <package> <arguments>
 ```
 
 For example:
