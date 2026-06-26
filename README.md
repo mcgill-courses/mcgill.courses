@@ -90,8 +90,8 @@ cargo run -p search-index-aggregator
 cargo run -p requirement-parser seed/courses-2025-2026.json
 ```
 
-Most tools also include a local README with detailed flags, input formats, and
-authentication requirements.
+Each tool includes a local README with detailed flags, input formats, output
+formats, and any authentication requirements.
 
 ## Deployment
 
