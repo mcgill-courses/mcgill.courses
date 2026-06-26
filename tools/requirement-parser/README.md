@@ -56,8 +56,7 @@ course, it uses these fields:
 | `logicalCorequisites` | Existing parsed corequisite tree |
 
 Courses with existing logical requirement fields are skipped unless
-`--overwrite` is passed. Courses listed in `failed.txt` are skipped on later
-runs.
+`--overwrite` is passed.
 
 ## Output
 
@@ -69,5 +68,5 @@ requirements are stored as `RequirementNode` JSON:
 | `logicalPrerequisites` | Structured prerequisite expression tree |
 | `logicalCorequisites` | Structured corequisite expression tree |
 
-If a course fails to parse, its course ID is appended to `failed.txt` in the
-current working directory.
+If a course fails to parse, the error is printed and the parser continues with
+the remaining courses.

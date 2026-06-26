@@ -90,6 +90,10 @@ impl PartialOrd for Course {
 }
 
 impl Course {
+  pub fn has_logical_requirements(&self) -> bool {
+    self.logical_corequisites.is_some() || self.logical_prerequisites.is_some()
+  }
+
   pub fn merge(self, other: Course) -> Course {
     let other_terms = other
       .instructors

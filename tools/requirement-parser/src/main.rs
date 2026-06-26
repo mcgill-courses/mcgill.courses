@@ -1,55 +1,56 @@
 use {
-  anyhow::{Context, Error, bail},
+  anyhow::{Context, Error},
+  async_openai::{
+    Client,
+    config::OpenAIConfig,
+    types::chat::{
+      ChatCompletionRequestSystemMessageArgs,
+      ChatCompletionRequestUserMessageArgs, CreateChatCompletionRequestArgs,
+      ResponseFormat, ResponseFormatJsonSchema,
+    },
+  },
   clap::Parser,
+  dotenv::dotenv,
   model::{Course, RequirementNode},
   regex::Regex,
-  reqwest::blocking::Client,
   scraper::{ElementRef, Html, Selector},
-  serde::{Deserialize, Serialize},
-  serde_json::{Value, json},
+  serde::Deserialize,
+  serde_json::json,
   std::{
-    collections::BTreeSet,
-    env, fs,
-    path::{Path, PathBuf},
-    process,
-    sync::LazyLock,
-    thread,
-    time::Duration,
+    collections::BTreeSet, env, fs, path::PathBuf, process, sync::LazyLock,
+    thread, time::Duration,
   },
 };
 
 mod arguments;
 mod re;
 
-const DEFAULT_API_URL: &str = "https://api.openai.com/v1/chat/completions";
-
-const PROMPT: &str = "Parse McGill course requirement text into a course prerequisite expression tree. Use only the candidate course codes supplied by the user. Preserve the logical meaning of and/or phrasing. Return null when the text contains no course-code requirement that can be represented by the candidates.";
+const DEFAULT_API_BASE: &str = "https://api.openai.com/v1";
+const PROMPT: &str = include_str!("prompt.txt");
 
 #[derive(Debug)]
 struct OpenAiClient {
-  api_key: String,
-  api_url: String,
-  client: Client,
+  client: Client<OpenAIConfig>,
   model: String,
 }
 
 impl OpenAiClient {
-  fn from_env(api_url: &str) -> Result<Self> {
-    let api_key = env::var("OPENAI_API_KEY")
-      .context("OpenAI API key not present in environment variables")?;
-
-    let model = env::var("OPENAI_MODEL_NAME")
-      .context("OpenAI model name not present in environment variables")?;
-
+  fn new() -> Result<Self> {
     Ok(Self {
-      api_key,
-      api_url: api_url.to_string(),
-      client: reqwest::blocking::Client::new(),
-      model,
+      client: Client::with_config(
+        OpenAIConfig::new()
+          .with_api_key(
+            env::var("OPENAI_API_KEY")
+              .context("OpenAI API key not present in environment variables")?,
+          )
+          .with_api_base(DEFAULT_API_BASE),
+      ),
+      model: env::var("OPENAI_MODEL_NAME")
+        .context("OpenAI model name not present in environment variables")?,
     })
   }
 
-  fn request(
+  async fn request(
     &self,
     request: &str,
     candidates: &[String],
@@ -59,42 +60,28 @@ impl OpenAiClient {
       candidates.join(", ")
     );
 
-    let request = ChatCompletionRequest {
-      model: &self.model,
-      messages: vec![
-        ChatCompletionMessage {
-          role: "system",
-          content: PROMPT.to_string(),
-        },
-        ChatCompletionMessage {
-          role: "user",
-          content: user_content,
-        },
-      ],
-      response_format: response_format(candidates),
-      temperature: 0,
-    };
+    let request = CreateChatCompletionRequestArgs::default()
+      .model(&self.model)
+      .messages([
+        ChatCompletionRequestSystemMessageArgs::default()
+          .content(PROMPT)
+          .build()?
+          .into(),
+        ChatCompletionRequestUserMessageArgs::default()
+          .content(user_content)
+          .build()?
+          .into(),
+      ])
+      .response_format(response_format(candidates))
+      .temperature(0.0)
+      .build()?;
 
     let response = self
       .client
-      .post(&self.api_url)
-      .bearer_auth(&self.api_key)
-      .json(&request)
-      .send()
+      .chat()
+      .create(request)
+      .await
       .context("failed to send OpenAI request")?;
-
-    let status = response.status();
-
-    let body = response
-      .text()
-      .context("failed to read OpenAI response body")?;
-
-    if !status.is_success() {
-      bail!("OpenAI request failed with status {status}: {body}");
-    }
-
-    let response = serde_json::from_str::<ChatCompletionResponse>(&body)
-      .context("failed to parse OpenAI response")?;
 
     let prediction = response
       .choices
@@ -116,55 +103,12 @@ impl OpenAiClient {
   }
 }
 
-#[derive(Debug, Serialize)]
-struct ChatCompletionRequest<'a> {
-  model: &'a str,
-  messages: Vec<ChatCompletionMessage<'a>>,
-  response_format: ResponseFormat,
-  temperature: u8,
-}
-
-#[derive(Debug, Serialize)]
-struct ChatCompletionMessage<'a> {
-  role: &'a str,
-  content: String,
-}
-
-#[derive(Debug, Serialize)]
-struct ResponseFormat {
-  #[serde(rename = "type")]
-  kind: &'static str,
-  json_schema: JsonSchema,
-}
-
-#[derive(Debug, Serialize)]
-struct JsonSchema {
-  name: &'static str,
-  strict: bool,
-  schema: Value,
-}
-
-#[derive(Debug, Deserialize)]
-struct ChatCompletionResponse {
-  choices: Vec<ChatCompletionChoice>,
-}
-
-#[derive(Debug, Deserialize)]
-struct ChatCompletionChoice {
-  message: ChatCompletionResponseMessage,
-}
-
-#[derive(Debug, Deserialize)]
-struct ChatCompletionResponseMessage {
-  content: Option<String>,
-}
-
 #[derive(Debug, Deserialize)]
 struct RequirementResponse {
   requirement: Option<RequirementNode>,
 }
 
-fn parse_course_req(
+async fn parse_course_requirement(
   client: &OpenAiClient,
   req: Option<&str>,
   candidates: &[String],
@@ -187,29 +131,32 @@ fn parse_course_req(
     return Ok(Some(RequirementNode::Course(right.to_string())));
   }
 
-  client.request(req, candidates)
+  client.request(req, candidates).await
 }
 
-fn parse_requirement_text(
+async fn parse_requirement_text(
   client: &OpenAiClient,
   course_code: &str,
   field: &str,
-  req: Option<&str>,
+  requirement_text: Option<&str>,
   courses: &[String],
 ) -> Result<Option<RequirementNode>> {
-  let req = req.with_context(|| format!("{course_code} missing {field}"))?;
-  let req = parse_html(req)?;
-  let candidates = candidates(courses, &req)?;
+  let requirement = parse_html(
+    requirement_text
+      .with_context(|| format!("{course_code} missing {field}"))?,
+  )?;
 
-  parse_course_req(client, Some(&req), &candidates)
+  let candidates = candidates(courses, &requirement)?;
+
+  parse_course_requirement(client, Some(&requirement), &candidates).await
 }
 
 fn response_format(candidates: &[String]) -> ResponseFormat {
-  ResponseFormat {
-    kind: "json_schema",
-    json_schema: JsonSchema {
-      name: "course_requirement",
-      strict: true,
+  ResponseFormat::JsonSchema {
+    json_schema: ResponseFormatJsonSchema {
+      description: None,
+      name: "course_requirement".to_string(),
+      strict: Some(true),
       schema: json!({
         "type": "object",
         "additionalProperties": false,
@@ -347,31 +294,11 @@ fn course_code_from_href(href: &str) -> Result<String> {
   Ok(course.to_uppercase().replace('-', " "))
 }
 
-fn read_failed(path: &Path) -> Result<Vec<String>> {
-  if !path.exists() {
-    return Ok(Vec::new());
-  }
-
-  Ok(
-    fs::read_to_string(path)
-      .with_context(|| format!("failed to read {}", path.display()))?
-      .lines()
-      .map(str::trim)
-      .filter(|line| !line.is_empty())
-      .map(str::to_string)
-      .collect(),
-  )
-}
-
-fn write_failed(path: &Path, failed: &[String]) -> Result {
-  fs::write(path, failed.join("\n"))
-    .with_context(|| format!("failed to write {}", path.display()))
-}
-
 type Result<T = (), E = Error> = std::result::Result<T, E>;
 
-fn main() {
-  if let Err(err) = arguments::Arguments::parse().run() {
+#[tokio::main]
+async fn main() {
+  if let Err(err) = arguments::Arguments::parse().run().await {
     eprintln!("error: {err}");
 
     let causes = err.chain().skip(1).count();

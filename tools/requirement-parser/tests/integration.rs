@@ -66,7 +66,7 @@ fn parses_requirements() {
   let mut server = Server::new();
 
   let mock = server
-    .mock("POST", "/v1/chat/completions")
+    .mock("POST", "/chat/completions")
     .match_header("authorization", "Bearer bar")
     .match_body(Matcher::PartialJson(json!({
       "model": "foo",
@@ -83,7 +83,9 @@ fn parses_requirements() {
       json!({
         "choices": [
           {
+            "index": 0,
             "message": {
+              "role": "assistant",
               "content": serde_json::to_string(&json!({
                 "requirement": {
                   "type": "group",
@@ -104,8 +106,13 @@ fn parses_requirements() {
               }))
               .unwrap(),
             },
+            "finish_reason": "stop",
           },
         ],
+        "created": 0,
+        "id": "foo",
+        "model": "foo",
+        "object": "chat.completion",
       })
       .to_string(),
     )
@@ -115,8 +122,8 @@ fn parses_requirements() {
   let output = Command::new(env!("CARGO_BIN_EXE_requirement-parser"))
     .arg("--delay")
     .arg("0")
-    .arg("--api-url")
-    .arg(format!("{}/v1/chat/completions", server.url()))
+    .arg("--api-base")
+    .arg(server.url())
     .arg(&course_path)
     .current_dir(tempdir.path())
     .env("OPENAI_API_KEY", "bar")
@@ -165,9 +172,63 @@ fn parses_requirements() {
   );
 
   assert_eq!(output[1]["logicalPrerequisites"], Value::Null);
+}
 
-  assert_eq!(
-    fs::read_to_string(tempdir.path().join("failed.txt")).unwrap(),
-    ""
+#[test]
+fn continues_after_failure() {
+  let tempdir = tempdir().unwrap();
+
+  let course_path = tempdir.path().join("courses.json");
+
+  fs::write(
+    &course_path,
+    serde_json::to_string_pretty(&json!([
+      course(
+        "BARR200",
+        Some(r#"Prerequisites: <a href="/courses/fooo-100/index.html">foo</a> and <a href="/courses/bazz-300">bar</a>"#),
+        None,
+        vec!["FOOO100", "BAZZ300"],
+        vec![],
+      ),
+      course("FOOO100", None, None, vec![], vec![]),
+    ]))
+    .unwrap(),
+  )
+  .unwrap();
+
+  let mut server = Server::new();
+
+  let mock = server
+    .mock("POST", "/chat/completions")
+    .with_status(400)
+    .with_body("bar")
+    .expect(1)
+    .create();
+
+  let output = Command::new(env!("CARGO_BIN_EXE_requirement-parser"))
+    .arg("--delay")
+    .arg("0")
+    .arg("--api-base")
+    .arg(server.url())
+    .arg(&course_path)
+    .current_dir(tempdir.path())
+    .env("OPENAI_API_KEY", "bar")
+    .env("OPENAI_MODEL_NAME", "foo")
+    .output()
+    .unwrap();
+
+  assert!(
+    output.status.success(),
+    "{}",
+    String::from_utf8_lossy(&output.stderr)
   );
+
+  mock.assert();
+
+  let output =
+    serde_json::from_str::<Value>(&fs::read_to_string(&course_path).unwrap())
+      .unwrap();
+
+  assert_eq!(output[0]["logicalPrerequisites"], Value::Null);
+  assert_eq!(output[1]["logicalPrerequisites"], Value::Null);
 }
