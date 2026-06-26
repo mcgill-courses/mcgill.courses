@@ -45,9 +45,9 @@ pub struct Course {
   /// Course codes that list this course as a prerequisite.
   pub leading_to: Vec<String>,
   /// Structured prerequisites expression.
-  pub logical_prerequisites: Option<ReqNode>,
+  pub logical_prerequisites: Option<RequirementNode>,
   /// Structured corequisites expression.
-  pub logical_corequisites: Option<ReqNode>,
+  pub logical_corequisites: Option<RequirementNode>,
   /// Restriction text from the catalog.
   pub restrictions: Option<String>,
   /// Schedule offerings for the course.
@@ -249,8 +249,8 @@ mod tests {
 
   #[test]
   fn merge_logical_prerequisites_prefers_other() {
-    let self_prereq = ReqNode::Course("MATH-140".to_string());
-    let other_prereq = ReqNode::Course("MATH-141".to_string());
+    let self_prereq = RequirementNode::Course("MATH-140".to_string());
+    let other_prereq = RequirementNode::Course("MATH-141".to_string());
 
     let course1 = Course {
       logical_prerequisites: Some(self_prereq),
@@ -269,7 +269,7 @@ mod tests {
 
   #[test]
   fn merge_logical_prerequisites_falls_back_to_self() {
-    let self_prereq = ReqNode::Course("MATH-140".to_string());
+    let self_prereq = RequirementNode::Course("MATH-140".to_string());
 
     let course1 = Course {
       logical_prerequisites: Some(self_prereq.clone()),
@@ -288,8 +288,8 @@ mod tests {
 
   #[test]
   fn merge_logical_corequisites_prefers_other() {
-    let self_coreq = ReqNode::Course("COMP-206".to_string());
-    let other_coreq = ReqNode::Course("COMP-250".to_string());
+    let self_coreq = RequirementNode::Course("COMP-206".to_string());
+    let other_coreq = RequirementNode::Course("COMP-250".to_string());
 
     let course1 = Course {
       logical_corequisites: Some(self_coreq),
@@ -308,7 +308,7 @@ mod tests {
 
   #[test]
   fn merge_logical_corequisites_falls_back_to_self() {
-    let self_coreq = ReqNode::Course("COMP-206".to_string());
+    let self_coreq = RequirementNode::Course("COMP-206".to_string());
 
     let course1 = Course {
       logical_corequisites: Some(self_coreq.clone()),
@@ -430,19 +430,19 @@ mod tests {
 
   #[test]
   fn merge_complex_logical_prerequisites() {
-    let self_prereq = ReqNode::Group {
+    let self_prereq = RequirementNode::Group {
       operator: Operator::And,
       groups: vec![
-        ReqNode::Course("MATH-140".to_string()),
-        ReqNode::Course("MATH-141".to_string()),
+        RequirementNode::Course("MATH-140".to_string()),
+        RequirementNode::Course("MATH-141".to_string()),
       ],
     };
 
-    let other_prereq = ReqNode::Group {
+    let other_prereq = RequirementNode::Group {
       operator: Operator::Or,
       groups: vec![
-        ReqNode::Course("MATH-150".to_string()),
-        ReqNode::Course("MATH-151".to_string()),
+        RequirementNode::Course("MATH-150".to_string()),
+        RequirementNode::Course("MATH-151".to_string()),
       ],
     };
 

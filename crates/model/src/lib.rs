@@ -53,7 +53,7 @@ pub use crate::{
   instructor::Instructor,
   interaction::{Interaction, InteractionKind},
   notification::Notification,
-  requirements::{Operator, ReqNode, Requirement, Requirements},
+  requirements::{Operator, Requirement, RequirementNode, Requirements},
   review::Review,
   review_filter::ReviewFilter,
   schedule::{Block, Schedule, TimeBlock},

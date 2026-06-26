@@ -5,16 +5,16 @@ and corequisite expression trees for scraped course seed files. It reads course
 JSON, parses the requirement text for each course, and writes
 `logicalPrerequisites` and `logicalCorequisites` fields back to the same file.
 
+The tool extracts candidate course codes from the existing course arrays and
+requirement text, asks an OpenAI model for a schema-constrained JSON expression
+tree, and validates every returned course code against the candidate set before
+writing output.
+
 <br/>
 <div align='center'>
   <img style='border-radius: 8px' width='500' src='https://github.com/terror/mcgill.courses/assets/31192478/de8f3f42-d3f5-4eac-9137-f9793bc877a3'/>
 </div>
 <br/>
-
-The tool extracts candidate course codes from the existing course arrays and
-requirement text, asks an OpenAI model for a schema-constrained JSON expression
-tree, and validates every returned course code against the candidate set before
-writing output.
 
 ## Usage
 
@@ -62,7 +62,7 @@ runs.
 ## Output
 
 The parser writes the updated course array back to the input file. Logical
-requirements are stored as `ReqNode` JSON:
+requirements are stored as `RequirementNode` JSON:
 
 | Field | Description |
 |-------|-------------|

@@ -56,7 +56,7 @@ impl Into<Bson> for Operator {
 #[serde(tag = "type", content = "data")]
 #[serde(rename_all = "camelCase")]
 #[typeshare]
-pub enum ReqNode {
+pub enum RequirementNode {
   /// A single course code requirement.
   Course(String),
   #[schema(no_recursion)]
@@ -65,15 +65,15 @@ pub enum ReqNode {
     /// Operator used to combine the child nodes.
     operator: Operator,
     /// Child requirement nodes in the group.
-    groups: Vec<ReqNode>,
+    groups: Vec<RequirementNode>,
   },
 }
 
-impl<'de> Deserialize<'de> for ReqNode {
-  /// Deserializes ReqNode from either old untagged format or new tagged format for
+impl<'de> Deserialize<'de> for RequirementNode {
+  /// Deserializes RequirementNode from either old untagged format or new tagged format for
   /// backward compatibility.
   ///
-  /// This function handles two different ReqNode serialization formats during
+  /// This function handles two different RequirementNode serialization formats during
   /// deserialization. The new format uses serde's tagged enum representation with
   /// explicit type discriminators: `{type: "course", data: "MATH240"}` for courses
   /// and `{type: "group", data: {operator: "AND", groups: [...]}}` for groups.
@@ -97,47 +97,47 @@ impl<'de> Deserialize<'de> for ReqNode {
     #[serde(rename_all = "camelCase")]
     struct GroupData {
       operator: Operator,
-      groups: Vec<ReqNode>,
+      groups: Vec<RequirementNode>,
     }
 
     #[derive(Deserialize)]
     #[serde(rename_all = "camelCase", tag = "type", content = "data")]
-    enum TaggedReqNode {
+    enum TaggedRequirementNode {
       Course(String),
       Group(GroupData),
     }
 
     #[derive(Deserialize)]
     #[serde(untagged)]
-    enum UntaggedReqNode {
+    enum UntaggedRequirementNode {
       Course(String),
       Group(GroupData),
     }
 
     #[derive(Deserialize)]
     #[serde(untagged)]
-    enum ReqNodeRepr {
-      Tagged(TaggedReqNode),
-      Legacy(UntaggedReqNode),
+    enum RequirementNodeRepr {
+      Tagged(TaggedRequirementNode),
+      Legacy(UntaggedRequirementNode),
     }
 
-    let repr = ReqNodeRepr::deserialize(deserializer)?;
+    let repr = RequirementNodeRepr::deserialize(deserializer)?;
 
     Ok(match repr {
-      ReqNodeRepr::Tagged(TaggedReqNode::Course(course))
-      | ReqNodeRepr::Legacy(UntaggedReqNode::Course(course)) => {
-        ReqNode::Course(course)
+      RequirementNodeRepr::Tagged(TaggedRequirementNode::Course(course))
+      | RequirementNodeRepr::Legacy(UntaggedRequirementNode::Course(course)) => {
+        RequirementNode::Course(course)
       }
-      ReqNodeRepr::Tagged(TaggedReqNode::Group(group))
-      | ReqNodeRepr::Legacy(UntaggedReqNode::Group(group)) => {
+      RequirementNodeRepr::Tagged(TaggedRequirementNode::Group(group))
+      | RequirementNodeRepr::Legacy(UntaggedRequirementNode::Group(group)) => {
         let GroupData { operator, groups } = group;
-        ReqNode::Group { operator, groups }
+        RequirementNode::Group { operator, groups }
       }
     })
   }
 }
 
-impl Into<Bson> for ReqNode {
+impl Into<Bson> for RequirementNode {
   fn into(self) -> Bson {
     match self {
       Self::Course(course) => Bson::String(course),
@@ -149,9 +149,38 @@ impl Into<Bson> for ReqNode {
   }
 }
 
-impl Default for ReqNode {
+impl Default for RequirementNode {
   fn default() -> Self {
     Self::Course("".to_string())
+  }
+}
+
+impl RequirementNode {
+  pub fn validate(self, candidates: &[String]) -> Result<Option<Self>, String> {
+    match self {
+      Self::Course(course) => {
+        if candidates.contains(&course) {
+          Ok(Some(Self::Course(course)))
+        } else {
+          Err(format!("model returned non-candidate course {course:?}"))
+        }
+      }
+      Self::Group { operator, groups } => {
+        let mut groups = groups
+          .into_iter()
+          .map(|group| group.validate(candidates))
+          .collect::<Result<Vec<_>, _>>()?
+          .into_iter()
+          .flatten()
+          .collect::<Vec<_>>();
+
+        Ok(match groups.len() {
+          0 => None,
+          1 => groups.pop(),
+          _ => Some(Self::Group { operator, groups }),
+        })
+      }
+    }
   }
 }
 
@@ -163,8 +192,8 @@ pub struct Requirements {
   pub corequisites: Vec<String>,
   pub prerequisites: Vec<String>,
   pub restrictions: Option<String>,
-  pub logical_prerequisites: Option<ReqNode>,
-  pub logical_corequisites: Option<ReqNode>,
+  pub logical_prerequisites: Option<RequirementNode>,
+  pub logical_corequisites: Option<RequirementNode>,
 }
 
 impl Requirements {
@@ -190,15 +219,55 @@ impl Requirements {
 
   pub fn set_logical_prerequisites(
     &mut self,
-    logical_prerequisites: Option<ReqNode>,
+    logical_prerequisites: Option<RequirementNode>,
   ) {
     self.logical_prerequisites = logical_prerequisites;
   }
 
   pub fn set_logical_corequisites(
     &mut self,
-    logical_corequisites: Option<ReqNode>,
+    logical_corequisites: Option<RequirementNode>,
   ) {
     self.logical_corequisites = logical_corequisites;
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn validate_flattens_single_child_groups() {
+    assert_eq!(
+      RequirementNode::Group {
+        operator: Operator::And,
+        groups: vec![
+          RequirementNode::Course("FOOO 100".to_string()),
+          RequirementNode::Group {
+            operator: Operator::Or,
+            groups: vec![RequirementNode::Course("BARR 200".to_string())],
+          },
+        ],
+      }
+      .validate(&["BARR 200".to_string(), "FOOO 100".to_string()])
+      .unwrap(),
+      Some(RequirementNode::Group {
+        operator: Operator::And,
+        groups: vec![
+          RequirementNode::Course("FOOO 100".to_string()),
+          RequirementNode::Course("BARR 200".to_string()),
+        ],
+      }),
+    );
+  }
+
+  #[test]
+  fn validate_rejects_non_candidate_courses() {
+    assert_eq!(
+      RequirementNode::Course("BARR 200".to_string())
+        .validate(&["FOOO 100".to_string()])
+        .unwrap_err(),
+      "model returned non-candidate course \"BARR 200\"",
+    );
   }
 }

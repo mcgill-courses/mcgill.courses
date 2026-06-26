@@ -1,8 +1,9 @@
 use {
   anyhow::{Context, Error, bail},
   clap::Parser,
-  model::{Course, ReqNode},
+  model::{Course, RequirementNode},
   regex::Regex,
+  reqwest::blocking::Client,
   scraper::{ElementRef, Html, Selector},
   serde::{Deserialize, Serialize},
   serde_json::{Value, json},
@@ -27,7 +28,7 @@ const PROMPT: &str = "Parse McGill course requirement text into a course prerequ
 struct OpenAiClient {
   api_key: String,
   api_url: String,
-  client: reqwest::blocking::Client,
+  client: Client,
   model: String,
 }
 
@@ -47,13 +48,13 @@ impl OpenAiClient {
     })
   }
 
-  fn requisite_completion(
+  fn request(
     &self,
-    req: &str,
+    request: &str,
     candidates: &[String],
-  ) -> Result<Option<ReqNode>> {
+  ) -> Result<Option<RequirementNode>> {
     let user_content = format!(
-      "Requirement text:\n{req}\n\nCandidate courses:\n{}",
+      "Requirement text:\n{request}\n\nCandidate courses:\n{}",
       candidates.join(", ")
     );
 
@@ -107,7 +108,10 @@ impl OpenAiClient {
     let response = serde_json::from_str::<RequirementResponse>(&prediction)
       .context("failed to parse structured requirement response")?;
 
-    validate_requirement(response.requirement, candidates)
+    match response.requirement {
+      Some(requirement) => requirement.validate(candidates).map_err(Error::msg),
+      None => Ok(None),
+    }
   }
 }
 
@@ -156,7 +160,7 @@ struct ChatCompletionResponseMessage {
 
 #[derive(Debug, Deserialize)]
 struct RequirementResponse {
-  requirement: Option<ReqNode>,
+  requirement: Option<RequirementNode>,
 }
 
 fn course_code_regex() -> &'static Regex {
@@ -181,7 +185,7 @@ fn parse_course_req(
   client: &OpenAiClient,
   req: Option<&str>,
   candidates: &[String],
-) -> Result<Option<ReqNode>> {
+) -> Result<Option<RequirementNode>> {
   let Some(req) = req else {
     return Ok(None);
   };
@@ -191,16 +195,16 @@ fn parse_course_req(
   }
 
   if candidates.len() == 1 {
-    return Ok(Some(ReqNode::Course(candidates[0].clone())));
+    return Ok(Some(RequirementNode::Course(candidates[0].clone())));
   }
 
   if let Some((_, right)) = req.split_once(": ")
     && candidates.iter().any(|candidate| candidate == right)
   {
-    return Ok(Some(ReqNode::Course(right.to_string())));
+    return Ok(Some(RequirementNode::Course(right.to_string())));
   }
 
-  client.requisite_completion(req, candidates)
+  client.request(req, candidates)
 }
 
 fn parse_requirement_text(
@@ -209,9 +213,9 @@ fn parse_requirement_text(
   field: &str,
   req: Option<&str>,
   courses: &[String],
-) -> Result<Option<ReqNode>> {
+) -> Result<Option<RequirementNode>> {
   let req = req.with_context(|| format!("{course_code} missing {field}"))?;
-  let req = preprocess_html(req)?;
+  let req = parse_html(req)?;
   let candidates = candidates(courses, &req)?;
 
   parse_course_req(client, Some(&req), &candidates)
@@ -229,7 +233,7 @@ fn response_format(candidates: &[String]) -> ResponseFormat {
         "properties": {
           "requirement": {
             "anyOf": [
-              { "$ref": "#/$defs/reqNode" },
+              { "$ref": "#/$defs/requirementNode" },
               { "type": "null" }
             ]
           }
@@ -261,12 +265,12 @@ fn response_format(candidates: &[String]) -> ResponseFormat {
               "operator": { "enum": ["AND", "OR"] },
               "groups": {
                 "type": "array",
-                "items": { "$ref": "#/$defs/reqNode" }
+                "items": { "$ref": "#/$defs/requirementNode" }
               }
             },
             "required": ["operator", "groups"]
           },
-          "reqNode": {
+          "requirementNode": {
             "anyOf": [
               { "$ref": "#/$defs/course" },
               { "$ref": "#/$defs/group" }
@@ -308,55 +312,13 @@ fn normalize_course_code(course: &str) -> Option<String> {
   }
 
   let (subject, code) = course.split_at(4);
+
   let course = format!("{subject} {code}");
 
   course_code_regex().is_match(&course).then_some(course)
 }
 
-fn validate_requirement(
-  req: Option<ReqNode>,
-  candidates: &[String],
-) -> Result<Option<ReqNode>> {
-  let Some(req) = req else {
-    return Ok(None);
-  };
-
-  let candidates = candidates.iter().collect::<BTreeSet<_>>();
-
-  validate_req_node(req, &candidates)
-}
-
-fn validate_req_node(
-  req: ReqNode,
-  candidates: &BTreeSet<&String>,
-) -> Result<Option<ReqNode>> {
-  match req {
-    ReqNode::Course(course) => {
-      if candidates.contains(&course) {
-        Ok(Some(ReqNode::Course(course)))
-      } else {
-        bail!("model returned non-candidate course {course:?}")
-      }
-    }
-    ReqNode::Group { operator, groups } => {
-      let mut groups = groups
-        .into_iter()
-        .map(|group| validate_req_node(group, candidates))
-        .collect::<Result<Vec<_>>>()?
-        .into_iter()
-        .flatten()
-        .collect::<Vec<_>>();
-
-      Ok(match groups.len() {
-        0 => None,
-        1 => groups.pop(),
-        _ => Some(ReqNode::Group { operator, groups }),
-      })
-    }
-  }
-}
-
-fn preprocess_html(html: &str) -> Result<String> {
+fn parse_html(html: &str) -> Result<String> {
   let parsed = Html::parse_fragment(&format!("<div>{html}</div>"));
 
   let selector = Selector::parse("div").expect("selector should parse");
@@ -442,12 +404,11 @@ fn main() {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use model::Operator;
 
   #[test]
   fn preprocesses_html() {
     assert_eq!(
-      preprocess_html(
+      parse_html(
         r#"Prerequisites: <a href="https://coursecatalogue.mcgill.ca/courses/fooo-100/index.html">foo</a> and <a href="/courses/barr-200">bar</a>"#,
       )
       .unwrap(),
@@ -468,48 +429,6 @@ mod tests {
       )
       .unwrap(),
       vec!["BARR 200", "BAZZ 300", "FOOO 100", "QUXY 400"],
-    );
-  }
-
-  #[test]
-  fn validates_requirements() {
-    assert_eq!(
-      validate_requirement(
-        Some(ReqNode::Group {
-          operator: Operator::And,
-          groups: vec![
-            ReqNode::Course("FOOO 100".to_string()),
-            ReqNode::Group {
-              operator: Operator::Or,
-              groups: vec![ReqNode::Course("BARR 200".to_string())],
-            },
-          ],
-        }),
-        &["BARR 200".to_string(), "FOOO 100".to_string()],
-      )
-      .unwrap(),
-      Some(ReqNode::Group {
-        operator: Operator::And,
-        groups: vec![
-          ReqNode::Course("FOOO 100".to_string()),
-          ReqNode::Course("BARR 200".to_string()),
-        ],
-      }),
-    );
-  }
-
-  #[test]
-  fn rejects_non_candidate_courses() {
-    let err = validate_requirement(
-      Some(ReqNode::Course("BARR 200".to_string())),
-      &["FOOO 100".to_string()],
-    )
-    .unwrap_err();
-
-    assert!(
-      err
-        .to_string()
-        .contains("model returned non-candidate course \"BARR 200\"")
     );
   }
 }
