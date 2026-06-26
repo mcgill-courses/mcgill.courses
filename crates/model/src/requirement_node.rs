@@ -76,18 +76,6 @@ impl<'de> Deserialize<'de> for RequirementNode {
   }
 }
 
-impl Into<Bson> for RequirementNode {
-  fn into(self) -> Bson {
-    match self {
-      Self::Course(course) => Bson::String(course),
-      Self::Group { operator, groups } => Bson::Document(doc! {
-        "operator": <Operator as Into<Bson>>::into(operator),
-        "groups": groups.into_iter().map(|group| group.into()).collect::<Vec<Bson>>()
-      }),
-    }
-  }
-}
-
 impl Display for RequirementNode {
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
     match self {
@@ -111,6 +99,18 @@ impl Display for RequirementNode {
 
         Ok(())
       }
+    }
+  }
+}
+
+impl Into<Bson> for RequirementNode {
+  fn into(self) -> Bson {
+    match self {
+      Self::Course(course) => Bson::String(course),
+      Self::Group { operator, groups } => Bson::Document(doc! {
+        "operator": <Operator as Into<Bson>>::into(operator),
+        "groups": groups.into_iter().map(|group| group.into()).collect::<Vec<Bson>>()
+      }),
     }
   }
 }
