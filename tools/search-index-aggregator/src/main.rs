@@ -31,6 +31,23 @@ struct SearchData {
   instructors: Vec<String>,
 }
 
+fn repo_root() -> PathBuf {
+  Path::new(env!("CARGO_MANIFEST_DIR"))
+    .parent()
+    .unwrap()
+    .parent()
+    .unwrap()
+    .to_path_buf()
+}
+
+fn default_seed_path() -> PathBuf {
+  repo_root().join("seed")
+}
+
+fn default_output_path() -> PathBuf {
+  repo_root().join("client/src/assets/search-data.json")
+}
+
 type Result<T = (), E = Error> = std::result::Result<T, E>;
 
 fn main() {
