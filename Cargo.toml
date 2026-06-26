@@ -5,7 +5,12 @@ edition = "2024"
 publish = false
 
 [workspace]
-members = ["crates/*", "tools/final-exam-schedule-parser", "tools/scraper"]
+members = [
+  "crates/*",
+  "tools/final-exam-schedule-parser",
+  "tools/scraper",
+  "tools/search-index-aggregator",
+]
 resolver = "2"
 
 [workspace.dependencies]
