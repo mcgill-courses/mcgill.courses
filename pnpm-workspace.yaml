@@ -1,9 +1,5 @@
 allowBuilds:
-  cypress: false
   esbuild: true
-
-ignoredBuiltDependencies:
-  - cypress
 
 onlyBuiltDependencies:
   - esbuild

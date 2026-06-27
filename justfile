@@ -49,7 +49,7 @@ dev: services typeshare
 
 [group: 'test']
 e2e:
-  pnpm -r run cy:e2e
+  pnpm -r run e2e
 
 [group: 'format']
 fmt:

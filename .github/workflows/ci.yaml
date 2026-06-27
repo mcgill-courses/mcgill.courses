@@ -66,12 +66,12 @@ jobs:
       - name: Test (unit)
         run: pnpm -r run test --reporter verbose
 
-      - name: Install Cypress
+      - name: Install Playwright
         working-directory: client
-        run: pnpm exec cypress install
+        run: pnpm exec playwright install chromium
 
       - name: Test (e2e)
-        run: pnpm -r run cy:e2e
+        run: pnpm -r run e2e
 
   coverage:
     runs-on: macos-latest
