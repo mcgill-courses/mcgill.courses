@@ -6,6 +6,7 @@ import {
   GitBranch,
   Mail,
   MessageCircle,
+  OctagonAlert,
 } from 'lucide-react';
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -169,7 +170,7 @@ const SectionTitle = ({
 
 const Person = ({ name, imageUrl, links }: PersonProps) => {
   return (
-    <div className='group rounded-lg bg-white p-4 dark:bg-neutral-900'>
+    <div className='group p-4'>
       <div className='flex items-center gap-4'>
         <img
           className='size-20 rounded-full object-cover ring-4 ring-slate-100 transition group-hover:ring-slate-200 dark:ring-neutral-900 dark:group-hover:ring-neutral-700'
@@ -308,10 +309,16 @@ export const About = () => {
               designers, and contributors into an independent platform for
               course reviews, instructor feedback, and academic planning tools.
             </p>
-            <p className='border-l-2 border-slate-300 pl-4 text-sm leading-6 text-gray-600 dark:border-neutral-700 dark:text-gray-400'>
-              mcgill.courses is an independent initiative and is not affiliated
-              with McGill University.
-            </p>
+            <div className='border-l-4 border-slate-300 px-4 py-3 dark:border-neutral-700'>
+              <div className='flex items-center gap-2 text-sm leading-6 font-semibold text-gray-500 dark:text-gray-400'>
+                <OctagonAlert className='size-4' aria-hidden='true' />
+                Disclaimer
+              </div>
+              <p className='mt-1 text-sm leading-6 text-gray-500 dark:text-gray-400'>
+                mcgill.courses is an independent project and is not affiliated
+                with, endorsed by, or sponsored by McGill University.
+              </p>
+            </div>
             <Link
               to='/changelog'
               className='hover:text-mcgill-red mt-5 inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:border-slate-300 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 dark:border-neutral-700 dark:bg-neutral-900/60 dark:text-gray-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-900'

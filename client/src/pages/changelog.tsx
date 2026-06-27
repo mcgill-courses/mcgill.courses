@@ -120,7 +120,7 @@ export const Changelog = () => {
                 >
                   <span className='size-2 rounded-full bg-gray-500 dark:bg-gray-400' />
                 </div>
-                <div className='rounded-lg bg-white p-4 sm:p-5 dark:bg-neutral-900'>
+                <div className='p-4 sm:p-5'>
                   <div className='flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between'>
                     <p className='text-base leading-7 text-gray-800 dark:text-gray-200'>
                       {item.summary}
