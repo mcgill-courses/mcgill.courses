@@ -8,10 +8,10 @@ import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 
 import { CourseReview, ReviewAttachment } from '../components/course-review';
-import { DeleteButton } from '../components/delete-button';
 import { JumpToTopButton } from '../components/jump-to-top-button';
 import { Layout } from '../components/layout';
-import { Spinner } from '../components/spinner';
+import { DeleteButton } from '../components/ui/delete-button';
+import { Spinner } from '../components/ui/spinner';
 import { useAuth } from '../hooks/use-auth';
 import { api } from '../lib/api';
 import type { Subscription } from '../lib/types';

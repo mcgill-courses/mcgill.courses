@@ -72,7 +72,7 @@ vi.mock('./icon-rating-input', () => ({
   ),
 }));
 
-vi.mock('./multi-select', () => ({
+vi.mock('./ui/multi-select', () => ({
   MultiSelect: ({
     options,
     values,

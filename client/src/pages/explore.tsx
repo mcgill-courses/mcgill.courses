@@ -5,12 +5,12 @@ import { toast } from 'sonner';
 
 import { CourseCard } from '../components/course-card';
 import { ExploreFilter, SortByType } from '../components/explore-filter';
-import { FilterToggle } from '../components/filter-toggle';
 import { JumpToTopButton } from '../components/jump-to-top-button';
 import { Layout } from '../components/layout';
 import { SearchBar } from '../components/search-bar';
-import { Skeleton } from '../components/skeleton';
-import { Spinner } from '../components/spinner';
+import { FilterToggle } from '../components/ui/filter-toggle';
+import { Skeleton } from '../components/ui/skeleton';
+import { Spinner } from '../components/ui/spinner';
 import { useDebouncedValue } from '../hooks/use-debounced-value';
 import { useExploreFilterState } from '../hooks/use-explore-filter-state';
 import { api } from '../lib/api';

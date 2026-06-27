@@ -23,7 +23,7 @@ import {
 } from '../lib/utils';
 import { AddToCalendarButton } from './add-to-calendar-button';
 import { BuildingLocation } from './building-location';
-import { Tooltip } from './tooltip';
+import { Tooltip } from './ui/tooltip';
 
 type ScheduleBlock = Omit<Block, 'timeblocks' | 'location' | 'display'> & {
   location: string;

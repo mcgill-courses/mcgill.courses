@@ -6,7 +6,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Mock } from 'vitest';
 
 import { useAuth } from '../hooks/use-auth';
-import { useDarkMode } from '../hooks/use-dark-mode';
 import { env } from '../lib/env';
 import { routerFutureConfig } from '../testing/router-wrapper';
 import { SideNav } from './side-nav';
@@ -23,10 +22,6 @@ vi.mock('../hooks/use-auth', () => ({
   useAuth: vi.fn(),
 }));
 
-vi.mock('../hooks/use-dark-mode', () => ({
-  useDarkMode: vi.fn(),
-}));
-
 vi.mock('./dark-mode-toggle', () => ({
   DarkModeToggle: () => <div data-testid='dark-mode-toggle' />,
 }));
@@ -41,7 +36,6 @@ describe('SideNav', () => {
   const originalLocation = window.location;
   const originalApiUrl = env.VITE_API_URL;
   const useAuthMock = useAuth as unknown as Mock;
-  const useDarkModeMock = useDarkMode as unknown as Mock;
 
   beforeEach(() => {
     const overlayRoot = document.createElement('div');
@@ -60,7 +54,6 @@ describe('SideNav', () => {
     Object.assign(env, { VITE_API_URL: originalApiUrl });
 
     useAuthMock.mockReset();
-    useDarkModeMock.mockReset();
 
     document.body.style.overflow = '';
   });
@@ -76,7 +69,6 @@ describe('SideNav', () => {
     Object.assign(env, { VITE_API_URL: 'https://api.example.com' });
 
     useAuthMock.mockReturnValue({ id: 'user-1' });
-    useDarkModeMock.mockReturnValue([false, vi.fn()]);
 
     Object.defineProperty(window, 'location', {
       configurable: true,
@@ -109,7 +101,6 @@ describe('SideNav', () => {
   it('shows login option for anonymous users and closes with toggle button', async () => {
     Object.assign(env, { VITE_API_URL: 'https://api.example.com' });
     useAuthMock.mockReturnValue(undefined);
-    useDarkModeMock.mockReturnValue([true, vi.fn()]);
 
     Object.defineProperty(window, 'location', {
       configurable: true,

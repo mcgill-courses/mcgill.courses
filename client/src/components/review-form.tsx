@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import type { AddOrUpdateReviewBody, Course } from '../lib/types';
 import { BirdIcon } from './bird-icon';
 import { IconRatingInput } from './icon-rating-input';
-import { MultiSelect } from './multi-select';
+import { MultiSelect } from './ui/multi-select';
 
 export const ReviewSchema = Yup.object().shape({
   content: Yup.string()

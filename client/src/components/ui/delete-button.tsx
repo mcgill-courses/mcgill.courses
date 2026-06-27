@@ -3,8 +3,6 @@ import { Trash2 } from 'lucide-react';
 import { Fragment, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { useDarkMode } from '../hooks/use-dark-mode';
-
 type DeleteButtonProps = {
   title: string;
   text: string;
@@ -21,8 +19,6 @@ export const DeleteButton = ({
   className,
 }: DeleteButtonProps) => {
   const [open, setOpen] = useState(false);
-
-  const [darkMode] = useDarkMode();
 
   const onDeleteClick = () => {
     setOpen(false);
@@ -44,7 +40,7 @@ export const DeleteButton = ({
       <Transition appear show={open} as={Fragment}>
         <Dialog
           as='div'
-          className={twMerge('relative z-50', darkMode ? 'dark' : '')}
+          className='relative z-50'
           onClose={() => setOpen(false)}
         >
           <Transition.Child

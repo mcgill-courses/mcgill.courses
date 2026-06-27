@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 
 import { Layout } from '../components/layout';
-import { Paragraph } from '../components/paragraph';
+import { Paragraph } from '../components/ui/paragraph';
 
 export const TermsAndConditions = () => {
   const h2 = 'text-2xl font-bold text-neutral-700 dark:text-gray-300 mb-4';

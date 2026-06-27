@@ -13,7 +13,7 @@ import {
   groupCurrentCourseTermInstructors,
 } from '../lib/utils';
 import { Highlight } from './highlight';
-import { Tooltip } from './tooltip';
+import { Tooltip } from './ui/tooltip';
 
 const variantToSize = (variant: 'small' | 'large') => {
   return variant === 'small' ? 20 : 18;

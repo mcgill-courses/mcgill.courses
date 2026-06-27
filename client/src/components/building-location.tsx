@@ -7,11 +7,9 @@ import {
   useMarkerRef,
 } from '@vis.gl/react-google-maps';
 import { Fragment } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 import * as buildingCodes from '../assets/building-codes.json';
 import * as buildingCoordinates from '../assets/building-coordinates.json';
-import { useDarkMode } from '../hooks/use-dark-mode';
 import { env } from '../lib/env';
 
 type MarkerProps = {
@@ -45,8 +43,6 @@ export const BuildingLocation = ({
   open,
   onClose,
 }: LocationProps) => {
-  const [darkMode] = useDarkMode();
-
   const building = {
     name: buildingCodes[code as keyof typeof buildingCodes],
     coordinates: buildingCoordinates[
@@ -56,11 +52,7 @@ export const BuildingLocation = ({
 
   return (
     <Transition appear show={open} as={Fragment}>
-      <Dialog
-        as='div'
-        className={twMerge('relative z-50', darkMode ? 'dark' : '')}
-        onClose={onClose}
-      >
+      <Dialog as='div' className='relative z-50' onClose={onClose}>
         <Transition.Child
           as={Fragment}
           enter='ease-out duration-200'

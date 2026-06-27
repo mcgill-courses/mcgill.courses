@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { AddToCalendarButton } from '../components/add-to-calendar-button';
 import { CourseSearchBar } from '../components/course-search-bar';
 import { Layout } from '../components/layout';
-import { Select } from '../components/select';
+import { Select } from '../components/ui/select';
 import { VisualSchedule } from '../components/visual-schedule';
 import { api } from '../lib/api';
 import {

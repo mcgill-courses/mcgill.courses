@@ -4,10 +4,8 @@ import { Fragment } from 'react';
 import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
-import { twMerge } from 'tailwind-merge';
 
 import { useAuth } from '../hooks/use-auth';
-import { useDarkMode } from '../hooks/use-dark-mode';
 import { env } from '../lib/env';
 import { DarkModeToggle } from './dark-mode-toggle';
 import { navigationItems } from './footer';
@@ -33,8 +31,6 @@ type SideNavProps = {
 export const SideNav = ({ open, onClose }: SideNavProps) => {
   const user = useAuth();
 
-  const [darkMode] = useDarkMode();
-
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : 'auto';
   }, [open]);
@@ -42,12 +38,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
   return (
     <Transition appear show={open}>
       <Overlay>
-        <div
-          className={twMerge(
-            'fixed inset-0 z-50 flex h-screen items-end justify-end',
-            darkMode ? 'dark' : ''
-          )}
-        >
+        <div className='fixed inset-0 z-50 flex h-screen items-end justify-end'>
           <Transition.Child
             as={Fragment}
             enter='ease-out duration-300'
