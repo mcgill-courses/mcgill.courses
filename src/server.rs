@@ -24,11 +24,11 @@ pub(crate) struct Server {
 
 #[derive(Debug)]
 struct AppConfig<'a> {
-  db: Arc<Db>,
   assets: Option<Assets<'a>>,
-  session_store: MongodbSessionStore,
-  rate_limit: bool,
   authentication: bool,
+  db: Arc<Db>,
+  rate_limit: bool,
+  session_store: MongodbSessionStore,
 }
 
 impl Server {
