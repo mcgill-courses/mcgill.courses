@@ -170,7 +170,7 @@ const SectionTitle = ({
 
 const Person = ({ name, imageUrl, links }: PersonProps) => {
   return (
-    <div className='group rounded-lg bg-white p-4 dark:bg-neutral-900'>
+    <div className='group p-4'>
       <div className='flex items-center gap-4'>
         <img
           className='size-20 rounded-full object-cover ring-4 ring-slate-100 transition group-hover:ring-slate-200 dark:ring-neutral-900 dark:group-hover:ring-neutral-700'
