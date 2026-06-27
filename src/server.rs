@@ -28,6 +28,7 @@ struct AppConfig<'a> {
   assets: Option<Assets<'a>>,
   session_store: MongodbSessionStore,
   rate_limit: bool,
+  test_auth: bool,
 }
 
 impl Server {
@@ -97,6 +98,8 @@ impl Server {
       assets,
       session_store,
       rate_limit: true,
+      test_auth: env::var("MCGILL_COURSES_E2E_AUTH")
+        .is_ok_and(|value| value == "1"),
     })
     .await?;
 
@@ -192,6 +195,10 @@ impl Server {
           "##
         }),
       );
+
+    if config.test_auth {
+      router = router.route("/api/auth/test-login", post(auth::test_login));
+    }
 
     // Serve microsoft identity association file
     router = router.route(
@@ -369,8 +376,21 @@ mod tests {
     session_store: MongodbSessionStore,
   }
 
+  enum TestAuth {
+    Disabled,
+    Enabled,
+  }
+
   impl TestContext {
     async fn new() -> Self {
+      Self::new_with_auth(TestAuth::Disabled).await
+    }
+
+    async fn new_with_test_auth() -> Self {
+      Self::new_with_auth(TestAuth::Enabled).await
+    }
+
+    async fn new_with_auth(test_auth: TestAuth) -> Self {
       dotenv().ok();
 
       static TEST_DATABASE_NUMBER: AtomicUsize = AtomicUsize::new(0);
@@ -402,6 +422,7 @@ mod tests {
         assets: None,
         session_store: session_store.clone(),
         rate_limit: false,
+        test_auth: matches!(test_auth, TestAuth::Enabled),
       })
       .await
       .unwrap();
@@ -449,6 +470,92 @@ mod tests {
       )
       .unwrap()
     }
+  }
+
+  #[tokio::test]
+  async fn test_login_route_is_disabled_by_default() {
+    let TestContext { app, .. } = TestContext::new().await;
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .method(Method::POST)
+          .header("Content-Type", "application/json")
+          .uri("/api/auth/test-login")
+          .body(Body::from(
+            json!({
+              "id": "foo",
+              "mail": "foo@mail.mcgill.ca",
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+  }
+
+  #[tokio::test]
+  async fn test_login_route_creates_session() {
+    let TestContext { app, .. } = TestContext::new_with_test_auth().await;
+
+    let response = app
+      .clone()
+      .oneshot(
+        Request::builder()
+          .method(Method::POST)
+          .header("Content-Type", "application/json")
+          .uri("/api/auth/test-login")
+          .body(Body::from(
+            json!({
+              "id": "foo",
+              "mail": "foo@mail.mcgill.ca",
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::NO_CONTENT);
+
+    let cookie = response
+      .headers()
+      .get(SET_COOKIE)
+      .unwrap()
+      .to_str()
+      .unwrap()
+      .split(';')
+      .next()
+      .unwrap()
+      .to_string();
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .method(Method::GET)
+          .header("Cookie", cookie)
+          .uri("/api/user")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    assert_eq!(
+      response.convert::<serde_json::Value>().await,
+      json!({
+        "user": {
+          "id": "foo",
+          "mail": "foo@mail.mcgill.ca",
+        },
+      }),
+    );
   }
 
   #[tokio::test]
@@ -3023,6 +3130,7 @@ mod tests {
       assets: None,
       session_store,
       rate_limit: true,
+      test_auth: false,
     })
     .await
     .unwrap();

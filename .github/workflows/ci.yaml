@@ -66,6 +66,23 @@ jobs:
       - name: Test (unit)
         run: pnpm -r run test --reporter verbose
 
+      - name: Install toolchain
+        id: toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install mongodb
+        run: |
+          brew tap mongodb/brew
+          brew trust mongodb/brew
+          brew install mongodb-community@7.0
+          echo -e 'replication:\n  replSetName: rs0' >> /opt/homebrew/etc/mongod.conf
+          brew services start mongodb-community@7.0
+          mongosh --eval 'rs.initiate()'
+
       - name: Install Playwright
         working-directory: client
         run: pnpm exec playwright install chromium

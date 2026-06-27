@@ -38,6 +38,12 @@ pub(crate) struct LogoutRequest {
 }
 
 #[derive(Debug, Deserialize)]
+pub(crate) struct TestLoginRequest {
+  id: String,
+  mail: String,
+}
+
+#[derive(Debug, Deserialize)]
 #[allow(unused)]
 struct AccessTokenResponse {
   access_token: String,
@@ -201,4 +207,31 @@ pub(crate) async fn logout(
   session_store.destroy_session(session).await?;
 
   Ok(Redirect::to(&query.redirect))
+}
+
+pub(crate) async fn test_login(
+  AppState(session_store): AppState<MongodbSessionStore>,
+  Json(body): Json<TestLoginRequest>,
+) -> Result<impl IntoResponse> {
+  let mut session = Session::new();
+
+  session.expire_in(Duration::from_secs(60 * 60));
+  session.insert("user", User::new(&body.id, &body.mail))?;
+
+  let mut headers = HeaderMap::new();
+
+  headers.insert(
+    SET_COOKIE,
+    format!(
+      "{}={}; SameSite=Lax; Path=/",
+      COOKIE_NAME,
+      session_store
+        .store_session(session)
+        .await?
+        .ok_or(anyhow!("Failed to store session"))?
+    )
+    .parse()?,
+  );
+
+  Ok((headers, StatusCode::NO_CONTENT))
 }

@@ -72,7 +72,6 @@ impl User {
     self.id
   }
 
-  #[cfg(test)]
   pub(crate) fn new(id: &str, mail: &str) -> Self {
     User {
       id: String::from(id),
