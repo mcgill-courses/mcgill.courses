@@ -28,7 +28,7 @@ struct AppConfig<'a> {
   assets: Option<Assets<'a>>,
   session_store: MongodbSessionStore,
   rate_limit: bool,
-  test_auth: bool,
+  authentication: bool,
 }
 
 impl Server {
@@ -93,23 +93,16 @@ impl Server {
     )
     .await?;
 
-    let app = Self::app(AppConfig {
-      db,
-      assets,
-      session_store,
-      rate_limit: true,
-      test_auth: {
-        #[cfg(feature = "e2e")]
-        {
-          env::var("MCGILL_COURSES_E2E_AUTH").ok().as_deref() == Some("1")
-            && env::var("ENV").ok().as_deref() != Some("production")
-        }
+    let authentication = cfg!(feature = "e2e")
+      && env::var("MCGILL_COURSES_E2E_AUTH").unwrap_or_default() == "1"
+      && env::var("ENV").unwrap_or_default() != "production";
 
-        #[cfg(not(feature = "e2e"))]
-        {
-          false
-        }
-      },
+    let app = Self::app(AppConfig {
+      assets,
+      authentication,
+      db,
+      rate_limit: true,
+      session_store,
     })
     .await?;
 
@@ -206,14 +199,12 @@ impl Server {
         }),
       );
 
-    if config.test_auth {
-      #[cfg(feature = "e2e")]
-      {
-        router = router.route(
-          "/api/auth/test-login",
-          axum::routing::post(auth::test_login),
-        );
-      }
+    #[cfg(feature = "e2e")]
+    if config.authentication {
+      router = router.route(
+        "/api/auth/test-login",
+        axum::routing::post(auth::test_login),
+      );
     }
 
     // Serve microsoft identity association file
@@ -392,33 +383,8 @@ mod tests {
     session_store: MongodbSessionStore,
   }
 
-  enum Authentication {
-    Disabled,
-    #[cfg(feature = "e2e")]
-    Enabled,
-  }
-
-  impl Authentication {
-    fn enabled(self) -> bool {
-      match self {
-        Self::Disabled => false,
-        #[cfg(feature = "e2e")]
-        Self::Enabled => true,
-      }
-    }
-  }
-
   impl TestContext {
     async fn new() -> Self {
-      Self::new_with_auth(Authentication::Disabled).await
-    }
-
-    #[cfg(feature = "e2e")]
-    async fn new_with_authentication() -> Self {
-      Self::new_with_auth(Authentication::Enabled).await
-    }
-
-    async fn new_with_auth(authentication: Authentication) -> Self {
       dotenv().ok();
 
       static TEST_DATABASE_NUMBER: AtomicUsize = AtomicUsize::new(0);
@@ -446,11 +412,11 @@ mod tests {
       .unwrap();
 
       let app = Server::app(AppConfig {
-        db: db.clone(),
         assets: None,
-        session_store: session_store.clone(),
+        authentication: cfg!(feature = "e2e"),
+        db: db.clone(),
         rate_limit: false,
-        test_auth: authentication.enabled(),
+        session_store: session_store.clone(),
       })
       .await
       .unwrap();
@@ -500,7 +466,7 @@ mod tests {
     }
   }
 
-  #[cfg(feature = "e2e")]
+  #[cfg(not(feature = "e2e"))]
   #[tokio::test]
   async fn test_login_route_is_disabled_by_default() {
     let TestContext { app, .. } = TestContext::new().await;
@@ -529,7 +495,7 @@ mod tests {
   #[cfg(feature = "e2e")]
   #[tokio::test]
   async fn test_login_route_creates_session() {
-    let TestContext { app, .. } = TestContext::new_with_authentication().await;
+    let TestContext { app, .. } = TestContext::new().await;
 
     let response = app
       .clone()
@@ -3156,11 +3122,11 @@ mod tests {
     } = TestContext::new().await;
 
     let app = Server::app(AppConfig {
-      db,
       assets: None,
-      session_store,
+      authentication: false,
+      db,
       rate_limit: true,
-      test_auth: false,
+      session_store,
     })
     .await
     .unwrap();
