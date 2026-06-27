@@ -183,7 +183,7 @@ export const Changelog = () => {
                     <button
                       type='button'
                       onClick={() => toggleShowAll(month)}
-                      className='group mt-4 ml-6 inline-flex cursor-pointer items-center gap-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 dark:bg-neutral-900 dark:text-gray-300'
+                      className='group mt-4 ml-6 inline-flex cursor-pointer items-center gap-2 px-3 py-2 text-sm font-semibold text-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 dark:bg-neutral-900 dark:text-gray-300'
                     >
                       <m.div
                         animate={{ rotate: expanded ? 180 : 0 }}
