@@ -72,6 +72,7 @@ impl User {
     self.id
   }
 
+  #[cfg(any(test, feature = "e2e"))]
   pub(crate) fn new(id: &str, mail: &str) -> Self {
     User {
       id: String::from(id),

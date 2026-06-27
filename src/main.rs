@@ -22,7 +22,7 @@ use {
       State as AppState,
     },
     response::{IntoResponse, Redirect, Response},
-    routing::{Router, get, post},
+    routing::{Router, get},
   },
   axum_extra::{
     TypedHeader, headers::Cookie, typed_header::TypedHeaderRejectionReason,

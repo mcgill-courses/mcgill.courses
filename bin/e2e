@@ -16,7 +16,7 @@ export MS_REDIRECT_URI="${MS_REDIRECT_URI:-http://127.0.0.1:${E2E_API_PORT}/api/
 db_name="mcgill-courses-e2e-$(date +%s)-$$"
 log="$(mktemp -t mcgill-courses-e2e-server.XXXXXX.log)"
 
-cargo build
+cargo build --features e2e
 
 target/debug/server --port "$E2E_API_PORT" --db-name "$db_name" >"$log" 2>&1 &
 server_pid=$!

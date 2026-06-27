@@ -37,6 +37,7 @@ pub(crate) struct LogoutRequest {
   redirect: String,
 }
 
+#[cfg(feature = "e2e")]
 #[derive(Debug, Deserialize)]
 pub(crate) struct TestLoginRequest {
   id: String,
@@ -209,6 +210,7 @@ pub(crate) async fn logout(
   Ok(Redirect::to(&query.redirect))
 }
 
+#[cfg(feature = "e2e")]
 pub(crate) async fn test_login(
   AppState(session_store): AppState<MongodbSessionStore>,
   Json(body): Json<TestLoginRequest>,
