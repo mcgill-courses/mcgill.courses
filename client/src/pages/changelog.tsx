@@ -83,13 +83,6 @@ export const Changelog = () => {
     )
     .filter(([, items]) => items.length > 0);
 
-  const totalUpdates = sortedChangelogItems.reduce(
-    (total, [, items]) => total + items.length,
-    0
-  );
-
-  const latestMonth = sortedChangelogItems[0]?.[0] ?? 'No updates';
-
   const [expandedMonths, setExpandedMonths] = useState<string[]>([]);
 
   const toggleShowAll = (month: string) => {
@@ -120,28 +113,6 @@ export const Changelog = () => {
           <p className='mt-3 text-sm leading-6 text-gray-600 md:text-base dark:text-gray-400'>
             Check out what the development team has been shipping each month.
           </p>
-          <div className='mt-6 flex flex-wrap justify-center gap-2 text-sm'>
-            <div className='inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-gray-700 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-300'>
-              <CalendarDays
-                className='size-4 text-gray-500 dark:text-gray-400'
-                aria-hidden='true'
-              />
-              <span className='font-medium text-gray-950 dark:text-gray-100'>
-                Latest:
-              </span>
-              <span>{latestMonth}</span>
-            </div>
-            <div className='inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-gray-700 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-300'>
-              <GitPullRequest
-                className='size-4 text-gray-500 dark:text-gray-400'
-                aria-hidden='true'
-              />
-              <span className='font-medium text-gray-950 dark:text-gray-100'>
-                {totalUpdates}
-              </span>
-              <span>{totalUpdates === 1 ? 'update' : 'updates'}</span>
-            </div>
-          </div>
         </div>
 
         <div className='mt-12 space-y-12'>
