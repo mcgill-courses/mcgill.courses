@@ -6,8 +6,8 @@
   "scripts": {
     "build": "tsc && vite build",
     "dev": "vite",
-    "e2e": "vitest run --config vitest.browser.config.ts",
-    "e2e:watch": "vitest --config vitest.browser.config.ts",
+    "e2e": "../bin/e2e run",
+    "e2e:watch": "../bin/e2e",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
     "knip": "knip",

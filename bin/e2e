@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+repo_dir="$(cd "$script_dir/.." && pwd)"
+
+cd "$repo_dir"
+
+export E2E_API_PORT="${E2E_API_PORT:-18080}"
+export MCGILL_COURSES_E2E_AUTH=1
+export MONGODB_URL="${E2E_MONGODB_URL:-mongodb://localhost:27017/?directConnection=true&replicaSet=rs0}"
+export MS_CLIENT_ID="${MS_CLIENT_ID:-e2e-client-id}"
+export MS_CLIENT_SECRET="${MS_CLIENT_SECRET:-e2e-client-secret}"
+export MS_REDIRECT_URI="${MS_REDIRECT_URI:-http://127.0.0.1:${E2E_API_PORT}/api/auth/authorized}"
+
+db_name="mcgill-courses-e2e-$(date +%s)-$$"
+log="$(mktemp -t mcgill-courses-e2e-server.XXXXXX.log)"
+
+cargo build --features e2e
+
+target/debug/server --port "$E2E_API_PORT" --db-name "$db_name" >"$log" 2>&1 &
+server_pid=$!
+
+cleanup() {
+  kill "$server_pid" 2>/dev/null || true
+  wait "$server_pid" 2>/dev/null || true
+}
+
+trap cleanup EXIT
+
+ready=0
+
+for _ in $(seq 1 60); do
+  if curl --fail --silent --output /dev/null "http://127.0.0.1:${E2E_API_PORT}/api/user"; then
+    ready=1
+    break
+  fi
+
+  if ! kill -0 "$server_pid" 2>/dev/null; then
+    cat "$log"
+    exit 1
+  fi
+
+  sleep 1
+done
+
+if [ "$ready" -ne 1 ]; then
+  cat "$log"
+  exit 1
+fi
+
+pnpm -C client exec vitest "$@" --config vitest.browser.config.ts

@@ -24,10 +24,12 @@ pub(crate) struct Server {
 
 #[derive(Debug)]
 struct AppConfig<'a> {
-  db: Arc<Db>,
   assets: Option<Assets<'a>>,
-  session_store: MongodbSessionStore,
+  #[cfg(feature = "e2e")]
+  authentication: bool,
+  db: Arc<Db>,
   rate_limit: bool,
+  session_store: MongodbSessionStore,
 }
 
 impl Server {
@@ -93,10 +95,14 @@ impl Server {
     .await?;
 
     let app = Self::app(AppConfig {
-      db,
       assets,
-      session_store,
+      #[cfg(feature = "e2e")]
+      authentication: env::var("MCGILL_COURSES_E2E_AUTH").unwrap_or_default()
+        == "1"
+        && env::var("ENV").unwrap_or_default() != "production",
+      db,
       rate_limit: true,
+      session_store,
     })
     .await?;
 
@@ -192,6 +198,14 @@ impl Server {
           "##
         }),
       );
+
+    #[cfg(feature = "e2e")]
+    if config.authentication {
+      router = router.route(
+        "/api/auth/test-login",
+        axum::routing::post(auth::test_login),
+      );
+    }
 
     // Serve microsoft identity association file
     router = router.route(
@@ -398,10 +412,12 @@ mod tests {
       .unwrap();
 
       let app = Server::app(AppConfig {
-        db: db.clone(),
         assets: None,
-        session_store: session_store.clone(),
+        #[cfg(feature = "e2e")]
+        authentication: true,
+        db: db.clone(),
         rate_limit: false,
+        session_store: session_store.clone(),
       })
       .await
       .unwrap();
@@ -449,6 +465,94 @@ mod tests {
       )
       .unwrap()
     }
+  }
+
+  #[cfg(not(feature = "e2e"))]
+  #[tokio::test]
+  async fn test_login_route_is_disabled_by_default() {
+    let TestContext { app, .. } = TestContext::new().await;
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .method(Method::POST)
+          .header("Content-Type", "application/json")
+          .uri("/api/auth/test-login")
+          .body(Body::from(
+            json!({
+              "id": "foo",
+              "mail": "foo@mail.mcgill.ca",
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+  }
+
+  #[cfg(feature = "e2e")]
+  #[tokio::test]
+  async fn test_login_route_creates_session() {
+    let TestContext { app, .. } = TestContext::new().await;
+
+    let response = app
+      .clone()
+      .oneshot(
+        Request::builder()
+          .method(Method::POST)
+          .header("Content-Type", "application/json")
+          .uri("/api/auth/test-login")
+          .body(Body::from(
+            json!({
+              "id": "foo",
+              "mail": "foo@mail.mcgill.ca",
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::NO_CONTENT);
+
+    let cookie = response
+      .headers()
+      .get(SET_COOKIE)
+      .unwrap()
+      .to_str()
+      .unwrap()
+      .split(';')
+      .next()
+      .unwrap()
+      .to_string();
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .method(Method::GET)
+          .header("Cookie", cookie)
+          .uri("/api/user")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    assert_eq!(
+      response.convert::<serde_json::Value>().await,
+      json!({
+        "user": {
+          "id": "foo",
+          "mail": "foo@mail.mcgill.ca",
+        },
+      }),
+    );
   }
 
   #[tokio::test]
@@ -3019,10 +3123,12 @@ mod tests {
     } = TestContext::new().await;
 
     let app = Server::app(AppConfig {
-      db,
       assets: None,
-      session_store,
+      #[cfg(feature = "e2e")]
+      authentication: false,
+      db,
       rate_limit: true,
+      session_store,
     })
     .await
     .unwrap();

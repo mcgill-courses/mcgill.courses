@@ -66,6 +66,23 @@ jobs:
       - name: Test (unit)
         run: pnpm -r run test --reporter verbose
 
+      - name: Install toolchain
+        id: toolchain
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
+        with:
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
+
+      - name: Install mongodb
+        run: |
+          brew tap mongodb/brew
+          brew trust mongodb/brew
+          brew install mongodb-community@7.0
+          echo -e 'replication:\n  replSetName: rs0' >> /opt/homebrew/etc/mongod.conf
+          brew services start mongodb-community@7.0
+          mongosh --eval 'rs.initiate()'
+
       - name: Install Playwright
         working-directory: client
         run: pnpm exec playwright install chromium
@@ -95,13 +112,13 @@ jobs:
 
       - name: Install toolchain
         id: toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
         with:
           toolchain: stable
           target: x86_64-unknown-linux-musl
           components: llvm-tools-preview
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
 
       - name: Info
         run: |
@@ -145,12 +162,12 @@ jobs:
           persist-credentials: false
 
       - name: Install rust toolchain components
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
         with:
           components: clippy, rustfmt
           toolchain: stable
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
 
       - name: Install mongodb
         run: |
@@ -173,7 +190,7 @@ jobs:
           ./bin/forbid
 
       - name: Unused dependencies
-        uses: bnjbvr/cargo-machete@main
+        uses: bnjbvr/cargo-machete@d40d1e3265e4161d599ebb902eb9892faf769f6e
 
       - name: Build
         run: cargo build --workspace --all-features --all-targets

@@ -3,7 +3,7 @@ import { LazyMotion, domAnimation } from 'framer-motion';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import App from './app';
 import AuthProvider from './providers/auth-provider';
@@ -32,38 +32,34 @@ const renderApp = () =>
     </HelmetProvider>
   );
 
-describe('App', () => {
-  beforeEach(() => {
-    window.history.replaceState(null, '', '/');
+const navigate = (path: string) => {
+  window.history.replaceState(null, '', path);
+};
 
+describe('App', () => {
+  beforeEach(async () => {
     window.localStorage.clear();
 
-    vi.stubGlobal(
-      'fetch',
-      vi.fn((input: RequestInfo | URL) => {
-        const requestUrl =
-          input instanceof Request ? input.url : input.toString();
+    const response = await fetch('/api/auth/test-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: 'foo',
+        mail: 'foo@mail.mcgill.ca',
+      }),
+    });
 
-        if (requestUrl.endsWith('/api/user')) {
-          return Promise.resolve(
-            new Response(JSON.stringify({}), {
-              headers: { 'Content-Type': 'application/json' },
-            })
-          );
-        }
-
-        return Promise.resolve(new Response(null, { status: 404 }));
-      })
-    );
+    expect(response.status).toBe(204);
   });
 
   afterEach(() => {
     cleanup();
-    vi.unstubAllGlobals();
     window.localStorage.clear();
   });
 
   it('visits the root route', async () => {
+    navigate('/');
+
     renderApp();
 
     expect(
@@ -71,5 +67,16 @@ describe('App', () => {
         'Explore thousands of course and professor reviews from McGill students'
       )
     ).toBeInTheDocument();
+  });
+
+  it('visits the authenticated profile route', async () => {
+    navigate('/profile');
+
+    renderApp();
+
+    expect(await screen.findByText('Your Profile')).toBeInTheDocument();
+    expect(await screen.findByText('0 reviews')).toBeInTheDocument();
+    expect(await screen.findByText('0 liked reviews')).toBeInTheDocument();
+    expect(await screen.findByText('0 subscriptions')).toBeInTheDocument();
   });
 });
