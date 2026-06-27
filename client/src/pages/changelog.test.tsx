@@ -71,10 +71,8 @@ describe('Changelog page', () => {
     const user = userEvent.setup();
     await renderChangelog();
 
-    const aprilSection = screen.getByText('April 2024').closest('div');
-    expect(aprilSection).toBeTruthy();
-
-    const withinApril = within(aprilSection as HTMLElement);
+    const aprilSection = screen.getByRole('region', { name: 'April 2024' });
+    const withinApril = within(aprilSection);
     expect(withinApril.getAllByRole('link')).toHaveLength(5);
 
     const toggleButton = withinApril.getByRole('button', { name: 'Show all' });
@@ -96,10 +94,8 @@ describe('Changelog page', () => {
 
     await renderChangelog();
 
-    const marchSection = screen.getByText('March 2024').closest('div');
-    expect(marchSection).toBeTruthy();
-
-    const withinMarch = within(marchSection as HTMLElement);
+    const marchSection = screen.getByRole('region', { name: 'March 2024' });
+    const withinMarch = within(marchSection);
     expect(withinMarch.getAllByRole('link')).toHaveLength(1);
     expect(withinMarch.queryByText(/#302/)).not.toBeInTheDocument();
   });
@@ -112,15 +108,13 @@ describe('Changelog page', () => {
 
     await renderChangelog();
 
-    const marchSection = screen.getByText('March 2024').closest('div');
-    expect(marchSection).toBeTruthy();
-
-    const paragraph = within(marchSection as HTMLElement).getByText(
+    const marchSection = screen.getByRole('region', { name: 'March 2024' });
+    const paragraph = within(marchSection).getByText(
       (content, element) =>
         element?.tagName === 'P' && content.includes('Summary 301')
     );
 
-    expect(paragraph.textContent).toContain('- Summary 301');
-    expect(paragraph.textContent).not.toContain('- - Summary 301');
+    expect(paragraph.textContent).toContain('Summary 301');
+    expect(paragraph.textContent).not.toContain('- Summary 301');
   });
 });
