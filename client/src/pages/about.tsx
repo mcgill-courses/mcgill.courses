@@ -169,7 +169,7 @@ const SectionTitle = ({
 
 const Person = ({ name, imageUrl, links }: PersonProps) => {
   return (
-    <div className='group rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition duration-150 hover:border-slate-300 hover:shadow-md dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-neutral-600'>
+    <div className='group rounded-lg bg-white p-4 dark:bg-neutral-900'>
       <div className='flex items-center gap-4'>
         <img
           className='size-20 rounded-full object-cover ring-4 ring-slate-100 transition group-hover:ring-slate-200 dark:ring-neutral-900 dark:group-hover:ring-neutral-700'
@@ -336,7 +336,7 @@ export const About = () => {
 
         <m.section
           variants={fadeInUp}
-          className='mt-14 grid gap-4 lg:grid-cols-[0.85fr_1.15fr]'
+          className='mt-14 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]'
         >
           <div>
             <SectionTitle eyebrow='Contributors' title='Logo design support'>
@@ -344,34 +344,32 @@ export const About = () => {
               help beyond code.
             </SectionTitle>
           </div>
-          <div className='rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6 dark:border-neutral-700 dark:bg-neutral-800'>
-            <div className='flex flex-col gap-5 sm:flex-row sm:items-center'>
-              <a
-                href='https://www.instagram.com/mcgilldesignconsultancy'
-                className='flex size-20 shrink-0 items-center justify-center rounded-lg bg-slate-50 ring-1 ring-slate-200 transition hover:ring-slate-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 dark:bg-neutral-900/60 dark:ring-neutral-700 dark:hover:ring-neutral-600'
-                target='_blank'
-                rel='noopener noreferrer'
-                aria-label='McGill Design Consultancy'
-              >
-                <img
-                  src={McGillDesignConsultancyLogoUrl}
-                  className='size-14 object-contain'
-                  alt=''
-                />
-              </a>
-              <p className='text-base leading-7 text-gray-700 dark:text-gray-200'>
-                Thank you to <span className='font-medium'>Sebastien Chow</span>{' '}
-                and{' '}
-                <TextLink href='https://www.linkedin.com/in/guo-eugene/'>
-                  Eugene Guo
-                </TextLink>{' '}
-                from{' '}
-                <TextLink href='https://www.instagram.com/mcgilldesignconsultancy'>
-                  McGill Design Consultancy
-                </TextLink>{' '}
-                for their work on the logo design.
-              </p>
-            </div>
+          <div className='flex flex-col gap-5 sm:flex-row sm:items-center'>
+            <a
+              href='https://www.instagram.com/mcgilldesignconsultancy'
+              className='flex size-20 shrink-0 items-center justify-center rounded-lg bg-slate-50 ring-1 ring-slate-200 transition hover:ring-slate-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 dark:bg-neutral-900/60 dark:ring-neutral-700 dark:hover:ring-neutral-600'
+              target='_blank'
+              rel='noopener noreferrer'
+              aria-label='McGill Design Consultancy'
+            >
+              <img
+                src={McGillDesignConsultancyLogoUrl}
+                className='size-14 object-contain'
+                alt=''
+              />
+            </a>
+            <p className='text-base leading-7 text-gray-700 dark:text-gray-200'>
+              Thank you to <span className='font-medium'>Sebastien Chow</span>{' '}
+              and{' '}
+              <TextLink href='https://www.linkedin.com/in/guo-eugene/'>
+                Eugene Guo
+              </TextLink>{' '}
+              from{' '}
+              <TextLink href='https://www.instagram.com/mcgilldesignconsultancy'>
+                McGill Design Consultancy
+              </TextLink>{' '}
+              for their work on the logo design.
+            </p>
           </div>
         </m.section>
 
@@ -388,36 +386,34 @@ export const About = () => {
 
         <m.section
           variants={fadeInUp}
-          className='mt-14 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6 dark:border-neutral-700 dark:bg-neutral-800'
+          className='mt-14 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]'
         >
-          <div className='grid gap-6 lg:grid-cols-[0.85fr_1.15fr]'>
-            <SectionTitle eyebrow='Contact' title='Get in touch'>
-              Feedback, questions, and contributions are welcome.
-            </SectionTitle>
-            <div className='grid gap-3 sm:grid-cols-3'>
-              {contactLinks.map(({ icon: Icon, href, label, text }) => (
-                <a
-                  key={label}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  href={href}
-                  className='group flex min-h-32 flex-col justify-between rounded-lg border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:bg-white hover:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 dark:border-neutral-700 dark:bg-neutral-900/60 dark:hover:border-neutral-600 dark:hover:bg-neutral-900'
-                >
-                  <Icon
-                    className='group-hover:text-mcgill-red size-6 text-gray-500 transition dark:text-gray-400'
-                    aria-hidden='true'
-                  />
-                  <span>
-                    <span className='block text-sm font-semibold text-gray-950 dark:text-gray-100'>
-                      {label}
-                    </span>
-                    <span className='mt-1 block text-sm leading-5 text-gray-600 dark:text-gray-400'>
-                      {text}
-                    </span>
+          <SectionTitle eyebrow='Contact' title='Get in touch'>
+            Feedback, questions, and contributions are welcome.
+          </SectionTitle>
+          <div className='grid gap-3 sm:grid-cols-3'>
+            {contactLinks.map(({ icon: Icon, href, label, text }) => (
+              <a
+                key={label}
+                target='_blank'
+                rel='noopener noreferrer'
+                href={href}
+                className='group flex min-h-32 flex-col justify-between rounded-lg border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:bg-white hover:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 dark:border-neutral-700 dark:bg-neutral-900/60 dark:hover:border-neutral-600 dark:hover:bg-neutral-900'
+              >
+                <Icon
+                  className='group-hover:text-mcgill-red size-6 text-gray-500 transition dark:text-gray-400'
+                  aria-hidden='true'
+                />
+                <span>
+                  <span className='block text-sm font-semibold text-gray-950 dark:text-gray-100'>
+                    {label}
                   </span>
-                </a>
-              ))}
-            </div>
+                  <span className='mt-1 block text-sm leading-5 text-gray-600 dark:text-gray-400'>
+                    {text}
+                  </span>
+                </span>
+              </a>
+            ))}
           </div>
         </m.section>
       </m.div>
