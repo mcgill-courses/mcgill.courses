@@ -32,6 +32,10 @@ const renderApp = () =>
     </HelmetProvider>
   );
 
+const navigate = (path: string) => {
+  window.history.replaceState(null, '', path);
+};
+
 describe('App', () => {
   beforeEach(async () => {
     window.localStorage.clear();
@@ -54,7 +58,7 @@ describe('App', () => {
   });
 
   it('visits the root route', async () => {
-    window.history.replaceState(null, '', '/');
+    navigate('/');
 
     renderApp();
 
@@ -66,7 +70,7 @@ describe('App', () => {
   });
 
   it('visits the authenticated profile route', async () => {
-    window.history.replaceState(null, '', '/profile');
+    navigate('/profile');
 
     renderApp();
 

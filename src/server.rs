@@ -31,6 +31,10 @@ struct AppConfig<'a> {
   test_auth: bool,
 }
 
+fn e2e_auth_enabled(e2e_auth: Option<&str>, environment: Option<&str>) -> bool {
+  e2e_auth == Some("1") && environment != Some("production")
+}
+
 impl Server {
   pub(crate) async fn run(self) -> Result {
     let addr = SocketAddr::from(([0, 0, 0, 0], self.port));
@@ -98,8 +102,10 @@ impl Server {
       assets,
       session_store,
       rate_limit: true,
-      test_auth: env::var("MCGILL_COURSES_E2E_AUTH")
-        .is_ok_and(|value| value == "1"),
+      test_auth: e2e_auth_enabled(
+        env::var("MCGILL_COURSES_E2E_AUTH").ok().as_deref(),
+        env::var("ENV").ok().as_deref(),
+      ),
     })
     .await?;
 
@@ -470,6 +476,20 @@ mod tests {
       )
       .unwrap()
     }
+  }
+
+  #[test]
+  fn e2e_auth_enablement() {
+    #[track_caller]
+    fn case(e2e_auth: Option<&str>, environment: Option<&str>, expected: bool) {
+      assert_eq!(e2e_auth_enabled(e2e_auth, environment), expected);
+    }
+
+    case(None, None, false);
+    case(Some("0"), None, false);
+    case(Some("1"), None, true);
+    case(Some("1"), Some("development"), true);
+    case(Some("1"), Some("production"), false);
   }
 
   #[tokio::test]
