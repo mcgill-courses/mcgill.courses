@@ -2,9 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Form, Formik } from 'formik';
 import { Fragment } from 'react';
 import { toast } from 'sonner';
-import { twMerge } from 'tailwind-merge';
 
-import { useDarkMode } from '../hooks/use-dark-mode';
 import { api } from '../lib/api';
 import type { Course, Review } from '../lib/types';
 import {
@@ -28,8 +26,6 @@ export const EditReviewForm = ({
   onClose,
   handleSubmit,
 }: EditReviewFormProps) => {
-  const [darkMode] = useDarkMode();
-
   const initialValues: ReviewFormInitialValues = {
     content: review.content,
     difficulty: review.difficulty,
@@ -44,11 +40,7 @@ export const EditReviewForm = ({
 
   return (
     <Transition appear show={open} as={Fragment}>
-      <Dialog
-        as='div'
-        className={twMerge('relative z-50', darkMode ? 'dark' : '')}
-        onClose={handleClose}
-      >
+      <Dialog as='div' className='relative z-50' onClose={handleClose}>
         <Transition.Child
           as={Fragment}
           enter='ease-out duration-200'

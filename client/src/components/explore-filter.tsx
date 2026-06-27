@@ -5,10 +5,10 @@ import { twMerge } from 'tailwind-merge';
 
 import courseCodes from '../assets/course-codes.json';
 import { useExploreFilterState } from '../hooks/use-explore-filter-state';
-import { Autocomplete } from './autocomplete';
 import { termColorMap } from './course-terms';
-import { MultiSelect } from './multi-select';
-import { ResetButton } from './reset-button';
+import { Autocomplete } from './ui/autocomplete';
+import { MultiSelect } from './ui/multi-select';
+import { ResetButton } from './ui/reset-button';
 
 const SORT_BY_OPTIONS = [
   '',

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { Histogram } from './histogram';
 
-vi.mock('./tooltip', () => ({
+vi.mock('./ui/tooltip', () => ({
   Tooltip: ({ children, text }: { children: ReactNode; text: string }) => (
     <div data-testid='tooltip' data-text={text}>
       {children}

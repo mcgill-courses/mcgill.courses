@@ -52,7 +52,7 @@ vi.mock('../components/course-review', () => ({
   },
 }));
 
-vi.mock('../components/spinner', () => ({
+vi.mock('../components/ui/spinner', () => ({
   Spinner: () => <div data-testid='spinner' />,
 }));
 

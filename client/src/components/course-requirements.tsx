@@ -5,7 +5,7 @@ import { twMerge } from 'tailwind-merge';
 
 import type { Course } from '../lib/types';
 import { capitalize, punctuate, stripColonPrefix } from '../lib/utils';
-import { Spinner } from './spinner';
+import { Spinner } from './ui/spinner';
 
 const CourseGraph = lazy(() =>
   import('./course-graph').then((m) => ({ default: m.CourseGraph }))

@@ -1,4 +1,9 @@
-import { PropsWithChildren, createContext, useState } from 'react';
+import {
+  PropsWithChildren,
+  createContext,
+  useLayoutEffect,
+  useState,
+} from 'react';
 
 export const DarkModeContext = createContext<
   [boolean, (darkMode: boolean) => void] | undefined
@@ -6,12 +11,16 @@ export const DarkModeContext = createContext<
 
 export const DarkModeProvider = ({ children }: PropsWithChildren) => {
   const [darkMode, setDark] = useState(
-    localStorage.getItem('theme') === 'dark'
+    window.localStorage.getItem('theme') === 'dark'
   );
+
+  useLayoutEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
+  }, [darkMode]);
 
   const setDarkMode = (dark: boolean) => {
     setDark(dark);
-    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    window.localStorage.setItem('theme', dark ? 'dark' : 'light');
   };
 
   return (

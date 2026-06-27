@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { CourseReview, ReviewAttachment } from '../components/course-review';
 import { JumpToTopButton } from '../components/jump-to-top-button';
 import { Layout } from '../components/layout';
-import { Spinner } from '../components/spinner';
+import { Spinner } from '../components/ui/spinner';
 import { api } from '../lib/api';
 import { Review } from '../lib/types';
 import { courseIdToUrlParam, spliceCourseCode, timeSince } from '../lib/utils';

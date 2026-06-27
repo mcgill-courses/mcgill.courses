@@ -13,7 +13,7 @@ import { twMerge } from 'tailwind-merge';
 
 import type { Course, CourseAverage, Instructor } from '../lib/types';
 import { compareTerms, groupBy, mapValues } from '../lib/utils';
-import { Spinner } from './spinner';
+import { Spinner } from './ui/spinner';
 
 const GPAChart = lazy(() =>
   import('./gpa-chart').then((m) => ({ default: m.GPAChart }))

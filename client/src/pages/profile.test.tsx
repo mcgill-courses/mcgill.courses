@@ -56,11 +56,11 @@ vi.mock('../components/jump-to-top-button', () => ({
   JumpToTopButton: () => <div data-testid='jump-top' />,
 }));
 
-vi.mock('../components/delete-button', () => ({
+vi.mock('../components/ui/delete-button', () => ({
   DeleteButton: () => <button type='button'>delete</button>,
 }));
 
-vi.mock('../components/spinner', () => ({
+vi.mock('../components/ui/spinner', () => ({
   Spinner: () => <div data-testid='spinner' />,
 }));
 

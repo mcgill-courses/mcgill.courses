@@ -29,7 +29,7 @@ vi.mock('../components/explore-filter', () => ({
   ExploreFilter: () => <div data-testid='explore-filter' />,
 }));
 
-vi.mock('../components/filter-toggle', () => ({
+vi.mock('../components/ui/filter-toggle', () => ({
   FilterToggle: ({ children }: { children: React.ReactNode }) => (
     <div data-testid='filter-toggle'>{children}</div>
   ),
