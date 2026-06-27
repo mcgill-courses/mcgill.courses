@@ -118,8 +118,10 @@ export const Changelog = () => {
         <div className='mt-12 space-y-12'>
           {sortedChangelogItems.map(([month, items]) => {
             const expanded = expandedMonths.includes(month);
+
             const visibleItems = items.slice(0, visibleItemCount);
             const remainingItems = items.slice(visibleItemCount);
+
             const headingId = monthToId(month);
 
             const renderItem = (item: ChangelogItemWithSummary) => (
