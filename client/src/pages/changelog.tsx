@@ -163,23 +163,21 @@ export const Changelog = () => {
               <section
                 key={month}
                 aria-labelledby={headingId}
-                className='relative grid gap-4 md:grid-cols-[11rem_1fr] md:gap-8'
+                className='relative mx-auto max-w-3xl'
               >
-                <div className='md:pt-1'>
-                  <div className='md:sticky md:top-4'>
-                    <h2
-                      id={headingId}
-                      className='text-2xl font-semibold text-gray-950 dark:text-gray-100'
-                    >
-                      {month}
-                    </h2>
-                    <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-                      {items.length} {items.length === 1 ? 'update' : 'updates'}
-                    </p>
-                  </div>
+                <div>
+                  <h2
+                    id={headingId}
+                    className='text-2xl font-semibold text-gray-950 dark:text-gray-100'
+                  >
+                    {month}
+                  </h2>
+                  <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
+                    {items.length} {items.length === 1 ? 'update' : 'updates'}
+                  </p>
                 </div>
 
-                <div className='relative pl-5'>
+                <div className='relative mt-4 pl-5'>
                   <div
                     className='absolute top-2 bottom-0 left-1.5 w-px bg-slate-200 dark:bg-neutral-700'
                     aria-hidden='true'
