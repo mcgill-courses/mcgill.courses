@@ -1,10 +1,5 @@
 import { AnimatePresence, m } from 'framer-motion';
-import {
-  CalendarDays,
-  ChevronDown,
-  ExternalLink,
-  GitPullRequest,
-} from 'lucide-react';
+import { ChevronDown, ExternalLink, GitPullRequest } from 'lucide-react';
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
@@ -25,12 +20,6 @@ type ChangelogItemWithSummary = ChangelogItem & {
 };
 
 const visibleItemCount = 5;
-
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  day: 'numeric',
-  month: 'short',
-  timeZone: 'UTC',
-});
 
 const parseMonthString = (monthString: string): Date => {
   const [month, year] = monthString.split(' ');
@@ -62,10 +51,6 @@ const sanitizeChangelogItems = (
       },
     ];
   });
-};
-
-const formatMergedAt = (mergedAt: string) => {
-  return dateFormatter.format(new Date(mergedAt));
 };
 
 const monthToId = (month: string) => {
@@ -125,14 +110,17 @@ export const Changelog = () => {
             const headingId = monthToId(month);
 
             const renderItem = (item: ChangelogItemWithSummary) => (
-              <div key={item.number} className='relative'>
-                <span
-                  className='absolute top-5 -left-[1.1rem] flex size-3 items-center justify-center rounded-full bg-white ring-4 ring-slate-100 dark:bg-neutral-900 dark:ring-neutral-900'
+              <div
+                key={item.number}
+                className='grid grid-cols-[0.75rem_minmax(0,1fr)] gap-x-3'
+              >
+                <div
+                  className='relative z-10 mt-6 flex size-3 translate-x-[0.5px] items-center justify-center rounded-full bg-white ring-4 ring-slate-100 sm:mt-7 dark:bg-neutral-900 dark:ring-neutral-900'
                   aria-hidden='true'
                 >
                   <span className='size-2 rounded-full bg-gray-500 dark:bg-gray-400' />
-                </span>
-                <div className='rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition duration-150 hover:border-slate-300 hover:shadow-md sm:p-5 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-neutral-600'>
+                </div>
+                <div className='rounded-lg bg-white p-4 sm:p-5 dark:bg-neutral-900'>
                   <div className='flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between'>
                     <p className='text-base leading-7 text-gray-800 dark:text-gray-200'>
                       {item.summary}
@@ -148,13 +136,6 @@ export const Changelog = () => {
                       <ExternalLink className='size-3.5' aria-hidden='true' />
                     </a>
                   </div>
-                  <time
-                    dateTime={item.mergedAt}
-                    className='mt-3 inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400'
-                  >
-                    <CalendarDays className='size-4' aria-hidden='true' />
-                    {formatMergedAt(item.mergedAt)}
-                  </time>
                 </div>
               </div>
             );
@@ -177,7 +158,7 @@ export const Changelog = () => {
                   </p>
                 </div>
 
-                <div className='relative mt-4 pl-5'>
+                <div className='relative mt-4'>
                   <div
                     className='absolute top-2 bottom-0 left-1.5 w-px bg-slate-200 dark:bg-neutral-700'
                     aria-hidden='true'
@@ -202,7 +183,7 @@ export const Changelog = () => {
                     <button
                       type='button'
                       onClick={() => toggleShowAll(month)}
-                      className='group mt-4 inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-700'
+                      className='group mt-4 ml-6 inline-flex cursor-pointer items-center gap-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 dark:bg-neutral-900 dark:text-gray-300'
                     >
                       <m.div
                         animate={{ rotate: expanded ? 180 : 0 }}
