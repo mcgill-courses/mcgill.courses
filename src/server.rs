@@ -25,6 +25,7 @@ pub(crate) struct Server {
 #[derive(Debug)]
 struct AppConfig<'a> {
   assets: Option<Assets<'a>>,
+  #[cfg(feature = "e2e")]
   authentication: bool,
   db: Arc<Db>,
   rate_limit: bool,
@@ -93,13 +94,12 @@ impl Server {
     )
     .await?;
 
-    let authentication = cfg!(feature = "e2e")
-      && env::var("MCGILL_COURSES_E2E_AUTH").unwrap_or_default() == "1"
-      && env::var("ENV").unwrap_or_default() != "production";
-
     let app = Self::app(AppConfig {
       assets,
-      authentication,
+      #[cfg(feature = "e2e")]
+      authentication: env::var("MCGILL_COURSES_E2E_AUTH").unwrap_or_default()
+        == "1"
+        && env::var("ENV").unwrap_or_default() != "production",
       db,
       rate_limit: true,
       session_store,
@@ -413,7 +413,8 @@ mod tests {
 
       let app = Server::app(AppConfig {
         assets: None,
-        authentication: cfg!(feature = "e2e"),
+        #[cfg(feature = "e2e")]
+        authentication: true,
         db: db.clone(),
         rate_limit: false,
         session_store: session_store.clone(),
@@ -3123,6 +3124,7 @@ mod tests {
 
     let app = Server::app(AppConfig {
       assets: None,
+      #[cfg(feature = "e2e")]
       authentication: false,
       db,
       rate_limit: true,
