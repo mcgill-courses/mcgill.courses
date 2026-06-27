@@ -167,6 +167,7 @@ impl Server {
             <link rel="shortcut icon" href="/assets/favicon.ico"/>
             <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"/>
             <meta name="apple-mobile-web-app-title" content="mcgill.courses"/>
+            <meta name="google-adsense-account" content="ca-pub-9002129260470303"/>
             <link rel="manifest" href="/assets/site.webmanifest"/>
             <meta name="msapplication-TileColor" content="#da532c"/>
             <meta name="theme-color" content="#ffffff"/>
