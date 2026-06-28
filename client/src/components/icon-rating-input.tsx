@@ -16,14 +16,14 @@ export const IconRatingInput = ({
   for (let i = 0; i < 5; i++) {
     icons.push(
       <button
+        key={i}
         type='button'
-        aria-label={`Rate ${i + 1} out of 5`}
+        aria-label={`Set ${name} to ${i + 1} out of 5`}
         onClick={() => setFieldValue(name, i + 1)}
       >
         <Icon
           className={i < rating ? 'fill-red-500' : 'fill-gray-200'}
           id={`${name}-star-${i}`}
-          key={i}
           size={22}
           strokeWidth={0}
         />

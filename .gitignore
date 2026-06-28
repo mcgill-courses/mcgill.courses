@@ -16,10 +16,9 @@ dist-ssr/
 # Coverage
 coverage/
 
-# Cypress
-/client/cypress/downloads
-/client/cypress/screenshots
-/client/cypress/videos
+# Vitest
+/client/.vitest-attachments/
+/client/src/__screenshots__/
 
 # Logs
 logs/

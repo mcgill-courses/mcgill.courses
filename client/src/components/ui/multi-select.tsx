@@ -8,6 +8,7 @@ type MultiSelectProps = {
   values: string[];
   setValues: (values: string[]) => void;
   className?: string;
+  id?: string;
   inputClassName?: string;
 };
 
@@ -16,6 +17,7 @@ export const MultiSelect = ({
   values,
   setValues,
   className,
+  id,
   inputClassName,
 }: MultiSelectProps) => {
   const [query, setQuery] = useState('');
@@ -66,6 +68,7 @@ export const MultiSelect = ({
             )}
           >
             <Combobox.Input
+              id={id}
               className={twMerge(
                 'w-full bg-slate-200 text-sm outline-none dark:bg-neutral-700 dark:text-gray-200 dark:caret-white',
                 inputClassName
