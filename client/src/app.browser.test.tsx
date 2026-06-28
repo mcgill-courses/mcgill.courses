@@ -13,6 +13,26 @@ import ExploreFilterStateProvider from './providers/explore-filter-state-provide
 import QueryProvider from './providers/query-provider';
 import { routerFutureConfig } from './testing/router-wrapper';
 
+const login = async (id = crypto.randomUUID()) => {
+  const response = await fetch('/api/auth/test-login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id,
+      mail: `${id}@mail.mcgill.ca`,
+    }),
+  });
+
+  expect(response.status).toBe(204);
+};
+
+const navigate = (path: string) => {
+  act(() => {
+    window.history.replaceState(null, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+};
+
 const renderApp = () =>
   render(
     <HelmetProvider>
@@ -33,31 +53,10 @@ const renderApp = () =>
     </HelmetProvider>
   );
 
-const navigate = (path: string) => {
-  act(() => {
-    window.history.replaceState(null, '', path);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  });
-};
-
-const testLogin = async (id = crypto.randomUUID()) => {
-  const response = await fetch('/api/auth/test-login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      id,
-      mail: `${id}@mail.mcgill.ca`,
-    }),
-  });
-
-  expect(response.status).toBe(204);
-};
-
 describe('App', () => {
   beforeEach(async () => {
     window.localStorage.clear();
-
-    await testLogin('foo');
+    await login();
   });
 
   afterEach(() => {
@@ -90,8 +89,6 @@ describe('App', () => {
 
   it('subscribes from a course page and shows the subscription on the profile', async () => {
     const user = userEvent.setup();
-
-    await testLogin();
 
     navigate('/course/comp-202');
 
