@@ -199,7 +199,7 @@ export const Instructor = () => {
         />
       </Helmet>
 
-      <div className='mx-auto mt-6 max-w-5xl'>
+      <div className='mx-auto mt-10 max-w-5xl'>
         <div className='rounded-md bg-slate-50 p-6 dark:bg-neutral-800'>
           <div className='mb-6 flex flex-row gap-2 align-middle'>
             <div className='flex flex-wrap items-center gap-2'>
