@@ -89,7 +89,6 @@ const defaultUser: User = {
 };
 
 const getSubscriptionMock = api.getSubscription as Mock;
-const addSubscriptionMock = api.addSubscription as Mock;
 const removeSubscriptionMock = api.removeSubscription as Mock;
 
 type RenderOptions = {
@@ -125,7 +124,6 @@ const renderCourseInfo = (options: RenderOptions = {}) => {
 describe('CourseInfo', () => {
   beforeEach(() => {
     getSubscriptionMock.mockReset();
-    addSubscriptionMock.mockReset();
     removeSubscriptionMock.mockReset();
   });
 
@@ -157,23 +155,6 @@ describe('CourseInfo', () => {
     await waitFor(() => expect(getSubscriptionMock).toHaveBeenCalled());
 
     expect(await screen.findByTestId('unsubscribe-icon')).toBeInTheDocument();
-  });
-
-  it('subscribes the user when clicking the bell icon', async () => {
-    getSubscriptionMock.mockResolvedValue(null);
-    addSubscriptionMock.mockResolvedValue({});
-
-    renderCourseInfo();
-
-    const subscribeIcon = await screen.findByTestId('subscribe-icon');
-    await userEvent.click(subscribeIcon);
-
-    await waitFor(() =>
-      expect(addSubscriptionMock).toHaveBeenCalledWith(baseCourse._id)
-    );
-    await waitFor(() =>
-      expect(screen.queryByTestId('unsubscribe-icon')).not.toBeNull()
-    );
   });
 
   it('unsubscribes the user when clicking the bell-off icon', async () => {

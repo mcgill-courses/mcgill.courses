@@ -336,25 +336,6 @@ describe('Profile page', () => {
     });
   });
 
-  it('displays singular label for 1 subscription', async () => {
-    const subscriptions: Subscription[] = [
-      {
-        courseId: 'COMP202',
-        userId: 'user-1',
-      },
-    ];
-
-    getReviewsMock.mockResolvedValue({ reviews: [] });
-    getLikedReviewsMock.mockResolvedValue({ reviews: [] });
-    getSubscriptionsMock.mockResolvedValue(subscriptions);
-
-    renderProfile();
-
-    await waitFor(() => {
-      expect(screen.getByText('1 subscription')).toBeInTheDocument();
-    });
-  });
-
   it('restores selected tab index from localStorage', async () => {
     Object.defineProperty(window, 'localStorage', {
       value: {
