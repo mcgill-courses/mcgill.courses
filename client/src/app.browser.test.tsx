@@ -1,4 +1,5 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { LazyMotion, domAnimation } from 'framer-motion';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
@@ -33,23 +34,30 @@ const renderApp = () =>
   );
 
 const navigate = (path: string) => {
-  window.history.replaceState(null, '', path);
+  act(() => {
+    window.history.replaceState(null, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  });
+};
+
+const testLogin = async (id = crypto.randomUUID()) => {
+  const response = await fetch('/api/auth/test-login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id,
+      mail: `${id}@mail.mcgill.ca`,
+    }),
+  });
+
+  expect(response.status).toBe(204);
 };
 
 describe('App', () => {
   beforeEach(async () => {
     window.localStorage.clear();
 
-    const response = await fetch('/api/auth/test-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: 'foo',
-        mail: 'foo@mail.mcgill.ca',
-      }),
-    });
-
-    expect(response.status).toBe(204);
+    await testLogin('foo');
   });
 
   afterEach(() => {
@@ -78,5 +86,40 @@ describe('App', () => {
     expect(await screen.findByText('0 reviews')).toBeInTheDocument();
     expect(await screen.findByText('0 liked reviews')).toBeInTheDocument();
     expect(await screen.findByText('0 subscriptions')).toBeInTheDocument();
+  });
+
+  it('subscribes from a course page and shows the subscription on the profile', async () => {
+    const user = userEvent.setup();
+
+    await testLogin();
+
+    navigate('/course/comp-202');
+
+    renderApp();
+
+    expect(
+      await screen.findByRole('heading', { name: 'COMP 202' })
+    ).toBeInTheDocument();
+
+    const subscribe = await screen.findByRole('button', {
+      name: 'Subscribe to COMP 202',
+    });
+
+    await waitFor(() => expect(subscribe).toBeEnabled());
+    await user.click(subscribe);
+
+    expect(
+      await screen.findByRole('button', { name: 'Unsubscribe from COMP 202' })
+    ).toBeInTheDocument();
+
+    navigate('/profile');
+
+    expect(await screen.findByText('1 subscription')).toBeInTheDocument();
+
+    await user.click(await screen.findByRole('tab', { name: 'Subscriptions' }));
+
+    expect(
+      await screen.findByRole('link', { name: 'COMP202' })
+    ).toHaveAttribute('href', '/course/comp-202');
   });
 });
