@@ -277,9 +277,7 @@ describe('Profile page', () => {
     renderProfile();
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/No reviews found, if you've taken a course/)
-      ).toBeInTheDocument();
+      expect(screen.getByText('No reviews yet.')).toBeInTheDocument();
     });
   });
 
@@ -291,9 +289,7 @@ describe('Profile page', () => {
     renderProfile();
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/No liked reviews yet, tap the thumbs-up/)
-      ).toBeInTheDocument();
+      expect(screen.getByText('No liked reviews yet.')).toBeInTheDocument();
     });
   });
 
@@ -305,9 +301,7 @@ describe('Profile page', () => {
     renderProfile();
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/No subscriptions found, click the bell icon/)
-      ).toBeInTheDocument();
+      expect(screen.getByText('No subscriptions yet.')).toBeInTheDocument();
     });
   });
 
@@ -332,7 +326,9 @@ describe('Profile page', () => {
     renderProfile();
 
     await waitFor(() => {
-      expect(screen.getByText('1 liked review')).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Likes 1' })
+      ).toBeInTheDocument();
     });
   });
 
