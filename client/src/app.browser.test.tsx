@@ -184,6 +184,7 @@ describe('App', () => {
     const searchBar = screen.getByPlaceholderText(
       'Search by course, subject, or professor'
     );
+
     await user.type(searchBar, 'math');
 
     await waitFor(() => {
