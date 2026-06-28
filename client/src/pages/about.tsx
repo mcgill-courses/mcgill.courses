@@ -51,7 +51,7 @@ const questions = [
   {
     title: 'Are reviews anonymous?',
     content:
-      'Reviews are not publicly attributed to anyone. We store your user ID internally so you can edit, delete, and like your own reviews, but we never store your email or display your identity alongside a review.',
+      'Yes. We do not store emails or any personal information with reviews. Your identity is never shown to other users.',
   },
   {
     title: 'When will instructor ratings be available?',
