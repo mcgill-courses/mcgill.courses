@@ -174,9 +174,11 @@ describe('App', () => {
     const user = userEvent.setup();
 
     navigate('/explore');
+
     renderApp();
 
     await screen.findByRole('link', { name: /COMP 202/ });
+
     expect(screen.getByText(/all 3 courses/)).toBeInTheDocument();
 
     const searchBar = screen.getByPlaceholderText(
@@ -193,6 +195,7 @@ describe('App', () => {
     expect(
       screen.queryByRole('link', { name: /COMP 202/ })
     ).not.toBeInTheDocument();
+
     expect(
       screen.queryByRole('link', { name: /COMP 252/ })
     ).not.toBeInTheDocument();
