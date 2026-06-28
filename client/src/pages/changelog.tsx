@@ -21,6 +21,11 @@ type ChangelogItemWithSummary = ChangelogItem & {
 
 const visibleItemCount = 5;
 
+const fadeInUp = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const parseMonthString = (monthString: string): Date => {
   const [month, year] = monthString.split(' ');
   return new Date(`${month} 1, ${year}`);
@@ -90,7 +95,18 @@ export const Changelog = () => {
         <meta property='twitter:title' content={`Changelog - mcgill.courses`} />
       </Helmet>
 
-      <div className='mx-auto max-w-5xl px-2 py-10 sm:px-4 lg:py-14'>
+      <m.div
+        initial='hidden'
+        animate='visible'
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.08,
+            },
+          },
+        }}
+        className='mx-auto max-w-5xl px-2 py-10 sm:px-4 lg:py-14'
+      >
         <div className='mx-auto max-w-3xl text-center'>
           <h1 className='text-4xl font-bold text-gray-950 sm:text-5xl dark:text-gray-100'>
             Changelog
@@ -141,7 +157,8 @@ export const Changelog = () => {
             );
 
             return (
-              <section
+              <m.section
+                variants={fadeInUp}
                 key={month}
                 aria-labelledby={headingId}
                 className='relative mx-auto max-w-3xl'
@@ -195,11 +212,11 @@ export const Changelog = () => {
                     </button>
                   )}
                 </div>
-              </section>
+              </m.section>
             );
           })}
         </div>
-      </div>
+      </m.div>
     </Layout>
   );
 };
