@@ -94,7 +94,7 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
   const reviewLabel = reviewCount === 1 ? 'review' : 'reviews';
 
   return (
-    <div className='relative flex w-full flex-row rounded-md bg-slate-50 px-6 pt-8 shadow-sm md:mt-10 dark:bg-neutral-800'>
+    <div className='relative flex w-full flex-row rounded-md bg-slate-50 p-6 shadow-sm md:mt-10 dark:bg-neutral-800'>
       <div className='flex w-full flex-col md:w-7/12'>
         <div className='flex flex-row space-x-2 align-middle'>
           <div className='flex items-center space-x-2'>
@@ -177,7 +177,7 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
           {reviewCount} {reviewLabel}
         </p>
       </div>
-      <div className='hidden w-5/12 justify-center rounded-md bg-neutral-50 py-4 md:mx-5 md:flex lg:mt-6 lg:ml-12 xl:justify-start dark:bg-neutral-800'>
+      <div className='hidden w-5/12 items-center justify-center rounded-md bg-neutral-50 py-4 md:mx-5 md:flex lg:ml-12 xl:justify-start dark:bg-neutral-800'>
         <CourseInfoStats
           variant='large'
           reviews={reviews}
