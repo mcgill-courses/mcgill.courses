@@ -27,7 +27,11 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
     user?.id ?? 'guest',
   ] as const;
 
-  const { data: subscription, isError: isSubscriptionError } = useQuery({
+  const {
+    data: subscription,
+    isError: isSubscriptionError,
+    isPending: isSubscriptionPending,
+  } = useQuery({
     enabled: Boolean(user),
     queryFn: () => api.getSubscription(course._id),
     queryKey: subscriptionQueryKey,
@@ -104,19 +108,37 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
           <div className='flex items-center gap-2'>
             {user &&
               (isSubscribed ? (
-                <BellOff
-                  size={20}
+                <button
+                  type='button'
+                  aria-label={`Unsubscribe from ${course.subject} ${course.code}`}
+                  className='my-auto ml-1 cursor-pointer text-gray-800 transition-colors duration-300 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-200 dark:hover:text-red-600'
+                  disabled={
+                    isSubscriptionPending || unsubscribeMutation.isPending
+                  }
                   onClick={() => unsubscribeMutation.mutate()}
-                  data-testid='unsubscribe-icon'
-                  className='my-auto ml-1 cursor-pointer transition-colors duration-300 hover:stroke-red-600 dark:text-gray-200'
-                />
+                >
+                  <BellOff
+                    size={20}
+                    data-testid='unsubscribe-icon'
+                    className='stroke-current'
+                  />
+                </button>
               ) : (
-                <Bell
-                  size={20}
+                <button
+                  type='button'
+                  aria-label={`Subscribe to ${course.subject} ${course.code}`}
+                  className='my-auto ml-1 cursor-pointer text-gray-800 transition-colors duration-300 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-200 dark:hover:text-red-600'
+                  disabled={
+                    isSubscriptionPending || subscribeMutation.isPending
+                  }
                   onClick={() => subscribeMutation.mutate()}
-                  data-testid='subscribe-icon'
-                  className='my-auto ml-1 cursor-pointer transition-colors duration-300 hover:stroke-red-600 dark:text-gray-200'
-                />
+                >
+                  <Bell
+                    size={20}
+                    data-testid='subscribe-icon'
+                    className='stroke-current'
+                  />
+                </button>
               ))}
             {course.url ? (
               <a
