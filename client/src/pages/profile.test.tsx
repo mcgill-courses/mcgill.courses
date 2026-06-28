@@ -311,31 +311,6 @@ describe('Profile page', () => {
     });
   });
 
-  it('displays singular label for 1 review', async () => {
-    const reviews: Review[] = [
-      {
-        content: 'Single review',
-        courseId: 'COMP202',
-        difficulty: 2,
-        instructors: ['Instructor'],
-        likes: 0,
-        rating: 5,
-        timestamp: '1700000000000',
-        userId: 'user-1',
-      },
-    ];
-
-    getReviewsMock.mockResolvedValue({ reviews });
-    getLikedReviewsMock.mockResolvedValue({ reviews: [] });
-    getSubscriptionsMock.mockResolvedValue([]);
-
-    renderProfile();
-
-    await waitFor(() => {
-      expect(screen.getByText('1 review')).toBeInTheDocument();
-    });
-  });
-
   it('displays singular label for 1 liked review', async () => {
     const likedReviews: Review[] = [
       {

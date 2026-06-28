@@ -104,6 +104,7 @@ export const ReviewForm = ({
       <FieldLabel htmlFor='instructors'>Instructor(s)</FieldLabel>
       <MultiSelect
         className='mt-2'
+        id='instructors'
         inputClassName='bg-neutral-100'
         options={instructorNames}
         setValues={(instructors) => setFieldValue('instructors', instructors)}

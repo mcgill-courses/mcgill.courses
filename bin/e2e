@@ -18,7 +18,12 @@ log="$(mktemp -t mcgill-courses-e2e-server.XXXXXX.log)"
 
 cargo build --features e2e
 
-target/debug/server --port "$E2E_API_PORT" --db-name "$db_name" >"$log" 2>&1 &
+target/debug/server \
+  --port "$E2E_API_PORT" \
+  --db-name "$db_name" \
+  --source crates/db/test-seeds/mini.json \
+  --initialize \
+  >"$log" 2>&1 &
 server_pid=$!
 
 cleanup() {
@@ -31,7 +36,7 @@ trap cleanup EXIT
 ready=0
 
 for _ in $(seq 1 60); do
-  if curl --fail --silent --output /dev/null "http://127.0.0.1:${E2E_API_PORT}/api/user"; then
+  if curl --fail --silent --output /dev/null "http://127.0.0.1:${E2E_API_PORT}/api/courses/COMP202"; then
     ready=1
     break
   fi
