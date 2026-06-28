@@ -141,6 +141,59 @@ describe('App', () => {
     ).toHaveAttribute('href', '/course/comp-202');
   });
 
+  it('renders courses on the explore page', async () => {
+    navigate('/explore');
+
+    renderApp();
+
+    expect(
+      await screen.findByRole('heading', { name: 'Explore all courses' })
+    ).toBeInTheDocument();
+
+    expect(
+      await screen.findByRole('link', { name: /COMP 202/ })
+    ).toBeInTheDocument();
+
+    expect(screen.getByRole('link', { name: /COMP 252/ })).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('link', { name: /MATH\s*240/ })
+    ).toBeInTheDocument();
+  });
+
+  it('searches courses on the explore page', async () => {
+    const user = userEvent.setup();
+
+    navigate('/explore');
+
+    renderApp();
+
+    await screen.findByRole('link', { name: /COMP 202/ });
+
+    expect(screen.getByRole('link', { name: /COMP 252/ })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /MATH 240/ })).toBeInTheDocument();
+
+    const searchBar = screen.getAllByPlaceholderText(
+      'Search by course, subject, or professor'
+    )[1];
+
+    await user.type(searchBar, 'math');
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('link', { name: /COMP 202/ })
+      ).not.toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByRole('link', { name: /COMP 252/ })
+    ).not.toBeInTheDocument();
+
+    expect(
+      screen.getByRole('link', { name: /MATH\s*240/ })
+    ).toBeInTheDocument();
+  });
+
   it('adds a course review and shows it on the profile', async () => {
     const user = userEvent.setup();
 
