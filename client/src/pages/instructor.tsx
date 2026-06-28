@@ -228,27 +228,29 @@ export const Instructor = () => {
           <div className='grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-[minmax(0,1fr)_384px]'>
             <div className='md:col-span-2 lg:col-span-1'>
               <Tab.Group selectedIndex={selectedTabIndex} onChange={selectTab}>
-                <Tab.List className='styled-scrollbar flex overflow-x-auto border-b border-slate-200 dark:border-neutral-700'>
-                  {tabItems.map(({ count, icon, id, name }) => (
-                    <Tab
-                      key={id}
-                      className={({ selected }) =>
-                        twMerge(
-                          'flex min-h-12 shrink-0 cursor-pointer items-center justify-center gap-2 border-b-2 px-3 py-2 text-sm font-semibold whitespace-nowrap transition focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 sm:px-4',
-                          selected
-                            ? 'border-mcgill-red text-gray-950 dark:text-gray-100'
-                            : 'border-transparent text-gray-500 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-100'
-                        )
-                      }
-                    >
-                      {icon}
-                      {name}{' '}
-                      <span className='text-xs font-medium text-gray-400 dark:text-gray-500'>
-                        {count}
-                      </span>
-                    </Tab>
-                  ))}
-                </Tab.List>
+                <div className='styled-scrollbar overflow-x-auto'>
+                  <Tab.List className='flex w-max border-b border-slate-200 dark:border-neutral-700'>
+                    {tabItems.map(({ count, icon, id, name }) => (
+                      <Tab
+                        key={id}
+                        className={({ selected }) =>
+                          twMerge(
+                            'flex min-h-12 shrink-0 cursor-pointer items-center justify-center gap-2 border-b-2 px-3 py-2 text-sm font-semibold whitespace-nowrap transition focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 sm:px-4',
+                            selected
+                              ? 'border-mcgill-red text-gray-950 dark:text-gray-100'
+                              : 'border-transparent text-gray-500 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-100'
+                          )
+                        }
+                      >
+                        {icon}
+                        {name}{' '}
+                        <span className='text-xs font-medium text-gray-400 dark:text-gray-500'>
+                          {count}
+                        </span>
+                      </Tab>
+                    ))}
+                  </Tab.List>
+                </div>
                 <div className='mt-4'>
                   <AnimatePresence mode='wait'>
                     <m.div
