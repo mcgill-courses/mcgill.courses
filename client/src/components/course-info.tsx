@@ -1,5 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Bell, BellOff, ExternalLink } from 'lucide-react';
+import {
+  Bell,
+  BellOff,
+  ExternalLink,
+  GraduationCap,
+  MessageSquareText,
+} from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -96,13 +102,18 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
   return (
     <div className='relative flex w-full flex-row rounded-md bg-slate-50 p-6 shadow-sm md:mt-10 dark:bg-neutral-800'>
       <div className='flex w-full flex-col md:w-7/12'>
-        <div className='flex flex-row space-x-2 align-middle'>
-          <div className='flex items-center space-x-2'>
+        <div className='flex flex-row gap-2 align-middle'>
+          <div className='flex flex-wrap items-center gap-2'>
             <h1 className='text-3xl font-semibold text-gray-800 dark:text-gray-200'>
               {course.subject} {course.code}
             </h1>
-            <div className='flex h-6 items-center rounded-full bg-slate-200 px-2 text-xs font-medium dark:bg-neutral-700 dark:text-gray-300'>
+            <div className='flex h-6 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
+              <GraduationCap size={13} className='stroke-current' />
               {course.credits} {course.credits === '1' ? 'Credit' : 'Credits'}
+            </div>
+            <div className='flex h-6 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
+              <MessageSquareText size={13} className='stroke-current' />
+              {reviewCount} {reviewLabel}
             </div>
           </div>
           <div className='flex items-center gap-2'>
@@ -173,9 +184,6 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
           variant='medium'
           reviews={reviews}
         />
-        <p className='mb-6 text-sm text-gray-500 dark:text-gray-400'>
-          {reviewCount} {reviewLabel}
-        </p>
       </div>
       <div className='hidden w-5/12 items-center justify-center rounded-md bg-neutral-50 py-4 md:mx-5 md:flex lg:ml-12 xl:justify-start dark:bg-neutral-800'>
         <CourseInfoStats
