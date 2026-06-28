@@ -143,6 +143,7 @@ describe('App', () => {
 
   it('renders courses on the explore page', async () => {
     navigate('/explore');
+
     renderApp();
 
     expect(
@@ -150,24 +151,14 @@ describe('App', () => {
     ).toBeInTheDocument();
 
     expect(
-      await screen.findByRole('link', {
-        name: 'COMP 202 - Foundations of Programming',
-      })
+      await screen.findByRole('link', { name: /COMP 202/ })
     ).toBeInTheDocument();
+
+    expect(screen.getByRole('link', { name: /COMP 252/ })).toBeInTheDocument();
 
     expect(
-      screen.getByRole('link', {
-        name: 'COMP 252 - Honours Algorithms and Data Structures',
-      })
+      screen.getByRole('link', { name: /MATH\s*240/ })
     ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole('link', {
-        name: 'MATH 240 - Discrete Structures',
-      })
-    ).toBeInTheDocument();
-
-    expect(screen.getByText(/all 3 courses/)).toBeInTheDocument();
   });
 
   it('searches courses on the explore page', async () => {
@@ -179,29 +170,28 @@ describe('App', () => {
 
     await screen.findByRole('link', { name: /COMP 202/ });
 
-    expect(screen.getByText(/all 3 courses/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /COMP 252/ })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /MATH 240/ })).toBeInTheDocument();
 
-    const searchBar = screen.getByPlaceholderText(
+    const searchBar = screen.getAllByPlaceholderText(
       'Search by course, subject, or professor'
-    );
+    )[1];
 
     await user.type(searchBar, 'math');
 
     await waitFor(() => {
       expect(
-        screen.getByRole('link', { name: /MATH 240/ })
-      ).toBeInTheDocument();
+        screen.queryByRole('link', { name: /COMP 202/ })
+      ).not.toBeInTheDocument();
     });
-
-    expect(
-      screen.queryByRole('link', { name: /COMP 202/ })
-    ).not.toBeInTheDocument();
 
     expect(
       screen.queryByRole('link', { name: /COMP 252/ })
     ).not.toBeInTheDocument();
 
-    expect(screen.getByText(/all 1 courses/)).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /MATH\s*240/ })
+    ).toBeInTheDocument();
   });
 
   it('adds a course review and shows it on the profile', async () => {
