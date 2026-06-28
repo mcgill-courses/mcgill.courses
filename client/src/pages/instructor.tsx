@@ -199,11 +199,11 @@ export const Instructor = () => {
         />
       </Helmet>
 
-      <div className='mx-auto mt-10 max-w-5xl md:mt-10'>
+      <div className='mx-auto mt-6 max-w-5xl'>
         <div className='rounded-md bg-slate-50 p-6 dark:bg-neutral-800'>
           <div className='mb-6 flex flex-row gap-2 align-middle'>
             <div className='flex flex-wrap items-center gap-2'>
-              <h1 className='text-3xl font-semibold wrap-break-word text-gray-800 sm:text-4xl dark:text-gray-200'>
+              <h1 className='text-3xl font-semibold wrap-break-word text-gray-800 dark:text-gray-200'>
                 {params.name && decodeURIComponent(params.name)}
               </h1>
               <div className='flex h-6 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
@@ -307,7 +307,7 @@ export const Instructor = () => {
           </div>
         </div>
       </div>
-      <div className='mx-auto mt-4 max-w-5xl'>
+      <div className='mx-auto mt-6 max-w-5xl'>
         <div>
           {userReview && (
             <CourseReview
