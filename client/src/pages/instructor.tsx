@@ -231,7 +231,7 @@ export const Instructor = () => {
                   <CourseInfoStats
                     variant='large'
                     reviews={reviews}
-                    className='hidden flex-row gap-y-1 sm:flex md:flex-col lg:flex-row lg:gap-x-2'
+                    className='hidden flex-row gap-y-5 sm:flex md:flex-col lg:flex-row lg:gap-x-6'
                   />
                   <CourseInfoStats
                     variant='small'

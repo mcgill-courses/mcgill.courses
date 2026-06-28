@@ -59,7 +59,7 @@ describe('Histogram', () => {
 
     const expectedWidth = baseProps.width / baseProps.max - 4;
 
-    const baseHeight = baseProps.height - 12;
+    const baseHeight = baseProps.height - 14;
 
     const expectedDistribution = baseProps.data.reduce((acc, value) => {
       acc[value - 1]++;
