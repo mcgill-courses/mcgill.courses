@@ -89,10 +89,19 @@ describe('App', () => {
 
     renderApp();
 
-    expect(await screen.findByText('Your Profile')).toBeInTheDocument();
-    expect(await screen.findByText('0 reviews')).toBeInTheDocument();
-    expect(await screen.findByText('0 liked reviews')).toBeInTheDocument();
-    expect(await screen.findByText('0 subscriptions')).toBeInTheDocument();
+    expect(await screen.findByText('Profile')).toBeInTheDocument();
+
+    expect(
+      await screen.findByRole('tab', { name: 'Reviews 0' })
+    ).toBeInTheDocument();
+
+    expect(
+      await screen.findByRole('tab', { name: 'Likes 0' })
+    ).toBeInTheDocument();
+
+    expect(
+      await screen.findByRole('tab', { name: 'Subscriptions 0' })
+    ).toBeInTheDocument();
   });
 
   it('subscribes from a course page and shows the subscription on the profile', async () => {
@@ -119,12 +128,16 @@ describe('App', () => {
 
     navigate('/profile');
 
-    expect(await screen.findByText('1 subscription')).toBeInTheDocument();
+    expect(
+      await screen.findByRole('tab', { name: 'Subscriptions 1' })
+    ).toBeInTheDocument();
 
-    await user.click(await screen.findByRole('tab', { name: 'Subscriptions' }));
+    await user.click(
+      await screen.findByRole('tab', { name: 'Subscriptions 1' })
+    );
 
     expect(
-      await screen.findByRole('link', { name: 'COMP202' })
+      await screen.findByRole('link', { name: 'COMP 202' })
     ).toHaveAttribute('href', '/course/comp-202');
   });
 
@@ -187,8 +200,12 @@ describe('App', () => {
 
     navigate('/profile');
 
-    expect(await screen.findByText('Your Profile')).toBeInTheDocument();
-    expect(await screen.findByText('1 review')).toBeInTheDocument();
+    expect(await screen.findByText('Profile')).toBeInTheDocument();
+
+    expect(
+      await screen.findByRole('tab', { name: 'Reviews 1' })
+    ).toBeInTheDocument();
+
     expect(await screen.findByText(content)).toBeInTheDocument();
 
     expect(
