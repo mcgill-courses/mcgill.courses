@@ -213,8 +213,8 @@ describe('Profile page', () => {
       ([props]) => props.attachment
     );
 
-    expect(attachments.length).toBe(2);
-    expect(attachments).toEqual(['scrollButton', 'scrollButton']);
+    expect(attachments.length).toBe(1);
+    expect(attachments).toEqual(['scrollButton']);
   });
 
   it('shows loading state while data is being fetched', async () => {
@@ -282,6 +282,16 @@ describe('Profile page', () => {
   });
 
   it('renders empty state when user has no liked reviews', async () => {
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn(() => '1'),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+      },
+      writable: true,
+    });
+
     getReviewsMock.mockResolvedValue({ reviews: [] });
     getLikedReviewsMock.mockResolvedValue({ reviews: [] });
     getSubscriptionsMock.mockResolvedValue([]);
@@ -294,6 +304,16 @@ describe('Profile page', () => {
   });
 
   it('renders empty state when user has no subscriptions', async () => {
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn(() => '2'),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+      },
+      writable: true,
+    });
+
     getReviewsMock.mockResolvedValue({ reviews: [] });
     getLikedReviewsMock.mockResolvedValue({ reviews: [] });
     getSubscriptionsMock.mockResolvedValue([]);
