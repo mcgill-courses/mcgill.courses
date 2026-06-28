@@ -316,57 +316,60 @@ export const CourseReview = ({
       });
   };
 
-  const attachmentNode =
+  const scrollAttachmentNode =
     attachment === ReviewAttachment.ScrollButton ? (
       <Tooltip text='Scroll to this review' className='w-36'>
         <Link
           to={`/course/${courseIdToUrlParam(review.courseId)}?review=${review.userId}`}
-          className='inline-flex h-6 items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
+          className='group inline-flex size-5 cursor-pointer items-center justify-center focus:outline-none'
           aria-label={`Open ${review.courseId} and scroll to this review`}
         >
-          <ArrowUpRight className='size-4' />
+          <ArrowUpRight className='size-5 stroke-gray-500 transition duration-200 group-hover:stroke-gray-800 dark:stroke-gray-400 dark:group-hover:stroke-gray-200' />
         </Link>
       </Tooltip>
-    ) : attachment === ReviewAttachment.CopyButton ? (
-      (() => {
-        const icon = (
-          <span className='relative inline-flex size-4 items-center justify-center'>
-            <Copy
-              className={twMerge(
-                'absolute h-4 w-4 transition-opacity duration-150 ease-out',
-                copied ? 'opacity-0' : 'opacity-100'
-              )}
-            />
-            <Check
-              className={twMerge(
-                'absolute h-4 w-4 text-green-500 transition-opacity duration-150 ease-out',
-                copied ? 'opacity-100' : 'opacity-0'
-              )}
-            />
-          </span>
-        );
-
-        const button = (
-          <button
-            type='button'
-            onClick={copyReviewLink}
-            className='inline-flex size-6 cursor-pointer items-center justify-center text-gray-600 transition-colors duration-200 hover:text-red-600 focus:outline-none disabled:cursor-default disabled:hover:text-gray-600 dark:text-gray-300 dark:hover:text-red-500 dark:disabled:hover:text-gray-300'
-            aria-label={`Copy review link for ${review.courseId}`}
-            disabled={copied}
-          >
-            {icon}
-          </button>
-        );
-
-        return copied ? (
-          button
-        ) : (
-          <Tooltip text='Copy link to review' className='w-36'>
-            {button}
-          </Tooltip>
-        );
-      })()
     ) : null;
+
+  const copyAttachmentNode =
+    attachment === ReviewAttachment.CopyButton
+      ? (() => {
+          const icon = (
+            <span className='relative inline-flex size-5 items-center justify-center'>
+              <Copy
+                className={twMerge(
+                  'absolute inset-0 size-5 stroke-gray-500 transition duration-200 ease-out group-hover:stroke-gray-800 dark:stroke-gray-400 dark:group-hover:stroke-gray-200',
+                  copied ? 'opacity-0' : 'opacity-100'
+                )}
+              />
+              <Check
+                className={twMerge(
+                  'absolute inset-0 size-5 stroke-gray-500 transition duration-200 ease-out group-hover:stroke-gray-800 dark:stroke-gray-400 dark:group-hover:stroke-gray-200',
+                  copied ? 'opacity-100' : 'opacity-0'
+                )}
+              />
+            </span>
+          );
+
+          const button = (
+            <button
+              type='button'
+              onClick={copyReviewLink}
+              className='group inline-flex size-5 cursor-pointer items-center justify-center focus:outline-none disabled:cursor-default'
+              aria-label={`Copy review link for ${review.courseId}`}
+              disabled={copied}
+            >
+              {icon}
+            </button>
+          );
+
+          return copied ? (
+            button
+          ) : (
+            <Tooltip text='Copy link to review' className='w-36'>
+              {button}
+            </Tooltip>
+          );
+        })()
+      : null;
 
   useEffect(() => {
     return () => {
@@ -494,7 +497,6 @@ export const CourseReview = ({
         <p className='mt-auto mb-2 flex-1 text-sm leading-4 text-gray-700 italic dark:text-gray-200'>
           <span className='inline-flex flex-wrap items-center gap-1'>
             {reviewContext}
-            {attachmentNode}
           </span>
         </p>
         <Transition
@@ -509,6 +511,12 @@ export const CourseReview = ({
           <LoginPrompt />
         </Transition>
         <div className='flex items-center'>
+          {scrollAttachmentNode && (
+            <div className='mr-1 flex'>{scrollAttachmentNode}</div>
+          )}
+          {copyAttachmentNode && (
+            <div className='mr-1 flex'>{copyAttachmentNode}</div>
+          )}
           <div className='mb-1 flex'>
             {canModify && (
               <div className='mr-1 ml-2 flex h-fit space-x-2'>
