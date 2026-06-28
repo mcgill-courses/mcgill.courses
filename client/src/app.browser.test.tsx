@@ -4,6 +4,7 @@ import {
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -59,8 +60,6 @@ const renderApp = () =>
       </BrowserRouter>
     </HelmetProvider>
   );
-
-const visible = (element: HTMLElement) => element.offsetParent !== null;
 
 describe('App', () => {
   beforeEach(async () => {
@@ -131,6 +130,7 @@ describe('App', () => {
 
   it('adds a course review and shows it on the profile', async () => {
     const user = userEvent.setup();
+
     const content = 'foo bar';
 
     navigate('/course/comp-202');
@@ -143,45 +143,54 @@ describe('App', () => {
 
     const leaveReview = (
       await screen.findAllByRole('button', { name: 'Leave a review' })
-    ).find(visible);
+    ).find((button) => button.offsetParent !== null);
 
-    expect(leaveReview).toBeDefined();
+    if (!leaveReview) {
+      throw new Error('Leave a review button not found');
+    }
 
-    await user.click(leaveReview!);
+    await user.click(leaveReview);
 
-    const dialog = await screen.findByRole('dialog');
-    const form = within(dialog);
-    const instructor = form.getByRole('combobox', { name: 'Instructor(s)' });
+    const form = within(await screen.findByRole('dialog'));
 
-    await user.type(instructor, 'Jonathan');
+    await user.type(
+      form.getByRole('combobox', { name: 'Instructor(s)' }),
+      'Jonathan'
+    );
+
     await user.click(
       await form.findByRole('option', { name: 'Jonathan Campbell' })
     );
+
     await user.click(
       form.getByRole('button', { name: 'Set rating to 4 out of 5' })
     );
+
     await user.click(
       form.getByRole('button', { name: 'Set difficulty to 3 out of 5' })
     );
+
     await user.type(
       form.getByPlaceholderText('Write your thoughts on this course...'),
       content
     );
+
     await user.click(form.getByRole('button', { name: 'Submit' }));
 
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    });
+    await waitForElementToBeRemoved(() => screen.queryByRole('dialog'));
 
-    await waitFor(() => {
-      expect(screen.getAllByText(content).some(visible)).toBe(true);
-    });
+    expect(
+      (await screen.findAllByText(content)).find(
+        (element) => element.offsetParent !== null
+      )
+    ).toBeVisible();
 
     navigate('/profile');
 
     expect(await screen.findByText('Your Profile')).toBeInTheDocument();
     expect(await screen.findByText('1 review')).toBeInTheDocument();
     expect(await screen.findByText(content)).toBeInTheDocument();
+
     expect(
       await screen.findByRole('link', { name: 'COMP 202' })
     ).toHaveAttribute('href', '/course/comp-202');
