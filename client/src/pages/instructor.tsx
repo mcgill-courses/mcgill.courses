@@ -1,4 +1,10 @@
-import { ExternalLink, Leaf, Snowflake, Sun } from 'lucide-react';
+import {
+  ExternalLink,
+  Leaf,
+  MessageSquareText,
+  Snowflake,
+  Sun,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
@@ -141,20 +147,28 @@ export const Instructor = () => {
 
       <div className='mx-auto mt-10 max-w-5xl md:mt-10'>
         <div className='rounded-md bg-slate-50 p-6 dark:bg-neutral-800'>
-          <div className='mb-6 flex flex-row items-center space-x-2'>
-            <h1 className='text-3xl font-semibold wrap-break-word text-gray-800 sm:text-4xl dark:text-gray-200'>
-              {params.name && decodeURIComponent(params.name)}
-            </h1>
-            <a
-              href={`https://www.mcgill.ca/search/?query=${params.name && encodeURIComponent(params.name)}`}
-              className='my-auto dark:text-gray-200'
-              target='_blank'
-            >
-              <ExternalLink
-                size={20}
-                className='ml-1 transition-colors duration-300 hover:stroke-red-600'
-              />
-            </a>
+          <div className='mb-6 flex flex-row gap-2 align-middle'>
+            <div className='flex flex-wrap items-center gap-2'>
+              <h1 className='text-3xl font-semibold wrap-break-word text-gray-800 sm:text-4xl dark:text-gray-200'>
+                {params.name && decodeURIComponent(params.name)}
+              </h1>
+              <div className='flex h-6 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
+                <MessageSquareText size={13} className='stroke-current' />
+                {reviewCount} {reviewLabel}
+              </div>
+            </div>
+            <div className='flex items-center gap-2'>
+              <a
+                href={`https://www.mcgill.ca/search/?query=${params.name && encodeURIComponent(params.name)}`}
+                className='my-auto dark:text-gray-200'
+                target='_blank'
+              >
+                <ExternalLink
+                  size={20}
+                  className='ml-1 transition-colors duration-300 hover:stroke-red-600'
+                />
+              </a>
+            </div>
           </div>
 
           <div className='grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-2'>
@@ -238,9 +252,6 @@ export const Instructor = () => {
                     reviews={reviews}
                     className='xs:flex flex-row sm:hidden'
                   />
-                  <p className='mt-4 text-sm text-gray-500 dark:text-gray-400'>
-                    {reviewCount} {reviewLabel}
-                  </p>
                 </div>
               ) : null}
             </div>

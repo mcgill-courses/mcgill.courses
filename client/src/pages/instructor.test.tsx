@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 import type { Mock } from 'vitest';
@@ -124,6 +124,7 @@ describe('Instructor page', () => {
     );
 
     await waitFor(() => expect(courseReviewMock).toHaveBeenCalled());
+    expect(screen.getByText('2 reviews')).toBeInTheDocument();
 
     const attachments = courseReviewMock.mock.calls
       .slice(-2)
