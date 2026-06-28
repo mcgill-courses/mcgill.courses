@@ -213,8 +213,8 @@ describe('Profile page', () => {
       ([props]) => props.attachment
     );
 
-    expect(attachments.length).toBe(2);
-    expect(attachments).toEqual(['scrollButton', 'scrollButton']);
+    expect(attachments.length).toBe(1);
+    expect(attachments).toEqual(['scrollButton']);
   });
 
   it('shows loading state while data is being fetched', async () => {
@@ -277,13 +277,21 @@ describe('Profile page', () => {
     renderProfile();
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/No reviews found, if you've taken a course/)
-      ).toBeInTheDocument();
+      expect(screen.getByText('No reviews yet.')).toBeInTheDocument();
     });
   });
 
   it('renders empty state when user has no liked reviews', async () => {
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn(() => '1'),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+      },
+      writable: true,
+    });
+
     getReviewsMock.mockResolvedValue({ reviews: [] });
     getLikedReviewsMock.mockResolvedValue({ reviews: [] });
     getSubscriptionsMock.mockResolvedValue([]);
@@ -291,13 +299,21 @@ describe('Profile page', () => {
     renderProfile();
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/No liked reviews yet, tap the thumbs-up/)
-      ).toBeInTheDocument();
+      expect(screen.getByText('No liked reviews yet.')).toBeInTheDocument();
     });
   });
 
   it('renders empty state when user has no subscriptions', async () => {
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn(() => '2'),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+      },
+      writable: true,
+    });
+
     getReviewsMock.mockResolvedValue({ reviews: [] });
     getLikedReviewsMock.mockResolvedValue({ reviews: [] });
     getSubscriptionsMock.mockResolvedValue([]);
@@ -305,9 +321,7 @@ describe('Profile page', () => {
     renderProfile();
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/No subscriptions found, click the bell icon/)
-      ).toBeInTheDocument();
+      expect(screen.getByText('No subscriptions yet.')).toBeInTheDocument();
     });
   });
 
@@ -332,7 +346,9 @@ describe('Profile page', () => {
     renderProfile();
 
     await waitFor(() => {
-      expect(screen.getByText('1 liked review')).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Likes 1' })
+      ).toBeInTheDocument();
     });
   });
 
