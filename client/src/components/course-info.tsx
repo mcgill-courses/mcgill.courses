@@ -181,7 +181,7 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
         <CourseInfoStats
           variant='large'
           reviews={reviews}
-          className='flex-col gap-y-1 lg:mr-8 lg:flex-row lg:gap-x-2'
+          className='flex-col gap-y-5 lg:mr-8 lg:flex-row lg:gap-x-6'
         />
       </div>
     </div>
