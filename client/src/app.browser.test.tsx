@@ -141,6 +141,65 @@ describe('App', () => {
     ).toHaveAttribute('href', '/course/comp-202');
   });
 
+  it('renders courses on the explore page', async () => {
+    navigate('/explore');
+    renderApp();
+
+    expect(
+      await screen.findByRole('heading', { name: 'Explore all courses' })
+    ).toBeInTheDocument();
+
+    expect(
+      await screen.findByRole('link', {
+        name: 'COMP 202 - Foundations of Programming',
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('link', {
+        name: 'COMP 252 - Honours Algorithms and Data Structures',
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('link', {
+        name: 'MATH 240 - Discrete Structures',
+      })
+    ).toBeInTheDocument();
+
+    expect(screen.getByText(/all 3 courses/)).toBeInTheDocument();
+  });
+
+  it('searches courses on the explore page', async () => {
+    const user = userEvent.setup();
+
+    navigate('/explore');
+    renderApp();
+
+    await screen.findByRole('link', { name: /COMP 202/ });
+    expect(screen.getByText(/all 3 courses/)).toBeInTheDocument();
+
+    const searchBar = screen.getByPlaceholderText(
+      'Search by course, subject, or professor'
+    );
+    await user.type(searchBar, 'math');
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('link', { name: /MATH 240/ })
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByRole('link', { name: /COMP 202/ })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: /COMP 252/ })
+    ).not.toBeInTheDocument();
+
+    expect(screen.getByText(/all 1 courses/)).toBeInTheDocument();
+  });
+
   it('adds a course review and shows it on the profile', async () => {
     const user = userEvent.setup();
 
