@@ -80,6 +80,7 @@ impl Server {
     }
 
     let assets = self.asset_dir.as_ref().map(|asset_dir| Assets {
+      ads: ServeFile::new(asset_dir.join("ads.txt")),
       dir: ServeDir::new(asset_dir.clone()),
       index: ServeFile::new(asset_dir.join("index.html")),
       route: "/assets",
@@ -224,6 +225,7 @@ impl Server {
       info!("Adding asset directory to router...");
 
       router = router
+        .route_service("/ads.txt", assets.ads)
         .nest_service(assets.route, assets.dir)
         .fallback_service(assets.index)
     }
