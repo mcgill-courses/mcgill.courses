@@ -49,6 +49,11 @@ const questions = [
       'We require authentication with McGill email addresses via Microsoft Office 365, ensuring that only verified McGill students can submit reviews.',
   },
   {
+    title: 'Are reviews anonymous?',
+    content:
+      'Yes. We do not store emails or any personal information with reviews. Your identity is never shown to other users.',
+  },
+  {
     title: 'When will instructor ratings be available?',
     content:
       "Instructor ratings are currently our top priority and are in active development. We'll announce their availability as soon as they're ready!",
