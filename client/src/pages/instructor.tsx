@@ -237,7 +237,7 @@ export const Instructor = () => {
             <div>
               <Tab.Group selectedIndex={selectedTabIndex} onChange={selectTab}>
                 <div className='styled-scrollbar overflow-x-auto'>
-                  <Tab.List className='flex min-w-full border-b border-slate-200 dark:border-neutral-700'>
+                  <Tab.List className='flex w-max min-w-full border-b border-slate-200 dark:border-neutral-700'>
                     {tabItems.map(({ count, icon, id, name }) => (
                       <Tab
                         key={id}
