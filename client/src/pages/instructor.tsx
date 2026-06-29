@@ -211,20 +211,18 @@ export const Instructor = () => {
 
       <div className='mx-auto mt-10 max-w-5xl'>
         <div className='rounded-md bg-slate-50 px-6 pt-6 pb-10 dark:bg-neutral-800'>
-          <div className='mb-6 flex flex-row gap-2 align-middle'>
-            <div className='flex flex-wrap items-center gap-2'>
-              <h1 className='text-3xl font-semibold wrap-break-word text-gray-800 dark:text-gray-200'>
-                {params.name && decodeURIComponent(params.name)}
-              </h1>
-              <div className='flex h-6 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
+          <div className='mb-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center'>
+            <h1 className='text-3xl font-semibold wrap-break-word text-gray-800 dark:text-gray-200'>
+              {params.name && decodeURIComponent(params.name)}
+            </h1>
+            <div className='flex flex-nowrap items-center gap-2'>
+              <div className='flex h-6 shrink-0 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
                 <MessageSquareText size={13} className='stroke-current' />
                 {reviewCount} {reviewLabel}
               </div>
-            </div>
-            <div className='flex items-center gap-2'>
               <a
                 href={`https://www.mcgill.ca/search/?query=${params.name && encodeURIComponent(params.name)}`}
-                className='my-auto dark:text-gray-200'
+                className='my-auto shrink-0 dark:text-gray-200'
                 target='_blank'
               >
                 <ExternalLink
