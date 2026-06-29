@@ -142,7 +142,7 @@ export const ReviewForm = ({
           id='content'
           name='content'
           placeholder='Write your thoughts on this course...'
-          className='resize-none rounded-md border bg-gray-50 p-3 outline-none dark:border-neutral-600 dark:bg-neutral-700 dark:text-gray-200 dark:caret-white'
+          className='resize-none rounded-md border border-neutral-200 bg-gray-50 p-3 outline-none dark:border-neutral-600 dark:bg-neutral-700 dark:text-gray-200 dark:caret-white'
         />
         <FieldError name='content' />
         <div className='mt-8 flex justify-end space-x-4'>
