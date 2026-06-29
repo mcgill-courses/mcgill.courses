@@ -200,7 +200,7 @@ export const Instructor = () => {
       </Helmet>
 
       <div className='mx-auto mt-10 max-w-5xl'>
-        <div className='rounded-md bg-slate-50 p-6 dark:bg-neutral-800'>
+        <div className='rounded-md bg-slate-50 px-6 pt-6 pb-10 dark:bg-neutral-800'>
           <div className='mb-6 flex flex-row gap-2 align-middle'>
             <div className='flex flex-wrap items-center gap-2'>
               <h1 className='text-3xl font-semibold wrap-break-word text-gray-800 dark:text-gray-200'>
@@ -225,17 +225,17 @@ export const Instructor = () => {
             </div>
           </div>
 
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-[minmax(0,1fr)_384px]'>
-            <div className='md:col-span-2 lg:col-span-1'>
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            <div>
               <Tab.Group selectedIndex={selectedTabIndex} onChange={selectTab}>
-                <div className='styled-scrollbar overflow-x-auto border-b border-slate-200 dark:border-neutral-700'>
-                  <Tab.List className='flex w-max sm:w-full'>
+                <div className='styled-scrollbar overflow-x-auto'>
+                  <Tab.List className='flex min-w-full border-b border-slate-200 dark:border-neutral-700'>
                     {tabItems.map(({ count, icon, id, name }) => (
                       <Tab
                         key={id}
                         className={({ selected }) =>
                           twMerge(
-                            'flex min-h-12 shrink-0 cursor-pointer items-center justify-center gap-2 border-b-2 px-3 py-2 text-sm font-semibold whitespace-nowrap transition focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500 sm:min-w-0 sm:flex-1 sm:shrink sm:basis-0 sm:gap-1 sm:px-1',
+                            'flex min-h-12 min-w-max flex-1 cursor-pointer items-center justify-center gap-2 border-b-2 px-3 py-2 text-sm font-semibold whitespace-nowrap transition focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500',
                             selected
                               ? 'border-mcgill-red text-gray-950 dark:text-gray-100'
                               : 'border-transparent text-gray-500 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-100'
@@ -288,7 +288,7 @@ export const Instructor = () => {
               </Tab.Group>
             </div>
 
-            <div className='sm:mt-4 md:mx-auto md:mt-0'>
+            <div className='sm:mt-4 md:mt-0 md:flex md:justify-center'>
               {reviewCount !== 0 ? (
                 <div>
                   <CourseInfoStats
