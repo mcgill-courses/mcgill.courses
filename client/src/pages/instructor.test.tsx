@@ -162,6 +162,7 @@ describe('Instructor page', () => {
   it('switches course term tabs', async () => {
     const currentTerm = getCurrentTerm();
     const otherTerm = getCurrentTerms().find((term) => term !== currentTerm)!;
+
     const currentCourse = createCourse('COMP202', 'foo', currentTerm);
     const otherCourse = createCourse('COMP303', 'bar', otherTerm);
 
@@ -191,6 +192,7 @@ describe('Instructor page', () => {
     await userEvent.click(screen.getByRole('tab', { name: `${otherTerm} 1` }));
 
     await waitFor(() => expect(screen.getByText('bar')).toBeInTheDocument());
+
     await waitFor(() =>
       expect(screen.queryByText('foo')).not.toBeInTheDocument()
     );

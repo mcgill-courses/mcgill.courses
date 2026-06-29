@@ -89,8 +89,13 @@ export const Instructor = () => {
     }
   }, [instructor]);
 
-  if (instructor === undefined) return <Loading />;
-  if (instructor === null) return <NotFound />;
+  if (instructor === undefined) {
+    return <Loading />;
+  }
+
+  if (instructor === null) {
+    return <NotFound />;
+  }
 
   const userReview = reviews.find((r) => r.userId === user?.id);
 
@@ -107,9 +112,12 @@ export const Instructor = () => {
     ...orderedTerms.flatMap((term) => {
       const termCourses = getCoursesForTerm(term);
 
-      if (termCourses.length === 0) return [];
+      if (termCourses.length === 0) {
+        return [];
+      }
 
       const season = term.split(' ')[0].toLowerCase();
+
       const icon =
         season === 'fall' ? (
           <Leaf size={14} className='shrink-0 stroke-orange-700' />
@@ -162,16 +170,18 @@ export const Instructor = () => {
     return (likes: number) => {
       if (reviews) {
         const updated = reviews.slice();
-        const r = updated.find(
+
+        const updatedReview = updated.find(
           (r) => r.courseId == review.courseId && r.userId == review.userId
         );
 
-        if (r === undefined) {
+        if (updatedReview === undefined) {
           toast.error("Can't update likes for review that doesn't exist");
           return;
         }
 
-        r.likes = likes;
+        updatedReview.likes = likes;
+
         setReviews(updated);
       }
     };
