@@ -1,3 +1,5 @@
+import { Tab } from '@headlessui/react';
+import { AnimatePresence, m } from 'framer-motion';
 import {
   ExternalLink,
   Leaf,
@@ -9,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { twMerge } from 'tailwind-merge';
 
 import { CourseInfoStats } from '../components/course-info-stats';
 import { CourseReview, ReviewAttachment } from '../components/course-review';
@@ -60,7 +63,6 @@ export const Instructor = () => {
 
   const academicTerms = getCurrentTerms();
 
-  // Reorder terms so current term is first
   const orderedTerms = [
     currentTerm,
     ...academicTerms.filter((t) => t !== currentTerm),
@@ -87,8 +89,13 @@ export const Instructor = () => {
     }
   }, [instructor]);
 
-  if (instructor === undefined) return <Loading />;
-  if (instructor === null) return <NotFound />;
+  if (instructor === undefined) {
+    return <Loading />;
+  }
+
+  if (instructor === null) {
+    return <NotFound />;
+  }
 
   const userReview = reviews.find((r) => r.userId === user?.id);
 
@@ -101,23 +108,80 @@ export const Instructor = () => {
     course.instructors.some((instructor) => instructor.name === decodedName)
   );
 
+  const tabItems = [
+    ...orderedTerms.flatMap((term) => {
+      const termCourses = getCoursesForTerm(term);
+
+      if (termCourses.length === 0) {
+        return [];
+      }
+
+      const season = term.split(' ')[0].toLowerCase();
+
+      const icon =
+        season === 'fall' ? (
+          <Leaf size={14} className='shrink-0 stroke-orange-700' />
+        ) : season === 'winter' ? (
+          <Snowflake size={14} className='shrink-0 stroke-sky-500' />
+        ) : (
+          <Sun size={14} className='shrink-0 stroke-amber-500' />
+        );
+
+      return [
+        {
+          count: termCourses.length,
+          icon,
+          id: term,
+          name: term,
+        },
+      ];
+    }),
+    {
+      count: uniqueCourses.length,
+      icon: null,
+      id: 'all',
+      name: 'All',
+    },
+  ];
+
+  const visibleActiveTab = tabItems.some((tab) => tab.id === activeTab)
+    ? activeTab
+    : 'all';
+
+  const selectedTabIndex = Math.max(
+    tabItems.findIndex((tab) => tab.id === visibleActiveTab),
+    0
+  );
+
   const activeCourses =
-    activeTab === 'all' ? uniqueCourses : getCoursesForTerm(activeTab);
+    visibleActiveTab === 'all'
+      ? uniqueCourses
+      : getCoursesForTerm(visibleActiveTab);
+
+  const selectTab = (index: number) => {
+    const tab = tabItems[index];
+
+    if (tab) {
+      setActiveTab(tab.id);
+    }
+  };
 
   const updateLikes = (review: Review) => {
     return (likes: number) => {
       if (reviews) {
         const updated = reviews.slice();
-        const r = updated.find(
+
+        const updatedReview = updated.find(
           (r) => r.courseId == review.courseId && r.userId == review.userId
         );
 
-        if (r === undefined) {
+        if (updatedReview === undefined) {
           toast.error("Can't update likes for review that doesn't exist");
           return;
         }
 
-        r.likes = likes;
+        updatedReview.likes = likes;
+
         setReviews(updated);
       }
     };
@@ -145,11 +209,11 @@ export const Instructor = () => {
         />
       </Helmet>
 
-      <div className='mx-auto mt-10 max-w-5xl md:mt-10'>
-        <div className='rounded-md bg-slate-50 p-6 dark:bg-neutral-800'>
+      <div className='mx-auto mt-10 max-w-5xl'>
+        <div className='rounded-md bg-slate-50 px-6 pt-6 pb-10 dark:bg-neutral-800'>
           <div className='mb-6 flex flex-row gap-2 align-middle'>
             <div className='flex flex-wrap items-center gap-2'>
-              <h1 className='text-3xl font-semibold wrap-break-word text-gray-800 sm:text-4xl dark:text-gray-200'>
+              <h1 className='text-3xl font-semibold wrap-break-word text-gray-800 dark:text-gray-200'>
                 {params.name && decodeURIComponent(params.name)}
               </h1>
               <div className='flex h-6 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
@@ -171,75 +235,70 @@ export const Instructor = () => {
             </div>
           </div>
 
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-2'>
-            <div className='md:col-span-2 lg:col-span-1'>
-              <div className='mb-4 flex flex-wrap border-b border-gray-200 dark:border-neutral-700'>
-                {orderedTerms.map((term) => {
-                  const termCourses = getCoursesForTerm(term);
-                  if (termCourses.length === 0) return null;
-
-                  const season = term.split(' ')[0].toLowerCase();
-                  const icon =
-                    season === 'fall' ? (
-                      <Leaf size={14} color='brown' />
-                    ) : season === 'winter' ? (
-                      <Snowflake size={14} color='skyblue' />
-                    ) : (
-                      <Sun size={14} color='orange' />
-                    );
-
-                  return (
-                    <button
-                      key={term}
-                      onClick={() => setActiveTab(term)}
-                      className={`flex cursor-pointer items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors sm:px-4 ${
-                        activeTab === term
-                          ? 'border-b-2 border-gray-800 text-gray-800 dark:border-gray-200 dark:text-gray-200'
-                          : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-                      }`}
-                    >
-                      {icon}
-                      {term} ({termCourses.length})
-                    </button>
-                  );
-                })}
-                <button
-                  onClick={() => setActiveTab('all')}
-                  className={`cursor-pointer px-4 py-2 text-sm font-medium transition-colors ${
-                    activeTab === 'all'
-                      ? 'border-b-2 border-gray-800 text-gray-800 dark:border-gray-200 dark:text-gray-200'
-                      : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-                  }`}
-                >
-                  All ({uniqueCourses.length})
-                </button>
-              </div>
-
-              {activeCourses.length > 0 ? (
-                <div className='styled-scrollbar grid grid-cols-2 gap-2 overflow-y-scroll md:max-h-72 lg:max-h-44'>
-                  {activeCourses.map((course) => (
-                    <Link
-                      key={course._id}
-                      to={`/course/${courseIdToUrlParam(course._id)}`}
-                      className='group flex flex-col rounded px-3 py-2 transition'
-                    >
-                      <span className='text-sm font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
-                        {course._id}
-                      </span>
-                      <span className='text-xs text-gray-600 dark:text-gray-400'>
-                        {course.title}
-                      </span>
-                    </Link>
-                  ))}
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            <div>
+              <Tab.Group selectedIndex={selectedTabIndex} onChange={selectTab}>
+                <div className='styled-scrollbar overflow-x-auto'>
+                  <Tab.List className='flex min-w-full border-b border-slate-200 dark:border-neutral-700'>
+                    {tabItems.map(({ count, icon, id, name }) => (
+                      <Tab
+                        key={id}
+                        className={({ selected }) =>
+                          twMerge(
+                            'flex min-h-12 min-w-max flex-1 cursor-pointer items-center justify-center gap-2 border-b-2 px-3 py-2 text-sm font-semibold whitespace-nowrap transition focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500',
+                            selected
+                              ? 'border-mcgill-red text-gray-950 dark:text-gray-100'
+                              : 'border-transparent text-gray-500 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-100'
+                          )
+                        }
+                      >
+                        {icon}
+                        {name}{' '}
+                        <span className='text-xs font-medium text-gray-400 dark:text-gray-500'>
+                          {count}
+                        </span>
+                      </Tab>
+                    ))}
+                  </Tab.List>
                 </div>
-              ) : (
-                <p className='text-sm text-gray-500 dark:text-gray-400'>
-                  This professor hasn't taught any courses yet.
-                </p>
-              )}
+                <div className='mt-4'>
+                  <AnimatePresence mode='wait'>
+                    <m.div
+                      key={visibleActiveTab}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
+                    >
+                      {activeCourses.length > 0 ? (
+                        <div className='styled-scrollbar grid grid-cols-2 gap-2 overflow-y-scroll md:max-h-72 lg:max-h-44'>
+                          {activeCourses.map((course) => (
+                            <Link
+                              key={course._id}
+                              to={`/course/${courseIdToUrlParam(course._id)}`}
+                              className='group flex flex-col rounded px-3 py-2 transition'
+                            >
+                              <span className='text-sm font-semibold text-gray-800 transition group-hover:text-red-600 dark:text-gray-100'>
+                                {course._id}
+                              </span>
+                              <span className='text-xs text-gray-600 dark:text-gray-400'>
+                                {course.title}
+                              </span>
+                            </Link>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className='text-sm text-gray-500 dark:text-gray-400'>
+                          This professor hasn't taught any courses yet.
+                        </p>
+                      )}
+                    </m.div>
+                  </AnimatePresence>
+                </div>
+              </Tab.Group>
             </div>
 
-            <div className='sm:mt-4 md:mx-auto md:mt-0'>
+            <div className='sm:mt-4 md:mt-0 md:flex md:justify-center'>
               {reviewCount !== 0 ? (
                 <div>
                   <CourseInfoStats
@@ -258,7 +317,7 @@ export const Instructor = () => {
           </div>
         </div>
       </div>
-      <div className='mx-auto mt-4 max-w-5xl'>
+      <div className='mx-auto mt-6 max-w-5xl'>
         <div>
           {userReview && (
             <CourseReview
