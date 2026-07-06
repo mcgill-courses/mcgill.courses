@@ -5,8 +5,16 @@ import { describe, expect, it, vi } from 'vitest';
 import { Histogram } from './histogram';
 
 vi.mock('./ui/tooltip', () => ({
-  Tooltip: ({ children, text }: { children: ReactNode; text: string }) => (
-    <div data-testid='tooltip' data-text={text}>
+  Tooltip: ({
+    children,
+    className,
+    text,
+  }: {
+    children: ReactNode;
+    className?: string;
+    text: string;
+  }) => (
+    <div data-testid='tooltip' data-text={text} className={className}>
       {children}
     </div>
   ),
@@ -37,6 +45,7 @@ describe('Histogram', () => {
         'data-text',
         expectedDistribution[index].toString()
       );
+      expect(tooltip).toHaveClass('whitespace-nowrap');
 
       const parent = tooltip.parentElement;
 

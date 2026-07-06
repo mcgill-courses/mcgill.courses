@@ -29,7 +29,11 @@ const HistogramBar = ({
   tooltipText,
 }: HistogramBarProps) => {
   return (
-    <Tooltip text={tooltipText(count)} offset={{ x: 4, y: -8 }}>
+    <Tooltip
+      text={tooltipText(count)}
+      offset={{ x: 4, y: -8 }}
+      className='whitespace-nowrap'
+    >
       <div
         className='bg-mcgill-red ml-0.5 rounded-t-md shadow-sm shadow-red-500/15 transition-all duration-700 ease-out dark:bg-red-500 dark:shadow-red-500/10'
         style={{
