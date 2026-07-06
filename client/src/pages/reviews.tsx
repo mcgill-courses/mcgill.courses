@@ -104,7 +104,7 @@ export const Reviews = () => {
               )
             }
             next={fetchMore}
-            style={{ overflowY: 'hidden' }}
+            style={{ overflow: 'visible' }}
           >
             <div className='ml-auto flex w-full max-w-xl flex-col lg:max-w-4xl'>
               {reviews.map((review: Review) => (
