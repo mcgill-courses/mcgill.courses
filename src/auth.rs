@@ -76,7 +76,7 @@ pub(crate) async fn microsoft_auth(
         CsrfToken::new(format!(
           "{}{}",
           CsrfToken::new_random().secret(),
-          &STANDARD.encode(query.redirect)
+          STANDARD.encode(query.redirect)
         ))
       })
       .add_scope(Scope::new(String::from("openid")))
