@@ -190,7 +190,7 @@ jobs:
           ./bin/forbid
 
       - name: Unused dependencies
-        uses: bnjbvr/cargo-machete@d40d1e3265e4161d599ebb902eb9892faf769f6e
+        uses: bnjbvr/cargo-machete@ec7059328c4929414d52d0b9734e682239f6cc6c
 
       - name: Build
         run: cargo build --workspace --all-features --all-targets
