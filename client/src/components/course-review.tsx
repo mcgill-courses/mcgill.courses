@@ -482,7 +482,7 @@ export const CourseReview = ({
                     )}
                   </div>
                   <button
-                    className='mr-auto ml-1 pt-1 text-gray-700 underline transition duration-300 ease-in-out hover:text-red-500 dark:text-gray-300 dark:hover:text-red-500'
+                    className='mr-auto ml-1 cursor-pointer pt-1 text-gray-700 underline transition duration-300 ease-in-out hover:text-red-500 dark:text-gray-300 dark:hover:text-red-500'
                     onClick={() => setReadMore(true)}
                   >
                     Show more
