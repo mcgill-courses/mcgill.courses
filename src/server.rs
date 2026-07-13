@@ -3052,6 +3052,7 @@ mod tests {
         likes: 0,
         rating: 5,
         timestamp: reviews[0].timestamp.clone(),
+        term: None,
         user_id: "test".into(),
       }]
     );
