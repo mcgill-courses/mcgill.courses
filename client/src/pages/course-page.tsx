@@ -48,6 +48,7 @@ export const CoursePage = () => {
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [showingReviews, setShowingReviews] = useState<Review[]>([]);
   const [sortBy, setSortBy] = useState<ReviewSortType>('Most Recent');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     firstFetch.current = true;
@@ -289,6 +290,8 @@ export const CoursePage = () => {
                   selectedInstructor={selectedInstructor}
                   setSortBy={setSortBy}
                   setSelectedInstructor={setSelectedInstructor}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
                 />
               </div>
             ) : (
@@ -396,6 +399,8 @@ export const CoursePage = () => {
                     selectedInstructor={selectedInstructor}
                     setSortBy={setSortBy}
                     setSelectedInstructor={setSelectedInstructor}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
                   />
                 </div>
               ) : (

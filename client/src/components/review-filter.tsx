@@ -1,10 +1,12 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { Review } from '../lib/types';
 import type { Course } from '../lib/types';
 import { uniq } from '../lib/utils';
 import { Autocomplete } from './ui/autocomplete';
 import { ResetButton } from './ui/reset-button';
+import { Index } from 'flexsearch';
+import { SearchBar } from './search-bar';
 
 const sortTypes = [
   'Most Recent',
@@ -24,6 +26,8 @@ type ReviewFilterProps = {
   allReviews: Review[];
   sortBy: ReviewSortType;
   selectedInstructor: string;
+  searchQuery: string;
+  setSearchQuery: Dispatch<SetStateAction<string>>;
   setReviews: Dispatch<SetStateAction<Review[]>>;
   setShowAllReviews: Dispatch<SetStateAction<boolean>>;
   setSelectedInstructor: Dispatch<SetStateAction<string>>;
@@ -35,6 +39,8 @@ export const ReviewFilter = ({
   allReviews,
   sortBy,
   selectedInstructor,
+  searchQuery,
+  setSearchQuery,
   setReviews,
   setShowAllReviews,
   setSortBy,
@@ -42,10 +48,22 @@ export const ReviewFilter = ({
 }: ReviewFilterProps) => {
   const previousSortRef = useRef<ReviewSortType>(sortBy);
   const previousInstructorRef = useRef<string>(selectedInstructor);
+  const reviewIndex = useMemo(() => {
+  const index = new Index({ tokenize: 'forward' });
+  allReviews.forEach((review, i) => {
+  index.add(i, review.content);
+  });
+  return index;
+}, [allReviews]);
 
   useEffect(() => {
+    const baseReviews = searchQuery.trim()
+      ? Array.from(new Set(reviewIndex.search(searchQuery, { limit: allReviews.length })))
+        .map((id) => allReviews[id as number])
+        .filter((r): r is Review => r !== undefined)
+      : allReviews;
     setReviews(
-      allReviews
+      baseReviews
         .filter(
           (review: Review) =>
             selectedInstructor === '' ||
@@ -88,20 +106,32 @@ export const ReviewFilter = ({
 
     previousSortRef.current = sortBy;
     previousInstructorRef.current = selectedInstructor;
-  }, [sortBy, selectedInstructor, allReviews]);
+  }, [sortBy, selectedInstructor, allReviews, searchQuery, reviewIndex]);
 
   const reset = () => {
     setSortBy('Most Recent');
     setSelectedInstructor('');
+    setSearchQuery('');
   };
 
   useEffect(reset, [course]);
 
   const sorts = useMemo(() => sortTypes.slice(), []);
   const uniqueInstructors = uniq(course.instructors.map((ins) => ins.name));
+  const [searchSelected, setSearchSelected] = useState(false);
 
   return (
     <div className='rounded-lg dark:bg-neutral-900 dark:text-gray-200'>
+      <div className='mb-3'>
+        <SearchBar
+          value={searchQuery}
+          handleInputChange={setSearchQuery}
+          searchSelected={searchSelected}
+          setSearchSelected={setSearchSelected}
+          inputStyle='block w-full rounded-full border border-gray-300 bg-gray-100 p-2 pl-9 text-sm text-black outline-none dark:border-gray-700 dark:bg-neutral-800 dark:text-gray-200 dark:placeholder:text-neutral-500'
+          placeholder='Search reviews...'
+        />
+      </div>
       <div className='xs:mt-0 xs:flex xs:items-center relative mt-6'>
         <div className='p-1'>
           <div className='flex max-w-sm gap-x-2'>
