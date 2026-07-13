@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 
 import { api } from '../lib/api';
 import type { Course } from '../lib/types';
+import { getCurrentTerm } from '../lib/utils';
 import {
   ReviewForm,
   ReviewFormInitialValues,
@@ -29,6 +30,7 @@ export const AddReviewForm = ({
     difficulty: 0,
     instructors: [],
     rating: 0,
+    term: getCurrentTerm(),
   };
 
   const handleClose = () => {
