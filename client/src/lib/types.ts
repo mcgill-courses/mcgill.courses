@@ -13,6 +13,8 @@ export interface AddOrUpdateReviewBody {
   rating: number;
   /** Difficulty rating out of 5 (1-5). */
   difficulty: number;
+  /** The term the review is for (e.g. "Fall 2025"). */
+  term?: string;
 }
 
 export interface TimeBlock {
