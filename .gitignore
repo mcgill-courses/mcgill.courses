@@ -42,6 +42,7 @@ lerna-debug.log*
 # Project specific
 /courses.json
 /notes
+.playwright-mcp/
 
 # Google API credentials (tools/course-average-fetcher)
 tokencache.json
