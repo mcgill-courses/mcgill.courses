@@ -53,6 +53,7 @@ export const CoursePage = () => {
   useEffect(() => {
     firstFetch.current = true;
     setShowAllReviews(false);
+    setSearchQuery('');
     lastScrollTarget.current = null;
   }, [params.id]);
 
