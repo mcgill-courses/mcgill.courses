@@ -102,27 +102,25 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
   return (
     <div className='relative flex w-full flex-row rounded-md bg-slate-50 p-6 shadow-sm md:mt-10 dark:bg-neutral-800'>
       <div className='flex w-full flex-col md:w-7/12'>
-        <div className='flex flex-row gap-2 align-middle'>
-          <div className='flex flex-wrap items-center gap-2'>
-            <h1 className='text-3xl font-semibold text-gray-800 dark:text-gray-200'>
-              {course.subject} {course.code}
-            </h1>
-            <div className='flex h-6 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
+        <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center'>
+          <h1 className='text-3xl font-semibold text-gray-800 dark:text-gray-200'>
+            {course.subject} {course.code}
+          </h1>
+          <div className='flex flex-nowrap items-center gap-2'>
+            <div className='flex h-6 shrink-0 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
               <GraduationCap size={13} className='stroke-current' />
               {course.credits} {course.credits === '1' ? 'Credit' : 'Credits'}
             </div>
-            <div className='flex h-6 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
+            <div className='flex h-6 shrink-0 items-center gap-1 rounded-full bg-slate-200 px-2 text-xs font-medium text-gray-700 dark:bg-neutral-700 dark:text-gray-300'>
               <MessageSquareText size={13} className='stroke-current' />
               {reviewCount} {reviewLabel}
             </div>
-          </div>
-          <div className='flex items-center gap-2'>
             {user &&
               (isSubscribed ? (
                 <button
                   type='button'
                   aria-label={`Unsubscribe from ${course.subject} ${course.code}`}
-                  className='my-auto ml-1 cursor-pointer text-gray-800 transition-colors duration-300 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-200 dark:hover:text-red-600'
+                  className='my-auto ml-1 shrink-0 cursor-pointer text-gray-800 transition-colors duration-300 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-200 dark:hover:text-red-600'
                   disabled={
                     isSubscriptionPending || unsubscribeMutation.isPending
                   }
@@ -138,7 +136,7 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
                 <button
                   type='button'
                   aria-label={`Subscribe to ${course.subject} ${course.code}`}
-                  className='my-auto ml-1 cursor-pointer text-gray-800 transition-colors duration-300 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-200 dark:hover:text-red-600'
+                  className='my-auto ml-1 shrink-0 cursor-pointer text-gray-800 transition-colors duration-300 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-200 dark:hover:text-red-600'
                   disabled={
                     isSubscriptionPending || subscribeMutation.isPending
                   }
@@ -154,7 +152,7 @@ export const CourseInfo = ({ course, reviews }: CourseInfoProps) => {
             {course.url ? (
               <a
                 href={course.url}
-                className='my-auto dark:text-gray-200'
+                className='my-auto shrink-0 dark:text-gray-200'
                 target='_blank'
               >
                 <ExternalLink

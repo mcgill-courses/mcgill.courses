@@ -1473,6 +1473,78 @@
   ],
   "June 2026": [
     {
+      "number": 1152,
+      "summary": "Improved the review form textarea border in light mode so written review content is easier to see while editing.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1152",
+      "mergedAt": "2026-06-29T03:18:55Z"
+    },
+    {
+      "number": 1150,
+      "summary": "Improved mobile page headers so course and instructor badges and controls align cleanly on small screens.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1150",
+      "mergedAt": "2026-06-29T02:31:32Z"
+    },
+    {
+      "number": 1149,
+      "summary": "Restyled instructor course tabs to match the profile tab layout, making course lists more consistent across pages.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1149",
+      "mergedAt": "2026-06-29T02:03:04Z"
+    },
+    {
+      "number": 1148,
+      "summary": "Moved instructor review counts into the page header badge so the review total is easier to scan.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1148",
+      "mergedAt": "2026-06-28T18:35:40Z"
+    },
+    {
+      "number": 1147,
+      "summary": "Refreshed course information rating charts with cleaner histogram styling and responsive layouts.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1147",
+      "mergedAt": "2026-06-28T18:29:37Z"
+    },
+    {
+      "number": 1145,
+      "summary": "Moved review link actions into review card controls, keeping copy and scroll actions with the rest of the review tools.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1145",
+      "mergedAt": "2026-06-28T05:50:19Z"
+    },
+    {
+      "number": 1141,
+      "summary": "Simplified profile tabs so user reviews and liked reviews are easier to switch between.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1141",
+      "mergedAt": "2026-06-28T03:47:09Z"
+    },
+    {
+      "number": 1142,
+      "summary": "Added a review anonymity FAQ to the about page.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1142",
+      "mergedAt": "2026-06-28T03:32:39Z"
+    },
+    {
+      "number": 1134,
+      "summary": "Clarified the about page disclaimer around unofficial course information and student-contributed content.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1134",
+      "mergedAt": "2026-06-27T04:59:10Z"
+    },
+    {
+      "number": 1130,
+      "summary": "Refreshed the about page design and copy to make platform details and FAQ content easier to read.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1130",
+      "mergedAt": "2026-06-27T04:01:44Z"
+    },
+    {
+      "number": 1129,
+      "summary": "Refreshed the changelog layout with a cleaner timeline and smoother expand and collapse animations.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1129",
+      "mergedAt": "2026-06-27T03:49:06Z"
+    },
+    {
+      "number": 1122,
+      "summary": "Added the changelog to footer navigation so users can find recent site updates from any page.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1122",
+      "mergedAt": "2026-06-24T04:23:22Z"
+    },
+    {
       "number": 1118,
       "summary": "Added a one-time home page banner to point students to the new schedule builder.",
       "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1118",
@@ -1495,6 +1567,20 @@
       "summary": "Updated search data so course search results included available terms.",
       "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1100",
       "mergedAt": "2026-06-12T15:43:17Z"
+    }
+  ],
+  "July 2026": [
+    {
+      "number": 1161,
+      "summary": "Kept histogram review tooltips on one line so counts like `3 reviews` stay easier to read.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1161",
+      "mergedAt": "2026-07-06T15:37:21Z"
+    },
+    {
+      "number": 1160,
+      "summary": "Fixed clipped review scroll tooltips on the reviews page.",
+      "url": "https://github.com/mcgill-courses/mcgill.courses/pull/1160",
+      "mergedAt": "2026-07-06T15:24:51Z"
     }
   ]
 }

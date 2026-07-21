@@ -12,30 +12,6 @@
 
 @variant dark (&:where(.dark, .dark *));
 
-.schedule-builder-banner-border {
-  animation: schedule-builder-banner-border 2.4s ease-in-out infinite;
-}
-
-@keyframes schedule-builder-banner-border {
-  0%,
-  100% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-
-  50% {
-    box-shadow: 0 0 0 4px rgb(237 27 47 / 0.12);
-    opacity: 1;
-    transform: scale(1.01);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .schedule-builder-banner-border {
-    animation: none;
-  }
-}
-
 .styled-scrollbar::-webkit-scrollbar {
   width: 3px;
 }

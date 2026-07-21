@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { vi } from 'vitest';
 import type { Mock } from 'vitest';
 
@@ -78,14 +78,16 @@ vi.mock('react-infinite-scroll-component', () => ({
     hasMore,
     loader,
     next,
+    style,
   }: {
     children: ReactNode;
     dataLength: number;
     hasMore: boolean;
     loader?: ReactNode;
     next: () => void | Promise<void>;
+    style?: CSSProperties;
   }) => (
-    <div data-testid='infinite-scroll'>
+    <div data-testid='infinite-scroll' style={style}>
       <div>{children}</div>
       {dataLength >= 20 && hasMore ? loader : null}
       {hasMore ? (
@@ -165,6 +167,10 @@ describe('Reviews page', () => {
     expect(
       screen.getByText(`relative-${Number(review.timestamp)}`)
     ).toBeInTheDocument();
+
+    expect(screen.getByTestId('infinite-scroll')).toHaveStyle({
+      overflow: 'visible',
+    });
   });
 
   it('fetches and appends additional reviews when more content is requested', async () => {

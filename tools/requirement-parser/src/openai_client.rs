@@ -52,7 +52,7 @@ impl OpenAiClient {
           .into(),
       ])
       .response_format(Schema::new(&candidates).response_format())
-      .temperature(0.0)
+      .temperature(0.0_f32)
       .build()?;
 
     let response = timeout(REQUEST_TIMEOUT, self.client.chat().create(request))
