@@ -264,7 +264,7 @@ export const CoursePage = () => {
       </Helmet>
 
       <div className='mx-auto mt-10 max-w-6xl md:mt-0'>
-        <CourseInfo course={course} reviews={showingReviews} />
+        <CourseInfo course={course} reviews={allReviews ?? []} />
         <div className='py-2.5' />
         <div className='hidden gap-x-6 lg:grid lg:grid-cols-5'>
           <div className='col-span-3'>
