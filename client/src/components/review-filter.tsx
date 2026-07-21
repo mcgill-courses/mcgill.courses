@@ -58,9 +58,13 @@ export const ReviewFilter = ({
 
   useEffect(() => {
     const baseReviews = searchQuery.trim()
-      ? Array.from(new Set(reviewIndex.search(searchQuery, { limit: allReviews.length })))
-        .map((id) => allReviews[id as number])
-        .filter((r): r is Review => r !== undefined)
+      ? Array.from(
+          new Set(
+            reviewIndex.search(searchQuery, { limit: allReviews.length }) ?? []
+          )
+        )
+          .map((id) => allReviews[id as number])
+          .filter((r): r is Review => r !== undefined)
       : allReviews;
     setReviews(
       baseReviews
