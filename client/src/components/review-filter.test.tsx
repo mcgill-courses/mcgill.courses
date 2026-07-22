@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { vi } from 'vitest';
 
 import type { Course, Review } from '../lib/types';
@@ -126,28 +127,33 @@ describe('ReviewFilter', () => {
     const setShowAllReviews = vi.fn();
     const setSelectedInstructor = vi.fn();
     const setSortBy = vi.fn();
-    const setSearchQuery = vi.fn();
 
-    render(
-      <ReviewFilter
-        course={mockCourse}
-        allReviews={mockReviews}
-        sortBy='Most Recent'
-        selectedInstructor=''
-        searchQuery=''
-        setReviews={setReviews}
-        setShowAllReviews={setShowAllReviews}
-        setSelectedInstructor={setSelectedInstructor}
-        setSortBy={setSortBy}
-        setSearchQuery={setSearchQuery}
-      />
-    );
+    const ControlledReviewFilter = () => {
+      const [searchQuery, setSearchQuery] = useState('');
+
+      return (
+        <ReviewFilter
+          course={mockCourse}
+          allReviews={mockReviews}
+          sortBy='Most Recent'
+          selectedInstructor=''
+          searchQuery={searchQuery}
+          setReviews={setReviews}
+          setShowAllReviews={setShowAllReviews}
+          setSelectedInstructor={setSelectedInstructor}
+          setSortBy={setSortBy}
+          setSearchQuery={setSearchQuery}
+        />
+      );
+    };
+
+    render(<ControlledReviewFilter />);
 
     const searchInput = screen.getByPlaceholderText('Search reviews...');
     await user.type(searchInput, 'exam');
 
     await waitFor(() => {
-      expect(setSearchQuery).toHaveBeenCalled();
+      expect(setReviews).toHaveBeenLastCalledWith([mockReviews[0]]);
     });
   });
 
