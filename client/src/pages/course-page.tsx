@@ -338,6 +338,7 @@ export const CoursePage = () => {
                           key={desktopAnchorId}
                           openEditReview={() => setEditReviewOpen(true)}
                           review={review}
+                          searchQuery={searchQuery}
                           attachment={ReviewAttachment.CopyButton}
                           updateLikes={updateLikes(review)}
                         />
@@ -450,6 +451,7 @@ export const CoursePage = () => {
                             key={mobileAnchorId}
                             openEditReview={() => setEditReviewOpen(true)}
                             review={review}
+                            searchQuery={searchQuery}
                             interactions={interactions}
                             attachment={ReviewAttachment.CopyButton}
                             updateLikes={updateLikes(review)}
