@@ -1,12 +1,19 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
+import { Index } from 'flexsearch';
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import type { Review } from '../lib/types';
 import type { Course } from '../lib/types';
 import { uniq } from '../lib/utils';
+import { SearchBar } from './search-bar';
 import { Autocomplete } from './ui/autocomplete';
 import { ResetButton } from './ui/reset-button';
-import { Index } from 'flexsearch';
-import { SearchBar } from './search-bar';
 
 const sortTypes = [
   'Most Recent',
@@ -49,22 +56,18 @@ export const ReviewFilter = ({
   const previousSortRef = useRef<ReviewSortType>(sortBy);
   const previousInstructorRef = useRef<string>(selectedInstructor);
   const reviewIndex = useMemo(() => {
-  const index = new Index({ tokenize: 'forward' });
-  allReviews.forEach((review, i) => {
-  index.add(i, review.content);
-  });
-  return index;
-}, [allReviews]);
+    const index = new Index({ tokenize: 'forward' });
+    allReviews.forEach((review, i) => {
+      index.add(i, review.content);
+    });
+    return index;
+  }, [allReviews]);
 
   useEffect(() => {
     const baseReviews = searchQuery.trim()
-      ? Array.from(
-          new Set(
-            reviewIndex.search(searchQuery, { limit: allReviews.length }) ?? []
-          )
-        )
-          .map((id) => allReviews[id as number])
-          .filter((r): r is Review => r !== undefined)
+      ? (
+          reviewIndex.search(searchQuery, { limit: allReviews.length }) ?? []
+        ).map((id) => allReviews[id as number])
       : allReviews;
     setReviews(
       baseReviews
