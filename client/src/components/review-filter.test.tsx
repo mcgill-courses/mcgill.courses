@@ -100,6 +100,7 @@ describe('ReviewFilter', () => {
     const setSelectedInstructor = vi.fn();
     const setSortBy = vi.fn();
     const setSearchQuery = vi.fn();
+    const setStatsReviews = vi.fn();
 
     render(
       <ReviewFilter
@@ -113,6 +114,7 @@ describe('ReviewFilter', () => {
         setSelectedInstructor={setSelectedInstructor}
         setSortBy={setSortBy}
         setSearchQuery={setSearchQuery}
+        setStatsReviews={setStatsReviews}
       />
     );
 
@@ -127,6 +129,7 @@ describe('ReviewFilter', () => {
     const setShowAllReviews = vi.fn();
     const setSelectedInstructor = vi.fn();
     const setSortBy = vi.fn();
+    const setStatsReviews = vi.fn();
 
     const ControlledReviewFilter = () => {
       const [searchQuery, setSearchQuery] = useState('');
@@ -143,6 +146,7 @@ describe('ReviewFilter', () => {
           setSelectedInstructor={setSelectedInstructor}
           setSortBy={setSortBy}
           setSearchQuery={setSearchQuery}
+          setStatsReviews={setStatsReviews}
         />
       );
     };
@@ -164,6 +168,7 @@ describe('ReviewFilter', () => {
     const setSelectedInstructor = vi.fn();
     const setSortBy = vi.fn();
     const setSearchQuery = vi.fn();
+    const setStatsReviews = vi.fn();
 
     render(
       <ReviewFilter
@@ -177,6 +182,7 @@ describe('ReviewFilter', () => {
         setSelectedInstructor={setSelectedInstructor}
         setSortBy={setSortBy}
         setSearchQuery={setSearchQuery}
+        setStatsReviews={setStatsReviews}
       />
     );
 

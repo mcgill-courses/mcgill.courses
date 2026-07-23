@@ -36,6 +36,7 @@ type ReviewFilterProps = {
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
   setReviews: Dispatch<SetStateAction<Review[]>>;
+  setStatsReviews: Dispatch<SetStateAction<Review[]>>;
   setShowAllReviews: Dispatch<SetStateAction<boolean>>;
   setSelectedInstructor: Dispatch<SetStateAction<string>>;
   setSortBy: Dispatch<SetStateAction<ReviewSortType>>;
@@ -49,6 +50,7 @@ export const ReviewFilter = ({
   searchQuery,
   setSearchQuery,
   setReviews,
+  setStatsReviews,
   setShowAllReviews,
   setSortBy,
   setSelectedInstructor,
@@ -63,43 +65,43 @@ export const ReviewFilter = ({
     return index;
   }, [allReviews]);
 
+  const matchesInstructor = (review: Review) =>
+    selectedInstructor === '' ||
+    review.instructors
+      .map((ins) => ins.toLowerCase())
+      .includes(selectedInstructor.toLowerCase());
+
   useEffect(() => {
     const baseReviews = searchQuery.trim()
       ? (
           reviewIndex.search(searchQuery, { limit: allReviews.length }) ?? []
         ).map((id) => allReviews[id as number])
       : allReviews;
+    const instructorFilteredReviews = allReviews.filter(matchesInstructor);
+    setStatsReviews(instructorFilteredReviews);
     setReviews(
-      baseReviews
-        .filter(
-          (review: Review) =>
-            selectedInstructor === '' ||
-            review.instructors
-              .map((ins) => ins.toLowerCase())
-              .includes(selectedInstructor.toLowerCase())
-        )
-        .sort((a: Review, b: Review) => {
-          switch (sortBy) {
-            case 'Most Recent':
-              return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
-            case 'Least Recent':
-              return parseInt(a.timestamp, 10) - parseInt(b.timestamp, 10);
-            case 'Highest Rating':
-              return b.rating - a.rating;
-            case 'Lowest Rating':
-              return a.rating - b.rating;
-            case 'Hardest':
-              return b.difficulty - a.difficulty;
-            case 'Easiest':
-              return a.difficulty - b.difficulty;
-            case 'Most Liked':
-              return b.likes - a.likes;
-            case 'Most Disliked':
-              return a.likes - b.likes;
-            default:
-              return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
-          }
-        })
+      baseReviews.filter(matchesInstructor).sort((a: Review, b: Review) => {
+        switch (sortBy) {
+          case 'Most Recent':
+            return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
+          case 'Least Recent':
+            return parseInt(a.timestamp, 10) - parseInt(b.timestamp, 10);
+          case 'Highest Rating':
+            return b.rating - a.rating;
+          case 'Lowest Rating':
+            return a.rating - b.rating;
+          case 'Hardest':
+            return b.difficulty - a.difficulty;
+          case 'Easiest':
+            return a.difficulty - b.difficulty;
+          case 'Most Liked':
+            return b.likes - a.likes;
+          case 'Most Disliked':
+            return a.likes - b.likes;
+          default:
+            return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
+        }
+      })
     );
 
     const sortChanged = previousSortRef.current !== sortBy;
