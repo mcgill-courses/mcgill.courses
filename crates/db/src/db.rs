@@ -48,10 +48,6 @@ impl Db {
     Initializer::new(self.clone(), options).run().await
   }
 
-  pub async fn ensure_indexes(&self) -> Result {
-    Initializer::index(self).await
-  }
-
   pub async fn courses(
     &self,
     limit: Option<i64>,
@@ -999,9 +995,10 @@ impl Db {
 
   pub(crate) async fn create_index<T>(
     &self,
+    name: &str,
     collection: &str,
     keys: Document,
-    options: IndexOptions,
+    weights: Document,
   ) -> Result<CreateIndexResult>
   where
     T: Serialize + DeserializeOwned + Send + Sync,
@@ -1010,7 +1007,17 @@ impl Db {
       self
         .database
         .collection::<T>(collection)
-        .create_index(IndexModel::builder().keys(keys).options(options).build())
+        .create_index(
+          IndexModel::builder()
+            .keys(keys)
+            .options(
+              IndexOptions::builder()
+                .weights(weights)
+                .name(name.to_string())
+                .build(),
+            )
+            .build(),
+        )
         .await?,
     )
   }
@@ -2342,36 +2349,6 @@ mod tests {
       .unwrap()
       .unwrap();
     assert_eq!(review.likes, 0);
-  }
-
-  #[tokio::test(flavor = "multi_thread")]
-  async fn interaction_index_is_unique() {
-    let TestContext { db, db_name } = TestContext::new().await;
-
-    let tempdir = TempDir::with_prefix(&db_name).unwrap();
-    let source = tempdir.path().join("foo.json");
-    fs::write(&source, "[]").unwrap();
-
-    db.initialize(InitializeOptions {
-      source,
-      ..Default::default()
-    })
-    .await
-    .unwrap();
-
-    let collection = db
-      .database
-      .collection::<Interaction>(Db::INTERACTION_COLLECTION);
-    let interaction = Interaction {
-      kind: InteractionKind::Like,
-      course_id: "foo".into(),
-      user_id: "bar".into(),
-      referrer: "baz".into(),
-    };
-
-    collection.insert_one(interaction.clone()).await.unwrap();
-    assert!(collection.insert_one(interaction).await.is_err());
-    assert_eq!(collection.count_documents(doc! {}).await.unwrap(), 1);
   }
 
   #[tokio::test(flavor = "multi_thread")]

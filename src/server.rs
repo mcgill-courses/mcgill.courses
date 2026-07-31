@@ -40,8 +40,6 @@ impl Server {
 
     let db = Arc::new(Db::connect(&self.db_name).await?);
 
-    db.ensure_indexes().await?;
-
     if self.initialize {
       let source_hash = self.source.hash()?;
 
