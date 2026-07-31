@@ -106,7 +106,7 @@ const ReviewInteractions = ({
 
   const refreshInteractions = async () => {
     try {
-      const payload = await api.getInteractions(courseId, userId, user?.id);
+      const payload = await api.getInteractions(courseId, userId);
       setKind(payload.kind);
     } catch (err: unknown) {
       toast.error(String(err));
@@ -115,7 +115,7 @@ const ReviewInteractions = ({
 
   const addInteraction = async (interactionKind: InteractionKind) => {
     try {
-      await api.addInteraction(interactionKind, courseId, userId, user?.id);
+      await api.addInteraction(interactionKind, courseId, userId);
       const change = getLikeChange(kind, interactionKind);
       updateLikes(review.likes + change);
 
@@ -134,7 +134,7 @@ const ReviewInteractions = ({
 
   const removeInteraction = async () => {
     try {
-      await api.removeInteraction(courseId, userId, user?.id);
+      await api.removeInteraction(courseId, userId);
       if (!kind) {
         throw new Error("Can't remove interaction that doesn't exist.");
       }

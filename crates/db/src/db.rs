@@ -438,6 +438,19 @@ impl Db {
     let review_coll =
       self.database.collection::<Review>(Self::REVIEW_COLLECTION);
 
+    if review_coll
+      .find_one(doc! {
+        "courseId": &interaction.course_id,
+        "userId": &interaction.user_id,
+      })
+      .session(&mut session)
+      .await?
+      .is_none()
+    {
+      session.abort_transaction().await?;
+      return Err(Error::ReviewNotFound);
+    }
+
     let old = interaction_coll
       .find_one_and_update(
         doc! {

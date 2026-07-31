@@ -184,30 +184,27 @@ export const api = {
 
   async getInteractions(
     courseId: string,
-    userId: string,
-    referrer: string | undefined
+    userId: string
   ): Promise<GetInteractionKindPayload> {
     return client.deserialize<GetInteractionKindPayload>(
       'GET',
-      `/interactions?course_id=${courseId}&user_id=${userId}&referrer=${referrer}`
+      `/interactions?course_id=${courseId}&user_id=${userId}`
     );
   },
 
   async getUserInteractionsForCourse(
-    courseId: string,
-    referrer: string
+    courseId: string
   ): Promise<GetUserInteractionForCoursePayload> {
     return client.deserialize<GetUserInteractionForCoursePayload>(
       'GET',
-      `/interactions/${courseId}/referrer/${referrer}`
+      `/interactions/${courseId}`
     );
   },
 
   async addInteraction(
     kind: InteractionKind,
     courseId: string,
-    userId: string,
-    referrer: string | undefined
+    userId: string
   ): Promise<Response> {
     return client.post('/interactions', {
       headers: { 'Content-Type': 'application/json' },
@@ -215,22 +212,16 @@ export const api = {
         kind,
         course_id: courseId,
         user_id: userId,
-        referrer,
       }),
     });
   },
 
-  async removeInteraction(
-    courseId: string,
-    userId: string,
-    referrer: string | undefined
-  ): Promise<Response> {
+  async removeInteraction(courseId: string, userId: string): Promise<Response> {
     return client.delete('/interactions', {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         course_id: courseId,
         user_id: userId,
-        referrer,
       }),
     });
   },
