@@ -39,6 +39,6 @@ pub struct Interaction {
   pub user_id: String,
   /// ID of the course the interaction belongs to.
   pub course_id: String,
-  /// Referrer source from which the interaction was made.
+  /// ID of the user who created the interaction.
   pub referrer: String,
 }

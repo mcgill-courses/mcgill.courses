@@ -9,13 +9,14 @@ pub(crate) struct Initializer {
 impl Initializer {
   const COURSE_COLLECTION: &'static str = "courses";
   const INSTRUCTOR_COLLECTION: &'static str = "instructors";
+  const INTERACTION_COLLECTION: &'static str = "interactions";
 
   pub(crate) fn new(db: Db, options: InitializeOptions) -> Self {
     Self { db, options }
   }
 
   pub(crate) async fn run(&self) -> Result {
-    self.index().await?;
+    self.db.ensure_indexes().await?;
     self.seed().await?;
     Ok(())
   }
@@ -39,44 +40,56 @@ impl Initializer {
     })
   }
 
-  async fn index(&self) -> Result {
+  pub(crate) async fn index(db: &Db) -> Result {
     info!("Building course index...");
 
-    self
-      .db
-      .create_index::<Course>(
-        "courses_text_search",
-        Self::COURSE_COLLECTION,
-        doc! {
-          "subject": "text",
-          "code": "text",
-          "_id": "text",
-          "title": "text",
-          "idNgrams": "text",
-          "titleNgrams": "text",
-        },
-        doc! {
+    db.create_index::<Course>(
+      Self::COURSE_COLLECTION,
+      doc! {
+        "subject": "text",
+        "code": "text",
+        "_id": "text",
+        "title": "text",
+        "idNgrams": "text",
+        "titleNgrams": "text",
+      },
+      IndexOptions::builder()
+        .name(String::from("courses_text_search"))
+        .weights(doc! {
           "subject": 10,
           "code": 10,
           "_id": 10,
           "title": 8,
           "idNgrams": 4,
           "titleNgrams": 2,
-        },
-      )
-      .await?;
+        })
+        .build(),
+    )
+    .await?;
 
     info!("Building instructor index...");
 
-    self
-      .db
-      .create_index::<Instructor>(
-        "instructors_text_search",
-        Self::INSTRUCTOR_COLLECTION,
-        doc! { "name": "text", "nameNgrams": "text" },
-        doc! { "name": 10, "nameNgrams": 4 },
-      )
-      .await?;
+    db.create_index::<Instructor>(
+      Self::INSTRUCTOR_COLLECTION,
+      doc! { "name": "text", "nameNgrams": "text" },
+      IndexOptions::builder()
+        .name(String::from("instructors_text_search"))
+        .weights(doc! { "name": 10, "nameNgrams": 4 })
+        .build(),
+    )
+    .await?;
+
+    info!("Building interaction index...");
+
+    db.create_index::<Interaction>(
+      Self::INTERACTION_COLLECTION,
+      doc! { "courseId": 1, "userId": 1, "referrer": 1 },
+      IndexOptions::builder()
+        .name(String::from("interactions_course_user_referrer_unique"))
+        .unique(true)
+        .build(),
+    )
+    .await?;
 
     info!("All indices complete.");
 
