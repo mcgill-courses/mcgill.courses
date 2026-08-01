@@ -94,7 +94,7 @@ describe('ProfileDropdown', () => {
     await user.click(logoutButton);
 
     expect(setHref).toHaveBeenCalledWith(
-      'https://api.example.com/api/auth/logout?redirect=https://mcgill.courses'
+      'https://api.example.com/api/auth/logout?redirect=%2F'
     );
 
     Object.defineProperty(window, 'location', {

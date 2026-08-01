@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import { Fragment } from 'react';
 import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { useAuth } from '../hooks/use-auth';
 import { env } from '../lib/env';
@@ -30,6 +30,10 @@ type SideNavProps = {
 
 export const SideNav = ({ open, onClose }: SideNavProps) => {
   const user = useAuth();
+  const location = useLocation();
+  const redirect = encodeURIComponent(
+    `${location.pathname}${location.search}${location.hash}`
+  );
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : 'auto';
@@ -122,9 +126,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
                           Profile
                         </Link>
                         <a
-                          href={`${env.VITE_API_URL}/api/auth/logout?redirect=${
-                            window.location.origin
-                          }`}
+                          href={`${env.VITE_API_URL}/api/auth/logout?redirect=%2F`}
                           className='-mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
                         >
                           Log out
@@ -132,9 +134,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
                       </>
                     ) : (
                       <a
-                        href={`${env.VITE_API_URL}/api/auth/login?redirect=${
-                          window.location.href
-                        }`}
+                        href={`${env.VITE_API_URL}/api/auth/login?redirect=${redirect}`}
                         className='-mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 font-semibold text-gray-900 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-neutral-700'
                       >
                         Log in

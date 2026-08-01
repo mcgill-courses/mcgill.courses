@@ -58,9 +58,12 @@ describe('SideNav', () => {
     document.body.style.overflow = '';
   });
 
-  const renderSideNav = (onClose: (open: boolean) => void) =>
+  const renderSideNav = (
+    onClose: (open: boolean) => void,
+    initialEntry = '/'
+  ) =>
     render(
-      <MemoryRouter future={routerFutureConfig}>
+      <MemoryRouter initialEntries={[initialEntry]} future={routerFutureConfig}>
         <SideNav open onClose={onClose} />
       </MemoryRouter>
     );
@@ -88,7 +91,7 @@ describe('SideNav', () => {
 
     expect(logoutLink).toHaveAttribute(
       'href',
-      'https://api.example.com/api/auth/logout?redirect=https://mcgill.courses'
+      'https://api.example.com/api/auth/logout?redirect=%2F'
     );
 
     await user.click(screen.getByRole('link', { name: /home/i }));
@@ -113,13 +116,13 @@ describe('SideNav', () => {
     const onClose = vi.fn();
     const user = userEvent.setup();
 
-    renderSideNav(onClose);
+    renderSideNav(onClose, '/explore');
 
     const loginLink = screen.getByRole('link', { name: /log in/i });
 
     expect(loginLink).toHaveAttribute(
       'href',
-      'https://api.example.com/api/auth/login?redirect=https://mcgill.courses/explore'
+      'https://api.example.com/api/auth/login?redirect=%2Fexplore'
     );
 
     const closeButton = screen.getByRole('button', { name: /close menu/i });

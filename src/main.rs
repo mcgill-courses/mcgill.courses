@@ -1,7 +1,9 @@
 use {
   crate::{
     assets::Assets,
-    auth::{AuthRedirect, COOKIE_NAME, MCGILL_TENANT_ID, OAuthClient},
+    auth::{
+      AuthRedirect, COOKIE_NAME, MCGILL_TENANT_ID, OAuthClient, OAuthFlowStore,
+    },
     documentation::Documentation,
     error::Error,
     hash::Hash,
@@ -27,7 +29,6 @@ use {
   axum_extra::{
     TypedHeader, headers::Cookie, typed_header::TypedHeaderRejectionReason,
   },
-  base64::{Engine, engine::general_purpose::STANDARD},
   chrono::prelude::*,
   clap::Parser,
   db::Db,
@@ -42,9 +43,13 @@ use {
     Instructor, Interaction, InteractionKind, Notification, Review,
     ReviewFilter, SearchResults, Subscription,
   },
+  mongodb::{
+    Client as MongodbClient, Collection, IndexModel,
+    bson::DateTime as BsonDateTime, options::IndexOptions,
+  },
   oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet,
-    RedirectUrl, Scope, TokenUrl, basic::BasicClient,
+    PkceCodeChallenge, RedirectUrl, Scope, TokenUrl, basic::BasicClient,
   },
   rusoto_core::Region,
   rusoto_s3::S3Client,

@@ -39,7 +39,6 @@ async-mongodb-session = { version = "3.0.0", default-features = false, features 
 async-session = "3.0.0"
 axum = { version = "0.8.8", features = ["json"] }
 axum-extra = { version = "0.12.5", features = ["cookie", "typed-header"] }
-base64 = "0.22.1"
 chrono = { workspace = true }
 clap = { workspace = true }
 db = { path = "crates/db" }
@@ -48,6 +47,7 @@ futures = { workspace = true }
 http = "1.4.0"
 indoc = "2.0.7"
 model = { path = "crates/model" }
+mongodb = { version = "3.8.0", features = ["bson-3"] }
 oauth2 = "5.0.0"
 reqwest = { version = "0.13.1", default-features = false, features = [ "blocking", "form", "json", "rustls"] }
 rusoto_core = { version = "0.48.0", default-features = false, features = [ "rustls", ] }

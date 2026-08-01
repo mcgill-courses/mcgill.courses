@@ -496,6 +496,140 @@ mod tests {
     assert_eq!(response.status(), StatusCode::NOT_FOUND);
   }
 
+  #[tokio::test]
+  async fn oauth_login_stores_browser_bound_flow() {
+    let TestContext { app, db, .. } = TestContext::new().await;
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .uri("/api/auth/login?redirect=%2Ffoo%3Fbar%3Dbaz%23qux")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::SEE_OTHER);
+
+    let authorize_url = Url::parse(
+      response
+        .headers()
+        .get(header::LOCATION)
+        .unwrap()
+        .to_str()
+        .unwrap(),
+    )
+    .unwrap();
+    let parameter = |name| {
+      authorize_url
+        .query_pairs()
+        .find(|(key, _)| key == name)
+        .map(|(_, value)| value.into_owned())
+        .unwrap()
+    };
+
+    assert_eq!(parameter("code_challenge_method"), "S256");
+    assert!(!parameter("code_challenge").is_empty());
+
+    let state = parameter("state");
+    let set_cookie = response
+      .headers()
+      .get(SET_COOKIE)
+      .unwrap()
+      .to_str()
+      .unwrap();
+
+    assert!(set_cookie.starts_with("oauth-flow="));
+    assert!(set_cookie.contains("HttpOnly"));
+    assert!(set_cookie.contains("SameSite=Lax"));
+    assert!(set_cookie.contains("Max-Age=600"));
+
+    let cookie = set_cookie
+      .split(';')
+      .next()
+      .unwrap()
+      .split_once('=')
+      .unwrap()
+      .1;
+    let flow_store = OAuthFlowStore::new(
+      &env::var("MONGODB_URL").unwrap_or_else(|_| {
+        "mongodb://localhost:27017/?directConnection=true&replicaSet=rs0".into()
+      }),
+      &db.name(),
+    )
+    .await
+    .unwrap();
+    let flow = flow_store.consume(cookie, &state).await.unwrap();
+
+    assert_eq!(flow.redirect, "/foo?bar=baz#qux");
+    assert!(flow.pkce_verifier.len() >= 43);
+    assert!(flow_store.consume(cookie, &state).await.is_err());
+  }
+
+  #[tokio::test]
+  async fn oauth_routes_reject_unsafe_redirects() {
+    let TestContext { mut app, .. } = TestContext::new().await;
+
+    for uri in [
+      "/api/auth/login?redirect=https%3A%2F%2Fexample.com",
+      "/api/auth/login?redirect=%2F%2Fexample.com",
+      "/api/auth/logout?redirect=https%3A%2F%2Fexample.com",
+      "/api/auth/logout?redirect=%2F%2Fexample.com",
+    ] {
+      let response = app
+        .call(
+          Request::builder()
+            .header("Cookie", "session=foo")
+            .uri(uri)
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    }
+  }
+
+  #[tokio::test]
+  async fn oauth_callback_rejects_mismatched_state_before_exchange() {
+    let TestContext { mut app, .. } = TestContext::new().await;
+
+    let response = app
+      .call(
+        Request::builder()
+          .uri("/api/auth/login?redirect=%2Ffoo")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+    let cookie = response
+      .headers()
+      .get(SET_COOKIE)
+      .unwrap()
+      .to_str()
+      .unwrap()
+      .split(';')
+      .next()
+      .unwrap()
+      .to_string();
+
+    let response = app
+      .call(
+        Request::builder()
+          .header("Cookie", cookie)
+          .uri("/api/auth/authorized?code=foo&state=bar")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+  }
+
   #[cfg(feature = "e2e")]
   #[tokio::test]
   async fn test_login_route_creates_session() {

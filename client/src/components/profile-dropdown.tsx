@@ -63,7 +63,7 @@ export const ProfileDropdown = () => {
             <MenuItem href='/profile'>Profile</MenuItem>
             <MenuItem
               onClick={() =>
-                (window.location.href = `${env.VITE_API_URL}/api/auth/logout?redirect=${window.location.origin}`)
+                (window.location.href = `${env.VITE_API_URL}/api/auth/logout?redirect=%2F`)
               }
             >
               Log out

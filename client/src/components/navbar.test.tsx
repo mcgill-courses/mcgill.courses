@@ -137,14 +137,14 @@ describe('Navbar', () => {
 
     const user = userEvent.setup();
 
-    renderNavbar('/');
+    renderNavbar('/?foo=bar#baz');
 
     expect(screen.queryByTestId('course-search')).not.toBeInTheDocument();
 
     const loginLink = screen.getByRole('link', { name: /log in/i });
     expect(loginLink).toHaveAttribute(
       'href',
-      'https://api.example.com/api/auth/login?redirect=https://mcgill.courses/'
+      'https://api.example.com/api/auth/login?redirect=%2F%3Ffoo%3Dbar%23baz'
     );
 
     const arrow = within(loginLink).getByText('→');

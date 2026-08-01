@@ -38,6 +38,9 @@ export const Navbar = () => {
   const user = useAuth();
   const location = useLocation();
   const pathName = location.pathname;
+  const redirect = encodeURIComponent(
+    `${location.pathname}${location.search}${location.hash}`
+  );
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -126,9 +129,7 @@ export const Navbar = () => {
               <ProfileDropdown />
             ) : (
               <a
-                href={`${env.VITE_API_URL}/api/auth/login?redirect=${
-                  window.location.href
-                }`}
+                href={`${env.VITE_API_URL}/api/auth/login?redirect=${redirect}`}
                 className='my-auto text-sm leading-6 font-semibold text-gray-900 dark:text-gray-200'
                 onMouseEnter={() => setArrowColor('text-red-600')}
                 onMouseLeave={() =>
