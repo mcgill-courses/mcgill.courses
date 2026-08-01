@@ -49,9 +49,11 @@ impl PartialSchema for DateTime {
   fn schema() -> RefOr<Schema> {
     Object::builder()
       .schema_type(Type::String)
-      .format(Some(SchemaFormat::KnownFormat(KnownFormat::DateTime)))
-      .description(Some("ISO 8601 DateTime string"))
-      .examples(["2023-01-01T00:00:00.000Z"])
+      .description(Some(
+        "Unix timestamp in milliseconds, encoded as a decimal string",
+      ))
+      .pattern(Some(r"^-?\d+$"))
+      .examples(["1672531200000"])
       .into()
   }
 }
