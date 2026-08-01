@@ -49,9 +49,11 @@ impl PartialSchema for DateTime {
   fn schema() -> RefOr<Schema> {
     Object::builder()
       .schema_type(Type::String)
-      .format(Some(SchemaFormat::KnownFormat(KnownFormat::DateTime)))
-      .description(Some("ISO 8601 DateTime string"))
-      .examples(["2023-01-01T00:00:00.000Z"])
+      .description(Some(
+        "Unix timestamp in milliseconds, encoded as a decimal string",
+      ))
+      .pattern(Some(r"^-?\d+$"))
+      .examples(["1672531200000"])
       .into()
   }
 }
@@ -136,5 +138,23 @@ impl DateTime {
 
   pub fn timestamp_millis(&self) -> i64 {
     self.0.timestamp_millis()
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn schema_matches_serialization() {
+    assert_eq!(
+      serde_json::to_value(DateTime::schema()).unwrap(),
+      serde_json::json!({
+        "type": "string",
+        "description": "Unix timestamp in milliseconds, encoded as a decimal string",
+        "examples": ["1672531200000"],
+        "pattern": "^-?\\d+$",
+      }),
+    );
   }
 }
