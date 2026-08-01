@@ -1,9 +1,7 @@
 use {
   crate::{
     assets::Assets,
-    auth::{
-      AuthRedirect, COOKIE_NAME, MCGILL_TENANT_ID, OAuthClient, OAuthFlowStore,
-    },
+    auth::{AuthRedirect, COOKIE_NAME, MCGILL_TENANT_ID, OAuthClient},
     documentation::Documentation,
     error::Error,
     hash::Hash,
@@ -42,10 +40,6 @@ use {
     Course, CourseAverage, CourseFilter, CourseSortType, InitializeOptions,
     Instructor, Interaction, InteractionKind, Notification, Review,
     ReviewFilter, SearchResults, Subscription,
-  },
-  mongodb::{
-    Client as MongodbClient, Collection, IndexModel,
-    bson::DateTime as BsonDateTime, options::IndexOptions,
   },
   oauth2::{
     AuthUrl, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet,

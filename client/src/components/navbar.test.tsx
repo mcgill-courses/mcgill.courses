@@ -101,14 +101,9 @@ vi.mock('sonner', () => ({
 }));
 
 describe('Navbar', () => {
-  const originalLocation = window.location;
   const originalApiUrl = env.VITE_API_URL;
 
   afterEach(() => {
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: originalLocation,
-    });
     Object.assign(env, { VITE_API_URL: originalApiUrl });
     useAuthMock.mockReset();
     getNotificationsMock.mockReset();
@@ -125,13 +120,6 @@ describe('Navbar', () => {
 
   it('renders login link with arrow toggle for guests', async () => {
     Object.assign(env, { VITE_API_URL: 'https://api.example.com' });
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: {
-        href: 'https://mcgill.courses/',
-        origin: 'https://mcgill.courses',
-      },
-    });
 
     useAuthMock.mockReturnValue(undefined);
 
@@ -160,15 +148,6 @@ describe('Navbar', () => {
   });
 
   it('loads notifications and shows authenticated controls', async () => {
-    Object.assign(env, { VITE_API_URL: 'https://api.example.com' });
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: {
-        href: 'https://mcgill.courses/explore',
-        origin: 'https://mcgill.courses',
-      },
-    });
-
     useAuthMock.mockReturnValue({ id: 'user-1' });
 
     getNotificationsMock.mockResolvedValue([

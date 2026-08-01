@@ -33,7 +33,6 @@ vi.mock('./logo', () => ({
 }));
 
 describe('SideNav', () => {
-  const originalLocation = window.location;
   const originalApiUrl = env.VITE_API_URL;
   const useAuthMock = useAuth as unknown as Mock;
 
@@ -45,11 +44,6 @@ describe('SideNav', () => {
 
   afterEach(() => {
     document.getElementById('overlay-root')?.remove();
-
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: originalLocation,
-    });
 
     Object.assign(env, { VITE_API_URL: originalApiUrl });
 
@@ -72,13 +66,6 @@ describe('SideNav', () => {
     Object.assign(env, { VITE_API_URL: 'https://api.example.com' });
 
     useAuthMock.mockReturnValue({ id: 'user-1' });
-
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: {
-        origin: 'https://mcgill.courses',
-      },
-    });
 
     const onClose = vi.fn();
     const user = userEvent.setup();
@@ -104,14 +91,6 @@ describe('SideNav', () => {
   it('shows login option for anonymous users and closes with toggle button', async () => {
     Object.assign(env, { VITE_API_URL: 'https://api.example.com' });
     useAuthMock.mockReturnValue(undefined);
-
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: {
-        origin: 'https://mcgill.courses',
-        href: 'https://mcgill.courses/explore',
-      },
-    });
 
     const onClose = vi.fn();
     const user = userEvent.setup();

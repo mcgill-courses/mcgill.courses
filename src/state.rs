@@ -5,7 +5,6 @@ pub(crate) struct State {
   pub(crate) client_secret: String,
   pub(crate) db: Arc<Db>,
   pub(crate) oauth_client: OAuthClient,
-  pub(crate) oauth_flow_store: OAuthFlowStore,
   pub(crate) request_client: reqwest::Client,
   pub(crate) session_store: MongodbSessionStore,
 }
@@ -13,12 +12,6 @@ pub(crate) struct State {
 impl FromRef<State> for Arc<Db> {
   fn from_ref(state: &State) -> Self {
     state.db.clone()
-  }
-}
-
-impl FromRef<State> for OAuthClient {
-  fn from_ref(state: &State) -> Self {
-    state.oauth_client.clone()
   }
 }
 
@@ -41,13 +34,6 @@ impl State {
   ) -> Result<Self> {
     let client_secret = env::var("MS_CLIENT_SECRET")
       .expect("Missing the MS_CLIENT_SECRET environment variable.");
-    let oauth_flow_store = OAuthFlowStore::new(
-      &env::var("MONGODB_URL").unwrap_or_else(|_| {
-        "mongodb://localhost:27017/?directConnection=true&replicaSet=rs0".into()
-      }),
-      &db.name(),
-    )
-    .await?;
 
     Ok(Self {
       client_secret: client_secret.clone(),
@@ -76,7 +62,6 @@ impl State {
         )
         .expect("Invalid redirect URL"),
       ),
-      oauth_flow_store,
       request_client: reqwest::Client::new(),
       session_store,
     })

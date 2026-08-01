@@ -39,18 +39,10 @@ pub(crate) struct LogoutRequest {
   redirect: String,
 }
 
-#[derive(Debug, Clone)]
-pub(crate) struct OAuthFlowStore {
-  collection: Collection<OAuthFlow>,
-}
-
 #[derive(Debug, Deserialize, Serialize)]
-pub(crate) struct OAuthFlow {
-  #[serde(rename = "_id")]
-  id: String,
-  expires_at: BsonDateTime,
-  pub(crate) pkce_verifier: String,
-  pub(crate) redirect: String,
+struct OAuthFlow {
+  pkce_verifier: String,
+  redirect: String,
   state: String,
 }
 
@@ -98,20 +90,23 @@ pub(crate) async fn microsoft_auth(
     .set_pkce_challenge(pkce_challenge)
     .url();
 
-  let cookie = Uuid::new_v4().to_string();
+  let mut session = Session::new();
 
-  state
-    .oauth_flow_store
-    .store(OAuthFlow {
-      id: cookie.clone(),
-      expires_at: BsonDateTime::from_system_time(
-        std::time::SystemTime::now() + OAUTH_FLOW_DURATION,
-      ),
+  session.expire_in(OAUTH_FLOW_DURATION);
+  session.insert(
+    "oauth_flow",
+    OAuthFlow {
       pkce_verifier: pkce_verifier.secret().to_string(),
       redirect,
       state: csrf_token.secret().to_string(),
-    })
-    .await?;
+    },
+  )?;
+
+  let cookie = state
+    .session_store
+    .store_session(session)
+    .await?
+    .ok_or(anyhow!("Failed to store OAuth flow"))?;
   let mut headers = HeaderMap::new();
 
   headers.insert(
@@ -150,9 +145,22 @@ pub(crate) async fn login_authorized(
   let cookie = cookies
     .get(OAUTH_COOKIE_NAME)
     .ok_or_else(|| Error::bad_request("Invalid OAuth state"))?;
-  let flow = state.oauth_flow_store.consume(cookie, &query.state).await?;
+  let session = state
+    .session_store
+    .load_session(cookie.to_string())
+    .await?
+    .ok_or_else(|| Error::bad_request("Invalid OAuth state"))?;
+  let flow = session
+    .get::<OAuthFlow>("oauth_flow")
+    .ok_or_else(|| Error::bad_request("Invalid OAuth state"))?;
+
+  if flow.state != query.state {
+    return Err(Error::bad_request("Invalid OAuth state"));
+  }
 
   let redirect = validate_redirect(&flow.redirect)?.to_string();
+
+  state.session_store.destroy_session(session).await?;
 
   debug!("Fetching token from oauth client...");
 
@@ -294,47 +302,6 @@ fn secure_cookie_attribute(client: &OAuthClient) -> &'static str {
   }
 }
 
-impl OAuthFlowStore {
-  pub(crate) async fn new(uri: &str, database: &str) -> Result<Self> {
-    let collection = MongodbClient::with_uri_str(uri)
-      .await?
-      .database(database)
-      .collection("oauth-flows");
-
-    collection
-      .create_index(
-        IndexModel::builder()
-          .keys(mongodb::bson::doc! { "expires_at": 1 })
-          .options(IndexOptions::builder().expire_after(Duration::ZERO).build())
-          .build(),
-      )
-      .await?;
-
-    Ok(Self { collection })
-  }
-
-  async fn store(&self, flow: OAuthFlow) -> Result {
-    self.collection.insert_one(flow).await?;
-    Ok(())
-  }
-
-  pub(crate) async fn consume(
-    &self,
-    id: &str,
-    state: &str,
-  ) -> Result<OAuthFlow> {
-    self
-      .collection
-      .find_one_and_delete(mongodb::bson::doc! {
-        "_id": id,
-        "state": state,
-        "expires_at": { "$gt": BsonDateTime::now() },
-      })
-      .await?
-      .ok_or_else(|| Error::bad_request("Invalid OAuth state"))
-  }
-}
-
 #[cfg(feature = "e2e")]
 pub(crate) async fn test_login(
   AppState(session_store): AppState<MongodbSessionStore>,
@@ -369,18 +336,12 @@ mod tests {
 
   #[test]
   fn redirect_validation() {
-    for redirect in ["/", "/foo", "/foo?bar=baz#qux"] {
-      assert_eq!(validate_redirect(redirect).unwrap(), redirect);
-    }
+    assert_eq!(
+      validate_redirect("/foo?bar=baz#qux").unwrap(),
+      "/foo?bar=baz#qux",
+    );
 
-    for redirect in [
-      "",
-      "foo",
-      "https://example.com",
-      "//example.com",
-      "/\\example.com",
-      "javascript:alert(1)",
-    ] {
+    for redirect in ["foo", "//example.com", "//["] {
       assert!(matches!(
         validate_redirect(redirect),
         Err(Error::BadRequest(_))

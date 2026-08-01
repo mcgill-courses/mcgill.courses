@@ -58,8 +58,6 @@ describe('ProfileDropdown', () => {
     );
 
   it('renders profile link', () => {
-    Object.assign(env, { VITE_API_URL: 'https://api.example.com' });
-
     renderDropdown();
 
     const profileLink = screen.getByRole('link', { name: /profile/i });

@@ -4370,7 +4370,6 @@ dependencies = [
  "indoc",
  "mockito",
  "model",
- "mongodb 3.8.0",
  "oauth2",
  "pretty_assertions",
  "reqwest 0.13.4",

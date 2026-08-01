@@ -35,9 +35,8 @@ MS_REDIRECT_URI=http://localhost:5173/api/auth/authorized
 VITE_API_URL=
 ```
 
-The OAuth redirect URI must use the same browser origin as the client so the
-short-lived OAuth flow cookie is available to the callback. The development
-server proxies `/api` requests to the backend.
+The development server proxies the OAuth callback to the backend so relative
+post-login redirects return to the client.
 
 Second, mount a local [mongodb](https://www.mongodb.com/) instance with docker
 and initiate the replica set:
