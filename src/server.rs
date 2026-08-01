@@ -589,6 +589,38 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn courses_route_with_course_count() {
+    let TestContext { db, app, .. } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .method(Method::GET)
+          .uri("/api/courses?with_course_count=true")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let payload = response.convert::<GetCoursesPayload>().await;
+
+    assert_eq!(
+      payload.course_count,
+      Some(db.course_count().await.unwrap().try_into().unwrap()),
+    );
+  }
+
+  #[tokio::test]
   async fn courses_route_offset_limit() {
     let TestContext { db, app, .. } = TestContext::new().await;
 

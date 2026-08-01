@@ -1,7 +1,6 @@
 use super::*;
 
 #[derive(Deserialize, ToSchema)]
-#[serde(rename_all = "camelCase")]
 pub(crate) struct GetCoursesParams {
   /// Filter criteria for courses.
   #[serde(flatten)]
