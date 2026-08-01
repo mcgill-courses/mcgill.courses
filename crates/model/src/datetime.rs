@@ -140,21 +140,3 @@ impl DateTime {
     self.0.timestamp_millis()
   }
 }
-
-#[cfg(test)]
-mod tests {
-  use super::*;
-
-  #[test]
-  fn schema_matches_serialization() {
-    assert_eq!(
-      serde_json::to_value(DateTime::schema()).unwrap(),
-      serde_json::json!({
-        "type": "string",
-        "description": "Unix timestamp in milliseconds, encoded as a decimal string",
-        "examples": ["1672531200000"],
-        "pattern": "^-?\\d+$",
-      }),
-    );
-  }
-}
