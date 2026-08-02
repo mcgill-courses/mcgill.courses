@@ -126,7 +126,7 @@ impl Server {
       .route("/api/courses/{id}", get(courses::get_course_by_id))
       .route("/api/instructors/{name}", get(instructors::get_instructor))
       .route(
-        "/api/interactions/{course_id}/referrer/{referrer}",
+        "/api/interactions/{course_id}",
         get(interactions::get_user_interactions_for_course),
       )
       .route(
@@ -586,6 +586,38 @@ mod tests {
 
     assert_eq!(payload.courses, db.courses(None, None, None).await.unwrap());
     assert_eq!(payload.course_count, None);
+  }
+
+  #[tokio::test]
+  async fn courses_route_with_course_count() {
+    let TestContext { db, app, .. } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .method(Method::GET)
+          .uri("/api/courses?with_course_count=true")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let payload = response.convert::<GetCoursesPayload>().await;
+
+    assert_eq!(
+      payload.course_count,
+      Some(db.course_count().await.unwrap().try_into().unwrap()),
+    );
   }
 
   #[tokio::test]
@@ -1357,7 +1389,7 @@ mod tests {
           .method(http::Method::GET)
           .header("Cookie", cookie.clone())
           .header("Content-Type", "application/json")
-          .uri("/api/interactions?course_id=MATH240&user_id=test&referrer=test")
+          .uri("/api/interactions?course_id=MATH240&user_id=test")
           .body(Body::empty())
           .unwrap(),
       )
@@ -1372,8 +1404,7 @@ mod tests {
     let interaction = json! ({
       "kind": "like",
       "course_id": "MATH240",
-      "user_id": "test",
-      "referrer": "test"
+      "user_id": "test"
     })
     .to_string();
 
@@ -1406,7 +1437,7 @@ mod tests {
           .method(http::Method::GET)
           .header("Cookie", cookie.clone())
           .header("Content-Type", "application/json")
-          .uri("/api/interactions?course_id=MATH240&user_id=test&referrer=test")
+          .uri("/api/interactions?course_id=MATH240&user_id=test")
           .body(Body::empty())
           .unwrap(),
       )
@@ -1424,8 +1455,7 @@ mod tests {
 
     let interaction = json! ({
       "course_id": "MATH240",
-      "user_id": "test",
-      "referrer": "test"
+      "user_id": "test"
     })
     .to_string();
 
@@ -1458,7 +1488,7 @@ mod tests {
           .method(http::Method::GET)
           .header("Cookie", cookie.clone())
           .header("Content-Type", "application/json")
-          .uri("/api/interactions?course_id=MATH240&user_id=test&referrer=test")
+          .uri("/api/interactions?course_id=MATH240&user_id=test")
           .body(Body::empty())
           .unwrap(),
       )
@@ -1471,6 +1501,183 @@ mod tests {
       response.convert::<GetInteractionKindPayload>().await,
       GetInteractionKindPayload { kind: None }
     );
+  }
+
+  #[tokio::test]
+  async fn interaction_actor_is_authenticated_user() {
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_review(Review {
+      course_id: "MATH240".into(),
+      user_id: "author".into(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    db.add_interaction(Interaction {
+      kind: InteractionKind::Like,
+      course_id: "MATH240".into(),
+      user_id: "author".into(),
+      referrer: "victim".into(),
+    })
+    .await
+    .unwrap();
+
+    let cookie =
+      mock_login(session_store, "attacker", "attacker@mail.mcgill.ca").await;
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::DELETE)
+          .header("Cookie", cookie.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/interactions")
+          .body(Body::from(
+            json!({
+              "course_id": "MATH240",
+              "user_id": "author",
+              "referrer": "victim"
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(
+      db.interaction_kind("MATH240", "author", "victim")
+        .await
+        .unwrap(),
+      Some(InteractionKind::Like)
+    );
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", cookie.clone())
+          .header("Content-Type", "application/json")
+          .uri("/api/interactions")
+          .body(Body::from(
+            json!({
+              "kind": "dislike",
+              "course_id": "MATH240",
+              "user_id": "author",
+              "referrer": "victim"
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", cookie.clone())
+          .uri("/api/interactions?course_id=MATH240&user_id=author&referrer=victim")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(
+      response.convert::<GetInteractionKindPayload>().await,
+      GetInteractionKindPayload {
+        kind: Some(InteractionKind::Dislike),
+      }
+    );
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::GET)
+          .header("Cookie", cookie.clone())
+          .uri("/api/interactions/MATH240")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    let payload = response
+      .convert::<GetUserInteractionForCoursePayload>()
+      .await;
+
+    assert_eq!(payload.interactions.len(), 1);
+    assert_eq!(payload.interactions[0].referrer, "attacker");
+
+    let response = app
+      .call(
+        Request::builder()
+          .method(http::Method::POST)
+          .header("Cookie", cookie)
+          .header("Content-Type", "application/json")
+          .uri("/api/interactions")
+          .body(Body::from(
+            json!({
+              "kind": "like",
+              "course_id": "COMP202",
+              "user_id": "missing"
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    assert!(
+      db.interactions_for_review("COMP202", "missing")
+        .await
+        .unwrap()
+        .is_empty()
+    );
+  }
+
+  #[tokio::test]
+  async fn interaction_reads_require_authentication() {
+    let TestContext { mut app, .. } = TestContext::new().await;
+
+    for uri in [
+      "/api/interactions?course_id=MATH240&user_id=author",
+      "/api/interactions/MATH240",
+    ] {
+      let response = app
+        .call(
+          Request::builder()
+            .method(http::Method::GET)
+            .uri(uri)
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(response.status(), StatusCode::TEMPORARY_REDIRECT);
+    }
   }
 
   #[tokio::test]
@@ -1540,8 +1747,7 @@ mod tests {
     let like = json!({
       "kind": "like",
       "course_id": "COMP202",
-      "user_id": "author1",
-      "referrer": "liker"
+      "user_id": "author1"
     })
     .to_string();
 
@@ -1561,8 +1767,7 @@ mod tests {
     let dislike = json!({
       "kind": "dislike",
       "course_id": "MATH240",
-      "user_id": "author2",
-      "referrer": "liker"
+      "user_id": "author2"
     })
     .to_string();
 
@@ -1584,8 +1789,7 @@ mod tests {
     let other_like = json!({
       "kind": "like",
       "course_id": "MATH240",
-      "user_id": "author2",
-      "referrer": "other"
+      "user_id": "author2"
     })
     .to_string();
 
@@ -1789,7 +1993,12 @@ mod tests {
 
   #[tokio::test]
   async fn get_empty_user_interactions_for_course() {
-    let TestContext { db, mut app, .. } = TestContext::new().await;
+    let TestContext {
+      db,
+      mut app,
+      session_store,
+      ..
+    } = TestContext::new().await;
 
     db.initialize(InitializeOptions {
       source: seed(),
@@ -1798,12 +2007,15 @@ mod tests {
     .await
     .unwrap();
 
+    let cookie = mock_login(session_store, "test", "test@mail.mcgill.ca").await;
+
     let response = app
       .call(
         Request::builder()
           .method(http::Method::GET)
+          .header("Cookie", cookie)
           .header("Content-Type", "application/json")
-          .uri("/api/interactions/COMP202/referrer/test")
+          .uri("/api/interactions/COMP202")
           .body(Body::empty())
           .unwrap(),
       )
@@ -1866,8 +2078,7 @@ mod tests {
     let interaction = json! ({
       "kind": "like",
       "course_id": "MATH240",
-      "user_id": "test",
-      "referrer": "test"
+      "user_id": "test"
     })
     .to_string();
 
@@ -1898,8 +2109,9 @@ mod tests {
       .call(
         Request::builder()
           .method(http::Method::GET)
+          .header("Cookie", cookie)
           .header("Content-Type", "application/json")
-          .uri("/api/interactions/MATH240/referrer/test")
+          .uri("/api/interactions/MATH240")
           .body(Body::empty())
           .unwrap(),
       )
@@ -1964,8 +2176,7 @@ mod tests {
     let interaction = json! ({
       "kind": "like",
       "course_id": "MATH240",
-      "user_id": "test",
-      "referrer": "test"
+      "user_id": "test"
     })
     .to_string();
 
@@ -2014,7 +2225,7 @@ mod tests {
           .method(http::Method::GET)
           .header("Cookie", cookie.clone())
           .header("Content-Type", "application/json")
-          .uri("/api/interactions?course_id=MATH240&user_id=test&referrer=test")
+          .uri("/api/interactions?course_id=MATH240&user_id=test")
           .body(Body::empty())
           .unwrap(),
       )

@@ -4,10 +4,8 @@ use super::*;
 pub(crate) struct GetInteractionKindParams {
   /// Course ID to get the interaction for.
   pub(crate) course_id: String,
-  /// User ID associated with the interaction.
+  /// User ID of the review author.
   pub(crate) user_id: String,
-  /// Referrer source for the interaction.
-  pub(crate) referrer: String,
 }
 
 #[derive(Debug, Deserialize, Serialize, PartialEq, ToSchema)]
@@ -21,23 +19,27 @@ pub(crate) struct GetInteractionKindPayload {
   get,
   path = "/interactions",
   tag = "interactions",
-  description = "Retrieve the interaction kind a user has taken on a course for a specific referrer.",
+  description = "Retrieve the authenticated user's interaction kind for a review.",
+  security(
+    ("microsoftOAuth" = ["User.Read"])
+  ),
   params(
     ("course_id" = String, Query, description = "Course ID to get the interaction for."),
-    ("user_id" = String, Query, description = "User ID associated with the interaction."),
-    ("referrer" = String, Query, description = "Referrer source for the interaction."),
+    ("user_id" = String, Query, description = "User ID of the review author."),
   ),
   responses(
-    (status = StatusCode::OK, description = "Interaction kind for the requested course, user, and referrer.", body = GetInteractionKindPayload),
+    (status = StatusCode::OK, description = "Authenticated user's interaction kind for the requested review.", body = GetInteractionKindPayload),
     (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
   )
 )]
 pub(crate) async fn get_interaction_kind(
   params: Query<GetInteractionKindParams>,
   AppState(db): AppState<Arc<Db>>,
+  user: User,
 ) -> Result<impl IntoResponse> {
+  let referrer = user.id();
   let kind = db
-    .interaction_kind(&params.course_id, &params.user_id, &params.referrer)
+    .interaction_kind(&params.course_id, &params.user_id, &referrer)
     .await?;
 
   Ok(Json(GetInteractionKindPayload { kind }))
@@ -48,30 +50,34 @@ pub(crate) async fn get_interaction_kind(
 pub(crate) struct GetUserInteractionForCoursePayload {
   /// Course ID the interactions belong to.
   pub(crate) course_id: String,
-  /// Referrer source the interactions were recorded from.
+  /// Authenticated user ID the interactions belong to.
   pub(crate) referrer: String,
-  /// Interactions recorded for the course and referrer.
+  /// Authenticated user's interactions for the course.
   pub(crate) interactions: Vec<Interaction>,
 }
 
 #[utoipa::path(
   get,
-  path = "/interactions/{course_id}/referrer/{referrer}",
+  path = "/interactions/{course_id}",
   tag = "interactions",
-  description = "Get all interactions for a course filtered by referrer.",
+  description = "Get the authenticated user's interactions for a course.",
+  security(
+    ("microsoftOAuth" = ["User.Read"])
+  ),
   params(
-    ("course_id" = String, Path, description = "Course ID to get interactions for."),
-    ("referrer" = String, Path, description = "Referrer source to filter interactions by.")
+    ("course_id" = String, Path, description = "Course ID to get interactions for.")
   ),
   responses(
-    (status = StatusCode::OK, description = "Interactions for the requested course and referrer.", body = GetUserInteractionForCoursePayload),
+    (status = StatusCode::OK, description = "Authenticated user's interactions for the requested course.", body = GetUserInteractionForCoursePayload),
     (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error.", body = String)
   )
 )]
 pub(crate) async fn get_user_interactions_for_course(
-  Path((course_id, referrer)): Path<(String, String)>,
+  Path(course_id): Path<String>,
   AppState(db): AppState<Arc<Db>>,
+  user: User,
 ) -> Result<impl IntoResponse> {
+  let referrer = user.id();
   info!("Fetching review interactions from {referrer} for course {course_id}",);
 
   Ok(Json(GetUserInteractionForCoursePayload {
@@ -89,10 +95,8 @@ pub(crate) struct AddInteractionBody {
   pub(crate) kind: InteractionKind,
   /// Course ID the interaction is for.
   pub(crate) course_id: String,
-  /// User ID creating the interaction.
+  /// User ID of the review author.
   pub(crate) user_id: String,
-  /// Referrer source associated with the interaction.
-  pub(crate) referrer: String,
 }
 
 #[utoipa::path(
@@ -111,7 +115,7 @@ pub(crate) struct AddInteractionBody {
 )]
 pub(crate) async fn add_interaction(
   AppState(db): AppState<Arc<Db>>,
-  _user: User,
+  user: User,
   body: Json<AddInteractionBody>,
 ) -> Result<impl IntoResponse> {
   info!(
@@ -123,9 +127,13 @@ pub(crate) async fn add_interaction(
     kind: body.kind.clone(),
     course_id: body.course_id.clone(),
     user_id: body.user_id.clone(),
-    referrer: body.referrer.clone(),
+    referrer: user.id(),
   })
-  .await?;
+  .await
+  .map_err(|error| match error {
+    db::Error::ReviewNotFound => Error::not_found("review not found"),
+    other => other.into(),
+  })?;
 
   Ok(())
 }
@@ -134,10 +142,8 @@ pub(crate) async fn add_interaction(
 pub(crate) struct DeleteInteractionBody {
   /// Course ID the interaction belongs to.
   pub(crate) course_id: String,
-  /// User ID associated with the interaction.
+  /// User ID of the review author.
   pub(crate) user_id: String,
-  /// Referrer source to remove the interaction for.
-  pub(crate) referrer: String,
 }
 
 #[utoipa::path(
@@ -156,7 +162,7 @@ pub(crate) struct DeleteInteractionBody {
 )]
 pub(crate) async fn delete_interaction(
   AppState(db): AppState<Arc<Db>>,
-  _user: User,
+  user: User,
   body: Json<DeleteInteractionBody>,
 ) -> Result<impl IntoResponse> {
   info!(
@@ -164,7 +170,7 @@ pub(crate) async fn delete_interaction(
     body.course_id, body.user_id
   );
 
-  db.delete_interaction(&body.course_id, &body.user_id, &body.referrer)
+  db.delete_interaction(&body.course_id, &body.user_id, &user.id())
     .await?;
 
   Ok(())

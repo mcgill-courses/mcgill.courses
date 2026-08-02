@@ -17,7 +17,7 @@ use {
   utoipa::{
     PartialSchema, ToSchema,
     openapi::{
-      KnownFormat, RefOr, SchemaFormat, Type,
+      RefOr, Type,
       schema::{Object, Schema},
     },
   },

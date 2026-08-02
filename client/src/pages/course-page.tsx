@@ -89,7 +89,7 @@ export const CoursePage = () => {
 
         if (user && id) {
           const courseInteractionsPayload =
-            await api.getUserInteractionsForCourse(id, user.id);
+            await api.getUserInteractionsForCourse(id);
 
           setInteractions(courseInteractionsPayload.interactions);
         }

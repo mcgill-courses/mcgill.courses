@@ -262,16 +262,16 @@ export interface Interaction {
   userId: string;
   /** ID of the course the interaction belongs to. */
   courseId: string;
-  /** Referrer source from which the interaction was made. */
+  /** ID of the user who created the interaction. */
   referrer: string;
 }
 
 export interface GetUserInteractionForCoursePayload {
   /** Course ID the interactions belong to. */
   course_id: string;
-  /** Referrer source the interactions were recorded from. */
+  /** Authenticated user ID the interactions belong to. */
   referrer: string;
-  /** Interactions recorded for the course and referrer. */
+  /** Authenticated user's interactions for the course. */
   interactions: Interaction[];
 }
 

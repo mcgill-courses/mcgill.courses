@@ -348,19 +348,31 @@ impl Db {
       .await?
       .ok_or(Error::CourseNotFound)?;
 
-    let (avg_rating, avg_difficulty) = if course.review_count == 0 {
-      (0.0, 0.0)
+    let update = if course.review_count <= 1 {
+      doc! {
+        "$set": {
+          "reviewCount": 0,
+          "avgRating": 0.0,
+          "avgDifficulty": 0.0,
+        }
+      }
     } else {
       let count = course.review_count as f32;
 
-      let rating =
+      let avg_rating =
         (course.avg_rating * count - (review.rating as f32)) / (count - 1.0);
 
-      let difficulty = (course.avg_difficulty * count
+      let avg_difficulty = (course.avg_difficulty * count
         - (review.difficulty as f32))
         / (count - 1.0);
 
-      (rating, difficulty)
+      doc! {
+        "$inc": { "reviewCount": -1 },
+        "$set": {
+          "avgRating": avg_rating,
+          "avgDifficulty": avg_difficulty,
+        }
+      }
     };
 
     course_coll
@@ -368,13 +380,7 @@ impl Db {
         doc! {
           "_id": &review.course_id
         },
-        doc! {
-          "$inc": { "reviewCount": -1 },
-          "$set": {
-            "avgRating": avg_rating,
-            "avgDifficulty": avg_difficulty,
-          }
-        },
+        update,
       )
       .session(&mut session)
       .await?;
@@ -431,6 +437,19 @@ impl Db {
 
     let review_coll =
       self.database.collection::<Review>(Self::REVIEW_COLLECTION);
+
+    if review_coll
+      .find_one(doc! {
+        "courseId": &interaction.course_id,
+        "userId": &interaction.user_id,
+      })
+      .session(&mut session)
+      .await?
+      .is_none()
+    {
+      session.abort_transaction().await?;
+      return Err(Error::ReviewNotFound);
+    }
 
     let old = interaction_coll
       .find_one_and_update(
@@ -2004,6 +2023,8 @@ mod tests {
     db.add_review(Review {
       content: "foo".into(),
       course_id: "MATH240".into(),
+      rating: 4,
+      difficulty: 3,
       user_id: "1".into(),
       ..Default::default()
     })
@@ -2015,6 +2036,12 @@ mod tests {
     assert!(db.delete_review("MATH240", "1").await.is_ok());
 
     assert_eq!(db.find_review("MATH240", "1").await.unwrap(), None);
+
+    let course = db.find_course_by_id("MATH240").await.unwrap().unwrap();
+
+    assert_eq!(course.review_count, 0);
+    assert_eq!(course.avg_rating, 0.0);
+    assert_eq!(course.avg_difficulty, 0.0);
   }
 
   #[tokio::test(flavor = "multi_thread")]
