@@ -22,12 +22,7 @@ const renderProfile = () => {
   const queryClient = createTestQueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
+      <MemoryRouter>
         <Profile />
       </MemoryRouter>
     </QueryClientProvider>

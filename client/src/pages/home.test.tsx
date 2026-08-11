@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
-import { routerFutureConfig } from '../testing/router-wrapper';
 import { Home } from './home';
 
 vi.mock('../components/course-search-bar', () => ({
@@ -29,7 +28,7 @@ vi.mock('react-helmet-async', () => ({
 
 const renderHome = () =>
   render(
-    <MemoryRouter future={routerFutureConfig}>
+    <MemoryRouter>
       <Home />
     </MemoryRouter>
   );

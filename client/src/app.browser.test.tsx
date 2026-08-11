@@ -19,7 +19,6 @@ import AuthProvider from './providers/auth-provider';
 import { DarkModeProvider } from './providers/dark-mode-provider';
 import ExploreFilterStateProvider from './providers/explore-filter-state-provider';
 import QueryProvider from './providers/query-provider';
-import { routerFutureConfig } from './testing/router-wrapper';
 
 const login = async (id = crypto.randomUUID()) => {
   const response = await fetch('/api/auth/test-login', {
@@ -44,7 +43,7 @@ const navigate = (path: string) => {
 const renderApp = () =>
   render(
     <HelmetProvider>
-      <BrowserRouter future={routerFutureConfig}>
+      <BrowserRouter>
         <DarkModeProvider>
           <LazyMotion features={domAnimation}>
             <QueryProvider>

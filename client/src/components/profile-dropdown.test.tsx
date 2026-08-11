@@ -5,7 +5,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { env } from '../lib/env';
-import { routerFutureConfig } from '../testing/router-wrapper';
 import { ProfileDropdown } from './profile-dropdown';
 
 vi.mock('@headlessui/react', () => {
@@ -52,7 +51,7 @@ describe('ProfileDropdown', () => {
 
   const renderDropdown = () =>
     render(
-      <MemoryRouter future={routerFutureConfig}>
+      <MemoryRouter>
         <ProfileDropdown />
       </MemoryRouter>
     );

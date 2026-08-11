@@ -177,10 +177,6 @@ describe('Course page', () => {
     render(
       <MemoryRouter
         initialEntries={[`/course/comp-202?review=${targetReview.userId}`]}
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
       >
         <Routes>
           <Route path='/course/:id' element={<CoursePage />} />
@@ -252,10 +248,6 @@ describe('Course page', () => {
     render(
       <MemoryRouter
         initialEntries={[`/course/comp-202?review=${review.userId}`]}
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
       >
         <Routes>
           <Route path='/course/:id' element={<CoursePage />} />

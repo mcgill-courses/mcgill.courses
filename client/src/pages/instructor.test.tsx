@@ -135,13 +135,7 @@ describe('Instructor page', () => {
     });
 
     render(
-      <MemoryRouter
-        initialEntries={['/instructor/Instructor%20Name']}
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
+      <MemoryRouter initialEntries={['/instructor/Instructor%20Name']}>
         <Routes>
           <Route path='/instructor/:name' element={<Instructor />} />
         </Routes>
@@ -173,13 +167,7 @@ describe('Instructor page', () => {
     });
 
     render(
-      <MemoryRouter
-        initialEntries={['/instructor/Instructor%20Name']}
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
+      <MemoryRouter initialEntries={['/instructor/Instructor%20Name']}>
         <Routes>
           <Route path='/instructor/:name' element={<Instructor />} />
         </Routes>
