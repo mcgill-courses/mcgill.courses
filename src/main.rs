@@ -7,11 +7,11 @@ use {
     hash::Hash,
     object::Object,
     server::Server,
+    session_store::MongodbSessionStore,
     state::State,
     user::User,
   },
   anyhow::anyhow,
-  async_mongodb_session::MongodbSessionStore,
   async_session::{Session, SessionStore, async_trait},
   aws_config::{BehaviorVersion, Region},
   aws_sdk_s3::{Client as S3Client, primitives::ByteStream},
@@ -109,6 +109,7 @@ mod options;
 mod reviews;
 mod search;
 mod server;
+mod session_store;
 mod state;
 mod subscriptions;
 mod user;
