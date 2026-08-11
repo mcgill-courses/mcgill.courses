@@ -13,6 +13,8 @@ use {
   anyhow::anyhow,
   async_mongodb_session::MongodbSessionStore,
   async_session::{Session, SessionStore, async_trait},
+  aws_config::{BehaviorVersion, Region},
+  aws_sdk_s3::{Client as S3Client, primitives::ByteStream},
   axum::{
     BoxError, Json, RequestPartsExt,
     body::Body,
@@ -32,7 +34,6 @@ use {
   clap::Parser,
   db::Db,
   dotenv::dotenv,
-  futures::TryStreamExt,
   http::{
     HeaderMap, Request, StatusCode, header, header::SET_COOKIE, request::Parts,
   },
@@ -46,9 +47,6 @@ use {
     AuthUrl, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet,
     RedirectUrl, Scope, TokenUrl, basic::BasicClient,
   },
-  rusoto_core::Region,
-  rusoto_s3::S3Client,
-  rusoto_s3::{GetObjectRequest, PutObjectOutput, PutObjectRequest, S3},
   serde::{Deserialize, Serialize},
   sha2::{Digest, Sha256},
   std::{
