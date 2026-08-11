@@ -38,7 +38,7 @@ anyhow = { workspace = true }
 async-mongodb-session = { version = "3.0.0", default-features = false, features = ["tokio-runtime"] }
 async-session = "3.0.0"
 aws-config = "1.10.1"
-aws-sdk-s3 = "1.141.0"
+aws-sdk-s3 = { version = "1.141.0", default-features = false, features = ["default-https-client", "rt-tokio", "sigv4a"] }
 axum = { version = "0.8.8", features = ["json"] }
 axum-extra = { version = "0.12.5", features = ["cookie", "typed-header"] }
 base64 = "0.22.1"
