@@ -46,7 +46,6 @@ chrono = { workspace = true }
 clap = { workspace = true }
 db = { path = "crates/db" }
 dotenv = { workspace = true }
-futures = { workspace = true }
 http = "1.4.0"
 indoc = "2.0.7"
 model = { path = "crates/model" }
