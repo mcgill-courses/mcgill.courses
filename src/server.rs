@@ -54,9 +54,21 @@ impl Server {
         None
       };
 
-      let prev_hash = match client {
-        Some(ref client) => client.get("mcgill.courses", "source-hash").await?,
-        None => None,
+      let prev_hash = if let Some(client) = &client {
+        match client
+          .get_object()
+          .bucket("mcgill.courses")
+          .key("source-hash")
+          .send()
+          .await
+        {
+          Ok(response) => {
+            Some(response.body.collect().await?.into_bytes().to_vec())
+          }
+          Err(_) => None,
+        }
+      } else {
+        None
       };
 
       if Some(&source_hash) != prev_hash.as_ref() {
@@ -64,7 +76,11 @@ impl Server {
 
         if let Some(client) = client {
           client
-            .put("mcgill.courses", "source-hash", source_hash)
+            .put_object()
+            .bucket("mcgill.courses")
+            .key("source-hash")
+            .body(ByteStream::from(source_hash))
+            .send()
             .await?;
         }
 

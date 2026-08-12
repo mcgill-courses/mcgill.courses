@@ -5,14 +5,13 @@ use {
     documentation::Documentation,
     error::Error,
     hash::Hash,
-    object::Object,
     server::Server,
     state::State,
     user::User,
   },
   anyhow::anyhow,
   async_mongodb_session::MongodbSessionStore,
-  async_session::{Session, SessionStore, async_trait},
+  async_session::{Session, SessionStore},
   aws_config::{BehaviorVersion, Region},
   aws_sdk_s3::{Client as S3Client, primitives::ByteStream},
   axum::{
@@ -94,6 +93,9 @@ use {
   walkdir::WalkDir,
 };
 
+#[cfg(test)]
+use async_session::async_trait;
+
 mod assets;
 mod auth;
 mod course_averages;
@@ -104,7 +106,6 @@ mod hash;
 mod instructors;
 mod interactions;
 mod notifications;
-mod object;
 mod options;
 mod reviews;
 mod search;
