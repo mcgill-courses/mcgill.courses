@@ -44,12 +44,12 @@ impl Server {
       let source_hash = self.source.hash()?;
 
       let client = if env::var("ENV").is_ok_and(|env| env == "production") {
-        let config = aws_config::defaults(BehaviorVersion::latest())
-          .region(Region::new("us-east-1"))
-          .load()
-          .await;
-
-        Some(S3Client::new(&config))
+        Some(S3Client::new(
+          &aws_config::defaults(BehaviorVersion::latest())
+            .region(Region::new("us-east-1"))
+            .load()
+            .await,
+        ))
       } else {
         None
       };
