@@ -43,9 +43,15 @@ impl Server {
     if self.initialize {
       let source_hash = self.source.hash()?;
 
-      let client = match env::var("ENV") {
-        Ok(env) if env == "production" => Some(S3Client::new(Region::UsEast1)),
-        _ => None,
+      let client = if env::var("ENV").is_ok_and(|env| env == "production") {
+        Some(S3Client::new(
+          &aws_config::defaults(BehaviorVersion::latest())
+            .region(Region::new("us-east-1"))
+            .load()
+            .await,
+        ))
+      } else {
+        None
       };
 
       let prev_hash = match client {
