@@ -4560,7 +4560,6 @@ dependencies = [
  "clap",
  "db",
  "dotenv",
- "futures",
  "http 1.4.2",
  "hyper",
  "indoc",
