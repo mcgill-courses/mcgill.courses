@@ -114,12 +114,7 @@ describe('NotificationDropdown', () => {
     const setNotifications = vi.fn();
 
     render(
-      <MemoryRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
+      <MemoryRouter>
         <NotificationDropdown
           notifications={notifications}
           setNotifications={setNotifications}
