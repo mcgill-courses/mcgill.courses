@@ -10,7 +10,7 @@ impl MongodbSessionStore {
     uri: &str,
     db_name: &str,
     collection_name: &str,
-  ) -> mongodb::error::Result<Self> {
+  ) -> Result<Self> {
     let collection = MongoClient::with_uri_str(uri)
       .await?
       .database(db_name)
@@ -23,7 +23,7 @@ impl MongodbSessionStore {
     Ok(store)
   }
 
-  async fn initialize(&self) -> mongodb::error::Result<()> {
+  async fn initialize(&self) -> Result {
     self
       .collection
       .create_index(
@@ -117,7 +117,10 @@ impl SessionStore for MongodbSessionStore {
 
   async fn clear_store(&self) -> SessionResult {
     self.collection.drop().await?;
-    self.initialize().await?;
+    self
+      .initialize()
+      .await
+      .map_err(|error| anyhow!(error.to_string()))?;
     Ok(())
   }
 }
