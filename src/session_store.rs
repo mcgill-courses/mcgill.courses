@@ -117,10 +117,12 @@ impl SessionStore for MongodbSessionStore {
 
   async fn clear_store(&self) -> SessionResult {
     self.collection.drop().await?;
+
     self
       .initialize()
       .await
       .map_err(|error| anyhow!(error.to_string()))?;
+
     Ok(())
   }
 }
