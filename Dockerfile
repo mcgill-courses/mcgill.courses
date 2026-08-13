@@ -16,7 +16,7 @@ ENV VITE_GOOGLE_API_KEY=$VITE_GOOGLE_API_KEY
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm --filter client run build --mode=production
 
-FROM rust:1.90-slim-bullseye as server
+FROM rust:1.94.1-slim-bullseye AS server
 
 WORKDIR /usr/src/app
 COPY . .
