@@ -75,7 +75,7 @@ jobs:
         with:
           toolchain: stable
 
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
+      - uses: Swatinem/rust-cache@f0d9c3887740aee45f6153b24b3a6b815192ec16
 
       - name: Install mongodb
         run: |
@@ -121,7 +121,7 @@ jobs:
           target: x86_64-unknown-linux-musl
           components: llvm-tools-preview
 
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
+      - uses: Swatinem/rust-cache@f0d9c3887740aee45f6153b24b3a6b815192ec16
 
       - name: Info
         run: |
@@ -170,7 +170,7 @@ jobs:
           components: clippy, rustfmt
           toolchain: stable
 
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
+      - uses: Swatinem/rust-cache@f0d9c3887740aee45f6153b24b3a6b815192ec16
 
       - name: Install mongodb
         run: |
