@@ -5,9 +5,11 @@ import { PropsWithChildren } from 'react';
 import * as Yup from 'yup';
 
 import type { AddOrUpdateReviewBody, Course } from '../lib/types';
+import { compareTerms, getCurrentTerm, getRecentTerms } from '../lib/utils';
 import { BirdIcon } from './bird-icon';
 import { IconRatingInput } from './icon-rating-input';
 import { MultiSelect } from './ui/multi-select';
+import { Select } from './ui/select';
 
 export const ReviewSchema = Yup.object().shape({
   content: Yup.string()
@@ -22,6 +24,7 @@ export const ReviewSchema = Yup.object().shape({
     .min(1, 'Difficulty must be between 1 and 5')
     .max(5, 'Difficulty must be between 1 and 5')
     .required('Difficulty is required'),
+  term: Yup.string(),
 });
 
 type FieldErrorProps = {
@@ -99,6 +102,10 @@ export const ReviewForm = ({
 
   instructorNames.push('Other');
 
+  const termOptions: string[] = Array.from(
+    new Set([...course.terms, ...getRecentTerms()])
+  ).sort(compareTerms);
+
   return (
     <>
       <FieldLabel htmlFor='instructors'>Instructor(s)</FieldLabel>
@@ -111,6 +118,15 @@ export const ReviewForm = ({
         values={values.instructors}
       />
       <FieldError name='instructors' />
+
+      <FieldLabel htmlFor='term'>Term</FieldLabel>
+      <Select
+        className='mt-2'
+        options={termOptions}
+        value={values.term ?? getCurrentTerm()}
+        setValue={(term) => setFieldValue('term', term)}
+      />
+
       <div className='flex gap-x-10'>
         <div className='flex flex-col gap-y-1'>
           <FieldLabel htmlFor='rating'>Rating</FieldLabel>
