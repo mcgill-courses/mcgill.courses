@@ -193,7 +193,7 @@ jobs:
           ./bin/forbid
 
       - name: Unused dependencies
-        uses: bnjbvr/cargo-machete@c78956ec6ebce8ecde709a045eb4d7fbf4d0860b
+        uses: bnjbvr/cargo-machete@135555c9cd9f3b4723dee2766f0cacb99aac092b
 
       - name: Build
         run: cargo build --workspace --all-features --all-targets
