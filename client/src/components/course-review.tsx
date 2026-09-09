@@ -23,6 +23,7 @@ import type { Interaction } from '../lib/types';
 import { InteractionKind } from '../lib/types';
 import { courseIdToUrlParam, spliceCourseCode } from '../lib/utils';
 import { BirdIcon } from './bird-icon';
+import { Highlight } from './highlight';
 import { IconRating } from './icon-rating';
 import { DeleteButton } from './ui/delete-button';
 import { Tooltip } from './ui/tooltip';
@@ -30,19 +31,31 @@ import { Tooltip } from './ui/tooltip';
 // Timestamp of https://github.com/terror/mcgill.courses/pull/500
 const RMP_SCRAPE_EPOCH = new Date(1713472800 * 1000);
 
-const formatReviewContent = (content: string): ReactNode[] => {
+const formatReviewContent = (content: string, query?: string): ReactNode[] => {
   const parts = content.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
 
   return parts.filter(Boolean).map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i}>{part.slice(2, -2)}</strong>;
+      return (
+        <strong key={i}>
+          <Highlight text={part.slice(2, -2)} query={query} />
+        </strong>
+      );
     }
 
     if (part.startsWith('*') && part.endsWith('*')) {
-      return <em key={i}>{part.slice(1, -1)}</em>;
+      return (
+        <em key={i}>
+          <Highlight text={part.slice(1, -1)} query={query} />
+        </em>
+      );
     }
 
-    return <Fragment key={i}>{part}</Fragment>;
+    return (
+      <Fragment key={i}>
+        <Highlight text={part} query={query} />
+      </Fragment>
+    );
   });
 };
 
@@ -218,6 +231,7 @@ type CourseReviewProps = {
   interactions?: Interaction[];
   openEditReview: () => void;
   review: Review;
+  searchQuery?: string;
   showCourse?: boolean;
   updateLikes?: (likes: number) => void;
 };
@@ -238,6 +252,7 @@ export const CourseReview = ({
   interactions,
   openEditReview,
   review,
+  searchQuery,
   updateLikes,
 }: CourseReviewProps) => {
   const [readMore, setReadMore] = useState(false);
@@ -469,7 +484,7 @@ export const CourseReview = ({
               if (!shouldTruncate) {
                 return (
                   <div className='mt-2 mr-4 ml-1 text-left wrap-break-word hyphens-auto whitespace-pre-wrap text-gray-800 dark:text-gray-300'>
-                    {formatReviewContent(review.content)}
+                    {formatReviewContent(review.content, searchQuery)}
                   </div>
                 );
               }
@@ -478,7 +493,8 @@ export const CourseReview = ({
                 <>
                   <div className='mt-2 mr-4 ml-1 text-left wrap-break-word hyphens-auto whitespace-pre-wrap text-gray-800 dark:text-gray-300'>
                     {formatReviewContent(
-                      review.content.substring(0, 300) + '...'
+                      review.content.substring(0, 300) + '...',
+                      searchQuery
                     )}
                   </div>
                   <button

@@ -1,8 +1,17 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from 'react';
+import { Index } from 'flexsearch';
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import type { Review } from '../lib/types';
 import type { Course } from '../lib/types';
 import { uniq } from '../lib/utils';
+import { SearchBar } from './search-bar';
 import { Autocomplete } from './ui/autocomplete';
 import { ResetButton } from './ui/reset-button';
 
@@ -24,7 +33,10 @@ type ReviewFilterProps = {
   allReviews: Review[];
   sortBy: ReviewSortType;
   selectedInstructor: string;
+  searchQuery: string;
+  setSearchQuery: Dispatch<SetStateAction<string>>;
   setReviews: Dispatch<SetStateAction<Review[]>>;
+  setStatsReviews: Dispatch<SetStateAction<Review[]>>;
   setShowAllReviews: Dispatch<SetStateAction<boolean>>;
   setSelectedInstructor: Dispatch<SetStateAction<string>>;
   setSortBy: Dispatch<SetStateAction<ReviewSortType>>;
@@ -35,46 +47,61 @@ export const ReviewFilter = ({
   allReviews,
   sortBy,
   selectedInstructor,
+  searchQuery,
+  setSearchQuery,
   setReviews,
+  setStatsReviews,
   setShowAllReviews,
   setSortBy,
   setSelectedInstructor,
 }: ReviewFilterProps) => {
   const previousSortRef = useRef<ReviewSortType>(sortBy);
   const previousInstructorRef = useRef<string>(selectedInstructor);
+  const reviewIndex = useMemo(() => {
+    const index = new Index({ tokenize: 'forward' });
+    allReviews.forEach((review, i) => {
+      index.add(i, review.content);
+    });
+    return index;
+  }, [allReviews]);
+
+  const matchesInstructor = (review: Review) =>
+    selectedInstructor === '' ||
+    review.instructors
+      .map((ins) => ins.toLowerCase())
+      .includes(selectedInstructor.toLowerCase());
 
   useEffect(() => {
+    const baseReviews = searchQuery.trim()
+      ? (
+          reviewIndex.search(searchQuery, { limit: allReviews.length }) ?? []
+        ).map((id) => allReviews[id as number])
+      : allReviews;
+    const instructorFilteredReviews = allReviews.filter(matchesInstructor);
+    setStatsReviews(instructorFilteredReviews);
     setReviews(
-      allReviews
-        .filter(
-          (review: Review) =>
-            selectedInstructor === '' ||
-            review.instructors
-              .map((ins) => ins.toLowerCase())
-              .includes(selectedInstructor.toLowerCase())
-        )
-        .sort((a: Review, b: Review) => {
-          switch (sortBy) {
-            case 'Most Recent':
-              return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
-            case 'Least Recent':
-              return parseInt(a.timestamp, 10) - parseInt(b.timestamp, 10);
-            case 'Highest Rating':
-              return b.rating - a.rating;
-            case 'Lowest Rating':
-              return a.rating - b.rating;
-            case 'Hardest':
-              return b.difficulty - a.difficulty;
-            case 'Easiest':
-              return a.difficulty - b.difficulty;
-            case 'Most Liked':
-              return b.likes - a.likes;
-            case 'Most Disliked':
-              return a.likes - b.likes;
-            default:
-              return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
-          }
-        })
+      baseReviews.filter(matchesInstructor).sort((a: Review, b: Review) => {
+        switch (sortBy) {
+          case 'Most Recent':
+            return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
+          case 'Least Recent':
+            return parseInt(a.timestamp, 10) - parseInt(b.timestamp, 10);
+          case 'Highest Rating':
+            return b.rating - a.rating;
+          case 'Lowest Rating':
+            return a.rating - b.rating;
+          case 'Hardest':
+            return b.difficulty - a.difficulty;
+          case 'Easiest':
+            return a.difficulty - b.difficulty;
+          case 'Most Liked':
+            return b.likes - a.likes;
+          case 'Most Disliked':
+            return a.likes - b.likes;
+          default:
+            return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
+        }
+      })
     );
 
     const sortChanged = previousSortRef.current !== sortBy;
@@ -88,20 +115,32 @@ export const ReviewFilter = ({
 
     previousSortRef.current = sortBy;
     previousInstructorRef.current = selectedInstructor;
-  }, [sortBy, selectedInstructor, allReviews]);
+  }, [sortBy, selectedInstructor, allReviews, searchQuery, reviewIndex]);
 
   const reset = () => {
     setSortBy('Most Recent');
     setSelectedInstructor('');
+    setSearchQuery('');
   };
 
   useEffect(reset, [course]);
 
   const sorts = useMemo(() => sortTypes.slice(), []);
   const uniqueInstructors = uniq(course.instructors.map((ins) => ins.name));
+  const [searchSelected, setSearchSelected] = useState(false);
 
   return (
     <div className='rounded-lg dark:bg-neutral-900 dark:text-gray-200'>
+      <div className='mb-3'>
+        <SearchBar
+          value={searchQuery}
+          handleInputChange={setSearchQuery}
+          searchSelected={searchSelected}
+          setSearchSelected={setSearchSelected}
+          inputStyle='block w-full rounded-full border border-gray-300 bg-gray-100 p-2 pl-9 text-sm text-black outline-none dark:border-gray-700 dark:bg-neutral-800 dark:text-gray-200 dark:placeholder:text-neutral-500'
+          placeholder='Search reviews...'
+        />
+      </div>
       <div className='xs:mt-0 xs:flex xs:items-center relative mt-6'>
         <div className='p-1'>
           <div className='flex max-w-sm gap-x-2'>

@@ -143,8 +143,8 @@ describe('CourseReview', () => {
       />
     );
 
-    expect(screen.getByText('small').tagName).toBe('EM');
-    expect(screen.getByText('test').tagName).toBe('STRONG');
+    expect(screen.getByText('small').closest('em')).toBeInTheDocument();
+    expect(screen.getByText('test').closest('strong')).toBeInTheDocument();
   });
 
   it('renders scroll attachment when requested', () => {
