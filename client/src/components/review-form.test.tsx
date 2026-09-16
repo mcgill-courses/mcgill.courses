@@ -40,6 +40,9 @@ vi.mock('lucide-react', () => ({
   Flame: (props: Record<string, unknown>) => (
     <svg data-testid='flame-icon' {...props} />
   ),
+  ChevronDown: (props: Record<string, unknown>) => (
+    <svg data-testid='chevron-down-icon' {...props} />
+  ),
 }));
 
 vi.mock('./bird-icon', () => ({
