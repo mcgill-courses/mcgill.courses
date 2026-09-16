@@ -21,6 +21,8 @@ pub struct Review {
   /// Timestamp when the review was created or last updated.
   #[typeshare(serialized_as = "String")]
   pub timestamp: DateTime,
+  /// The term this review was written for (e.g. "Fall 2025").
+  pub term: Option<String>,
   /// The user ID of the review author.
   pub user_id: String,
 }
@@ -35,6 +37,7 @@ impl Default for Review {
       likes: 0,
       rating: 0,
       timestamp: DateTime::from_millis(0),
+      term: None,
       user_id: String::new(),
     }
   }
@@ -50,6 +53,7 @@ impl Into<Bson> for Review {
       "rating": self.rating,
       "timestamp": self.timestamp.timestamp_millis().to_string(),
       "userId": self.user_id,
+      "term": self.term,
       "likes": self.likes
     })
   }
@@ -74,6 +78,7 @@ mod tests {
       likes: 5,
       rating: 4,
       timestamp,
+      term: None,
       user_id: "user123".to_string(),
     };
 
@@ -245,6 +250,7 @@ mod tests {
       likes: 10,
       rating: 5,
       timestamp: DateTime::from_millis(1672531200000), // 2023-01-01 00:00:00 UTC
+      term: None,
       user_id: "user456".to_string(),
     };
 
@@ -254,5 +260,42 @@ mod tests {
       serde_json::from_value(json).expect("failed to deserialize");
 
     assert_eq!(original, deserialized);
+  }
+
+  #[test]
+  fn serialize_term_when_present() {
+    let review = Review {
+      content: "Amazing course".to_string(),
+      course_id: "CSC101".to_string(),
+      difficulty: 3,
+      instructors: vec![],
+      likes: 0,
+      rating: 4,
+      timestamp: DateTime::from_millis(1640995200000),
+      user_id: "user123".to_string(),
+      term: Some("Fall 2025".to_string()),
+    };
+
+    let json = serde_json::to_value(&review).expect("failed to serialize");
+    assert_eq!(json["term"], Value::String("Fall 2025".to_string()));
+  }
+
+  #[test]
+  fn serialize_term_when_absent() {
+    let review = Review {
+      content: "Great course".to_string(),
+      course_id: "COMP101".to_string(),
+      difficulty: 3,
+      instructors: vec![],
+      likes: 0,
+      rating: 4,
+      timestamp: DateTime::from_millis(1640995200000),
+      user_id: "user123".to_string(),
+      term: None,
+    };
+
+  let json = serde_json::to_value(&review).expect("failed to serialize");
+
+  assert!(json["term"].is_null());
   }
 }
