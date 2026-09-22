@@ -33,7 +33,7 @@
     "react-router-dom": "^7.18.0",
     "react-vis-graph-wrapper": "^0.1.3",
     "recharts": "^3.6.0",
-    "sonner": "^2.0.7",
+    "sonner": "^2.0.8",
     "tailwind-merge": "^3.6.0",
     "yup": "^1.7.1"
   },
