@@ -3366,9 +3366,9 @@ checksum = "851fac73f7fe22f6a3ab87f720ce509cae7c9fd08e7dd27866cc232dee07ccf4"
 
 [[package]]
 name = "mongodb"
-version = "3.8.0"
+version = "3.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b814038f367d212f55de0a630cb35102a9b8ca23785a86955d62c0087c93846d"
+checksum = "af84443ae9878f59a6818686f339064479f42cdf293c4c637d8fc9c0a8c5eed6"
 dependencies = [
  "base64 0.22.1",
  "bitflags 2.13.0",
@@ -3413,9 +3413,9 @@ dependencies = [
 
 [[package]]
 name = "mongodb-internal-macros"
-version = "3.8.0"
+version = "3.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f736d2fbc56e0011a341fbb9172bd822fda75c5f93b82fae1c7aab1e2613c810"
+checksum = "504024bbb83ab1bf1512007f7288b54d3a6343043f3f619c26a153346773598d"
 dependencies = [
  "macro_magic",
  "proc-macro2",
