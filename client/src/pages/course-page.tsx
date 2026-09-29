@@ -47,11 +47,14 @@ export const CoursePage = () => {
   const [selectedInstructor, setSelectedInstructor] = useState('');
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [showingReviews, setShowingReviews] = useState<Review[]>([]);
+  const [statsReviews, setStatsReviews] = useState<Review[]>([]);
   const [sortBy, setSortBy] = useState<ReviewSortType>('Most Recent');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     firstFetch.current = true;
     setShowAllReviews(false);
+    setSearchQuery('');
     lastScrollTarget.current = null;
   }, [params.id]);
 
@@ -263,7 +266,7 @@ export const CoursePage = () => {
       </Helmet>
 
       <div className='mx-auto mt-10 max-w-6xl md:mt-0'>
-        <CourseInfo course={course} reviews={showingReviews} />
+        <CourseInfo course={course} reviews={statsReviews} />
         <div className='py-2.5' />
         <div className='hidden gap-x-6 lg:grid lg:grid-cols-5'>
           <div className='col-span-3'>
@@ -284,11 +287,14 @@ export const CoursePage = () => {
                   course={course}
                   allReviews={allReviews ?? []}
                   setReviews={setShowingReviews}
+                  setStatsReviews={setStatsReviews}
                   setShowAllReviews={setShowAllReviews}
                   sortBy={sortBy}
                   selectedInstructor={selectedInstructor}
                   setSortBy={setSortBy}
                   setSelectedInstructor={setSelectedInstructor}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
                 />
               </div>
             ) : (
@@ -334,6 +340,7 @@ export const CoursePage = () => {
                           key={desktopAnchorId}
                           openEditReview={() => setEditReviewOpen(true)}
                           review={review}
+                          searchQuery={searchQuery}
                           attachment={ReviewAttachment.CopyButton}
                           updateLikes={updateLikes(review)}
                         />
@@ -391,11 +398,14 @@ export const CoursePage = () => {
                     course={course}
                     allReviews={allReviews ?? []}
                     setReviews={setShowingReviews}
+                    setStatsReviews={setStatsReviews}
                     setShowAllReviews={setShowAllReviews}
                     sortBy={sortBy}
                     selectedInstructor={selectedInstructor}
                     setSortBy={setSortBy}
                     setSelectedInstructor={setSelectedInstructor}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
                   />
                 </div>
               ) : (
@@ -444,6 +454,7 @@ export const CoursePage = () => {
                             key={mobileAnchorId}
                             openEditReview={() => setEditReviewOpen(true)}
                             review={review}
+                            searchQuery={searchQuery}
                             interactions={interactions}
                             attachment={ReviewAttachment.CopyButton}
                             updateLikes={updateLikes(review)}
