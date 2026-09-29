@@ -57,8 +57,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0(react@19.2.7)
       react-infinite-scroll-component:
-        specifier: ^7.2.0
-        version: 7.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^7.2.1
+        version: 7.2.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-router-dom:
         specifier: ^7.18.0
         version: 7.18.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1968,8 +1968,8 @@ packages:
     peerDependencies:
       react: ^16.6.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  react-infinite-scroll-component@7.2.0:
-    resolution: {integrity: sha512-oX0jgsm5wM2tT8sIxGUDZIBloXinfHmjWRduPk5AVTQ4KC7FW75wyp03VCUBDT8f9ousFK3vLiIcWoA5y+siOA==}
+  react-infinite-scroll-component@7.2.1:
+    resolution: {integrity: sha512-yPuEf6VHBJXFt+YXDxjlnAuhorUwiA2cKURx/P6a7WW3k+TvwY/mbx7KP1rQ1hxGzDcwreczRyLIv6eSd1sFIw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=17'
@@ -3999,7 +3999,7 @@ snapshots:
       react-fast-compare: 3.2.2
       shallowequal: 1.1.0
 
-  react-infinite-scroll-component@7.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  react-infinite-scroll-component@7.2.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
