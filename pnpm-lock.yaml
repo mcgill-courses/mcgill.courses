@@ -39,8 +39,8 @@ importers:
         specifier: ^2.4.9
         version: 2.4.9(@types/react@19.2.17)(react@19.2.7)
       framer-motion:
-        specifier: ^13.2.0
-        version: 13.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^14.4.0
+        version: 14.4.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       lucide-react:
         specifier: ^1.52.0
         version: 1.52.0(@types/react@19.2.17)(react@19.2.7)
@@ -1433,8 +1433,8 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
 
-  framer-motion@13.2.0:
-    resolution: {integrity: sha512-9E33ebgMaO33w1nN/jEdW8z3/GO483fMi4rqbMG9rt83XgW9QLKRe4NcmJ8s+fQ3O34++UHrIQwlIWGIWTITjA==}
+  framer-motion@14.4.0:
+    resolution: {integrity: sha512-HtO1fxord2rnXYRyr1laG4uY7+OtgwDc9Szcg1wlMq/LF7BO3/S7a+KEo691U7pSi+i0ueRuRqaD1UaLEmZHuQ==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -1791,11 +1791,11 @@ packages:
     resolution: {integrity: sha512-MOwgjc8tfrpn5QQEvjijjmDVtMw2oL88ugTevzxQnzRLm6l3fVEF2gzU0kYeYYKD8C66+IdGX6peJ4MyUlUnPg==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  motion-dom@13.2.0:
-    resolution: {integrity: sha512-N6gdSoWRDk0Rh/fVtlqUtLs+fEN3ELFZI3cn3IQE9Mnf3E+Mh8wjO6MstzCOPFh4Yf0L1as5m2eUyYWj8ylVSQ==}
+  motion-dom@14.4.0:
+    resolution: {integrity: sha512-1q8RyHSdr5COpzrv3JgJ9XRjOO88ZN9CwflpkGgyO/SR/SNRP/dD6EU8SEo092kcKY34IzHC5diJPKrQRMA8lQ==}
 
-  motion-utils@13.0.0:
-    resolution: {integrity: sha512-7DnN7TmbLcYXcG4RVadXIihWlyuM9afoUww8Y5Agg431kGKiuL2/OMyP4mJ5wLz+pvN3t5ySClLOaVXJ+wekRQ==}
+  motion-utils@14.1.1:
+    resolution: {integrity: sha512-3VvN5Uvf8B6qG+OfOui6Nht5EWp+vLuU3IqcAj7ItZGKqtmTjCebl5sGZF7/08gEHRnEl1AP/fIwbcEyVrcQGQ==}
 
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -3578,10 +3578,10 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  framer-motion@13.2.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  framer-motion@14.4.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
-      motion-dom: 13.2.0
-      motion-utils: 13.0.0
+      motion-dom: 14.4.0
+      motion-utils: 14.1.1
       tslib: 2.8.1
     optionalDependencies:
       react: 19.2.7
@@ -3876,11 +3876,11 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.9
 
-  motion-dom@13.2.0:
+  motion-dom@14.4.0:
     dependencies:
-      motion-utils: 13.0.0
+      motion-utils: 14.1.1
 
-  motion-utils@13.0.0: {}
+  motion-utils@14.1.1: {}
 
   mrmime@2.0.1: {}
 
