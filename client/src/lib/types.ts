@@ -13,6 +13,8 @@ export interface AddOrUpdateReviewBody {
   rating: number;
   /** Difficulty rating out of 5 (1-5). */
   difficulty: number;
+  /** The term the review is for (e.g. "Fall 2025"). */
+  term?: string;
 }
 
 export interface TimeBlock {
@@ -207,6 +209,8 @@ export interface Review {
   rating: number;
   /** Timestamp when the review was created or last updated. */
   timestamp: string;
+  /** The term this review was written for (e.g. "Fall 2025"). */
+  term?: string;
   /** The user ID of the review author. */
   userId: string;
 }

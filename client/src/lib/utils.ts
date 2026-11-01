@@ -156,6 +156,34 @@ export const getCurrentTerms = (): [string, string, string] => {
 };
 
 /**
+ * Returns a chronological range of academic terms centered on the current term,
+ * spanning back through last year's equivalent term and forward through the
+ * next two terms. Useful as a term picker's option list when no other source
+ * of valid terms (e.g. a course's offered terms) is available.
+ *
+ * @returns {string[]} Terms in chronological order, oldest first
+ */
+export const getRecentTerms = (): string[] => {
+  const [currentSeason, currentYearString] = getCurrentTerm().split(' ');
+  const currentYear = parseInt(currentYearString, 10);
+  const currentIndex = TERM_ORDER.indexOf(currentSeason);
+
+  const termsBack = 3;
+  const termsForward = 2;
+
+  const terms: string[] = [];
+
+  for (let offset = -termsBack; offset <= termsForward; offset++) {
+    const index = currentIndex + offset;
+    const season = TERM_ORDER[((index % 3) + 3) % 3];
+    const year = currentYear + Math.floor(index / 3);
+    terms.push(`${season} ${year}`);
+  }
+
+  return terms;
+};
+
+/**
  * Generates a stable DOM anchor identifier for a review.
  *
  * Uses the author ID, which is unique per course review, to produce repeatable anchors.
