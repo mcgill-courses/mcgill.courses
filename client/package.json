@@ -48,7 +48,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
-    "@vitest/browser-playwright": "4.1.10",
+    "@vitest/browser-playwright": "5.1.0",
     "@vitest/coverage-v8": "4.1.10",
     "eslint": "^10.11.0",
     "globals": "^17.13.0",
