@@ -7,7 +7,11 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vitest/globals", "@testing-library/jest-dom", "google.maps"],
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom/vitest",
+      "google.maps"
+    ],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "noEmit": true,
