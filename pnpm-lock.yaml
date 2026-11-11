@@ -30,8 +30,8 @@ importers:
         specifier: ^5.103.2
         version: 5.103.2(react@19.2.7)
       '@vis.gl/react-google-maps':
-        specifier: ^1.5.5
-        version: 1.5.5(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^1.10.2
+        version: 1.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       flexsearch:
         specifier: ^0.8.212
         version: 0.8.212
@@ -96,6 +96,9 @@ importers:
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^6.0.2
         version: 6.0.2(prettier@3.9.10)
+      '@types/google.maps':
+        specifier: ^3.66.9
+        version: 3.66.9
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.5
@@ -355,6 +358,9 @@ packages:
 
   '@fontsource/inter@5.3.0':
     resolution: {integrity: sha512-RofMylZmjlJEfELXeNHFWBRcSs75rGU/6bV2S2jfnvv/3rPXPGe0LgUJTklcHZ9lM4OZmAVFhcJPnACfb91A3g==}
+
+  '@googlemaps/js-api-loader@2.1.3':
+    resolution: {integrity: sha512-1t6umwRufEGzIPjHPjPeuuY1dCal0zU2bZeomkf4OA0MprFdlKCnXY3zeFkzDaCvKjwbFubeapm61P5+EbrAoA==}
 
   '@headlessui/react@1.7.19':
     resolution: {integrity: sha512-Ll+8q3OlMJfJbAKM/+/Y2q6PPYbryqNTXDbryx7SXLIDamkF6iQFbriYHga0dY44PvDhvvBWCx1Xj4U5+G4hOw==}
@@ -974,8 +980,8 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
-  '@types/google.maps@3.58.1':
-    resolution: {integrity: sha512-X9QTSvGJ0nCfMzYOnaVs/k6/4L+7F5uCS+4iUmkLEls6J9S/Phv+m/i3mDeyc49ZBgwab3EFO1HEoBY7k98EGQ==}
+  '@types/google.maps@3.66.9':
+    resolution: {integrity: sha512-6OmfZjuSMDG5oTzW6f2JM1by1rUrdCMBxtru2OJXfX44N3DqQSh8lEgwZbrHjoswYiapRf30vUCHjTs9sKDJdQ==}
 
   '@types/hammerjs@2.0.46':
     resolution: {integrity: sha512-ynRvcq6wvqexJ9brDMS4BnBLzmr0e14d6ZJTEShTBWKymQiHwlAyGu0ZPEFI2Fh1U53F7tN9ufClWM5KvqkKOw==}
@@ -1064,8 +1070,8 @@ packages:
     resolution: {integrity: sha512-SB8xqipSzZHUePCCLNeYxqnxq83X61/qzNhjQGbTfjxGZIeOEP7tBgWYX05Tcd6CgE02WdTJnh5b8kMZJ/+bnQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@vis.gl/react-google-maps@1.5.5':
-    resolution: {integrity: sha512-LgHtK1AtE2/BN4dPoK05oWu0jWmeDdyX0Ffqi+mZc+M4apaHn2sUxxKXAxhPF90O9vcsiou/ntm6/XBWX+gpqw==}
+  '@vis.gl/react-google-maps@1.10.2':
+    resolution: {integrity: sha512-2cVOoaum3UDBDWhQwDGg8YxhFBIZ/B9YmRJxuHPZcCPMEf9VfqEw3ZRgD5GUXC9OA/0cbYx250obvZGPmBOIkw==}
     peerDependencies:
       react: '>=16.8.0 || ^19.0 || ^19.0.0-rc'
       react-dom: '>=16.8.0 || ^19.0 || ^19.0.0-rc'
@@ -1377,6 +1383,10 @@ packages:
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
+
+  fast-equals@6.2.2:
+    resolution: {integrity: sha512-n+XqoarWCgcar0O3om3DeNYx6xTuLWGTUF1bRZ9iuO00tsPepzP1L4V7rqtxxZ4PEya34UCESReimFvxmEVwIA==}
+    engines: {node: '>=6.0.0'}
 
   fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
@@ -2524,6 +2534,10 @@ snapshots:
 
   '@fontsource/inter@5.3.0': {}
 
+  '@googlemaps/js-api-loader@2.1.3':
+    dependencies:
+      '@types/google.maps': 3.66.9
+
   '@headlessui/react@1.7.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@tanstack/react-virtual': 3.13.12(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -2944,7 +2958,7 @@ snapshots:
 
   '@types/estree@1.0.9': {}
 
-  '@types/google.maps@3.58.1': {}
+  '@types/google.maps@3.66.9': {}
 
   '@types/hammerjs@2.0.46': {}
 
@@ -3062,10 +3076,11 @@ snapshots:
       '@typescript-eslint/types': 8.72.1
       eslint-visitor-keys: 5.0.1
 
-  '@vis.gl/react-google-maps@1.5.5(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@vis.gl/react-google-maps@1.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@types/google.maps': 3.58.1
-      fast-deep-equal: 3.1.3
+      '@googlemaps/js-api-loader': 2.1.3
+      '@types/google.maps': 3.66.9
+      fast-equals: 6.2.2
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
@@ -3385,6 +3400,8 @@ snapshots:
   expect-type@1.4.0: {}
 
   fast-deep-equal@3.1.3: {}
+
+  fast-equals@6.2.2: {}
 
   fast-json-stable-stringify@2.1.0: {}
 
