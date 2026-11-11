@@ -44,7 +44,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115
 
       - name: Info
         run: |
@@ -108,7 +108,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115
 
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
@@ -193,7 +193,7 @@ jobs:
           ./bin/forbid
 
       - name: Unused dependencies
-        uses: bnjbvr/cargo-machete@c25c629b05e3ecb0295a5e33bd82821cf24937ba
+        uses: bnjbvr/cargo-machete@99f843249f0c292f558d3cee4d06661851cbd2c9
 
       - name: Build
         run: cargo build --workspace --all-features --all-targets
@@ -223,4 +223,4 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b
+      - uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd
