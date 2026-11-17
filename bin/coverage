@@ -32,7 +32,7 @@ else
 fi
 
 grcov . \
-  --binary-path ./target/debug/deps \
+  --binary-path ./target/debug \
   -s . \
   -t $FMT \
   --branch \
