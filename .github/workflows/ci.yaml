@@ -37,7 +37,7 @@ jobs:
           ACTIONLINT: ${{ steps.actionlint.outputs.executable }}
 
   client:
-    runs-on: macos-latest
+    runs-on: macos-26-intel
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -82,7 +82,7 @@ jobs:
           brew tap mongodb/brew
           brew trust mongodb/brew
           brew install mongodb-community@7.0
-          echo -e 'replication:\n  replSetName: rs0' >> /opt/homebrew/etc/mongod.conf
+          echo -e 'replication:\n  replSetName: rs0' >> "$(brew --prefix)/etc/mongod.conf"
           brew services start mongodb-community@7.0
           mongosh --eval 'rs.initiate()'
 
@@ -94,7 +94,7 @@ jobs:
         run: pnpm -r run e2e
 
   coverage:
-    runs-on: macos-latest
+    runs-on: macos-26-intel
 
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -135,7 +135,7 @@ jobs:
           brew tap mongodb/brew
           brew trust mongodb/brew
           brew install mongodb-community@7.0
-          echo -e 'replication:\n  replSetName: rs0' >> /opt/homebrew/etc/mongod.conf
+          echo -e 'replication:\n  replSetName: rs0' >> "$(brew --prefix)/etc/mongod.conf"
           brew services start mongodb-community@7.0
           mongosh --eval 'rs.initiate()'
 
@@ -151,7 +151,7 @@ jobs:
           files: coverage/*.lcov
 
   server:
-    runs-on: macos-latest
+    runs-on: macos-26-intel
 
     env:
       RUSTFLAGS: --deny warnings
@@ -177,7 +177,7 @@ jobs:
           brew tap mongodb/brew
           brew trust mongodb/brew
           brew install mongodb-community@7.0
-          echo -e 'replication:\n  replSetName: rs0' >> /opt/homebrew/etc/mongod.conf
+          echo -e 'replication:\n  replSetName: rs0' >> "$(brew --prefix)/etc/mongod.conf"
           brew services start mongodb-community@7.0
           mongosh --eval 'rs.initiate()'
 
