@@ -37,7 +37,7 @@ jobs:
           ACTIONLINT: ${{ steps.actionlint.outputs.executable }}
 
   client:
-    runs-on: macos-latest
+    runs-on: macos-26-intel
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -75,14 +75,14 @@ jobs:
         with:
           toolchain: stable
 
-      - uses: Swatinem/rust-cache@c8037a86dde8214a8310e9f54a8fc61ab362aa31
+      - uses: Swatinem/rust-cache@eedcf2fb1c22f010a0eb66b92f378c110977f266
 
       - name: Install mongodb
         run: |
           brew tap mongodb/brew
           brew trust mongodb/brew
           brew install mongodb-community@7.0
-          echo -e 'replication:\n  replSetName: rs0' >> /opt/homebrew/etc/mongod.conf
+          echo -e 'replication:\n  replSetName: rs0' >> "$(brew --prefix)/etc/mongod.conf"
           brew services start mongodb-community@7.0
           mongosh --eval 'rs.initiate()'
 
@@ -94,7 +94,7 @@ jobs:
         run: pnpm -r run e2e
 
   coverage:
-    runs-on: macos-latest
+    runs-on: macos-26-intel
 
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -121,7 +121,7 @@ jobs:
           target: x86_64-unknown-linux-musl
           components: llvm-tools-preview
 
-      - uses: Swatinem/rust-cache@c8037a86dde8214a8310e9f54a8fc61ab362aa31
+      - uses: Swatinem/rust-cache@eedcf2fb1c22f010a0eb66b92f378c110977f266
 
       - name: Info
         run: |
@@ -135,7 +135,7 @@ jobs:
           brew tap mongodb/brew
           brew trust mongodb/brew
           brew install mongodb-community@7.0
-          echo -e 'replication:\n  replSetName: rs0' >> /opt/homebrew/etc/mongod.conf
+          echo -e 'replication:\n  replSetName: rs0' >> "$(brew --prefix)/etc/mongod.conf"
           brew services start mongodb-community@7.0
           mongosh --eval 'rs.initiate()'
 
@@ -151,7 +151,7 @@ jobs:
           files: coverage/*.lcov
 
   server:
-    runs-on: macos-latest
+    runs-on: macos-26-intel
 
     env:
       RUSTFLAGS: --deny warnings
@@ -170,14 +170,14 @@ jobs:
           components: clippy, rustfmt
           toolchain: stable
 
-      - uses: Swatinem/rust-cache@c8037a86dde8214a8310e9f54a8fc61ab362aa31
+      - uses: Swatinem/rust-cache@eedcf2fb1c22f010a0eb66b92f378c110977f266
 
       - name: Install mongodb
         run: |
           brew tap mongodb/brew
           brew trust mongodb/brew
           brew install mongodb-community@7.0
-          echo -e 'replication:\n  replSetName: rs0' >> /opt/homebrew/etc/mongod.conf
+          echo -e 'replication:\n  replSetName: rs0' >> "$(brew --prefix)/etc/mongod.conf"
           brew services start mongodb-community@7.0
           mongosh --eval 'rs.initiate()'
 
