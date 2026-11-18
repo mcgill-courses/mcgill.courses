@@ -238,6 +238,8 @@ pub struct AddOrUpdateReviewBody {
   pub(crate) rating: u32,
   /// Difficulty rating out of 5 (1-5).
   pub(crate) difficulty: u32,
+  /// The term the review is for (e.g. "Fall 2025").
+  pub(crate) term: Option<String>,
 }
 
 impl AddOrUpdateReviewBody {
@@ -326,6 +328,7 @@ pub(crate) async fn add_review(
     instructors,
     rating,
     difficulty,
+    term,
   } = body.0;
 
   let user_id = user.id();
@@ -342,6 +345,7 @@ pub(crate) async fn add_review(
     difficulty,
     instructors,
     rating,
+    term,
     timestamp: Utc::now().into(),
     user_id,
     ..Review::default()
@@ -399,6 +403,7 @@ pub(crate) async fn update_review(
     instructors,
     rating,
     difficulty,
+    term,
   } = body.0;
 
   validate_instructors(db.clone(), &course_id, &instructors).await?;
@@ -413,6 +418,7 @@ pub(crate) async fn update_review(
     instructors,
     rating,
     difficulty,
+    term,
     timestamp: Utc::now().into(),
     user_id: user_id.clone(),
     ..Review::default()
