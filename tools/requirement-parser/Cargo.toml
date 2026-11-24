@@ -5,15 +5,15 @@ edition = "2024"
 publish = false
 
 [dependencies]
-anyhow = "1.0.102"
+anyhow = "1.0.105"
 async-openai = { version = "0.43.0", features = ["chat-completion"] }
-clap = { version = "4.6.1", features = ["derive"] }
+clap = { version = "4.6.9", features = ["derive"] }
 dotenv = "0.15.0"
 model = { version = "0.0.0", path = "../../crates/model" }
-regex = "1.12.3"
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.150"
-tokio = { version = "1.52.3", features = ["rt-multi-thread", "macros"] }
+regex = "1.13.2"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "macros"] }
 
 [dev-dependencies]
 mockito.workspace = true

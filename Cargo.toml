@@ -12,63 +12,63 @@ members = ["crates/*", "tools/*"]
 resolver = "2"
 
 [workspace.dependencies]
-anyhow = "1.0.102"
+anyhow = "1.0.105"
 bson = { version = "3.1.0", features = ["chrono-0_4", "serde"] }
-chrono = "0.4.44"
-clap = { version = "4.6.1", features = ["derive"] }
+chrono = "0.4.45"
+clap = { version = "4.6.9", features = ["derive"] }
 dotenv = "0.15.0"
-futures = "0.3.32"
+futures = "0.3.34"
 include_dir = "0.7.4"
 itertools = "0.15.0"
 mockito = "1.7.2"
 pretty_assertions = "1.4.1"
 rayon = "1.12.0"
-regex = "1.12.3"
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.150"
+regex = "1.13.2"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
 tempfile = "3.27.0"
-tokio = { version = "1.52.3", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "macros"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }
 typeshare = "1.0.5"
-utoipa = { version = "5.5.0", features = ["axum_extras"] }
+utoipa = { version = "6.0.0", features = ["axum_extras"] }
 
 [dependencies]
 anyhow = { workspace = true }
 async-session = "3.0.0"
-aws-config = "1.10.1"
-aws-sdk-s3 = { version = "1.141.0", default-features = false, features = ["default-https-client", "rt-tokio", "sigv4a"] }
-axum = { version = "0.8.8", features = ["json"] }
-axum-extra = { version = "0.12.5", features = ["cookie", "typed-header"] }
-base64 = "0.22.1"
+aws-config = "1.13.3"
+aws-sdk-s3 = { version = "1.161.0", default-features = false, features = ["default-https-client", "rt-tokio", "sigv4a"] }
+axum = { version = "0.8.9", features = ["json"] }
+axum-extra = { version = "0.12.6", features = ["cookie", "typed-header"] }
+base64 = "0.23.1"
 chrono = { workspace = true }
 clap = { workspace = true }
 db = { path = "crates/db" }
 dotenv = { workspace = true }
-http = "1.4.0"
-indoc = "2.0.7"
+http = "1.5.0"
+indoc = "2.0.8"
 model = { path = "crates/model" }
-mongodb = { version = "3.7.0", features = ["bson-3"] }
+mongodb = { version = "3.10.2", features = ["bson-3"] }
 oauth2 = "5.0.0"
-reqwest = { version = "0.13.1", default-features = false, features = [ "blocking", "form", "json", "rustls"] }
+reqwest = { version = "0.13.5", default-features = false, features = [ "blocking", "form", "json", "rustls"] }
 serde = { workspace = true }
 serde_json = { workspace = true }
-sha2 = "0.10.9"
+sha2 = "0.11.1"
 tokio = { workspace = true }
 tower = { version = "0.5.3", features = ["buffer", "limit", "timeout", "tracing", "util"] }
-tower-http = { version = "0.6.8", features = ["catch-panic", "compression-gzip", "cors", "fs", "trace"] }
+tower-http = { version = "0.7.1", features = ["catch-panic", "compression-gzip", "cors", "fs", "trace"] }
 tower_governor = "0.8.0"
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 typeshare = { workspace = true }
-url = "2.5.8"
+url = "2.5.9"
 utoipa = { workspace = true }
-utoipa-scalar = { version = "0.3.0", features = ["axum"] }
-uuid = { version = "1.20", features = ["v4"] }
-walkdir = "2.5.0"
+utoipa-scalar = { version = "0.4.0", features = ["axum"] }
+uuid = { version = "1.29", features = ["v4"] }
+walkdir = "2.5.1"
 
 [dev-dependencies]
-hyper = { version = "1.8.1", features = ["server"] }
+hyper = { version = "1.13.0", features = ["server"] }
 mockito = { workspace = true }
 pretty_assertions = { workspace = true }
 tempfile = { workspace = true }
