@@ -42,7 +42,7 @@
     "@tailwindcss/vite": "^4.3.4",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^14.6.7",
+    "@testing-library/user-event": "^14.6.12",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/google.maps": "^3.66.9",
     "@types/node": "^26.6.5",
