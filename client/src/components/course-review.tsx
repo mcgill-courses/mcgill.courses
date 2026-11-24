@@ -500,6 +500,7 @@ export const CourseReview = ({
           </span>
         </p>
         <Transition
+          as='div'
           show={promptLogin}
           enter='transition-opacity duration-150'
           enterFrom='opacity-0'

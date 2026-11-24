@@ -29,7 +29,14 @@ export const Autocomplete = <T extends string>({
 
   return (
     <div className={className}>
-      <Combobox value={value} onChange={(val) => setValue(val)}>
+      <Combobox
+        value={value}
+        onChange={(val) => {
+          if (val !== null) {
+            setValue(val);
+          }
+        }}
+      >
         <div className='w-full'>
           <div className='relative max-w-[240px] rounded-md border border-neutral-200 bg-slate-200 p-2 dark:border-neutral-600 dark:bg-neutral-700'>
             <Combobox.Input
@@ -47,6 +54,7 @@ export const Autocomplete = <T extends string>({
             </Combobox.Button>
           </div>
           <Transition
+            as='div'
             enter='transition duration-100 ease-out'
             enterFrom='transform scale-95 opacity-0'
             enterTo='transform scale-100 opacity-100'

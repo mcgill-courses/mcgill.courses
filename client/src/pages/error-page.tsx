@@ -1,5 +1,5 @@
 import { XCircle } from 'lucide-react';
-import { FallbackProps } from 'react-error-boundary';
+import { FallbackProps, getErrorMessage } from 'react-error-boundary';
 
 import { Layout } from '../components/layout';
 
@@ -20,7 +20,9 @@ export const ErrorPage = ({ error, resetErrorBoundary }: FallbackProps) => {
             />
           </div>
           <div className='py-4' />
-          <div className='text-red-700 dark:text-red-400'>{error.message}</div>
+          <div className='text-red-700 dark:text-red-400'>
+            {getErrorMessage(error)}
+          </div>
           <div className='py-6' />
           <button
             className='mx-auto rounded-lg border border-gray-300 px-3 py-2 text-gray-900 duration-200 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-700'
