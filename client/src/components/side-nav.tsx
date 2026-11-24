@@ -36,7 +36,7 @@ export const SideNav = ({ open, onClose }: SideNavProps) => {
   }, [open]);
 
   return (
-    <Transition appear show={open}>
+    <Transition appear show={open} as='div'>
       <Overlay>
         <div className='fixed inset-0 z-50 flex h-screen items-end justify-end'>
           <Transition.Child
