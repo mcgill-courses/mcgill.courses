@@ -25,7 +25,7 @@ use {
   },
   thirtyfour::prelude::*,
   tokio::time::sleep,
-  totp_rs::{Secret, TOTP},
+  totp_rs::Secret,
   tracing::{error, info, warn},
   tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt},
 };

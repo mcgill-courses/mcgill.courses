@@ -2,7 +2,7 @@ use super::*;
 
 static STOP_WORDS: LazyLock<HashSet<String>> = LazyLock::new(|| {
   HashSet::from_iter(
-    stop_words::get(stop_words::LANGUAGE::English)
+    stop_words::get(stop_words::Language::English)
       .iter()
       .map(|word| word.to_string()),
   )

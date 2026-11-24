@@ -63,13 +63,9 @@ async fn get_vsb_cookie(
       .await?;
 
   // Need to use `new_unchecked` because Microsoft auth secret length is too short.
-  let totp = TOTP::new_unchecked(
-    totp_rs::Algorithm::SHA1,
-    6,
-    1,
-    30,
-    Secret::Encoded(otp_secret.to_uppercase()).to_bytes()?,
-  );
+  let totp = totp_rs::Builder::new()
+    .with_secret(Secret::try_from_base32(otp_secret.to_uppercase())?)
+    .build_noncompliant();
 
   driver.goto(VSB_LOGIN_URL).await?;
 
@@ -92,7 +88,9 @@ async fn get_vsb_cookie(
 
   info!("Entering OTP...");
   let otp_field = retry_until_visible(&driver, By::Name("otc")).await?;
-  otp_field.send_keys(totp.generate_current()?).await?;
+  otp_field
+    .send_keys(totp.generate_current().to_string())
+    .await?;
   otp_field.send_keys(Key::Return).await?;
   sleep(Duration::from_secs(3)).await;
 
