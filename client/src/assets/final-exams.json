@@ -1,6 +1,6 @@
 {
   "term": "Fall 2026",
-  "url": "https://www.mcgill.ca/exams/files/exams/december_2026_final_exam_schedulenov16.pdf",
+  "url": "https://www.mcgill.ca/exams/files/exams/december_2026_final_exam_schedulenov19.pdf",
   "exams": [
     {
       "id": "ACCT351",
@@ -1326,7 +1326,7 @@
       "id": "CHEM512",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "ORAL EXAM",
+      "type": "IN DEPARTMENT EXAM",
       "location": "D.T. CAMPUS",
       "startTime": "2026-12-22T09:00:00",
       "endTime": "2026-12-22T12:00:00"
@@ -1713,7 +1713,7 @@
       "id": "COMP206",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
+      "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
       "startTime": "2026-12-08T09:00:00",
       "endTime": "2026-12-08T12:00:00"
@@ -1749,7 +1749,7 @@
       "id": "COMP273",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
+      "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
       "startTime": "2026-12-16T18:30:00",
       "endTime": "2026-12-16T21:30:00"
@@ -1758,7 +1758,7 @@
       "id": "COMP302",
       "section": "001",
       "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
+      "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
       "startTime": "2026-12-21T14:00:00",
       "endTime": "2026-12-21T17:00:00"
@@ -1983,7 +1983,7 @@
       "id": "CORG651",
       "section": "771",
       "format": "IN-PERSON",
-      "type": "IN DEPARTMENT EXAM",
+      "type": "FORMAL EXAM",
       "location": "D.T. CAMPUS",
       "startTime": "2026-12-08T18:30:00",
       "endTime": "2026-12-08T21:30:00"
