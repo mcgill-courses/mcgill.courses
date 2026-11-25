@@ -565,6 +565,29 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn malformed_session_cookie_is_logged_out() {
+    let TestContext { app, .. } = TestContext::new().await;
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .uri("/api/user")
+          .header("Cookie", "session=!!!")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    assert_eq!(
+      response.convert::<serde_json::Value>().await,
+      json!({ "user": null })
+    );
+  }
+
+  #[tokio::test]
   async fn courses_route_works() {
     let TestContext { db, app, .. } = TestContext::new().await;
 

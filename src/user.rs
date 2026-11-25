@@ -60,7 +60,10 @@ where
     session_store
       .load_session(cookies.get(COOKIE_NAME).ok_or(AuthRedirect)?.to_owned())
       .await
-      .unwrap()
+      .map_err(|error| {
+        error!("Failed to load session: {error}");
+        AuthRedirect
+      })?
       .ok_or(AuthRedirect)?
       .get::<User>("user")
       .ok_or(AuthRedirect)
