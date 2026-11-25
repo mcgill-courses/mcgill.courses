@@ -1157,10 +1157,7 @@ impl Db {
       }
 
       if let Some(instructor_name) = instructor_name {
-        document.insert(
-          "instructors",
-          doc! { "instructors": { "$in": vec![instructor_name] } },
-        );
+        document.insert("instructors", instructor_name);
       }
 
       if sorted.unwrap_or(false) {
@@ -1987,6 +1984,44 @@ mod tests {
         },
       ]
     )
+  }
+
+  #[tokio::test(flavor = "multi_thread")]
+  async fn filter_reviews_by_instructor_name() {
+    let TestContext { db, .. } = TestContext::new().await;
+
+    db.add_course(Course {
+      id: "MATH240".into(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let reviews =
+      [("1", "foo"), ("2", "bar")].map(|(user_id, instructor)| Review {
+        course_id: "MATH240".into(),
+        instructors: vec![instructor.into()],
+        user_id: user_id.into(),
+        ..Default::default()
+      });
+
+    for review in &reviews {
+      db.add_review(review.clone()).await.unwrap();
+    }
+
+    assert_eq!(
+      db.reviews(
+        None,
+        None,
+        Some(ReviewFilter {
+          instructor_name: Some("foo".into()),
+          ..Default::default()
+        }),
+      )
+      .await
+      .unwrap(),
+      vec![reviews[0].clone()]
+    );
   }
 
   #[tokio::test(flavor = "multi_thread")]
