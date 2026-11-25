@@ -37,7 +37,8 @@ use {
   db::Db,
   dotenv::dotenv,
   http::{
-    HeaderMap, Request, StatusCode, header, header::SET_COOKIE, request::Parts,
+    HeaderMap, HeaderValue, Method, Request, StatusCode, header,
+    header::SET_COOKIE, request::Parts,
   },
   indoc::indoc,
   model::{
