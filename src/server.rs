@@ -623,6 +623,79 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn get_review_returns_own_review_or_not_found() {
+    let TestContext {
+      db,
+      app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let review = Review {
+      content: "foo".into(),
+      course_id: "MATH240".into(),
+      user_id: "bar".into(),
+      ..Default::default()
+    };
+
+    db.add_review(review.clone()).await.unwrap();
+
+    let cookie = mock_login(session_store, "bar", "bar@mail.mcgill.ca").await;
+
+    async fn case(
+      app: Router,
+      cookie: &str,
+      course_id: &str,
+      expected: (StatusCode, serde_json::Value),
+    ) {
+      let response = app
+        .oneshot(
+          Request::builder()
+            .uri(format!("/api/reviews/{course_id}"))
+            .header("Cookie", cookie)
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(
+        (
+          response.status(),
+          response.convert::<serde_json::Value>().await
+        ),
+        expected
+      );
+    }
+
+    case(
+      app.clone(),
+      &cookie,
+      "MATH240",
+      (StatusCode::OK, serde_json::to_value(&review).unwrap()),
+    )
+    .await;
+
+    case(
+      app,
+      &cookie,
+      "COMP202",
+      (
+        StatusCode::NOT_FOUND,
+        json!({ "error": "review not found", "status": 404 }),
+      ),
+    )
+    .await;
+  }
+
+  #[tokio::test]
   async fn courses_route_works() {
     let TestContext { db, app, .. } = TestContext::new().await;
 
