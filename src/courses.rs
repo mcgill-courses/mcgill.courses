@@ -23,6 +23,8 @@ pub(crate) struct GetCoursesPayload {
   pub(crate) courses: Vec<Course>,
 }
 
+const MAX_QUERY_LENGTH: usize = 100;
+
 #[utoipa::path(
   get,
   path = "/courses",
@@ -93,6 +95,17 @@ pub(crate) async fn get_courses(
   Query(params): Query<GetCoursesParams>,
   AppState(db): AppState<Arc<Db>>,
 ) -> Result<impl IntoResponse> {
+  if params
+    .filter
+    .query
+    .as_ref()
+    .is_some_and(|query| query.chars().count() > MAX_QUERY_LENGTH)
+  {
+    return Err(Error::bad_request(format!(
+      "query must be at most {MAX_QUERY_LENGTH} characters"
+    )));
+  }
+
   let courses = db
     .courses(params.limit, params.offset, Some(params.filter))
     .await?;

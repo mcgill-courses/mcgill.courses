@@ -68,25 +68,27 @@ impl Db {
       if let Some(subjects) = subjects {
         document.insert(
           "subject",
-          doc! { "$regex": format!("^({})", subjects.join("|")), "$options": "i" },
+          doc! { "$regex": format!("^({})", escape_all(&subjects)), "$options": "i" },
         );
       }
 
       if let Some(levels) = levels {
         document.insert(
           "code",
-          doc! { "$regex": format!("^({})", levels.join("|")), "$options": "i" },
+          doc! { "$regex": format!("^({})", escape_all(&levels)), "$options": "i" },
         );
       }
 
       if let Some(terms) = terms {
         document.insert(
           "terms",
-          doc! { "$regex": format!("^({})", terms.join("|")), "$options": "i" },
+          doc! { "$regex": format!("^({})", escape_all(&terms)), "$options": "i" },
         );
       }
 
       if let Some(query) = query.clone() {
+        let query = regex::escape(&query);
+
         let current_terms = current_terms();
 
         let id = doc! {
@@ -2021,6 +2023,38 @@ mod tests {
       .await
       .unwrap(),
       vec![reviews[0].clone()]
+    );
+  }
+
+  #[tokio::test(flavor = "multi_thread")]
+  async fn course_query_matches_regex_characters_literally() {
+    let TestContext { db, .. } = TestContext::new().await;
+
+    db.add_course(Course {
+      id: "MATH240".into(),
+      title: "foo (bar".into(),
+      subject: "MATH".into(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    assert_eq!(
+      db.courses(
+        None,
+        None,
+        Some(CourseFilter {
+          query: Some("o (b".into()),
+          subjects: Some(vec!["MATH".into()]),
+          ..Default::default()
+        }),
+      )
+      .await
+      .unwrap()
+      .into_iter()
+      .map(|course| course.id)
+      .collect::<Vec<String>>(),
+      vec!["MATH240"]
     );
   }
 
