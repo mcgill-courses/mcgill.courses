@@ -1,0 +1,13 @@
+**/.DS_Store
+**/.env
+**/.ruff_cache
+**/.venv
+**/coverage
+**/credentials.json
+**/dist
+**/node_modules
+**/target
+**/tokencache.json
+.git
+.playwright-mcp
+/courses.json
