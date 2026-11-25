@@ -2,7 +2,7 @@ use {
   bson::Bson,
   chrono::{Datelike, TimeZone, Utc},
   futures::Future,
-  futures::{TryStreamExt, future::join_all},
+  futures::{FutureExt, TryStreamExt, future::join_all},
   itertools::Itertools,
   model::{
     Course, CourseAverage, CourseFilter, CourseSortType, InitializeOptions,
@@ -10,7 +10,7 @@ use {
     ReviewFilter, SearchResults, Subscription,
   },
   mongodb::{
-    Client, Cursor, Database, IndexModel,
+    Client, ClientSession, Collection, Cursor, Database, IndexModel,
     bson::{Document, doc},
     options::{ClientOptions, IndexOptions},
     results::{CreateIndexResult, DeleteResult, InsertOneResult, UpdateResult},

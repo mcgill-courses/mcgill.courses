@@ -17,6 +17,7 @@ impl Initializer {
   pub(crate) async fn run(&self) -> Result {
     self.index().await?;
     self.seed().await?;
+    self.db.backfill_course_stats().await?;
     Ok(())
   }
 

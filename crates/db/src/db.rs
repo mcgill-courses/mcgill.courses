@@ -247,143 +247,190 @@ impl Db {
     Ok(())
   }
 
+  async fn adjust_course_stats(
+    course_coll: &Collection<Course>,
+    session: &mut ClientSession,
+    course_id: &str,
+    count: i32,
+    rating: i64,
+    difficulty: i64,
+  ) -> mongodb::error::Result<()> {
+    let average = |sum: &str| {
+      doc! {
+        "$cond": [
+          { "$gt": ["$reviewCount", 0] },
+          { "$divide": [sum, "$reviewCount"] },
+          0.0,
+        ]
+      }
+    };
+
+    let result = course_coll
+      .update_one(
+        doc! { "_id": course_id },
+        vec![
+          doc! {
+            "$set": {
+              "reviewCount": { "$add": ["$reviewCount", count] },
+              "ratingSum": { "$add": [{ "$ifNull": ["$ratingSum", 0] }, rating] },
+              "difficultySum": {
+                "$add": [{ "$ifNull": ["$difficultySum", 0] }, difficulty]
+              },
+            }
+          },
+          doc! {
+            "$set": {
+              "avgRating": average("$ratingSum"),
+              "avgDifficulty": average("$difficultySum"),
+            }
+          },
+        ],
+      )
+      .session(session)
+      .await?;
+
+    if result.matched_count == 0 {
+      return Err(mongodb::error::Error::custom(Error::CourseNotFound));
+    }
+
+    Ok(())
+  }
+
+  fn transaction_error(error: mongodb::error::Error) -> Error {
+    if matches!(error.get_custom::<Error>(), Some(Error::CourseNotFound)) {
+      Error::CourseNotFound
+    } else {
+      error.into()
+    }
+  }
+
   #[tracing::instrument(name = "db_add_review", skip(self), fields(course_id = %review.course_id, user_id = %review.user_id))]
   pub async fn add_review(&self, review: Review) -> Result {
-    let mut session = self.client.start_session().await?;
-    session.start_transaction().await?;
-
     let course_coll =
       self.database.collection::<Course>(Self::COURSE_COLLECTION);
 
     let review_coll =
       self.database.collection::<Review>(Self::REVIEW_COLLECTION);
 
-    let res = review_coll
-      .update_one(
-        doc! {
-          "courseId": &review.course_id,
-          "userId": &review.user_id
-        },
-        doc! {
-          "$setOnInsert": {
-            "content": &review.content,
-            "difficulty": review.difficulty,
-            "instructors": &review.instructors,
-            "rating": review.rating,
-            "timestamp": review.timestamp,
-            "likes": 0
-          },
+    let inserted = self
+      .client
+      .start_session()
+      .await?
+      .start_transaction()
+      .and_run(
+        (&course_coll, &review_coll, &review),
+        |session, (course_coll, review_coll, review)| {
+          async move {
+            let result = review_coll
+              .update_one(
+                doc! {
+                  "courseId": &review.course_id,
+                  "userId": &review.user_id
+                },
+                doc! {
+                  "$setOnInsert": {
+                    "content": &review.content,
+                    "difficulty": review.difficulty,
+                    "instructors": &review.instructors,
+                    "rating": review.rating,
+                    "timestamp": review.timestamp.clone(),
+                    "likes": 0
+                  },
+                },
+              )
+              .upsert(true)
+              .session(&mut *session)
+              .await?;
+
+            if result.upserted_id.is_none() {
+              return Ok(false);
+            }
+
+            Self::adjust_course_stats(
+              course_coll,
+              session,
+              &review.course_id,
+              1,
+              review.rating.into(),
+              review.difficulty.into(),
+            )
+            .await?;
+
+            Ok(true)
+          }
+          .boxed()
         },
       )
-      .upsert(true)
-      .session(&mut session)
-      .await?;
+      .await
+      .map_err(Self::transaction_error)?;
 
-    if res.upserted_id.is_none() {
+    if !inserted {
       return Err(Error::ReviewAlreadyExists);
     }
-
-    let course = course_coll
-      .find_one(doc! {
-        "_id": &review.course_id,
-      })
-      .session(&mut session)
-      .await?
-      .ok_or(Error::CourseNotFound)?;
-
-    let count = course.review_count as f32;
-
-    let avg_rating =
-      (course.avg_rating * count + (review.rating as f32)) / (count + 1.0);
-
-    let avg_difficulty = (course.avg_difficulty * count
-      + (review.difficulty as f32))
-      / (count + 1.0);
-
-    course_coll
-      .update_one(
-        doc! {
-          "_id": &review.course_id
-        },
-        doc! {
-          "$inc": { "reviewCount": 1 },
-          "$set": {
-            "avgRating": avg_rating,
-            "avgDifficulty": avg_difficulty,
-          }
-        },
-      )
-      .session(&mut session)
-      .await?;
-
-    session.commit_transaction().await?;
 
     Ok(())
   }
 
   #[tracing::instrument(name = "db_update_review", skip(self), fields(course_id = %review.course_id, user_id = %review.user_id))]
   pub async fn update_review(&self, review: Review) -> Result {
-    let mut session = self.client.start_session().await?;
-    session.start_transaction().await?;
-
     let course_coll =
       self.database.collection::<Course>(Self::COURSE_COLLECTION);
 
     let review_coll =
       self.database.collection::<Review>(Self::REVIEW_COLLECTION);
 
-    let old = review_coll
-      .find_one_and_update(
-        doc! {
-          "courseId": &review.course_id,
-          "userId": &review.user_id
-        },
-        doc! {
-          "$set": {
-            "content": &review.content,
-            "difficulty": review.difficulty,
-            "instructors": &review.instructors,
-            "rating": review.rating,
-            "timestamp": review.timestamp,
-          },
-        },
-      )
-      .session(&mut session)
+    let updated = self
+      .client
+      .start_session()
       .await?
-      .ok_or(Error::ReviewNotFound)?;
+      .start_transaction()
+      .and_run(
+        (&course_coll, &review_coll, &review),
+        |session, (course_coll, review_coll, review)| {
+          async move {
+            let Some(old) = review_coll
+              .find_one_and_update(
+                doc! {
+                  "courseId": &review.course_id,
+                  "userId": &review.user_id
+                },
+                doc! {
+                  "$set": {
+                    "content": &review.content,
+                    "difficulty": review.difficulty,
+                    "instructors": &review.instructors,
+                    "rating": review.rating,
+                    "timestamp": review.timestamp.clone(),
+                  },
+                },
+              )
+              .session(&mut *session)
+              .await?
+            else {
+              return Ok(false);
+            };
 
-    let course = course_coll
-      .find_one(doc! {
-        "_id": &review.course_id,
-      })
-      .session(&mut session)
-      .await?
-      .ok_or(Error::CourseNotFound)?;
+            Self::adjust_course_stats(
+              course_coll,
+              session,
+              &review.course_id,
+              0,
+              i64::from(review.rating) - i64::from(old.rating),
+              i64::from(review.difficulty) - i64::from(old.difficulty),
+            )
+            .await?;
 
-    let count = course.review_count as f32;
-
-    let avg_rating =
-      course.avg_rating + (review.rating as f32 - old.rating as f32) / count;
-
-    let avg_difficulty = course.avg_difficulty
-      + (review.difficulty as f32 - old.difficulty as f32) / count;
-
-    course_coll
-      .update_one(
-        doc! {
-          "_id": &review.course_id
-        },
-        doc! {
-          "$set": {
-            "avgRating": avg_rating,
-            "avgDifficulty": avg_difficulty,
+            Ok(true)
           }
+          .boxed()
         },
       )
-      .session(&mut session)
-      .await?;
+      .await
+      .map_err(Self::transaction_error)?;
 
-    session.commit_transaction().await?;
+    if !updated {
+      return Err(Error::ReviewNotFound);
+    }
 
     Ok(())
   }
@@ -393,72 +440,117 @@ impl Db {
     course_id: &str,
     user_id: &str,
   ) -> Result<Review> {
-    let mut session = self.client.start_session().await?;
-    session.start_transaction().await?;
-
     let course_coll =
       self.database.collection::<Course>(Self::COURSE_COLLECTION);
 
     let review_coll =
       self.database.collection::<Review>(Self::REVIEW_COLLECTION);
 
-    let review = review_coll
-      .find_one_and_delete(doc! {
-        "courseId": course_id,
-        "userId": user_id
-      })
-      .session(&mut session)
+    self
+      .client
+      .start_session()
       .await?
-      .ok_or(Error::ReviewNotFound)?;
+      .start_transaction()
+      .and_run(
+        (&course_coll, &review_coll, course_id, user_id),
+        |session, (course_coll, review_coll, course_id, user_id)| {
+          async move {
+            let Some(review) = review_coll
+              .find_one_and_delete(doc! {
+                "courseId": *course_id,
+                "userId": *user_id
+              })
+              .session(&mut *session)
+              .await?
+            else {
+              return Ok(None);
+            };
 
-    let course = course_coll
-      .find_one(doc! {
-        "_id": course_id,
-      })
-      .session(&mut session)
-      .await?
-      .ok_or(Error::CourseNotFound)?;
+            Self::adjust_course_stats(
+              course_coll,
+              session,
+              course_id,
+              -1,
+              -i64::from(review.rating),
+              -i64::from(review.difficulty),
+            )
+            .await?;
 
-    let update = if course.review_count <= 1 {
-      doc! {
-        "$set": {
-          "reviewCount": 0,
-          "avgRating": 0.0,
-          "avgDifficulty": 0.0,
-        }
-      }
-    } else {
-      let count = course.review_count as f32;
-
-      let avg_rating =
-        (course.avg_rating * count - (review.rating as f32)) / (count - 1.0);
-
-      let avg_difficulty = (course.avg_difficulty * count
-        - (review.difficulty as f32))
-        / (count - 1.0);
-
-      doc! {
-        "$inc": { "reviewCount": -1 },
-        "$set": {
-          "avgRating": avg_rating,
-          "avgDifficulty": avg_difficulty,
-        }
-      }
-    };
-
-    course_coll
-      .update_one(
-        doc! {
-          "_id": &review.course_id
+            Ok(Some(review))
+          }
+          .boxed()
         },
-        update,
       )
-      .session(&mut session)
+      .await
+      .map_err(Self::transaction_error)?
+      .ok_or(Error::ReviewNotFound)
+  }
+
+  pub(crate) async fn backfill_course_stats(&self) -> Result {
+    let average = |sum: &str| doc! { "$divide": [sum, "$$new.reviewCount"] };
+
+    self
+      .database
+      .collection::<Review>(Self::REVIEW_COLLECTION)
+      .aggregate(vec![
+        doc! {
+          "$group": {
+            "_id": "$courseId",
+            "reviewCount": { "$sum": 1 },
+            "ratingSum": { "$sum": "$rating" },
+            "difficultySum": { "$sum": "$difficulty" },
+          }
+        },
+        doc! {
+          "$merge": {
+            "into": Self::COURSE_COLLECTION,
+            "on": "_id",
+            "whenMatched": [
+              {
+                "$replaceWith": {
+                  "$cond": [
+                    { "$eq": [{ "$type": "$ratingSum" }, "missing"] },
+                    {
+                      "$mergeObjects": [
+                        "$$ROOT",
+                        {
+                          "reviewCount": "$$new.reviewCount",
+                          "ratingSum": "$$new.ratingSum",
+                          "difficultySum": "$$new.difficultySum",
+                          "avgRating": average("$$new.ratingSum"),
+                          "avgDifficulty": average("$$new.difficultySum"),
+                        },
+                      ]
+                    },
+                    "$$ROOT",
+                  ]
+                }
+              }
+            ],
+            "whenNotMatched": "discard",
+          }
+        },
+      ])
       .await?;
 
-    session.commit_transaction().await?;
+    self
+      .database
+      .collection::<Course>(Self::COURSE_COLLECTION)
+      .update_many(
+        doc! { "ratingSum": { "$exists": false } },
+        doc! {
+          "$set": {
+            "reviewCount": 0,
+            "ratingSum": 0,
+            "difficultySum": 0,
+            "avgRating": 0.0,
+            "avgDifficulty": 0.0,
+          }
+        },
+      )
+      .await?;
 
-    Ok(review)
+    Ok(())
   }
 
   pub async fn find_reviews_by_course_id(
@@ -2022,6 +2114,109 @@ mod tests {
       .unwrap(),
       vec![reviews[0].clone()]
     );
+  }
+
+  #[tokio::test(flavor = "multi_thread")]
+  async fn concurrent_reviews_update_course_stats() {
+    let TestContext { db, .. } = TestContext::new().await;
+
+    db.add_course(Course {
+      id: "MATH240".into(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    join_all((1..=10).map(|i| {
+      let db = db.clone();
+
+      async move {
+        db.add_review(Review {
+          course_id: "MATH240".into(),
+          difficulty: 1,
+          rating: i % 5 + 1,
+          user_id: i.to_string(),
+          ..Default::default()
+        })
+        .await
+      }
+    }))
+    .await
+    .into_iter()
+    .collect::<Result<Vec<()>>>()
+    .unwrap();
+
+    let course = db.find_course_by_id("MATH240").await.unwrap().unwrap();
+
+    assert_eq!(
+      (
+        course.review_count,
+        course.avg_rating,
+        course.avg_difficulty
+      ),
+      (10, 3.0, 1.0)
+    );
+  }
+
+  #[tokio::test(flavor = "multi_thread")]
+  async fn backfill_course_stats() {
+    let TestContext { db, .. } = TestContext::new().await;
+
+    for id in ["MATH240", "COMP202", "COMP250"] {
+      db.add_course(Course {
+        id: id.into(),
+        review_count: 5,
+        avg_rating: 1.0,
+        avg_difficulty: 1.0,
+        ..Default::default()
+      })
+      .await
+      .unwrap();
+    }
+
+    db.database
+      .collection::<Course>(Db::COURSE_COLLECTION)
+      .update_one(
+        doc! { "_id": "COMP250" },
+        doc! { "$set": { "ratingSum": 5, "difficultySum": 5 } },
+      )
+      .await
+      .unwrap();
+
+    db.database
+      .collection::<Review>(Db::REVIEW_COLLECTION)
+      .insert_many(
+        [("MATH240", 5, 4), ("MATH240", 2, 1), ("COMP250", 3, 3)].map(
+          |(course_id, rating, difficulty)| Review {
+            course_id: course_id.into(),
+            difficulty,
+            rating,
+            ..Default::default()
+          },
+        ),
+      )
+      .await
+      .unwrap();
+
+    db.backfill_course_stats().await.unwrap();
+
+    #[track_caller]
+    fn case(course: Course, expected: (i32, f32, f32)) {
+      assert_eq!(
+        (
+          course.review_count,
+          course.avg_rating,
+          course.avg_difficulty
+        ),
+        expected
+      );
+    }
+
+    let find = async |id| db.find_course_by_id(id).await.unwrap().unwrap();
+
+    case(find("MATH240").await, (2, 3.5, 2.5));
+    case(find("COMP202").await, (0, 0.0, 0.0));
+    case(find("COMP250").await, (5, 1.0, 1.0));
   }
 
   #[tokio::test(flavor = "multi_thread")]
