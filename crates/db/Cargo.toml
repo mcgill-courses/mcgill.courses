@@ -11,6 +11,7 @@ futures = { workspace = true }
 itertools = { workspace = true }
 model = { path = "../model" }
 mongodb = { version = "3.10.2", features = ["bson-3"] }
+regex.workspace = true
 serde = { workspace = true }
 serde_json = { workspace = true }
 stop-words = "0.10.1"
@@ -21,5 +22,4 @@ tracing = { workspace = true }
 [dev-dependencies]
 include_dir = { workspace = true }
 pretty_assertions = { workspace = true }
-regex = { workspace = true }
 tempfile = { workspace = true }

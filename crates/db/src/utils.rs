@@ -1,5 +1,13 @@
 use super::*;
 
+pub(crate) fn escape_all(patterns: &[String]) -> String {
+  patterns
+    .iter()
+    .map(|pattern| regex::escape(pattern))
+    .collect::<Vec<String>>()
+    .join("|")
+}
+
 pub(crate) fn current_terms() -> Vec<String> {
   let now = Utc::now().date_naive();
 
