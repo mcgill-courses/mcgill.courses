@@ -678,6 +678,28 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn courses_route_rejects_long_query() {
+    let TestContext { app, .. } = TestContext::new().await;
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .uri(format!("/api/courses?query={}", "a".repeat(101)))
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    assert_eq!(
+      response.convert::<serde_json::Value>().await,
+      json!({ "error": "query must be at most 100 characters", "status": 400 })
+    );
+  }
+
+  #[tokio::test]
   async fn courses_route_with_filters() {
     let TestContext { db, app, .. } = TestContext::new().await;
 
