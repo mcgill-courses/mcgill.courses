@@ -165,8 +165,10 @@ impl Initializer {
           info!("Seeding reviews from {}...", path.display());
 
           let runner = |db: Db, item: Review| async move {
-            db.add_review(item).await?;
-            Ok(())
+            match db.add_review(item).await {
+              Ok(()) | Err(Error::ReviewAlreadyExists) => Ok(()),
+              Err(error) => Err(error),
+            }
           };
 
           self.populate(reviews, runner).await?;

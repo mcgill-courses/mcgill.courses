@@ -248,7 +248,7 @@ impl Db {
   }
 
   #[tracing::instrument(name = "db_add_review", skip(self), fields(course_id = %review.course_id, user_id = %review.user_id))]
-  pub async fn add_review(&self, review: Review) -> Result<UpdateResult> {
+  pub async fn add_review(&self, review: Review) -> Result {
     let mut session = self.client.start_session().await?;
     session.start_transaction().await?;
 
@@ -265,7 +265,7 @@ impl Db {
           "userId": &review.user_id
         },
         doc! {
-          "$set": {
+          "$setOnInsert": {
             "content": &review.content,
             "difficulty": review.difficulty,
             "instructors": &review.instructors,
@@ -278,6 +278,10 @@ impl Db {
       .upsert(true)
       .session(&mut session)
       .await?;
+
+    if res.upserted_id.is_none() {
+      return Err(Error::ReviewAlreadyExists);
+    }
 
     let course = course_coll
       .find_one(doc! {
@@ -314,7 +318,74 @@ impl Db {
 
     session.commit_transaction().await?;
 
-    Ok(res)
+    Ok(())
+  }
+
+  #[tracing::instrument(name = "db_update_review", skip(self), fields(course_id = %review.course_id, user_id = %review.user_id))]
+  pub async fn update_review(&self, review: Review) -> Result {
+    let mut session = self.client.start_session().await?;
+    session.start_transaction().await?;
+
+    let course_coll =
+      self.database.collection::<Course>(Self::COURSE_COLLECTION);
+
+    let review_coll =
+      self.database.collection::<Review>(Self::REVIEW_COLLECTION);
+
+    let old = review_coll
+      .find_one_and_update(
+        doc! {
+          "courseId": &review.course_id,
+          "userId": &review.user_id
+        },
+        doc! {
+          "$set": {
+            "content": &review.content,
+            "difficulty": review.difficulty,
+            "instructors": &review.instructors,
+            "rating": review.rating,
+            "timestamp": review.timestamp,
+          },
+        },
+      )
+      .session(&mut session)
+      .await?
+      .ok_or(Error::ReviewNotFound)?;
+
+    let course = course_coll
+      .find_one(doc! {
+        "_id": &review.course_id,
+      })
+      .session(&mut session)
+      .await?
+      .ok_or(Error::CourseNotFound)?;
+
+    let count = course.review_count as f32;
+
+    let avg_rating =
+      course.avg_rating + (review.rating as f32 - old.rating as f32) / count;
+
+    let avg_difficulty = course.avg_difficulty
+      + (review.difficulty as f32 - old.difficulty as f32) / count;
+
+    course_coll
+      .update_one(
+        doc! {
+          "_id": &review.course_id
+        },
+        doc! {
+          "$set": {
+            "avgRating": avg_rating,
+            "avgDifficulty": avg_difficulty,
+          }
+        },
+      )
+      .session(&mut session)
+      .await?;
+
+    session.commit_transaction().await?;
+
+    Ok(())
   }
 
   pub async fn delete_review(
@@ -1935,11 +2006,23 @@ mod tests {
       ..Default::default()
     };
 
-    for _ in 0..10 {
-      db.add_review(review.clone()).await.unwrap();
-    }
+    db.add_review(review.clone()).await.unwrap();
+
+    assert!(matches!(
+      db.add_review(review).await,
+      Err(Error::ReviewAlreadyExists)
+    ));
 
     assert_eq!(db.reviews(None, None, None).await.unwrap().len(), 1);
+
+    assert_eq!(
+      db.find_course_by_id("MATH240")
+        .await
+        .unwrap()
+        .unwrap()
+        .review_count,
+      1
+    );
   }
 
   #[tokio::test(flavor = "multi_thread")]
@@ -1953,60 +2036,61 @@ mod tests {
     .await
     .unwrap();
 
-    db.add_review(Review {
-      content: "foo".into(),
+    for (user_id, rating, difficulty) in [("1", 5, 5), ("2", 1, 1)] {
+      db.add_review(Review {
+        content: "foo".into(),
+        course_id: "MATH240".into(),
+        rating,
+        difficulty,
+        user_id: user_id.into(),
+        ..Default::default()
+      })
+      .await
+      .unwrap();
+    }
+
+    db.add_interaction(Interaction {
+      kind: InteractionKind::Like,
       course_id: "MATH240".into(),
-      instructors: vec![String::from("bar")],
-      rating: 5,
-      difficulty: 5,
       user_id: "1".into(),
-      timestamp: DateTime::from(Utc::now()),
-      ..Review::default()
+      referrer: "2".into(),
     })
     .await
     .unwrap();
 
-    let timestamp = DateTime::from(Utc::now());
+    let review = Review {
+      content: "bar".into(),
+      course_id: "MATH240".into(),
+      instructors: vec!["baz".into()],
+      rating: 3,
+      difficulty: 2,
+      user_id: "1".into(),
+      timestamp: DateTime::from(Utc::now()),
+      ..Default::default()
+    };
+
+    db.update_review(review.clone()).await.unwrap();
 
     assert_eq!(
-      db.add_review(Review {
-        content: "bar".into(),
-        course_id: "MATH240".into(),
-        instructors: vec![String::from("foo")],
-        rating: 4,
-        difficulty: 4,
-        user_id: "1".into(),
-        timestamp: timestamp.clone(),
-        ..Review::default()
-      })
-      .await
-      .unwrap()
-      .modified_count,
-      1
+      db.find_review("MATH240", "1").await.unwrap().unwrap(),
+      Review { likes: 1, ..review }
     );
 
-    assert_eq!(
-      db.add_review(Review {
-        content: "bar".into(),
+    let course = db.find_course_by_id("MATH240").await.unwrap().unwrap();
+
+    assert_eq!(course.review_count, 2);
+    assert_eq!(course.avg_rating, 2.0);
+    assert_eq!(course.avg_difficulty, 1.5);
+
+    assert!(matches!(
+      db.update_review(Review {
         course_id: "MATH240".into(),
-        instructors: vec![String::from("foo")],
-        rating: 4,
-        difficulty: 4,
-        user_id: "2".into(),
+        user_id: "3".into(),
         ..Default::default()
       })
-      .await
-      .unwrap()
-      .modified_count,
-      0
-    );
-
-    let review = db.find_review("MATH240", "1").await.unwrap().unwrap();
-
-    assert_eq!(review.content, "bar");
-    assert_eq!(review.instructors, vec![String::from("foo")]);
-    assert_eq!(review.rating, 4);
-    assert_eq!(review.timestamp, timestamp);
+      .await,
+      Err(Error::ReviewNotFound)
+    ));
   }
 
   #[tokio::test(flavor = "multi_thread")]
