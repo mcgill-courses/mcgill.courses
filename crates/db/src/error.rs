@@ -18,6 +18,8 @@ pub enum Error {
   Json(#[from] serde_json::Error),
   #[error("mongodb error: {0}")]
   MongoDB(#[from] mongodb::error::Error),
+  #[error("review already exists")]
+  ReviewAlreadyExists,
   #[error("review not found")]
   ReviewNotFound,
   #[error("integer conversion error: {0}")]

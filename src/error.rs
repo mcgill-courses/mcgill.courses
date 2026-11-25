@@ -3,6 +3,7 @@ use super::*;
 #[derive(Debug)]
 pub(crate) enum Error {
   BadRequest(String),
+  Conflict(String),
   NotFound(String),
   Internal(anyhow::Error),
 }
@@ -12,6 +13,10 @@ impl Error {
     Self::BadRequest(message.into())
   }
 
+  pub(crate) fn conflict(message: impl Into<String>) -> Self {
+    Self::Conflict(message.into())
+  }
+
   pub(crate) fn not_found(message: impl Into<String>) -> Self {
     Self::NotFound(message.into())
   }
@@ -19,6 +24,7 @@ impl Error {
   fn status(&self) -> StatusCode {
     match self {
       Self::BadRequest(_) => StatusCode::BAD_REQUEST,
+      Self::Conflict(_) => StatusCode::CONFLICT,
       Self::NotFound(_) => StatusCode::NOT_FOUND,
       Self::Internal(_) => StatusCode::INTERNAL_SERVER_ERROR,
     }
@@ -26,7 +32,9 @@ impl Error {
 
   fn public_message(&self) -> &str {
     match self {
-      Self::BadRequest(message) | Self::NotFound(message) => message,
+      Self::BadRequest(message)
+      | Self::Conflict(message)
+      | Self::NotFound(message) => message,
       Self::Internal(_) => "internal server error",
     }
   }

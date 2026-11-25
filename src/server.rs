@@ -1006,6 +1006,50 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn update_missing_review_returns_not_found() {
+    let TestContext {
+      db,
+      app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .method(http::Method::PUT)
+          .header(
+            "Cookie",
+            mock_login(session_store, "test", "test@mail.mcgill.ca").await,
+          )
+          .header("Content-Type", "application/json")
+          .uri("/api/reviews")
+          .body(Body::from(
+            json!({
+              "content": "foo",
+              "course_id": "MATH240",
+              "instructors": ["Adrian Roshan Vetta"],
+              "rating": 3,
+              "difficulty": 3,
+            })
+            .to_string(),
+          ))
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+  }
+
+  #[tokio::test]
   async fn throws_error_when_invalid_instructor() {
     let TestContext {
       db,
@@ -3214,7 +3258,7 @@ mod tests {
   }
 
   #[tokio::test]
-  async fn duplicate_review_upserts_in_place() {
+  async fn duplicate_review_returns_conflict() {
     let TestContext {
       db,
       mut app,
@@ -3231,7 +3275,10 @@ mod tests {
 
     let cookie = mock_login(session_store, "test", "test@mail.mcgill.ca").await;
 
-    for (content, rating) in [("foo", 1u32), ("bar", 5u32)] {
+    for (content, rating, status) in [
+      ("foo", 1u32, StatusCode::OK),
+      ("bar", 5u32, StatusCode::CONFLICT),
+    ] {
       let response = app
         .call(
           Request::builder()
@@ -3254,7 +3301,7 @@ mod tests {
         .await
         .unwrap();
 
-      assert_eq!(response.status(), StatusCode::OK);
+      assert_eq!(response.status(), status);
     }
 
     let reviews = db.find_reviews_by_user_id("test").await.unwrap();
@@ -3262,15 +3309,24 @@ mod tests {
     assert_eq!(
       reviews,
       vec![Review {
-        content: "bar".into(),
+        content: "foo".into(),
         course_id: "MATH240".into(),
         difficulty: 3,
         instructors: vec!["Adrian Roshan Vetta".into()],
         likes: 0,
-        rating: 5,
+        rating: 1,
         timestamp: reviews[0].timestamp.clone(),
         user_id: "test".into(),
       }]
+    );
+
+    assert_eq!(
+      db.find_course_by_id("MATH240")
+        .await
+        .unwrap()
+        .unwrap()
+        .review_count,
+      1
     );
   }
 

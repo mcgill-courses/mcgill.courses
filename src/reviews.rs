@@ -347,7 +347,14 @@ pub(crate) async fn add_review(
     ..Review::default()
   };
 
-  db.add_review(review.clone()).await?;
+  db.add_review(review.clone())
+    .await
+    .map_err(|error| match error {
+      db::Error::ReviewAlreadyExists => {
+        Error::conflict("review already exists")
+      }
+      other => other.into(),
+    })?;
 
   info!("Adding notifications for course {}...", &course_id);
 
@@ -418,7 +425,12 @@ pub(crate) async fn update_review(
     ..Review::default()
   };
 
-  db.add_review(review.clone()).await?;
+  db.update_review(review.clone())
+    .await
+    .map_err(|error| match error {
+      db::Error::ReviewNotFound => Error::not_found("review not found"),
+      other => other.into(),
+    })?;
 
   db.update_notifications(&user_id, &course_id, review)
     .await?;
