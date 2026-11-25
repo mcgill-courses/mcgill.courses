@@ -10,6 +10,8 @@ pub(crate) type OAuthClient = BasicClient<
 
 pub(crate) const COOKIE_NAME: &str = "session";
 
+const OAUTH_STATE_COOKIE_NAME: &str = "oauth_state";
+
 pub(crate) const MCGILL_TENANT_ID: &str =
   "cd319671-52e7-4a68-afa9-fcf8f89f09ea";
 
@@ -69,22 +71,33 @@ struct AccessTokenResponse {
 pub(crate) async fn microsoft_auth(
   Query(query): Query<LoginRequest>,
   AppState(client): AppState<OAuthClient>,
-) -> impl IntoResponse {
-  Redirect::to(
-    client
-      .authorize_url(|| {
-        CsrfToken::new(format!(
-          "{}{}",
-          CsrfToken::new_random().secret(),
-          STANDARD.encode(query.redirect)
-        ))
-      })
-      .add_scope(Scope::new(String::from("openid")))
-      .add_scope(Scope::new(String::from("User.Read")))
-      .url()
-      .0
-      .as_ref(),
-  )
+) -> Result<impl IntoResponse> {
+  let token = CsrfToken::new_random();
+
+  let (url, _) = client
+    .authorize_url(|| {
+      CsrfToken::new(format!(
+        "{}{}",
+        token.secret(),
+        STANDARD.encode(query.redirect)
+      ))
+    })
+    .add_scope(Scope::new(String::from("openid")))
+    .add_scope(Scope::new(String::from("User.Read")))
+    .url();
+
+  let mut headers = HeaderMap::new();
+
+  headers.insert(
+    SET_COOKIE,
+    format!(
+      "{OAUTH_STATE_COOKIE_NAME}={}; HttpOnly; SameSite=Lax; Path=/api/auth; Max-Age=600",
+      token.secret()
+    )
+    .parse()?,
+  );
+
+  Ok((headers, Redirect::to(url.as_ref())))
 }
 
 #[utoipa::path(
@@ -103,8 +116,18 @@ pub(crate) async fn microsoft_auth(
 )]
 pub(crate) async fn login_authorized(
   Query(query): Query<AuthRequest>,
+  cookies: Option<TypedHeader<Cookie>>,
   AppState(state): AppState<State>,
 ) -> Result<impl IntoResponse> {
+  let redirect = cookies
+    .as_ref()
+    .and_then(|TypedHeader(cookies)| cookies.get(OAUTH_STATE_COOKIE_NAME))
+    .filter(|token| !token.is_empty())
+    .and_then(|token| query.state.strip_prefix(token))
+    .ok_or_else(|| Error::bad_request("invalid OAuth state"))?;
+
+  let url = Url::parse(&String::from_utf8(STANDARD.decode(redirect)?)?)?;
+
   debug!("Fetching token from oauth client...");
 
   let redirect_uri = state
@@ -145,9 +168,6 @@ pub(crate) async fn login_authorized(
     .json()
     .await?;
 
-  let url =
-    Url::parse(&String::from_utf8(STANDARD.decode(&query.state[22..])?)?)?;
-
   let mut session = Session::new();
 
   session.expire_in(Duration::from_secs(60 * 60 * 24 * 7));
@@ -168,6 +188,14 @@ pub(crate) async fn login_authorized(
         .store_session(session)
         .await?
         .ok_or(anyhow!("Failed to store session"))?
+    )
+    .parse()?,
+  );
+
+  headers.append(
+    SET_COOKIE,
+    format!(
+      "{OAUTH_STATE_COOKIE_NAME}=; HttpOnly; SameSite=Lax; Path=/api/auth; Max-Age=0"
     )
     .parse()?,
   );

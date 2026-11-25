@@ -1006,6 +1006,80 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn login_sets_oauth_state_cookie() {
+    let TestContext { app, .. } = TestContext::new().await;
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .uri("/api/auth/login?redirect=https://foo.com")
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::SEE_OTHER);
+
+    let cookie = response.headers()[header::SET_COOKIE].to_str().unwrap();
+
+    let token = cookie
+      .strip_prefix("oauth_state=")
+      .unwrap()
+      .strip_suffix("; HttpOnly; SameSite=Lax; Path=/api/auth; Max-Age=600")
+      .unwrap();
+
+    let location =
+      Url::parse(response.headers()[header::LOCATION].to_str().unwrap())
+        .unwrap();
+
+    let state = location
+      .query_pairs()
+      .find(|(key, _)| key == "state")
+      .unwrap()
+      .1;
+
+    assert_eq!(
+      state,
+      format!("{token}{}", STANDARD.encode("https://foo.com"))
+    );
+  }
+
+  #[tokio::test]
+  async fn authorized_rejects_invalid_oauth_state() {
+    let TestContext { app, .. } = TestContext::new().await;
+
+    #[track_caller]
+    fn request(state: &str, cookie: Option<&str>) -> Request<Body> {
+      let builder = Request::builder()
+        .uri(format!("/api/auth/authorized?code=foo&state={state}"));
+
+      let builder = match cookie {
+        Some(cookie) => builder.header("Cookie", cookie),
+        None => builder,
+      };
+
+      builder.body(Body::empty()).unwrap()
+    }
+
+    for request in [
+      request("foo", None),
+      request("foo", Some("oauth_state=bar")),
+      request("foo", Some("oauth_state=")),
+      request("", Some("oauth_state=bar")),
+    ] {
+      let response = app.clone().oneshot(request).await.unwrap();
+
+      assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+      assert_eq!(
+        response.convert::<serde_json::Value>().await,
+        json!({ "error": "invalid OAuth state", "status": 400 })
+      );
+    }
+  }
+
+  #[tokio::test]
   async fn update_missing_review_returns_not_found() {
     let TestContext {
       db,
