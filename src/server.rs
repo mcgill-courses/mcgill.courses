@@ -24,6 +24,7 @@ pub(crate) struct Server {
 
 #[derive(Debug)]
 struct AppConfig<'a> {
+  allowed_origins: Vec<HeaderValue>,
   assets: Option<Assets<'a>>,
   #[cfg(feature = "e2e")]
   authentication: bool,
@@ -102,6 +103,13 @@ impl Server {
     .await?;
 
     let app = Self::app(AppConfig {
+      allowed_origins: env::var("ALLOWED_ORIGINS")
+        .unwrap_or_default()
+        .split(',')
+        .map(str::trim)
+        .filter(|origin| !origin.is_empty())
+        .map(HeaderValue::from_str)
+        .collect::<Result<Vec<HeaderValue>, _>>()?,
       assets,
       #[cfg(feature = "e2e")]
       authentication: env::var("MCGILL_COURSES_E2E_AUTH").unwrap_or_default()
@@ -345,7 +353,20 @@ impl Server {
                 },
               )
             })))
-            .layer(CorsLayer::very_permissive()),
+            .layer(tower::util::option_layer(
+              (!config.allowed_origins.is_empty()).then(|| {
+                CorsLayer::new()
+                  .allow_origin(config.allowed_origins.clone())
+                  .allow_credentials(true)
+                  .allow_methods([
+                    Method::GET,
+                    Method::POST,
+                    Method::PUT,
+                    Method::DELETE,
+                  ])
+                  .allow_headers([header::CONTENT_TYPE])
+              }),
+            )),
         ),
     )
   }
@@ -421,6 +442,7 @@ mod tests {
       .unwrap();
 
       let app = Server::app(AppConfig {
+        allowed_origins: vec![HeaderValue::from_static("https://foo.com")],
         assets: None,
         #[cfg(feature = "e2e")]
         authentication: true,
@@ -565,6 +587,115 @@ mod tests {
   }
 
   #[tokio::test]
+  async fn cors_allows_only_configured_origins() {
+    let TestContext { app, .. } = TestContext::new().await;
+
+    async fn case(app: Router, origin: &str, expected: Option<&str>) {
+      let response = app
+        .oneshot(
+          Request::builder()
+            .uri("/api/courses?limit=1")
+            .header(header::ORIGIN, origin)
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      let header = |name| {
+        response
+          .headers()
+          .get(name)
+          .map(|value: &HeaderValue| value.to_str().unwrap())
+      };
+
+      assert_eq!(
+        (
+          header(header::ACCESS_CONTROL_ALLOW_ORIGIN),
+          header(header::ACCESS_CONTROL_ALLOW_CREDENTIALS),
+        ),
+        (expected, Some("true")),
+      );
+    }
+
+    case(app.clone(), "https://foo.com", Some("https://foo.com")).await;
+    case(app, "https://bar.com", None).await;
+  }
+
+  #[tokio::test]
+  async fn get_review_returns_own_review_or_not_found() {
+    let TestContext {
+      db,
+      app,
+      session_store,
+      ..
+    } = TestContext::new().await;
+
+    db.initialize(InitializeOptions {
+      source: seed(),
+      ..Default::default()
+    })
+    .await
+    .unwrap();
+
+    let review = Review {
+      content: "foo".into(),
+      course_id: "MATH240".into(),
+      user_id: "bar".into(),
+      ..Default::default()
+    };
+
+    db.add_review(review.clone()).await.unwrap();
+
+    let cookie = mock_login(session_store, "bar", "bar@mail.mcgill.ca").await;
+
+    async fn case(
+      app: Router,
+      cookie: &str,
+      course_id: &str,
+      expected: (StatusCode, serde_json::Value),
+    ) {
+      let response = app
+        .oneshot(
+          Request::builder()
+            .uri(format!("/api/reviews/{course_id}"))
+            .header("Cookie", cookie)
+            .body(Body::empty())
+            .unwrap(),
+        )
+        .await
+        .unwrap();
+
+      assert_eq!(
+        (
+          response.status(),
+          response.convert::<serde_json::Value>().await
+        ),
+        expected
+      );
+    }
+
+    case(
+      app.clone(),
+      &cookie,
+      "MATH240",
+      (StatusCode::OK, serde_json::to_value(&review).unwrap()),
+    )
+    .await;
+
+    case(
+      app,
+      &cookie,
+      "COMP202",
+      (
+        StatusCode::NOT_FOUND,
+        json!({ "error": "review not found", "status": 404 }),
+      ),
+    )
+    .await;
+  }
+
+  #[tokio::test]
   async fn courses_route_works() {
     let TestContext { db, app, .. } = TestContext::new().await;
 
@@ -675,6 +806,28 @@ mod tests {
       .unwrap();
 
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+  }
+
+  #[tokio::test]
+  async fn courses_route_rejects_long_query() {
+    let TestContext { app, .. } = TestContext::new().await;
+
+    let response = app
+      .oneshot(
+        Request::builder()
+          .uri(format!("/api/courses?query={}", "a".repeat(101)))
+          .body(Body::empty())
+          .unwrap(),
+      )
+      .await
+      .unwrap();
+
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    assert_eq!(
+      response.convert::<serde_json::Value>().await,
+      json!({ "error": "query must be at most 100 characters", "status": 400 })
+    );
   }
 
   #[tokio::test]
@@ -3480,6 +3633,7 @@ mod tests {
     } = TestContext::new().await;
 
     let app = Server::app(AppConfig {
+      allowed_origins: Vec::new(),
       assets: None,
       #[cfg(feature = "e2e")]
       authentication: false,

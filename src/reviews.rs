@@ -219,10 +219,15 @@ pub(crate) async fn get_liked_reviews(
 )]
 pub(crate) async fn get_review(
   user: User,
-  Path(id): Path<String>,
+  Path(course_id): Path<String>,
   AppState(db): AppState<Arc<Db>>,
 ) -> Result<impl IntoResponse> {
-  Ok((StatusCode::OK, Json(db.find_review(&id, &user.id()).await?)))
+  let review = db
+    .find_review(&course_id, &user.id())
+    .await?
+    .ok_or_else(|| Error::not_found("review not found"))?;
+
+  Ok((StatusCode::OK, Json(review)))
 }
 
 #[derive(Debug, Deserialize, ToSchema)]
