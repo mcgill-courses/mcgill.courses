@@ -49,7 +49,9 @@ impl SessionStore for MongodbSessionStore {
     &self,
     cookie_value: String,
   ) -> SessionResult<Option<Session>> {
-    let id = Session::id_from_cookie_value(&cookie_value)?;
+    let Ok(id) = Session::id_from_cookie_value(&cookie_value) else {
+      return Ok(None);
+    };
 
     let Some(document) =
       self.collection.find_one(doc! { "session_id": id }).await?
