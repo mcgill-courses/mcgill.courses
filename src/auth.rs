@@ -12,6 +12,16 @@ pub(crate) const COOKIE_NAME: &str = "session";
 
 const OAUTH_STATE_COOKIE_NAME: &str = "oauth_state";
 
+pub(crate) fn secure_attribute(
+  redirect_uri: Option<&RedirectUrl>,
+) -> &'static str {
+  if redirect_uri.is_some_and(|uri| uri.url().scheme() == "https") {
+    "; Secure"
+  } else {
+    ""
+  }
+}
+
 pub(crate) const MCGILL_TENANT_ID: &str =
   "cd319671-52e7-4a68-afa9-fcf8f89f09ea";
 
@@ -91,8 +101,9 @@ pub(crate) async fn microsoft_auth(
   headers.insert(
     SET_COOKIE,
     format!(
-      "{OAUTH_STATE_COOKIE_NAME}={}; HttpOnly; SameSite=Lax; Path=/api/auth; Max-Age=600",
-      token.secret()
+      "{OAUTH_STATE_COOKIE_NAME}={}; HttpOnly; SameSite=Lax; Path=/api/auth; Max-Age=600{}",
+      token.secret(),
+      secure_attribute(client.redirect_uri()),
     )
     .parse()?,
   );
@@ -181,13 +192,14 @@ pub(crate) async fn login_authorized(
   headers.insert(
     SET_COOKIE,
     format!(
-      "{}={}; SameSite=Lax; Path=/",
+      "{}={}; HttpOnly; SameSite=Lax; Path=/{}",
       COOKIE_NAME,
       state
         .session_store
         .store_session(session)
         .await?
-        .ok_or(anyhow!("Failed to store session"))?
+        .ok_or(anyhow!("Failed to store session"))?,
+      secure_attribute(state.oauth_client.redirect_uri()),
     )
     .parse()?,
   );
@@ -195,7 +207,8 @@ pub(crate) async fn login_authorized(
   headers.append(
     SET_COOKIE,
     format!(
-      "{OAUTH_STATE_COOKIE_NAME}=; HttpOnly; SameSite=Lax; Path=/api/auth; Max-Age=0"
+      "{OAUTH_STATE_COOKIE_NAME}=; HttpOnly; SameSite=Lax; Path=/api/auth; Max-Age=0{}",
+      secure_attribute(state.oauth_client.redirect_uri()),
     )
     .parse()?,
   );
@@ -253,7 +266,7 @@ pub(crate) async fn test_login(
   headers.insert(
     SET_COOKIE,
     format!(
-      "{}={}; SameSite=Lax; Path=/",
+      "{}={}; HttpOnly; SameSite=Lax; Path=/",
       COOKIE_NAME,
       session_store
         .store_session(session)
@@ -264,4 +277,28 @@ pub(crate) async fn test_login(
   );
 
   Ok((headers, StatusCode::NO_CONTENT))
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn secure_attribute_follows_redirect_scheme() {
+    #[track_caller]
+    fn case(redirect_uri: Option<&str>, expected: &str) {
+      assert_eq!(
+        secure_attribute(
+          redirect_uri
+            .map(|uri| RedirectUrl::new(uri.into()).unwrap())
+            .as_ref()
+        ),
+        expected
+      );
+    }
+
+    case(Some("https://foo.com/bar"), "; Secure");
+    case(Some("http://foo.com/bar"), "");
+    case(None, "");
+  }
 }

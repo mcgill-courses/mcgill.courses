@@ -1179,7 +1179,14 @@ mod tests {
     let token = cookie
       .strip_prefix("oauth_state=")
       .unwrap()
-      .strip_suffix("; HttpOnly; SameSite=Lax; Path=/api/auth; Max-Age=600")
+      .strip_suffix(&format!(
+        "; HttpOnly; SameSite=Lax; Path=/api/auth; Max-Age=600{}",
+        auth::secure_attribute(
+          RedirectUrl::new(env::var("MS_REDIRECT_URI").unwrap())
+            .ok()
+            .as_ref()
+        )
+      ))
       .unwrap();
 
     let location =
